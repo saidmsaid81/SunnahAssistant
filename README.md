@@ -2,7 +2,8 @@
 An android app for setting reminders that help you become a better person.
 Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant
 
-<b>Overview of the App</b>
+<h4>Overview of the App</h4>
+
 - Set Reminders from various categories Sunnah, Prayer Times, other reminders such as meetings.
 
 - Optionally get prayer time alerts based on your preferred settings
@@ -12,6 +13,10 @@ Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?i
 - Two themes are avialble (Light and Dark Theme).
 
 PRs, issues (bugs, feedback and suggestions) are welcomed.
+
+<h4>Credits</h4>
+
+- Thanks to https://aladhan.com/ for access to their Prayer Times and Hijri Calendar API.
 
 <b>*The app is still in beta phase</b>
 
