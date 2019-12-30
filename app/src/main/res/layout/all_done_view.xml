@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/all_done_icon"
+        android:layout_width="192dp"
+        android:layout_height="192dp"
+        android:layout_above="@id/done_for_the_day"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/done_for_the_day"
+        android:src="@drawable/ic_done" />
+
+    <TextView
+        android:id="@+id/done_for_the_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:text="@string/done_for_the_day"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/done_for_the_day"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:text="@string/tap_the_icon_at_the_bottom_corner_to_add_a_new_reminder"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

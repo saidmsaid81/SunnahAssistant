@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="fabColor">#EC685B</color>
+    <color name="nextReminderCardColor">#424242</color>
+    <color name="separatorColor">#FFFFFF</color>
+</resources>

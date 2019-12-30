@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorAccent">#D81B60</color>
+    <color name="fabColor">#EC685B</color>
+    <color name="nextReminderCardColor">#EC685B</color>
+    <color name="bottomSheetColor">#FFFFFF</color>
+    <color name="bottomSheetTextColor">#000000</color>
+    <color name="separatorColor">#000000</color>
+</resources>
