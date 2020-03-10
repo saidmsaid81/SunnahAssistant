@@ -7,13 +7,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.Reminder;
@@ -23,9 +16,15 @@ import com.thesunnahrevival.sunnahassistant.views.MainActivity;
 import com.thesunnahrevival.sunnahassistant.views.ReminderDetailsFragment;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
+
 public class RemindersViewModel extends SunnahAssistantViewModel implements ReminderItemInteractionListener {
 
-    public MutableLiveData<Integer> allDoneViewVisibility = new MutableLiveData<>();
     private ReminderManager mReminderManager = ReminderManager.getInstance();
 
     public RemindersViewModel(@NonNull Application application) {
@@ -87,12 +86,12 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
 
     @Override
     public void onToggleButtonClick(CompoundButton buttonView, boolean isChecked, Reminder reminder) {
-        if (buttonView.isPressed()) {
-            if (isChecked)
-                scheduleReminder(reminder);
-            else
-                cancelScheduledReminder(reminder);
-        }
+        if (isChecked)
+            scheduleReminder(reminder);
+        else
+            cancelScheduledReminder(reminder);
+        if (buttonView.isPressed())
+            Toast.makeText(getApplication(), R.string.reminder_successfully_enabled, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -123,7 +122,6 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
         reminder.setEnabled(true);
         mRepository.setReminderIsEnabled(reminder);
         getApplication().startService(new Intent(getApplication(), NextReminderService.class));
-        Toast.makeText(getApplication(), R.string.reminder_successfully_enabled, Toast.LENGTH_SHORT).show();
     }
 
     public void cancelScheduledReminder(Reminder reminder) {
