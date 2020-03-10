@@ -66,7 +66,7 @@
     <string name="se_ect_app_theme">Select App Theme:</string>
     <string name="next_reminder_notification">Display The Next Reminder Notification \n(Disabling this might lead to reminders not being triggered successfully)</string>
     <string name="about_app">About App</string>
-    <string name="developed_by_tsr_apps">Developed By TSR Apps</string>
+    <string name="developed_by_tsr_apps">Developed By Said Muhammad</string>
     <string name="version">Version: %s</string>
     <string name="icon">app icon</string>
     <string name="credits">Credits</string>
