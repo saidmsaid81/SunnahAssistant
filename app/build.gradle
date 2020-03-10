@@ -3,11 +3,11 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.compileSdkVersion
     defaultConfig {
         applicationId "com.thesunnahrevival.sunnahassistant"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 2
         versionName "1.0-pre-release-2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,28 +37,23 @@ android {
 }
 
 dependencies {
-    def lifecycle_version = "2.0.0"
-    def room_version = "2.1.0"
-    def work_version = "2.2.0"
 
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.room:room-runtime:$room_version"
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$converter_gson_version"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
     implementation "androidx.work:work-runtime:$work_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.github.mreram:showcaseview:1.1'
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
+    implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
+    implementation "com.github.mreram:showcaseview:$showcaseview_version"
+    implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.3.0-alpha01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha01'
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test:runner:$test_runner_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 }
