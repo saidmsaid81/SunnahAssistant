@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.views;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -24,6 +23,9 @@ public class AboutAppFragment extends BottomSheetDialogFragment implements View.
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_about_app, container, false);
         ((TextView) view.findViewById(R.id.version)).setText(String.format(getString(R.string.version), BuildConfig.VERSION_NAME));
+        TextView apiCredit = view.findViewById(R.id.api_credit);
+        apiCredit.setText(Html.fromHtml(getString(R.string.api_credit)));
+        apiCredit.setMovementMethod(LinkMovementMethod.getInstance());
         TextView appIconCredit = view.findViewById(R.id.app_icon_credit);
         appIconCredit.setText(Html.fromHtml(getString(R.string.app_icon_credit)));
         appIconCredit.setMovementMethod(LinkMovementMethod.getInstance());
