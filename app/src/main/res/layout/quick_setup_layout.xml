@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="settingsViewModel"
+            type="com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel" />
+    </data>
 
     <RelativeLayout
         android:id="@+id/layout"
@@ -11,14 +19,36 @@
         app:behavior_peekHeight="90dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <Button
-            android:id="@+id/update_prayer_settings"
+        <TextView
+            android:id="@+id/prayer_time_settings_label"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_below="@id/prayer_update_message"
-            android:layout_centerInParent="true"
-            android:text="@string/update_location"
-            android:textAllCaps="false" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="@string/prayer_time_settings"
+            android:textAppearance="@android:style/TextAppearance.Material.Headline"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/prayer_time_settings_label"
+            android:layout_alignParentStart="true"
+            android:paddingTop="@dimen/default_dimen"
+            android:text="@string/automatic_prayer_settings_info"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/select_prayer_time_method_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info"
+            android:layout_alignParentStart="true"
+            android:paddingTop="@dimen/default_dimen"
+            android:text="@string/add_prayer_time" />
 
         <RadioGroup
             android:id="@+id/prayer_alerts_method_radio_group"
@@ -53,6 +83,13 @@
             android:paddingTop="@dimen/default_dimen"
             android:visibility="gone">
 
+            <TextView
+                android:id="@+id/location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enter_city_town_name"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/location_edit_text"
                 android:layout_width="match_parent"
@@ -65,21 +102,14 @@
                 android:inputType="textAutoComplete"
                 android:text="@{settingsViewModel.cityName}" />
 
-            <Spinner
-                android:id="@+id/calculation_method_spinner"
+            <TextView
+                android:id="@+id/city_example_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/message"
-                android:layout_marginTop="@dimen/default_dimen"
-                android:layout_toEndOf="@id/calculation_method_label" />
-
-            <Spinner
-                android:id="@+id/asr_method_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/calculation_method_label"
-                android:layout_marginTop="@dimen/default_dimen"
-                android:layout_toEndOf="@id/asr_method_label" />
+                android:layout_below="@+id/location_edit_text"
+                android:layout_alignParentStart="true"
+                android:text="@string/city_name_example"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/message"
@@ -92,6 +122,7 @@
                 android:textSize="14sp"
                 android:visibility="@{settingsViewModel.locationUpdateMessage != null ? View.VISIBLE : View.GONE}" />
 
+
             <TextView
                 android:id="@+id/calculation_method_label"
                 android:layout_width="wrap_content"
@@ -103,12 +134,13 @@
                 android:text="@string/prayer_time_calculation_method"
                 android:textSize="@dimen/default_text_size" />
 
-            <TextView
-                android:id="@+id/location_label"
+            <Spinner
+                android:id="@+id/calculation_method_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/enter_city_town_name"
-                android:textSize="16sp" />
+                android:layout_below="@id/message"
+                android:layout_marginTop="@dimen/default_dimen"
+                android:layout_toEndOf="@id/calculation_method_label" />
 
             <TextView
                 android:id="@+id/asr_method_label"
@@ -121,37 +153,14 @@
                 android:text="@string/asr_juristic_method"
                 android:textSize="@dimen/default_text_size" />
 
-            <TextView
-                android:id="@+id/city_example_label"
+            <Spinner
+                android:id="@+id/asr_method_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/location_edit_text"
-                android:layout_alignParentStart="true"
-                android:text="@string/city_name_example"
-                android:textSize="12sp" />
-
+                android:layout_below="@id/calculation_method_label"
+                android:layout_marginTop="@dimen/default_dimen"
+                android:layout_toEndOf="@id/asr_method_label" />
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/prayer_time_settings_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/prayer_time_settings"
-            android:textAppearance="@android:style/TextAppearance.Material.Headline"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/prayer_time_settings_label"
-            android:layout_alignParentStart="true"
-            android:paddingTop="@dimen/default_dimen"
-            android:text="@string/automatic_prayer_settings_info"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/prayer_update_message"
@@ -164,24 +173,14 @@
             android:textSize="14sp"
             android:visibility="@{settingsViewModel.prayerUpdateMessage != null ? View.VISIBLE : View.GONE}" />
 
-        <TextView
-            android:id="@+id/select_prayer_time_method_label"
+        <Button
+            android:id="@+id/update_prayer_settings"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info"
-            android:layout_alignParentStart="true"
-            android:paddingTop="@dimen/default_dimen"
-            android:text="@string/add_prayer_time" />
+            android:layout_height="45dp"
+            android:layout_below="@id/prayer_update_message"
+            android:layout_centerInParent="true"
+            android:text="@string/update_location"
+            android:textAllCaps="false" />
 
     </RelativeLayout>
-
-
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="settingsViewModel"
-            type="com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel" />
-    </data>
 </layout>

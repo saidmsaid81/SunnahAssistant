@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil" />
+
+        <variable
+            name="viewmodel"
+            type="com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel" />
+
+        <variable
+            name="nextReminder"
+            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
+    </data>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -105,18 +119,5 @@
 
     </androidx.cardview.widget.CardView>
 
-    <data>
 
-        <import type="android.view.View" />
-
-        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil" />
-
-        <variable
-            name="viewmodel"
-            type="com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel" />
-
-        <variable
-            name="nextReminder"
-            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
-    </data>
 </layout>
