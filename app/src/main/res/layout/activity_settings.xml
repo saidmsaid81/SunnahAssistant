@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="settingsViewModel"
+            type="com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel" />
+
+    </data>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,31 +22,41 @@
             android:paddingTop="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen">
 
-            <CheckBox
-                android:id="@+id/nextt_reminder_notification_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/settings_separator"
-                android:button="@null"
-                android:checked="true"
-                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-                android:text="@string/next_reminder_notification" />
-
             <RelativeLayout
                 android:id="@+id/hijri_date_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
-                <Button
-                    android:id="@+id/change_hijri_date"
+                <TextView
+                    android:id="@+id/hijri_settings_label"
                     android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_below="@id/hijri_change_error_messages"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="@dimen/default_dimen"
-                    android:text="@string/change_hijri_date"
-                    android:textAllCaps="false" />
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/hijri_date_settings"
+                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hijri_date_string"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hijri_settings_label"
+                    android:layout_alignParentStart="true"
+                    android:paddingTop="16dp"
+                    android:text="@{settingsViewModel.hijriDateString}"
+                    android:textSize="@dimen/default_text_size" />
+
+                <TextView
+                    android:id="@+id/change_hijri_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hijri_date_string"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="@dimen/default_dimen"
+                    android:paddingTop="20dp"
+                    android:text="@string/change_hijri_date_by"
+                    android:textSize="@dimen/default_text_size" />
 
                 <EditText
                     android:id="@+id/hijriOffsetValue"
@@ -52,27 +71,6 @@
                     android:paddingTop="20dp"
                     android:text="@{settingsViewModel.offSet}"
                     android:textSize="@dimen/default_text_size" />
-
-                <TextView
-                    android:id="@+id/change_hijri_date_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/hijri_date_string"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginEnd="@dimen/default_dimen"
-                    android:paddingTop="20dp"
-                    android:text="@string/change_hijri_date_by"
-                    android:textSize="@dimen/default_text_size" />
-
-                <TextView
-                    android:id="@+id/hijri_settings_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/hijri_date_settings"
-                    android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/minutes_label"
@@ -98,15 +96,17 @@
                     android:textSize="14sp"
                     android:visibility="@{settingsViewModel.hijriChangeErrorMessage != null ? View.VISIBLE : View.GONE}" />
 
-                <TextView
-                    android:id="@+id/hijri_date_string"
+
+                <Button
+                    android:id="@+id/change_hijri_date"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/hijri_settings_label"
-                    android:layout_alignParentStart="true"
-                    android:paddingTop="16dp"
-                    android:text="@{settingsViewModel.hijriDateString}"
-                    android:textSize="@dimen/default_text_size" />
+                    android:layout_height="45dp"
+                    android:layout_below="@id/hijri_change_error_messages"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/default_dimen"
+                    android:text="@string/change_hijri_date"
+                    android:textAllCaps="false" />
+
 
 
                 <View
@@ -120,6 +120,13 @@
 
             </RelativeLayout>
 
+            <fragment
+                android:id="@+id/quick_setup"
+                android:name="com.thesunnahrevival.sunnahassistant.views.QuickSetupFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hijri_date_settings" />
+
             <View
                 android:id="@+id/settings_separator"
                 android:layout_width="match_parent"
@@ -129,24 +136,18 @@
                 android:layout_marginBottom="@dimen/default_dimen"
                 android:background="@color/separatorColor" />
 
-
-            <fragment
-                android:id="@+id/quick_setup"
-                android:name="com.thesunnahrevival.sunnahassistant.views.QuickSetupFragment"
+            <CheckBox
+                android:id="@+id/nextt_reminder_notification_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/hijri_date_settings" />
+                android:layout_below="@id/settings_separator"
+                android:button="@null"
+                android:checked="true"
+                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+                android:text="@string/next_reminder_notification" />
 
         </RelativeLayout>
     </ScrollView>
 
-    <data>
 
-        <import type="android.view.View" />
-
-        <variable
-            name="settingsViewModel"
-            type="com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel" />
-
-    </data>
 </layout>
