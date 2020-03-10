@@ -60,6 +60,19 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/api_credit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:linksClickable="true"
+        android:textAlignment="center"
+        android:text="@string/api_credit"
+        android:textColorLink="@android:color/holo_blue_dark"
+        android:textSize="16sp" />
+
+    <TextView
         android:id="@+id/app_icon_credit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
