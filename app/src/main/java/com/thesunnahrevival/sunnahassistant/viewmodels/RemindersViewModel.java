@@ -26,10 +26,12 @@ import androidx.lifecycle.LiveData;
 public class RemindersViewModel extends SunnahAssistantViewModel implements ReminderItemInteractionListener {
 
     private ReminderManager mReminderManager = ReminderManager.getInstance();
+    private boolean isRescheduleAtLaunch;
 
     public RemindersViewModel(@NonNull Application application) {
         super(application);
         mReminderManager.createNotificationChannel(application);
+        isRescheduleAtLaunch = true;
     }
 
     public void fetchAllAladhanData() {
@@ -86,12 +88,13 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
 
     @Override
     public void onToggleButtonClick(CompoundButton buttonView, boolean isChecked, Reminder reminder) {
-        if (isChecked)
-            scheduleReminder(reminder);
-        else
-            cancelScheduledReminder(reminder);
-        if (buttonView.isPressed())
-            Toast.makeText(getApplication(), R.string.reminder_successfully_enabled, Toast.LENGTH_SHORT).show();
+        if (buttonView.isPressed() || isRescheduleAtLaunch) {
+            if (isChecked)
+                scheduleReminder(reminder);
+            else
+                cancelScheduledReminder(reminder);
+        }
+        isRescheduleAtLaunch = false;
     }
 
     @Override
@@ -122,6 +125,8 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
         reminder.setEnabled(true);
         mRepository.setReminderIsEnabled(reminder);
         getApplication().startService(new Intent(getApplication(), NextReminderService.class));
+        if (!isRescheduleAtLaunch)
+            Toast.makeText(getApplication(), R.string.reminder_successfully_enabled, Toast.LENGTH_SHORT).show();
     }
 
     public void cancelScheduledReminder(Reminder reminder) {
