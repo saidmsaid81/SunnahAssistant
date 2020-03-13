@@ -18,10 +18,11 @@ import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.Reminder;
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
-import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter;
+import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
 
 import java.util.List;
 
@@ -233,7 +234,7 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
     @Override
     public void deleteReminder(int position) {
         mDeletedReminder = mAllReminders.get(position);
-        if (mDeletedReminder.getCategory().matches("Prayer")) {
+        if (mDeletedReminder.getCategory().matches(SunnahAssistantUtil.PRAYER)) {
             Snackbar snackbar = Snackbar.make(mBinding.mainLayout, getString(R.string.cannot_delete_prayer_time),
                     Snackbar.LENGTH_LONG);
             snackbar.show();

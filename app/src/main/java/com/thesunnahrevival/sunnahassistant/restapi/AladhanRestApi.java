@@ -1,5 +1,15 @@
 package com.thesunnahrevival.sunnahassistant.restapi;
 
+import com.thesunnahrevival.sunnahassistant.data.HijriDateData;
+import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Hijri;
+import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Month;
+import com.thesunnahrevival.sunnahassistant.data.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.restapi.PrayerTimes.Timings;
+import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +20,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData;
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData.*;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
-import com.thesunnahrevival.sunnahassistant.restapi.PrayerTimes.*;
-import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
 
 public class AladhanRestApi {
 
@@ -129,7 +132,7 @@ public class AladhanRestApi {
 
                 for (int j = 0; j < times.length; j++) {
                     Reminder reminder = new Reminder(PRAYER_NAMES[j], "",
-                            times[j], "Prayer", "Daily", day, false, null);
+                            TimeDateUtil.getTimestampInSeconds(times[j]), SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.DAILY, day,0, false, null);
                     listOfPrayerTimes.add(reminder);
                 }
             }

@@ -2,24 +2,28 @@ package com.thesunnahrevival.sunnahassistant.repository;
 
 import android.app.Application;
 
+import com.thesunnahrevival.sunnahassistant.data.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Hijri;
+import com.thesunnahrevival.sunnahassistant.data.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantDatabase;
+import com.thesunnahrevival.sunnahassistant.restapi.AladhanRestApi;
+import com.thesunnahrevival.sunnahassistant.restapi.GeocodingData;
+import com.thesunnahrevival.sunnahassistant.restapi.GeocodingRestApi;
+import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
+import com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.restapi.GeocodingData;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantDatabase;
-import com.thesunnahrevival.sunnahassistant.restapi.AladhanRestApi;
-import com.thesunnahrevival.sunnahassistant.restapi.GeocodingRestApi;
-import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
-import com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask;
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Hijri;
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
-
-import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.*;
+import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.DELETE_HIJRI_DATA;
+import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.DELETE_LIST_OF_REMINDERS;
+import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.SET_IS_LIGHT_MODE;
+import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.UPDATE_SETTINGS;
 import static com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask.ADD_REMINDER;
 import static com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask.DELETE_REMINDER;
 import static com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask.SET_PRAYER_TIME_ENABLED;
@@ -73,7 +77,7 @@ public class SunnahAssistantRepository {
     }
 
     public void setReminderIsEnabled(Reminder reminder) {
-        if (reminder.getCategory().matches("Prayer"))
+        if (reminder.getCategory().matches(SunnahAssistantUtil.PRAYER))
             new ReminderAsyncTask(SET_PRAYER_TIME_ENABLED, mReminderDAO).execute(reminder);
         else
             new ReminderAsyncTask(SET_REMINDER_ENABLED, mReminderDAO).execute(reminder);

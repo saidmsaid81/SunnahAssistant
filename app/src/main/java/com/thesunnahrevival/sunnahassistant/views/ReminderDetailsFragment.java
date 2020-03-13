@@ -14,6 +14,7 @@ import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.Reminder;
 import com.thesunnahrevival.sunnahassistant.data.SelectDays;
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderDetailsBottomSheetBinding;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
 import com.thesunnahrevival.sunnahassistant.views.adapters.SelectDaysSpinnerAdapter;
@@ -92,7 +93,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         mBinding.categorySpinner.setAdapter(categoryAdapter);
         String category = mReminder.getCategory();
         mBinding.categorySpinner.setSelection(categoryAdapter.getPosition(category));
-        if (category.matches("Prayer")) {
+        if (category.matches(SunnahAssistantUtil.PRAYER)) {
             mBinding.categorySpinner.setEnabled(false);
             mBinding.frequencySpinner.setEnabled(false);
         }
@@ -135,7 +136,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
 
         ArrayList<String> checkedDays = new ArrayList<>();
         mDay = 0;
-        if (((String) mBinding.frequencySpinner.getSelectedItem()).matches("Weekly")) {
+        if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.WEEKLY)) {
             if (mSelectedDaysAdapter.getCheckedDays().isEmpty()) {
                 Toast.makeText(getContext(), getString(R.string.select_atleast_one_day), Toast.LENGTH_LONG).show();
                 mBinding.selectDayError.setVisibility(View.VISIBLE);
@@ -143,17 +144,18 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             }
             checkedDays = mSelectedDaysAdapter.getCheckedDays();
             mDay = -1; //To distinguish from daily and monthly reminders
-        } else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches("Monthly")) {
+        } else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
             mDay = DatePickerFragment.mDay;
         }
         Reminder newReminder = new Reminder(mBinding.reminderEditText.getText().toString().trim(),
                 mBinding.additionalDetails.getText().toString().trim(),
                 TimePickerFragment.timeSet.getValue() != null ?
-                        TimePickerFragment.timeSet.getValue() :
-                        TimeDateUtil.formatTimeInMilliseconds(getContext(), mReminder.getTimeInMilliSeconds()),
+                        TimeDateUtil.getTimestampInSeconds(TimePickerFragment.timeSet.getValue()) :
+                        null,
                 (String) mBinding.categorySpinner.getSelectedItem(),
                 (String) mBinding.frequencySpinner.getSelectedItem(),
                 mDay,
+                0,
                 false,
                 checkedDays
         );
@@ -161,7 +163,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         newReminder.setOffset(Integer.parseInt(mBinding.prayerOffsetValue.getText().toString().trim()));
         if (mViewModel != null) {
             if (!mReminder.equals(newReminder)) {
-                if (!newReminder.getCategory().matches("Prayer"))
+                if (!newReminder.getCategory().matches(SunnahAssistantUtil.PRAYER))
                     mViewModel.insert(newReminder);
                 else
                     mViewModel.updatePrayerTimeDetails(mReminder, newReminder);
@@ -207,7 +209,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             day.setSelected(isDayScheduled);
             listOfAllDays.add(day);
         }
-        if (mReminder.getFrequency().matches("Weekly"))
+        if (mReminder.getFrequency().matches(SunnahAssistantUtil.WEEKLY))
             mSelectedDaysAdapter = new SelectDaysSpinnerAdapter(
                     getContext(), 0, listOfAllDays, mReminder.getCustomScheduleDays()
             );

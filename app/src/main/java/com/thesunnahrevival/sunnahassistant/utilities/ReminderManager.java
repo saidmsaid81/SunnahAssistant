@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -38,7 +39,7 @@ public class ReminderManager {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String[] channelIds = {"Prayer", "Sunnah", "Other"};
+            String[] channelIds = {SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.OTHER};
 
             //Register all the three channels
             for (String id : channelIds) {

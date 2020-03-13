@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import com.thesunnahrevival.sunnahassistant.BuildConfig;
 import com.thesunnahrevival.sunnahassistant.data.AppSettings;
@@ -13,8 +12,14 @@ import com.thesunnahrevival.sunnahassistant.data.Reminder;
 
 import java.util.ArrayList;
 
-
 public class SunnahAssistantUtil {
+
+    public static final String SUNNAH = "Sunnah";
+    public static final String PRAYER = "Prayer";
+    public static final String OTHER = "Other";
+    public static final String DAILY = "Daily";
+    public static final String WEEKLY = "Weekly";
+    public static final String MONTHLY = "Monthly";
 
     public static Intent generateEmailIntent() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -76,29 +81,29 @@ public class SunnahAssistantUtil {
         ArrayList<Reminder> listOfReminders = new ArrayList<>();
 
         listOfReminders.add(
-                (new Reminder("Praying Dhuha", "", "Not Set",
-                        "Sunnah", "Daily", 0, false, new ArrayList<>()))
+                (new Reminder("Praying Dhuha", "", null,
+                        SUNNAH, DAILY, 0, 0, false,  null))
         );
         listOfReminders.add(
-                (new Reminder("Morning Adhkar", "", "Not Set", "Sunnah", "Daily", 0, false, new ArrayList<>()))
+                (new Reminder("Morning Adhkar", "", null, SUNNAH, DAILY, 0, 0, false, null))
         );
         listOfReminders.add(
-                (new Reminder("Evening Adhkar", "", "Not Set", "Sunnah", "Daily", 0, false, new ArrayList<>()))
+                (new Reminder("Evening Adhkar", "", null, SUNNAH, DAILY, 0, 0,false, null))
         );
         listOfReminders.add(
-                (new Reminder("Tahajjud", "", "Not Set", "Sunnah", "Daily", 0, false, new ArrayList<>()))
+                (new Reminder("Tahajjud", "", null, SUNNAH, DAILY, 0, 0, false,  null))
         );
 
         ArrayList<String> listOfDays = new ArrayList<>();
-        listOfDays.add("Thu");
+        listOfDays.add("Fri");
         listOfReminders.add(
-                new Reminder("Reading Suratul Kahf", "", "21:00", "Sunnah", "Weekly", -1, false, listOfDays)
+                new Reminder("Reading Suratul Kahf", "", null, SUNNAH, WEEKLY, -1, 0, false, listOfDays)
         );
         listOfDays = new ArrayList<>();
         listOfDays.add("Sun");
-        listOfDays.add("Wed");
+        listOfDays.add("Wedy");
         listOfReminders.add(
-                new Reminder("Fasting On Monday And Thursday", "", "21:00", "Sunnah", "Weekly", -1, false, listOfDays)
+                new Reminder("Fasting On Monday And Thursday", "", null, SUNNAH, WEEKLY, -1,  0, false, listOfDays)
         );
 
         return listOfReminders;
