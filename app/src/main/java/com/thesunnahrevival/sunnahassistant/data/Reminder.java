@@ -2,16 +2,11 @@ package com.thesunnahrevival.sunnahassistant.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "reminders_table")
@@ -27,6 +22,12 @@ public class Reminder implements Parcelable {
     private String frequency;
     private boolean isEnabled;
 
+    //Only For Prayer Times
+    private int day;
+    private int offset = 0;
+    //For Weekly and Monthly Reminders Only
+    private ArrayList<String> customScheduleDays;
+
     public static final Creator<Reminder> CREATOR = new Creator<Reminder>() {
         @Override
         public Reminder createFromParcel(Parcel in) {
@@ -38,38 +39,35 @@ public class Reminder implements Parcelable {
             return new Reminder[size];
         }
     };
-    //Only For Prayer Times
-    private int day;
-    private int offset = 0;
-    //For Weekly and Monthly Reminders Only
-    private ArrayList<String> customScheduleDays;
 
-
-    @Ignore
-    public Reminder(String reminderName, String reminderInfo, String timeString, String category, String frequency, int day, boolean isEnabled, ArrayList<String> customScheduleDays) {
+    /**
+     * Create a reminder
+     * @param reminderName the name of the reminder
+     * @param reminderInfo info on the reminder
+     * @param timeInSeconds Hours passed since last midnight in seconds for example (21:00) will be 21 * 3600 which is equal to 75600
+     * @param category Either of the three categories (Sunnah, Prayer or Other)
+     * @param frequency Either of the three frequencies (Daily, Weekly or Monthly)
+     * @param day  Day in the month. If its daily pass 0, if weekly pass -1.
+     * @param offset Offset for the reminder to trigger either +/- number.
+     * @param isEnabled True if reminder is enabled, false if reminder is disabled
+     * @param customScheduleDays Used for weekly reminders. Should Contain the name of the days represented as three characters Such as Sunday will be Sun. Pass null if its not weekly.
+     */
+    public Reminder(String reminderName, String reminderInfo,@Nullable Long timeInSeconds, String category, String frequency, int day, int offset, boolean isEnabled,@Nullable ArrayList<String> customScheduleDays) {
         this.reminderName = reminderName;
         this.reminderInfo = reminderInfo;
-        if (!timeString.matches("Not Set"))
-            this.timeInSeconds = getTimestampInSeconds(timeString);
+        if (timeInSeconds != null)
+            this.timeInSeconds = timeInSeconds;
         else
-            this.timeInSeconds = 86399;
-        this.category = category;
-        this.frequency = frequency;
-        this.day = day;
-        this.isEnabled = isEnabled;
-        this.customScheduleDays = customScheduleDays;
-    }
-
-    public Reminder(String reminderName, String reminderInfo, long timeInSeconds, String category, String frequency, int day, int offset, boolean isEnabled, ArrayList<String> customScheduleDays) {
-        this.reminderName = reminderName;
-        this.reminderInfo = reminderInfo;
-        this.timeInSeconds = timeInSeconds;
+            this.timeInSeconds = 172800; //48hrs
         this.category = category;
         this.frequency = frequency;
         this.day = day;
         this.offset = offset;
         this.isEnabled = isEnabled;
-        this.customScheduleDays = customScheduleDays;
+        if (customScheduleDays != null)
+            this.customScheduleDays = customScheduleDays;
+        else
+            this.customScheduleDays = new ArrayList<>();
     }
 
 
@@ -106,9 +104,6 @@ public class Reminder implements Parcelable {
         return reminderInfo;
     }
 
-    public void setReminderInfo(String reminderInfo) {
-        this.reminderInfo = reminderInfo;
-    }
 
     public long getTimeInSeconds() {
         return timeInSeconds;
@@ -150,10 +145,6 @@ public class Reminder implements Parcelable {
         return customScheduleDays;
     }
 
-    public void setCustomScheduleDays(ArrayList<String> customScheduleDays) {
-        this.customScheduleDays = customScheduleDays;
-    }
-
     public long getTimeInMilliSeconds() {
         return (timeInSeconds + (offset * 60)) * 1000;
     }
@@ -162,28 +153,12 @@ public class Reminder implements Parcelable {
         return frequency + " " + category;
     }
 
-    private long getTimestampInSeconds(String timeString) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        try {
-            java.util.Date date = format.parse(timeString);
-            return date.getTime() / 1000;
-        } catch (ParseException e) {
-            Log.v("ParseException", e.getMessage());
-            return 0;
-        }
-
-    }
-
     public int getOffset() {
         return offset;
     }
 
     public void setOffset(int offset) {
         this.offset = offset;
-    }
-
-    public void setTimeFromString(String timeString) {
-        timeInSeconds = getTimestampInSeconds(timeString);
     }
 
     @Override

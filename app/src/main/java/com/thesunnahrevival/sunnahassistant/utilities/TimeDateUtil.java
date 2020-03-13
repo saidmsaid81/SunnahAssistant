@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.utilities;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,14 +28,14 @@ public class TimeDateUtil {
     }
 
     public static String formatTimeInMilliseconds(Context context, long timeInMilliseconds) {
-        if (timeInMilliseconds != 86399000) {
+        if (timeInMilliseconds != 172800000) {
             SimpleDateFormat sdf = android.text.format.DateFormat.is24HourFormat(context) ?
                     new SimpleDateFormat("HH:mm", Locale.getDefault()) :
                     new SimpleDateFormat("hh:mm a", Locale.getDefault());
 
             return sdf.format(timeInMilliseconds);
         }
-        return "Not Set";
+        return "Tap to Set time";
     }
 
     public static long calculateOffsetFromMidnight() {
@@ -54,5 +55,17 @@ public class TimeDateUtil {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static long getTimestampInSeconds(String timeString) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        try {
+            java.util.Date date = format.parse(timeString);
+            return date.getTime() / 1000;
+        } catch (ParseException e) {
+            Log.v("ParseException", e.getMessage());
+            return 172800;
+        }
+
     }
 }

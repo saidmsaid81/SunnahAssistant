@@ -12,11 +12,11 @@ import com.thesunnahrevival.sunnahassistant.data.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.Reminder;
 import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService;
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.views.MainActivity;
 import com.thesunnahrevival.sunnahassistant.views.ReminderDetailsFragment;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -111,7 +111,7 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
             bundle.putBoolean("isNew", false);
             if (reminder == null) {
                 reminder = new Reminder(
-                        "", "", "Not Set", "Sunnah", "Daily", 0, false, new ArrayList<>()
+                        "", "", null, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.DAILY, 0,  0, false, null
                 );
                 bundle.putBoolean("isNew", true);
             }
