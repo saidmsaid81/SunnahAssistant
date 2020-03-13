@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.data;
+package com.thesunnahrevival.sunnahassistant.data.model;
 
 public class SelectDays {
     private String title;

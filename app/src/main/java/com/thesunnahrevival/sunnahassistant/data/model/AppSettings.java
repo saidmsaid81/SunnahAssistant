@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.data;
+package com.thesunnahrevival.sunnahassistant.data.model;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

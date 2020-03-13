@@ -3,13 +3,12 @@ package com.thesunnahrevival.sunnahassistant.viewmodels;
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
-
-import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
-
 import android.os.Handler;
 import android.text.TextUtils;
+
+import com.thesunnahrevival.sunnahassistant.R;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

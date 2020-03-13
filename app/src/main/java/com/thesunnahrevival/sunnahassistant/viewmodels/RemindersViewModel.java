@@ -8,8 +8,8 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService;
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;

@@ -1,4 +1,8 @@
-package com.thesunnahrevival.sunnahassistant.data;
+package com.thesunnahrevival.sunnahassistant.data.local;
+
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 
 import java.util.List;
 
@@ -9,8 +13,6 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
-
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Hijri;
 
 
 @Dao

@@ -1,6 +1,7 @@
-package com.thesunnahrevival.sunnahassistant.data;
+package com.thesunnahrevival.sunnahassistant.data.model;
 
 import java.util.List;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;

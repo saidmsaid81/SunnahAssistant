@@ -1,6 +1,7 @@
-package com.thesunnahrevival.sunnahassistant.restapi;
+package com.thesunnahrevival.sunnahassistant.data.remote;
 
 import com.thesunnahrevival.sunnahassistant.ApiKey;
+import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;

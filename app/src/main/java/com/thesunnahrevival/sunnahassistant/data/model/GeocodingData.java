@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.restapi;
+package com.thesunnahrevival.sunnahassistant.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

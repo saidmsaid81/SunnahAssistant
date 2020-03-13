@@ -5,8 +5,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.thesunnahrevival.sunnahassistant.R;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.databinding.ReminderCardViewBinding;
+import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
+import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
-
-import com.thesunnahrevival.sunnahassistant.databinding.ReminderCardViewBinding;
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
-import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
 
 
 public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.ViewHolder> {

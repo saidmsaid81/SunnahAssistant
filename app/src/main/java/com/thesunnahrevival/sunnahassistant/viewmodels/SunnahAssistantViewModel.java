@@ -4,9 +4,9 @@ import android.app.Application;
 import android.text.Html;
 import android.text.Spanned;
 
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData;
-import com.thesunnahrevival.sunnahassistant.repository.SunnahAssistantRepository;
+import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 
 import java.util.Date;

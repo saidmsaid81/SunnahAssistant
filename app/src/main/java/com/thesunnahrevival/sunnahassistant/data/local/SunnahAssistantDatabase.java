@@ -1,9 +1,14 @@
-package com.thesunnahrevival.sunnahassistant.data;
+package com.thesunnahrevival.sunnahassistant.data.local;
 
 import android.content.Context;
 
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter;
 import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+
 import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
