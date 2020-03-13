@@ -35,7 +35,7 @@ public class TimeDateUtil {
 
             return sdf.format(timeInMilliseconds);
         }
-        return "Tap to Set time";
+        return "Not Set";
     }
 
     public static long calculateOffsetFromMidnight() {

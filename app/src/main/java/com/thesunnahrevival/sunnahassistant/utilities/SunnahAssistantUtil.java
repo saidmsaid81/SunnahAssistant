@@ -94,6 +94,10 @@ public class SunnahAssistantUtil {
                 (new Reminder("Tahajjud", "", null, SUNNAH, DAILY, 0, 0, false,  null))
         );
 
+        listOfReminders.add(
+                (new Reminder("Reading the Quran", "", null, SUNNAH, DAILY, 0, 0, false,  null))
+        );
+
         ArrayList<String> listOfDays = new ArrayList<>();
         listOfDays.add("Fri");
         listOfReminders.add(
