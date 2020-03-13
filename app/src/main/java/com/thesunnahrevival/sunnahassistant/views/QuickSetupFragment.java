@@ -9,10 +9,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.databinding.QuickSetupLayoutBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.thesunnahrevival.sunnahassistant.R;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.databinding.QuickSetupLayoutBinding;
 import com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel;
 
 import java.util.ArrayList;

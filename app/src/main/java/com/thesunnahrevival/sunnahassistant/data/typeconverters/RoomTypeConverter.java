@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.data;
+package com.thesunnahrevival.sunnahassistant.data.typeconverters;
 
 import java.util.ArrayList;
 import java.util.Arrays;

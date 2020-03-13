@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.SelectDays;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.model.SelectDays;
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderDetailsBottomSheetBinding;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;

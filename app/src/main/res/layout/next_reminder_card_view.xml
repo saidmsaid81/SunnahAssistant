@@ -16,7 +16,7 @@
 
         <variable
             name="nextReminder"
-            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
+            type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
     </data>
 
     <androidx.cardview.widget.CardView

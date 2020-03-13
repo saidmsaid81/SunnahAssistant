@@ -1,15 +1,15 @@
-package com.thesunnahrevival.sunnahassistant.repository;
+package com.thesunnahrevival.sunnahassistant.data;
 
 import android.app.Application;
 
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Hijri;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantDatabase;
-import com.thesunnahrevival.sunnahassistant.restapi.AladhanRestApi;
-import com.thesunnahrevival.sunnahassistant.restapi.GeocodingData;
-import com.thesunnahrevival.sunnahassistant.restapi.GeocodingRestApi;
+import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.remote.AladhanRestApi;
+import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingRestApi;
 import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;

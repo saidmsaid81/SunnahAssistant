@@ -1,11 +1,12 @@
-package com.thesunnahrevival.sunnahassistant.restapi;
+package com.thesunnahrevival.sunnahassistant.data.remote;
 
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData;
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Hijri;
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData.Month;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
-import com.thesunnahrevival.sunnahassistant.restapi.PrayerTimes.Timings;
+import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Month;
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimes;
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimes.Timings;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;

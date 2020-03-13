@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
 
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantDatabase;
+import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 
 import java.lang.ref.WeakReference;
 import java.util.TimeZone;

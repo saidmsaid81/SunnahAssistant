@@ -1,9 +1,9 @@
-package com.thesunnahrevival.sunnahassistant.restapi;
-
-import java.util.List;
+package com.thesunnahrevival.sunnahassistant.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class PrayerTimes {
 

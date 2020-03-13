@@ -4,8 +4,8 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 
 import java.util.List;
 

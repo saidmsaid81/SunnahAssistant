@@ -7,8 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 
 import com.thesunnahrevival.sunnahassistant.BuildConfig;
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 
 import java.util.ArrayList;
 

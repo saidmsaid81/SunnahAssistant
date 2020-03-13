@@ -2,8 +2,8 @@ package com.thesunnahrevival.sunnahassistant.utilities;
 
 import android.os.AsyncTask;
 
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 
 public class ReminderAsyncTask extends AsyncTask<Reminder, Void, Void> {
 

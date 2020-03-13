@@ -1,6 +1,7 @@
-package com.thesunnahrevival.sunnahassistant.restapi;
+package com.thesunnahrevival.sunnahassistant.data.remote;
 
-import com.thesunnahrevival.sunnahassistant.data.HijriDateData;
+import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimes;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
