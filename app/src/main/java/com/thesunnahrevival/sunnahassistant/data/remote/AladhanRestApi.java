@@ -94,13 +94,14 @@ public class AladhanRestApi {
         Inner Class for processing fetched data
      */
     private static class ProcessAladhanData {
+
         private static void processHijriDateData(HijriDateData hijriDateData) {
             int size = 0;
             if (hijriDateData != null) {
                 size = hijriDateData.getData().size();
             }
             ArrayList<Hijri> list = new ArrayList<>();
-
+            ArrayList importantMonthlyReminders = new ArrayList();
             for (int i = 0; i < size; i++) {
                 String day = hijriDateData.getData().get(i).getHijri().getDay();
                 Month month = hijriDateData.getData().get(i).getHijri().getMonth();
@@ -109,9 +110,28 @@ public class AladhanRestApi {
                 Hijri hijri = new Hijri(day, month.getEn(), year);
                 hijri.setId(i + 1);
                 list.add(hijri);
+
+                //Add the important monthly reminders
+                int calendarDay = Integer.parseInt(day);
+                if ((calendarDay >= 13) && (calendarDay <= 15)){
+                    Reminder reminder = new Reminder(
+                            "Fasting Ayyamul Beidh (White Days)",
+                            "",
+                            null,
+                            SunnahAssistantUtil.SUNNAH,
+                            SunnahAssistantUtil.MONTHLY,
+                            hijri.getId(),
+                            0 ,
+                            false,
+                            new ArrayList<>());
+
+                    importantMonthlyReminders.add(reminder);
+                }
             }
 
             new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_HIJRI_DATA, mReminderDAO).execute(list);
+            new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_LIST_OF_REMINDERS,
+                    mReminderDAO).execute(importantMonthlyReminders);
             errorMessages.setValue("Successful");
         }
 
@@ -132,10 +152,19 @@ public class AladhanRestApi {
                 String[] times = {fajrTime, dhuhrTime, asrTime, maghribTime, ishaTime};
 
                 for (int j = 0; j < times.length; j++) {
-                    Reminder reminder = new Reminder(PRAYER_NAMES[j], "",
-                            TimeDateUtil.getTimestampInSeconds(times[j]), SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.DAILY, day,0, false, null);
+                    Reminder reminder = new Reminder(
+                            PRAYER_NAMES[j],
+                            "",
+                            TimeDateUtil.getTimestampInSeconds(times[j]),
+                            SunnahAssistantUtil.PRAYER,
+                            SunnahAssistantUtil.DAILY,
+                            day,
+                            0,
+                            false,
+                            null);
                     listOfPrayerTimes.add(reminder);
                 }
+
             }
 
             new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_LIST_OF_REMINDERS,
