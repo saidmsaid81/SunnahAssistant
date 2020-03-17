@@ -99,7 +99,7 @@
                 android:textOff=""
                 android:textOn=""
                 android:checked="@{reminder.enabled}"
-                android:visibility="@{reminder.getTimeInMilliSeconds() == 86399000 ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{reminder.getTimeInMilliSeconds() == 172800000 ? View.INVISIBLE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
