@@ -70,6 +70,7 @@
     <string name="version">Version: %s</string>
     <string name="icon">app icon</string>
     <string name="credits">Credits</string>
+    <string name="api_credit">Automatic prayer time and hijri date data is from : &lt;a href=https://aladhan.com/>https://aladhan.com&lt;/a> </string>
     <string name="app_icon_credit">App Icon from: &lt;a href=http://www.iconarchive.com/>http://www.iconarchive.com/&lt;/a> </string>
     <string name="other_icon_credit">Other icons : &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a> </string>
     <string name="we_are_social">Join Us on Social Media</string>
@@ -106,6 +107,7 @@
     </string-array>
 
     <string-array name="categories">
+        <item>Uncategorized</item>
         <item>Sunnah</item>
         <item>Prayer</item>
         <item>Other</item>

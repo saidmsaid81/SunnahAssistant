@@ -17,6 +17,7 @@ public class SunnahAssistantUtil {
     public static final String SUNNAH = "Sunnah";
     public static final String PRAYER = "Prayer";
     public static final String OTHER = "Other";
+    public static final String UNCATEGORIZED = "Uncategorized";
     public static final String DAILY = "Daily";
     public static final String WEEKLY = "Weekly";
     public static final String MONTHLY = "Monthly";
@@ -81,7 +82,7 @@ public class SunnahAssistantUtil {
         ArrayList<Reminder> listOfReminders = new ArrayList<>();
 
         listOfReminders.add(
-                (new Reminder("Praying Dhuha", "", null,
+                (new Reminder("Praying Dhuha", "<a href=\"https://thesunnahrevival.wordpress.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips\">Read more</a> on Dhuha Prayer and the best time to pray", null,
                         SUNNAH, DAILY, 0, 0, false,  null))
         );
         listOfReminders.add(
@@ -91,7 +92,7 @@ public class SunnahAssistantUtil {
                 (new Reminder("Evening Adhkar", "", null, SUNNAH, DAILY, 0, 0,false, null))
         );
         listOfReminders.add(
-                (new Reminder("Tahajjud", "", null, SUNNAH, DAILY, 0, 0, false,  null))
+                (new Reminder("Tahajjud", "<a href=\"https://thesunnahrevival.wordpress.com/2014/04/09/tahajjud/\">Read more</a> on Tahjjud Prayer and the best time to pray", null, SUNNAH, DAILY, 0, 0, false,  null))
         );
 
         listOfReminders.add(
@@ -101,13 +102,13 @@ public class SunnahAssistantUtil {
         ArrayList<String> listOfDays = new ArrayList<>();
         listOfDays.add("Fri");
         listOfReminders.add(
-                new Reminder("Reading Suratul Kahf", "", null, SUNNAH, WEEKLY, -1, 0, false, listOfDays)
+                new Reminder("Reading Suratul Kahf", "<a href=\"https://thesunnahrevival.wordpress.com/2020/03/06/2769/\">Read more</a> on the importance of reading Suratul Kahf every Friday", null, SUNNAH, WEEKLY, -1, 0, false, listOfDays)
         );
         listOfDays = new ArrayList<>();
         listOfDays.add("Sun");
         listOfDays.add("Wedy");
         listOfReminders.add(
-                new Reminder("Fasting On Monday And Thursday", "", null, SUNNAH, WEEKLY, -1,  0, false, listOfDays)
+                new Reminder("Fasting On Monday And Thursday", "<a href=\"https://thesunnahrevival.wordpress.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday/\">Read more</a> on the importance of reading fasting on Mondays and Thursday", null, SUNNAH, WEEKLY, -1,  0, false, listOfDays)
         );
 
         return listOfReminders;

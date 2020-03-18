@@ -111,7 +111,7 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
             bundle.putBoolean("isNew", false);
             if (reminder == null) {
                 reminder = new Reminder(
-                        "", "", null, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.DAILY, 0,  0, false, null
+                        "", "", null, SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.DAILY, 0,  0, false, null
                 );
                 bundle.putBoolean("isNew", true);
             }
