@@ -107,6 +107,7 @@
     </string-array>
 
     <string-array name="categories">
+        <item>Uncategorized</item>
         <item>Sunnah</item>
         <item>Prayer</item>
         <item>Other</item>

@@ -54,10 +54,22 @@
             android:visibility="visible" />
 
         <TextView
-            android:id="@+id/reminder_name_label"
+            android:id="@+id/tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/reminder_action_label"
+            android:layout_alignParentStart="true"
+            android:drawableStart="@drawable/ic_tip"
+            android:layout_marginBottom="8dp"
+            android:drawablePadding="8dp"
+            android:visibility="@{reminder.reminderInfo.contains(&quot;href&quot;) ? View.VISIBLE : View.GONE}"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/reminder_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tip"
             android:layout_alignParentStart="true"
             android:text="@string/reminder_name_label"
             android:textSize="16sp" />
@@ -219,6 +231,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/more_details"
             android:textColor="@android:color/holo_blue_dark"
+            android:visibility="@{reminder.reminderInfo.contains(&quot;href&quot;) ? View.GONE : View.VISIBLE}"
             android:textSize="16sp" />
 
         <MultiAutoCompleteTextView

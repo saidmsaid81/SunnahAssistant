@@ -1,7 +1,9 @@
 package com.thesunnahrevival.sunnahassistant.views;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +66,8 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         if (mReminder != null) {
             mBinding.reminderTime.setText(TimeDateUtil.formatTimeInMilliseconds(getContext(),
                     mReminder.getTimeInMilliSeconds()));
+            mBinding.tip.setText(Html.fromHtml(mReminder.getReminderInfo()));
+            mBinding.tip.setMovementMethod(LinkMovementMethod.getInstance());
             mDay = mReminder.getDay();
         }
         mBinding.timePicker.setOnClickListener(this);
@@ -156,7 +160,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
                 (String) mBinding.frequencySpinner.getSelectedItem(),
                 mDay,
                 0,
-                false,
+                true,
                 checkedDays
         );
         newReminder.setId(mReminder.getId());
