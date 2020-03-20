@@ -27,7 +27,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
             if (!TextUtils.isEmpty(notificationTitle)) {
                 notificationManager.notify(notificationId,
                         NotificationUtil.createNotification(
-                                context, notificationTitle, notificationText, category, Notification.PRIORITY_DEFAULT));
+                                context, notificationTitle, notificationText, Notification.PRIORITY_DEFAULT));
             }
         }
 

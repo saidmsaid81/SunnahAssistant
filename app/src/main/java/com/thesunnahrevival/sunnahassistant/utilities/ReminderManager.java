@@ -39,26 +39,15 @@ public class ReminderManager {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String[] channelIds = {SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.OTHER};
-
-            //Register all the three channels
-            for (String id : channelIds) {
-                CharSequence name = id + " Alerts";
-                String description = "Alerts about various " + id + " to do";
-                int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-                NotificationChannel channel = new NotificationChannel(id, name, importance);
-                channel.setDescription(description);
-
-                NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-                notificationManager.createNotificationChannel(channel);
-            }
-
-            NotificationChannel channel = new NotificationChannel(
-                    "Next Reminder", "Next Reminder Sticky Notification", NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription("Sticky Notification to display the next scheduled reminder");
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+
+            NotificationChannel channel = new NotificationChannel("remindersDefault", "Reminders", NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
+
+            NotificationChannel nextReminderChannel = new NotificationChannel(
+                    "Next Reminder", "Next Reminder Sticky Notification", NotificationManager.IMPORTANCE_LOW);
+            nextReminderChannel.setDescription("Sticky Notification to display the next scheduled reminder");
+            notificationManager.createNotificationChannel(nextReminderChannel);
         }
     }
 
