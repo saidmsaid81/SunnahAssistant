@@ -96,6 +96,8 @@
     <string name="error">There seems to be an error. Please try again. If it persists report to the developer. Thanks</string>
     <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_reminder">Tap the + icon at the bottom corner to add a new reminder</string>
     <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="name_of_the_new_category">Name of the New Category</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="reminder_filter">
         <item>Today</item>
