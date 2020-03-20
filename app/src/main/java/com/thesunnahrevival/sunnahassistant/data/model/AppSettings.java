@@ -1,5 +1,10 @@
 package com.thesunnahrevival.sunnahassistant.data.model;
 
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -20,6 +25,7 @@ public class AppSettings {
     private boolean showNextReminderNotification = true;
     private boolean showOnBoardingTutorial = true;
     private boolean isAutomatic;
+    private ArrayList<String> categories = new ArrayList<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
 
     public AppSettings(String formattedAddress, float latitude, float longitude, int method, int asrCalculationMethod, boolean isAutomatic) {
         this.formattedAddress = formattedAddress;
@@ -132,5 +138,13 @@ public class AppSettings {
 
     public void setShowOnBoardingTutorial(boolean showOnBoardingTutorial) {
         this.showOnBoardingTutorial = showOnBoardingTutorial;
+    }
+
+    public ArrayList<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(ArrayList<String> categories) {
+        this.categories = categories;
     }
 }

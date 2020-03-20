@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService;
@@ -121,12 +120,10 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
 
     }
 
-    private void scheduleReminder(Reminder reminder) {
+    public void scheduleReminder(Reminder reminder) {
         reminder.setEnabled(true);
         mRepository.setReminderIsEnabled(reminder);
         getApplication().startService(new Intent(getApplication(), NextReminderService.class));
-        if (!isRescheduleAtLaunch)
-            Toast.makeText(getApplication(), R.string.reminder_successfully_enabled, Toast.LENGTH_SHORT).show();
     }
 
     public void cancelScheduledReminder(Reminder reminder) {
@@ -137,7 +134,6 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
                 reminder.getReminderName(), reminder.getCategory()
         );
         mRepository.setReminderIsEnabled(reminder);
-        Toast.makeText(getApplication(), R.string.reminder_successfully_disabled, Toast.LENGTH_SHORT).show();
     }
 
 }
