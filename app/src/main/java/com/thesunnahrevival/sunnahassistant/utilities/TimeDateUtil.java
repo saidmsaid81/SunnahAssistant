@@ -11,6 +11,8 @@ import java.util.Locale;
 
 public class TimeDateUtil {
 
+    public static final String NOT_SET = "Not Set";
+
     public static String getNameOfTheDay(long timeInMilliseconds) {
         return new SimpleDateFormat("EE", Locale.ENGLISH).format(timeInMilliseconds);
     }
@@ -35,7 +37,7 @@ public class TimeDateUtil {
 
             return sdf.format(timeInMilliseconds);
         }
-        return "Not Set";
+        return NOT_SET;
     }
 
     public static long calculateOffsetFromMidnight() {

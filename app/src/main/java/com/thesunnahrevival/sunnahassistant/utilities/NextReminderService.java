@@ -88,7 +88,7 @@ public class NextReminderService extends Service {
             }
 
             Notification notification = NotificationUtil.createNotification(
-                    mServiceWeakReference.get(), title, text, "Next Reminder", NotificationCompat.PRIORITY_LOW);
+                    mServiceWeakReference.get(), title, text, NotificationCompat.PRIORITY_LOW);
 
             if (mIsForegroundEnabled)
                 mServiceWeakReference.get().startForeground(1, notification);

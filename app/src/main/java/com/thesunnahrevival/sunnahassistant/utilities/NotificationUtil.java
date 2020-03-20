@@ -8,14 +8,22 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.thesunnahrevival.sunnahassistant.views.MainActivity;
 import com.thesunnahrevival.sunnahassistant.R;
+import com.thesunnahrevival.sunnahassistant.views.MainActivity;
 
 import androidx.core.app.NotificationCompat;
 
 class NotificationUtil {
 
-    static Notification createNotification(Context context, String title, String text, String category, int priority) {
+    static Notification createNotification(Context context, String title, String text, int priority) {
+
+        String category;
+        if (priority == -1){
+            category = "Next Reminder";
+        }
+        else {
+            category = "remindersDefault";
+        }
 
         final Resources res = context.getResources();
         // This image is used as the notification's large icon (thumbnail).
@@ -34,7 +42,6 @@ class NotificationUtil {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setContentIntent(activity)
-                .setLargeIcon(picture)
                 .setPriority(priority)
                 .setTicker(title)
                 .setStyle(new NotificationCompat.BigTextStyle()
@@ -51,7 +58,8 @@ class NotificationUtil {
                             context,
                             0,
                             shareIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT));
+                            PendingIntent.FLAG_UPDATE_CURRENT))
+                    .setLargeIcon(picture);
 
         return builder.build();
 
