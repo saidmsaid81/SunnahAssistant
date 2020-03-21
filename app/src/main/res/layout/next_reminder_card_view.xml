@@ -7,8 +7,8 @@
     <data>
 
         <import type="android.view.View" />
-
-        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil" />
+        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil"/>
+        <import type="android.content.Context" />
 
         <variable
             name="viewmodel"
@@ -82,14 +82,15 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:text="@{nextReminder.frequency + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds())}"
                     tools:text="Date" />
 
                 <TextView
                     android:id="@+id/reminder_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{nextReminder.frequencyAndCategory}"
+                    android:text="@{nextReminder.category}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/default_text_size"

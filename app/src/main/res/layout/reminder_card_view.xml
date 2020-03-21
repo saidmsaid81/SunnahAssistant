@@ -6,8 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.content.Context" />
         <import type="android.view.View" />
+        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil"/>
 
         <variable
             name="reminder"
@@ -73,7 +74,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:text="@{reminder.frequency + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds())}"
                     tools:text="Date" />
 
                 <TextView
@@ -82,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="@dimen/default_text_size"
-                    android:text="@{reminder.frequencyAndCategory}"
+                    android:text="@{reminder.category}"
                     tools:text="Category" />
             </LinearLayout>
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderCardViewBinding;
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener;
 
@@ -109,7 +108,6 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
 
         private void bind(Reminder reminder) {
             binding.setReminder(reminder);
-            binding.reminderTime.setText(TimeDateUtil.formatTimeInMilliseconds(mContext, reminder.getTimeInMilliSeconds()));
             binding.toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->
                     mListener.onToggleButtonClick(buttonView, isChecked, reminder));
             binding.cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder));
