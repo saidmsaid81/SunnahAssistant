@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
@@ -98,10 +97,6 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
 
     @Override
     public void openBottomSheet(View v, Reminder reminder, boolean isNextReminder) {
-        if (isNextReminder) {
-            Toast.makeText(getApplication(), "Disable the Reminder First before editing...", Toast.LENGTH_LONG).show();
-            return;
-        }
         ReminderDetailsFragment bottomSheetFragment = new ReminderDetailsFragment();
         if (v.getContext() instanceof MainActivity) {
             FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
