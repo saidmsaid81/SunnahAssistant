@@ -47,7 +47,6 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
-    implementation "androidx.work:work-runtime:$work_version"
     implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
     implementation "com.github.mreram:showcaseview:$showcaseview_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
