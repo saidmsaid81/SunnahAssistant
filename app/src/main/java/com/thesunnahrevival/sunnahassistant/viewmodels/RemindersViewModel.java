@@ -96,7 +96,7 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
     }
 
     @Override
-    public void openBottomSheet(View v, Reminder reminder, boolean isNextReminder) {
+    public void openBottomSheet(View v, Reminder reminder) {
         ReminderDetailsFragment bottomSheetFragment = new ReminderDetailsFragment();
         if (v.getContext() instanceof MainActivity) {
             FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();

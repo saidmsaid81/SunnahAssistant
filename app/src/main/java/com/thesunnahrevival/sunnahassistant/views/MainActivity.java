@@ -3,11 +3,6 @@ package com.thesunnahrevival.sunnahassistant.views;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +13,10 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ViewModelProviders;
 
 import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
 import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fab) {
-            mViewModel.openBottomSheet(v, null, false);
+            mViewModel.openBottomSheet(v, null);
         }
     }
 }

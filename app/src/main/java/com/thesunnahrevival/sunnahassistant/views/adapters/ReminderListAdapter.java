@@ -112,7 +112,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
             binding.reminderTime.setText(TimeDateUtil.formatTimeInMilliseconds(mContext, reminder.getTimeInMilliSeconds()));
             binding.toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->
                     mListener.onToggleButtonClick(buttonView, isChecked, reminder));
-            binding.cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder, false));
+            binding.cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder));
 
         }
     }
