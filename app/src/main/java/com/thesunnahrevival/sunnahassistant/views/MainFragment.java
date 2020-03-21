@@ -19,7 +19,6 @@ import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
@@ -193,8 +192,6 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
                     //Find a reminder that is enabled and display it in the next reminder section
                     if (data.get(i).isEnabled()) {
                         mBinding.setNextReminder(data.get(i));
-                        mBinding.nextCardView.reminderTime.setText(TimeDateUtil.formatTimeInMilliseconds(getContext(),
-                                data.get(i).getTimeInMilliSeconds()));
                         data.remove(i);//Remove The Next Reminder
                         break;
                     }

@@ -149,10 +149,6 @@ public class Reminder implements Parcelable {
         return (timeInSeconds + (offset * 60)) * 1000;
     }
 
-    public String getFrequencyAndCategory() {
-        return frequency + " " + category;
-    }
-
     public int getOffset() {
         return offset;
     }
