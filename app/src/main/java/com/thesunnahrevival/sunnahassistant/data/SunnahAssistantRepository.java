@@ -88,15 +88,17 @@ public class SunnahAssistantRepository {
             case 1:
                 return mReminderDAO.getPastReminders(TimeDateUtil.calculateOffsetFromMidnight(), mDay, nameOfTheDay);
             case 2:
-                return mReminderDAO.getTomorrowReminders(mDay + 1, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis() + 86400000));
+                return mReminderDAO.getRemindersOnDay(mDay, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()));
             case 3:
-                return mReminderDAO.getPrayerTimes(mDay);
+                return mReminderDAO.getRemindersOnDay(mDay + 1, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis() + 86400000));
             case 4:
-                return mReminderDAO.getWeeklyReminders();
+                return mReminderDAO.getPrayerTimes(mDay);
             case 5:
+                return mReminderDAO.getWeeklyReminders();
+            case 6:
                 return mReminderDAO.getMonthlyReminder();
             default:
-                return mReminderDAO.getTodayReminders(TimeDateUtil.calculateOffsetFromMidnight(), mDay, nameOfTheDay);
+                return mReminderDAO.getUpcomingReminders(TimeDateUtil.calculateOffsetFromMidnight(), mDay, nameOfTheDay);
         }
     }
 

@@ -25,13 +25,13 @@ public interface ReminderDAO {
     void deleteReminder(Reminder reminder);
 
     @Query("SELECT * FROM reminders_table WHERE timeInSeconds >= :offsetFromMidnight AND (day == :day OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY timeInSeconds")
-    LiveData<List<Reminder>> getTodayReminders(long offsetFromMidnight, int day, String nameOfTheDay);
+    LiveData<List<Reminder>> getUpcomingReminders(long offsetFromMidnight, int day, String nameOfTheDay);
 
     @Query("SELECT * FROM reminders_table WHERE timeInSeconds <= :offsetFromMidnight AND (day == :day OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY timeInSeconds")
     LiveData<List<Reminder>> getPastReminders(long offsetFromMidnight, int day, String nameOfTheDay);
 
     @Query("SELECT * FROM reminders_table WHERE (day == :day OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY timeInSeconds")
-    LiveData<List<Reminder>> getTomorrowReminders(int day, String nameOfTheDay);
+    LiveData<List<Reminder>> getRemindersOnDay(int day, String nameOfTheDay);
 
     @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND day == :day) ORDER BY timeInSeconds")
     LiveData<List<Reminder>> getPrayerTimes(int day);

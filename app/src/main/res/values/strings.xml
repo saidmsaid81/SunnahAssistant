@@ -100,8 +100,9 @@
     <string name="cancel">Cancel</string>
 
     <string-array name="reminder_filter">
-        <item>Today</item>
+        <item>Upcoming</item>
         <item>Past</item>
+        <item>Today</item>
         <item>Tomorrow</item>
         <item>Prayer Times</item>
         <item>Weekly</item>
