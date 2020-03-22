@@ -19,6 +19,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
@@ -75,7 +76,6 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
                     ItemTouchHelper(new SwipeToDeleteCallback(mReminderRecyclerAdapter));
             itemTouchHelper.attachToRecyclerView(reminderRecyclerView);
             getErrorMessages();
-            populateTheSpinner();
         }
     }
 
@@ -84,7 +84,7 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
             if (settings != null) {
                 mAppSettings = settings;
                 setTheme();
-
+                populateTheSpinner(mAppSettings.getSavedSpinnerPosition());
                 if (settings.isFirstLaunch()) {
                     startActivity(new Intent(getActivity(), WelcomeActivity.class));
                     return;
@@ -186,11 +186,11 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
 
         if (getActivity() != null && data != null && !data.isEmpty()) {
             mAllReminders = data;
-            if (mSpinner.getSelectedItemPosition() == 0) {
+            if (mSpinner.getSelectedItemPosition() == 0 || mSpinner.getSelectedItemPosition() == 2) {
                 mBinding.setNextReminder(null);
                 for (int i = 0; i < data.size(); i++) {
                     //Find a reminder that is enabled and display it in the next reminder section
-                    if (data.get(i).isEnabled()) {
+                    if (data.get(i).isEnabled() && data.get(i).getTimeInMilliSeconds() > TimeDateUtil.calculateOffsetFromMidnight()) {
                         mBinding.setNextReminder(data.get(i));
                         data.remove(i);//Remove The Next Reminder
                         break;
@@ -205,7 +205,7 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
         mReminderRecyclerAdapter.setData(data); //Refresh the RecyclerView
     }
 
-    private void populateTheSpinner() {
+    private void populateTheSpinner(int savedSpinnerPosition) {
         if (getContext() != null) {
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                     R.array.reminder_filter, android.R.layout.simple_spinner_item);
@@ -213,7 +213,15 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
             mSpinner = mBinding.spinner;
             mSpinner.setOnItemSelectedListener(this);
             mSpinner.setAdapter(adapter);
+            mSpinner.setSelection(savedSpinnerPosition);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAppSettings.setSavedSpinnerPosition(mSpinner.getSelectedItemPosition());
+        mViewModel.updateSettings(mAppSettings);
     }
 
     @Override

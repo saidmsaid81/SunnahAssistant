@@ -25,6 +25,7 @@ public class AppSettings {
     private boolean showNextReminderNotification = true;
     private boolean showOnBoardingTutorial = true;
     private boolean isAutomatic;
+    private int savedSpinnerPosition = 0;
     private ArrayList<String> categories = new ArrayList<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
 
     public AppSettings(String formattedAddress, float latitude, float longitude, int method, int asrCalculationMethod, boolean isAutomatic) {
@@ -138,6 +139,14 @@ public class AppSettings {
 
     public void setShowOnBoardingTutorial(boolean showOnBoardingTutorial) {
         this.showOnBoardingTutorial = showOnBoardingTutorial;
+    }
+
+    public int getSavedSpinnerPosition() {
+        return savedSpinnerPosition;
+    }
+
+    public void setSavedSpinnerPosition(int savedSpinnerPosition) {
+        this.savedSpinnerPosition = savedSpinnerPosition;
     }
 
     public ArrayList<String> getCategories() {
