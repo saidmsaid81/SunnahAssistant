@@ -190,7 +190,7 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
                 mBinding.setNextReminder(null);
                 for (int i = 0; i < data.size(); i++) {
                     //Find a reminder that is enabled and display it in the next reminder section
-                    if (data.get(i).isEnabled() && data.get(i).getTimeInMilliSeconds() > TimeDateUtil.calculateOffsetFromMidnight()) {
+                    if (data.get(i).isEnabled() && data.get(i).getTimeInSeconds() > TimeDateUtil.calculateOffsetFromMidnight()) {
                         mBinding.setNextReminder(data.get(i));
                         data.remove(i);//Remove The Next Reminder
                         break;
