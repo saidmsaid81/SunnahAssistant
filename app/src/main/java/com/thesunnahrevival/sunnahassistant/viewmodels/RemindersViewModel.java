@@ -20,15 +20,18 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 public class RemindersViewModel extends SunnahAssistantViewModel implements ReminderItemInteractionListener {
 
     private ReminderManager mReminderManager = ReminderManager.getInstance();
     private boolean isRescheduleAtLaunch;
+    public MutableLiveData<String> mCategoriesToDisplay = new MutableLiveData<>();
 
     public RemindersViewModel(@NonNull Application application) {
         super(application);
         mReminderManager.createNotificationChannel(application);
+        mCategoriesToDisplay.setValue("");
         isRescheduleAtLaunch = true;
     }
 
@@ -58,8 +61,8 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
         mRepository.addReminder(reminder);
     }
 
-    public LiveData<List<Reminder>> getReminders(int filter) {
-        return mRepository.getAllReminders(filter, mNameOfTheDay);
+    public LiveData<List<Reminder>> getReminders(int frequencyFilter) {
+        return mRepository.getAllReminders(frequencyFilter, mNameOfTheDay);
     }
 
     public LiveData<String> getErrorMessages() {

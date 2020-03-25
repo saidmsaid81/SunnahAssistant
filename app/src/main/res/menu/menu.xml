@@ -2,28 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <item
-        android:id="@+id/feedback"
-        android:icon="@drawable/ic_feedback"
-        android:title="@string/send_feedback"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/filter"
+        android:icon="@drawable/ic_filter_list"
+        android:title="@string/settings"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/dark_mode_switch"
-        android:icon="@drawable/ic_dark_mode_off"
         android:title="@string/switch_to_dark_mode"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/feedback"
+        android:title="@string/send_feedback"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/about"
-        android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/about_app"
         app:showAsAction="never" />
 
