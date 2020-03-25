@@ -98,6 +98,7 @@
     <string name="open_source_licenses">Open Source Licenses</string>
     <string name="name_of_the_new_category">Name of the New Category</string>
     <string name="cancel">Cancel</string>
+    <string name="display_all">Display All</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
