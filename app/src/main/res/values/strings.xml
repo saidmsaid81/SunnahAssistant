@@ -99,6 +99,7 @@
     <string name="name_of_the_new_category">Name of the New Category</string>
     <string name="cancel">Cancel</string>
     <string name="display_all">Display All</string>
+    <string name="alternate_display_of_data">Switch to Condensed View</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>

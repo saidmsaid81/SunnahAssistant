@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.databinding.AltReminderCardViewBinding;
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderCardViewBinding;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener;
@@ -15,13 +15,13 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.databinding.library.baseAdapters.BR;
 import androidx.recyclerview.widget.RecyclerView;
-import smartdevelop.ir.eram.showcaseviewlib.GuideView;
-import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
-import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
 
 
 public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.ViewHolder> {
+    private final int mLayout;
     public boolean mShowOnBoardingTutorial = false;
     private List<Reminder> mAllReminders = new ArrayList<>();
     private ReminderItemInteractionListener mListener;
@@ -29,8 +29,9 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
     private Context mContext;
     private OnDeleteReminderListener mDeleteReminderListener;
 
-    public ReminderListAdapter(Context context) {
+    public ReminderListAdapter(Context context, int layoutId) {
         mContext = context;
+        mLayout = layoutId;
     }
 
     @NonNull
@@ -39,8 +40,8 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         if (mLayoutInflater == null)
             mLayoutInflater = LayoutInflater.from(mContext);
 
-        ReminderCardViewBinding binding = DataBindingUtil.inflate(mLayoutInflater,
-                R.layout.reminder_card_view, viewGroup, false);
+        ViewDataBinding binding = DataBindingUtil.inflate(mLayoutInflater,
+                mLayout, viewGroup, false);
         return new ViewHolder(binding);
 
     }
@@ -51,16 +52,16 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         viewHolder.bind(currentReminder);
 
         if (i == 1 && mShowOnBoardingTutorial) {
-            new GuideView.Builder(mContext)
-                    .setTitle(mContext.getString(R.string.edit_reminder))
-                    .setContentText(mContext.getString(R.string.edit_reminder_description))
-                    .setGravity(Gravity.auto)
-                    .setDismissType(DismissType.anywhere)
-                    .setTargetView(viewHolder.binding.cardView)
-                    .setContentTextSize(16)
-                    .setTitleTextSize(20)
-                    .build()
-                    .show();
+//            new GuideView.Builder(mContext)
+//                    .setTitle(mContext.getString(R.string.edit_reminder))
+//                    .setContentText(mContext.getString(R.string.edit_reminder_description))
+//                    .setGravity(Gravity.auto)
+//                    .setDismissType(DismissType.anywhere)
+//                    .setTargetView(viewHolder.binding.cardView)
+//                    .setContentTextSize(16)
+//                    .setTitleTextSize(20)
+//                    .build()
+//                    .show();
             mShowOnBoardingTutorial = false;
         }
     }
@@ -98,19 +99,28 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
      * Inner Class
      */
     class ViewHolder extends RecyclerView.ViewHolder {
-        private ReminderCardViewBinding binding;
+        private ViewDataBinding binding;
 
-        ViewHolder(@NonNull ReminderCardViewBinding binding) {
+        ViewHolder(@NonNull ViewDataBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
 
         private void bind(Reminder reminder) {
-            binding.setReminder(reminder);
-            binding.toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->
-                    mListener.onToggleButtonClick(buttonView, isChecked, reminder));
-            binding.cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder));
+            binding.setVariable(BR.reminder, reminder);
+
+            if (binding instanceof ReminderCardViewBinding){
+                ((ReminderCardViewBinding) binding).toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->
+                        mListener.onToggleButtonClick(buttonView, isChecked, reminder));
+                ((ReminderCardViewBinding) binding).cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder));
+            }
+            else if (binding instanceof AltReminderCardViewBinding){
+                ((AltReminderCardViewBinding) binding).toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->
+                        mListener.onToggleButtonClick(buttonView, isChecked, reminder));
+                ((AltReminderCardViewBinding) binding).cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder));
+            }
+
 
         }
     }
