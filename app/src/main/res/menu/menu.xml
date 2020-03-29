@@ -9,6 +9,7 @@
         android:title="@string/settings"
         app:showAsAction="always" />
 
+
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings"
@@ -18,6 +19,12 @@
     <item
         android:id="@+id/dark_mode_switch"
         android:title="@string/switch_to_dark_mode"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/layout"
+        android:icon="@drawable/ic_filter_list"
+        android:title="@string/alternate_display_of_data"
         app:showAsAction="never" />
 
     <item

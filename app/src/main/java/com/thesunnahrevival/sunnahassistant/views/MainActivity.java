@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
             menu.findItem(R.id.dark_mode_switch).setVisible(false);
+        if (mViewModel.mSettings.getValue() != null && mViewModel.mSettings.getValue().getLayout() == R.layout.alt_reminder_card_view)
+            menu.findItem(R.id.layout).setTitle("Switch To Expanded View");
         return true;
 
     }
@@ -64,6 +66,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
                 }
                 return true;
+            case R.id.layout:
+                AppSettings settings = mViewModel.mSettings.getValue();
+                if (settings != null){
+                    if (settings.getLayout() == R.layout.reminder_card_view)
+                        settings.setLayout(R.layout.alt_reminder_card_view);
+                    else
+                        settings.setLayout(R.layout.reminder_card_view);
+                    mViewModel.updateSettings(settings);
+                    startActivity(new Intent(this, MainActivity.class));
+                }
+                break;
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

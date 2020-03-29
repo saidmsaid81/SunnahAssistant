@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+apply plugin: 'kotlin-kapt'
 
 
 android {
@@ -52,8 +53,8 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
     implementation "com.github.mreram:showcaseview:$showcaseview_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    kapt "androidx.room:room-compiler:$room_version"
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"

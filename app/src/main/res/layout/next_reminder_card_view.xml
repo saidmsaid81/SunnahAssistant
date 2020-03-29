@@ -26,6 +26,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="@dimen/margin_dimen"
         android:layout_marginEnd="@dimen/default_dimen"
+        android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}"
         android:onClick="@{(view)-> viewmodel.openBottomSheet(view, nextReminder)}"
         app:cardBackgroundColor="@color/nextReminderCardColor"
         app:cardCornerRadius="4dp"

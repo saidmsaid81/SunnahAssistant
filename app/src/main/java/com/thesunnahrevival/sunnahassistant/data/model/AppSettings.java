@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.model;
 
+import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class AppSettings {
     private boolean showOnBoardingTutorial = true;
     private boolean isAutomatic;
     private int savedSpinnerPosition = 0;
+    private int layout = R.layout.reminder_card_view;
     private ArrayList<String> categories = new ArrayList<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
 
     public AppSettings(String formattedAddress, float latitude, float longitude, int method, int asrCalculationMethod, boolean isAutomatic) {
@@ -155,5 +157,13 @@ public class AppSettings {
 
     public void setCategories(ArrayList<String> categories) {
         this.categories = categories;
+    }
+
+    public int getLayout() {
+        return layout;
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 }

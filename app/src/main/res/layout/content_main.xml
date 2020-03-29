@@ -48,12 +48,16 @@
             android:textStyle="bold"
             android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}" />
 
-        <include
+        <ViewStub
             android:id="@+id/next_card_view"
-            layout="@layout/next_reminder_card_view"
-            android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}"
             bind:nextReminder="@{nextReminder}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_dimen"
+            android:layout_marginEnd="@dimen/default_dimen"
+            android:layout="@layout/next_reminder_card_view"
             bind:viewmodel="@{viewmodel}" />
+
 
         <Spinner
             android:id="@+id/spinner"

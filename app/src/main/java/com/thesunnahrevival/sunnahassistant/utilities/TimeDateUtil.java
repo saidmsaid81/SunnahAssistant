@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -69,5 +70,17 @@ public class TimeDateUtil {
             return 172800;
         }
 
+    }
+
+    public static String formatDaysFromCustomScheduledDays(ArrayList<String>customScheduleDays){
+        StringBuilder days = new StringBuilder();
+        if (customScheduleDays == null)
+            return days.toString();
+        for (String day : customScheduleDays){
+            days.append(day);
+            if (customScheduleDays.indexOf(day) != customScheduleDays.size() - 1)
+                days.append(", ");
+        }
+        return days.toString();
     }
 }

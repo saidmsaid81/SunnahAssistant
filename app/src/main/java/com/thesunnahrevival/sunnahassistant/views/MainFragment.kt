@@ -56,17 +56,6 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
 
             getSettings()
             displayApiFetchMessages()
-
-            //Setup the RecyclerView Adapter
-            mReminderRecyclerAdapter = ReminderListAdapter(context)
-            mReminderRecyclerAdapter.setOnItemClickListener(mViewModel)
-            val reminderRecyclerView = mBinding.reminderList
-            reminderRecyclerView.adapter = mReminderRecyclerAdapter
-            mReminderRecyclerAdapter.setDeleteReminderListener(this)
-
-            //Set the swipe to delete action
-            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
-            itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
         }
     }
 
@@ -76,6 +65,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                     mAppSettings = settings
                     setTheme()
                     populateTheSpinner(settings.savedSpinnerPosition)
+                    setupTheRecyclerView()
 
                     if (settings.isFirstLaunch) {
                         startActivity(Intent(activity, WelcomeActivity::class.java))
@@ -92,6 +82,25 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 }
             })
         }
+
+    private fun setupTheRecyclerView() {
+        //Setup the RecyclerView Adapter
+        mReminderRecyclerAdapter = ReminderListAdapter(context, mAppSettings?.layout ?: R.layout.reminder_card_view)
+        mReminderRecyclerAdapter.setOnItemClickListener(mViewModel)
+        val reminderRecyclerView = mBinding.reminderList
+        reminderRecyclerView.adapter = mReminderRecyclerAdapter
+        mReminderRecyclerAdapter.setDeleteReminderListener(this)
+
+        //Set the swipe to delete action
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
+        itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
+
+        //Setup the layout of the next reminder card view
+        if (mAppSettings?.layout == R.layout.alt_reminder_card_view)
+            mBinding.nextCardView.viewStub?.layoutResource = R.layout.alt_next_reminder_card_view
+        mBinding.nextCardView.viewStub?.inflate()
+
+    }
 
     private fun showOnBoardingTutorial() {
         TapTargetSequence(activity)
@@ -181,6 +190,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 }
             }
 
+
             mViewModel.mCategoriesToDisplay.observe(this, Observer { categoryToDisplay ->
                 myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.GONE
 
@@ -229,7 +239,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
         mAppSettings?.let { mViewModel.updateSettings(mAppSettings) }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         mViewModel.getReminders(position)
                 .observe(this, Observer {
                     reminders: List<Reminder>? ->
