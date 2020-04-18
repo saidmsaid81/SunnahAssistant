@@ -6,34 +6,41 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
-import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
+import com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
 import static androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, PopupMenu.OnDismissListener {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
-    private RemindersViewModel mViewModel;
-    private String mFilteredReminderCategories = "";
+    public SettingsViewModel mViewModel;
+    public MutableLiveData<String> mFilteredReminderCategories = new MutableLiveData<>();
+    private AppSettings mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
-        mViewModel = ViewModelProviders.of(this).get(RemindersViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        mViewModel.getSettings().observe(this, settings -> mSettings = settings);
+        mFilteredReminderCategories.setValue("");
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, new MainFragment());
+        fragmentTransaction.commit();
     }
 
 
@@ -46,9 +53,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             menu.findItem(R.id.dark_mode_switch).setVisible(false);
-        if (mViewModel.mSettings.getValue() != null && mViewModel.mSettings.getValue().getLayout() == R.layout.alt_reminder_card_view)
+
+        }
+
+        if (mSettings != null && !mSettings.isExpandedLayout())
             menu.findItem(R.id.layout).setTitle("Switch To Expanded View");
         return true;
 
@@ -59,21 +69,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case R.id.dark_mode_switch:
                 if (AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_NO) {
-                    mViewModel.setIsLightMode(false);
+                    mViewModel.updateTheme(false);
                     AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
                 } else {
-                    mViewModel.setIsLightMode(true);
+                    mViewModel.updateTheme(true);
                     AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
                 }
                 return true;
             case R.id.layout:
-                AppSettings settings = mViewModel.mSettings.getValue();
-                if (settings != null){
-                    if (settings.getLayout() == R.layout.reminder_card_view)
-                        settings.setLayout(R.layout.alt_reminder_card_view);
-                    else
-                        settings.setLayout(R.layout.reminder_card_view);
-                    mViewModel.updateSettings(settings);
+                if (mSettings != null){
+                    mViewModel.updateLayout(!mSettings.isExpandedLayout());
                     startActivity(new Intent(this, MainActivity.class));
                 }
                 break;
@@ -116,51 +121,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PopupMenu popup = new PopupMenu(MainActivity.this, findViewById(R.id.filter));
         popup.setOnMenuItemClickListener(MainActivity.this);
         popup.inflate(R.menu.filter_category);
-        popup.setOnDismissListener(this);
-        AppSettings settings = mViewModel.mSettings.getValue();
 
         MenuItem displayAllMenuItem = popup.getMenu().add(
                 R.id.category_display_filter, Menu.NONE, Menu.NONE, getString(R.string.display_all))
                 .setCheckable(true);
 
-        if (mFilteredReminderCategories.matches(""))
+        if (mFilteredReminderCategories.getValue() != null && mFilteredReminderCategories.getValue().matches(""))
             displayAllMenuItem.setChecked(true);
-        if (settings != null){
-            for (String categoryTitle : settings.getCategories()){
-                if (!categoryTitle.matches("\\+ Create New Category")){
-                    MenuItem categoryItem = popup.getMenu().add(
-                            R.id.category_display_filter, Menu.NONE, Menu.NONE, categoryTitle
-                    );
+        if (mSettings != null){
+            for (String categoryTitle : mSettings.getCategories()){
+                MenuItem categoryItem = popup.getMenu().add(
+                        R.id.category_display_filter, Menu.NONE, Menu.NONE, categoryTitle
+                );
+                categoryItem.setCheckable(true);
 
-                    categoryItem.setCheckable(true);
-
-                    if (mFilteredReminderCategories.contains(categoryTitle))
-                        categoryItem.setChecked(true);
-                }
+                if (mFilteredReminderCategories.getValue().contains(categoryTitle))
+                    categoryItem.setChecked(true);
             }
         }
         popup.show();
     }
 
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.fab) {
-            mViewModel.openBottomSheet(v, null);
-        }
-    }
-
-    @Override
     public boolean onMenuItemClick(MenuItem item) {
         if (!item.getTitle().toString().matches(getString(R.string.display_all)))
-            mFilteredReminderCategories = item.getTitle().toString();
+            mFilteredReminderCategories.setValue(item.getTitle().toString());
         else
-            mFilteredReminderCategories = "";
+            mFilteredReminderCategories.setValue("");
         item.setChecked(!item.isChecked());
         return true;
     }
 
-    @Override
-    public void onDismiss(PopupMenu menu) {
-        mViewModel.mCategoriesToDisplay.setValue(mFilteredReminderCategories);
-    }
 }

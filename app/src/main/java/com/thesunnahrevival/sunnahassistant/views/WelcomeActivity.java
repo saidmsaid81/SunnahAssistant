@@ -1,11 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.views;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 
 import com.thesunnahrevival.sunnahassistant.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -16,8 +16,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     public void openSettings(View v) {
-        QuickSetupFragment quickSetupFragment = new QuickSetupFragment();
-        quickSetupFragment.show(getSupportFragmentManager(), "setup");
+
     }
 
 }

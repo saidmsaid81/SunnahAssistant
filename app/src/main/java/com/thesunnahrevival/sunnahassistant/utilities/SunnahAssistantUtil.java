@@ -116,7 +116,7 @@ public class SunnahAssistantUtil {
 
     public static ArrayList initialSettings() {
         AppSettings initialSettings = new AppSettings(
-                "", (float) 0, (float) 0, 3, 0, true);
+                "Location cannot be empty", (float) 0, (float) 0, 3, 0, false);
         ArrayList list = new ArrayList();
         list.add(initialSettings);
         return list;

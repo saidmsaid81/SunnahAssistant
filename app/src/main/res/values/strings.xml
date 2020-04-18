@@ -34,13 +34,13 @@
     <string name="enter_additional_details">Enter Additional Details</string>
     <string name="settings">Settings</string>
     <string name="change_hijri_date">Update Hijri Date</string>
-    <string name="days_label_hijri">day(s)</string>
+    <string name="days_label_hijri">%d day(s)</string>
     <string name="change_hijri_date_by">Change Hijri Date By:</string>
     <string name="hijri_date_settings">Hijri Date Settings</string>
     <string name="prayer_time_settings">Prayer Time Settings</string>
     <string name="enter_city_town_name">City/Town name + Country</string>
     <string name="city_name_example">*Example:London, United Kingdom</string>
-    <string name="location_hint">Type Location</string>
+    <string name="location_hint">Enter Location</string>
     <string name="update_location">Update Prayer Time Settings</string>
     <string name="error_updating_location">Error updating Location. Please check your internet connection</string>
     <string name="prayer_time_calculation_method">Calculation Method:</string>
@@ -49,7 +49,7 @@
     <string name="change_prayer_time_offset_by">Change %s time By:</string>
     <string name="prayer_offset_minute">minute(s)</string>
     <string name="value">Value</string>
-    <string name="add_prayer_time">Add Prayer Time Reminders:</string>
+    <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
     <string name="manual">Manually</string>
     <string name="automatic">Automatically</string>
     <string name="welcome">Welcome to Sunnah Assistant:</string>
@@ -64,9 +64,10 @@
     <string name="time_not_set">Time not Set</string>
     <string name="general_settings">General Settings</string>
     <string name="se_ect_app_theme">Select App Theme:</string>
-    <string name="next_reminder_notification">Display The Next Reminder Notification \n(Disabling this might lead to reminders not being triggered successfully)</string>
+    <string name="next_reminder_notification">Display The Next Reminder Notification</string>
+    <string name="next_reminder_disclaimer">Disabling this might lead to reminders not being triggered successfully</string>
     <string name="about_app">About App</string>
-    <string name="developed_by_tsr_apps">Developed By Said Muhammad</string>
+    <string name="developed_by_tsr_apps">Developed By Said Muhammad (@saidmsaid81)</string>
     <string name="version">Version: %s</string>
     <string name="icon">app icon</string>
     <string name="credits">Credits</string>
@@ -100,6 +101,23 @@
     <string name="cancel">Cancel</string>
     <string name="display_all">Display All</string>
     <string name="alternate_display_of_data">Switch to Condensed View</string>
+    <string name="display_hijri_date_on_the_home_page">Display Hijri Date on the home page</string>
+    <string name="updating">Updating…</string>
+    <string name="unavailable_location">Couldn\'t find this location. Please enter another location</string>
+    <string name="location_cannot_be_empty">Location cannot be empty</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="notification_tone">Notification Tone</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="importance">Behavior</string>
+    <string name="next_reminder_sticky_notification">Next Reminder Sticky Notification</string>
+    <string name="layout_and_theme_settings">Layout and Theme Settings</string>
+    <string name="layout">Layout</string>
+    <string name="theme">Theme</string>
+    <string name="theme_in_android_10_follows_system_settings">Follows System</string>
+    <string name="delete_category">Delete Category?</string>
+    <string name="confirm_delete_category">%s Category Deleted</string>
+    <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
+    <string name="customize_categories">Customize Categories</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
@@ -147,9 +165,52 @@
         <item>Diyanet İşleri Başkanlığı, Turkey</item>
         <item>Spiritual Administration of Muslims of Russia</item>
     </string-array>
+
     <string-array name="asr_juristic_method">
         <item>Standard(Hanbali, Shafi, Maliki)</item>
         <item>Hanafi</item>
+    </string-array>
+
+    <string-array name="settings_lists">
+        <item>Hijri Date Settings</item>
+        <item>Prayer Time Settings</item>
+        <item>Customize Reminder Categories</item>
+        <item>Notifications Settings</item>
+        <item>Layout and Theme Settings</item>
+        <item>Contact Us</item>
+
+    </string-array>
+
+    <string-array name="hijri_offsets">
+        <item>-3</item>
+        <item>-2</item>
+        <item>-1</item>
+        <item>0</item>
+        <item>+1</item>
+        <item>+2</item>
+        <item>+3</item>
+    </string-array>
+
+    <string-array name="layout_options">
+        <item>Expanded View</item>
+        <item>Condensed View</item>
+    </string-array>
+
+    <string-array name="theme_options">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="vibration_options">
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
+
+    <string-array name="priority_options">
+        <item>No Notification at all</item>
+        <item>No sound</item>
+        <item>Makes a sound (Recommended)</item>
+        <item>Makes a sound and heads-up notification</item>
     </string-array>
 
 </resources>

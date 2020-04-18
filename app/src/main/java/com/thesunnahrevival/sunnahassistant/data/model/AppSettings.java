@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data.model;
 
-import com.thesunnahrevival.sunnahassistant.R;
+import android.net.Uri;
+
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 
 import java.util.ArrayList;
@@ -26,8 +27,12 @@ public class AppSettings {
     private boolean showNextReminderNotification = true;
     private boolean showOnBoardingTutorial = true;
     private boolean isAutomatic;
+    private boolean isDisplayHijriDate = true;
     private int savedSpinnerPosition = 0;
-    private int layout = R.layout.reminder_card_view;
+    private boolean isExpandedLayout = true;
+    private Uri notificationToneUri;
+    private boolean isVibrate = false;
+    private int priority = 3;
     private ArrayList<String> categories = new ArrayList<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
 
     public AppSettings(String formattedAddress, float latitude, float longitude, int method, int asrCalculationMethod, boolean isAutomatic) {
@@ -143,6 +148,14 @@ public class AppSettings {
         this.showOnBoardingTutorial = showOnBoardingTutorial;
     }
 
+    public boolean isDisplayHijriDate() {
+        return isDisplayHijriDate;
+    }
+
+    public void setDisplayHijriDate(boolean displayHijriDate) {
+        isDisplayHijriDate = displayHijriDate;
+    }
+
     public int getSavedSpinnerPosition() {
         return savedSpinnerPosition;
     }
@@ -159,11 +172,35 @@ public class AppSettings {
         this.categories = categories;
     }
 
-    public int getLayout() {
-        return layout;
+    public boolean isExpandedLayout() {
+        return isExpandedLayout;
     }
 
-    public void setLayout(int layout) {
-        this.layout = layout;
+    public void setExpandedLayout(boolean expandedLayout) {
+        isExpandedLayout = expandedLayout;
+    }
+
+    public Uri getNotificationToneUri() {
+        return notificationToneUri;
+    }
+
+    public void setNotificationToneUri(Uri notificationToneUri) {
+        this.notificationToneUri = notificationToneUri;
+    }
+
+    public boolean isVibrate() {
+        return isVibrate;
+    }
+
+    public void setVibrate(boolean vibrate) {
+        isVibrate = vibrate;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

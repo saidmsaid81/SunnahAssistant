@@ -1,12 +1,14 @@
 package com.thesunnahrevival.sunnahassistant.utilities;
 
 import android.database.sqlite.SQLiteConstraintException;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GeneralSaveDataAsyncTask extends AsyncTask<List, Void, Void> {
@@ -16,7 +18,8 @@ public class GeneralSaveDataAsyncTask extends AsyncTask<List, Void, Void> {
     public static final int DELETE_LIST_OF_REMINDERS = 4;
     public static final int UPDATE_SETTINGS = 5;
     public static final int ADD_SETTINGS = 6;
-    public static final int SET_IS_LIGHT_MODE = 7;
+    public static final int UPDATE_DELETED_CATEGORIES = 8;
+    public static final int UPDATE_NOTIFICATION_SETTINGS = 9;
     public static boolean prayerDeleteTaskComplete = false;
     public static boolean hijriDeleteTaskComplete = false;
 
@@ -55,9 +58,15 @@ public class GeneralSaveDataAsyncTask extends AsyncTask<List, Void, Void> {
             case ADD_SETTINGS:
                 mReminderDAO.insertSettings((AppSettings) lists[0].get(0));
                 break;
-            case SET_IS_LIGHT_MODE:
-                mReminderDAO.setIsLightMode((Boolean) lists[0].get(0));
+            case UPDATE_DELETED_CATEGORIES:
+                for (String category : (ArrayList<String>) lists[0]){
+                    mReminderDAO.updateCategory(category, SunnahAssistantUtil.UNCATEGORIZED);
+                }
                 break;
+            case UPDATE_NOTIFICATION_SETTINGS:
+                mReminderDAO.updateNotificationSettings((Uri)lists[0].get(0), (boolean) lists[0].get(1),(int) lists[0].get(2));
+                break;
+
         }
         return null;
     }

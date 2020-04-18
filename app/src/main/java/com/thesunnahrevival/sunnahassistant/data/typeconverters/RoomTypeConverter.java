@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data.typeconverters;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,6 +29,18 @@ public class RoomTypeConverter {
 
         return new ArrayList<>(Arrays.asList(concatenatedStrings.split(",")));
 
+    }
+
+    @TypeConverter
+    public static String fromUri(Uri uri){
+        if (uri != null)
+            return uri.toString();
+        return "";
+    }
+
+    @TypeConverter
+    public static Uri toUri(String stringUri){
+        return Uri.parse(stringUri);
     }
 
 }

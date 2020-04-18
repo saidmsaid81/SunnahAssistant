@@ -1,6 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.views
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,6 +39,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     private var mAppSettings: AppSettings? = null
     private var mSpinner: Spinner? = null
     private var mIsFetchError = false
+    private lateinit var mainActivity : MainActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(
@@ -48,6 +48,8 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (activity is MainActivity)
+            mainActivity = activity as MainActivity
         val myActivity = activity
         if (myActivity != null) {
             mViewModel = ViewModelProviders.of(myActivity).get(RemindersViewModel::class.java)
@@ -60,45 +62,47 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     }
 
     private fun getSettings() {
-            mViewModel.mSettings.observe(this, Observer { settings: AppSettings? ->
-                if (settings != null) {
-                    mAppSettings = settings
-                    setTheme()
-                    populateTheSpinner(settings.savedSpinnerPosition)
-                    setupTheRecyclerView()
+        mainActivity.mViewModel?.settings?.observe(mainActivity, Observer { settings: AppSettings? ->
+            if (settings != null) {
+                mAppSettings = settings
+                setTheme()
+                populateTheSpinner(settings.savedSpinnerPosition)
+                setupTheRecyclerView()
 
-                    if (settings.isFirstLaunch) {
-                        startActivity(Intent(activity, WelcomeActivity::class.java))
-                        return@Observer
-                    }
-                    if (!mIsFetchError)
-                        mViewModel.fetchAllAladhanData()
-
-                    if (settings.isShowOnBoardingTutorial) {
-                        showOnBoardingTutorial()
-                        settings.isShowOnBoardingTutorial = false
-                        mViewModel.updateSettings(settings)
-                    }
+                if (settings.isFirstLaunch) {
+                    //NotificationUtil.createNotificationChannels(context)
+//                    startActivity(Intent(activity, WelcomeActivity::class.java))
+//                    return@Observer
                 }
-            })
+                if (!mIsFetchError)
+                    mainActivity.mViewModel.fetchAllAladhanData()
+
+                if (settings.isShowOnBoardingTutorial) {
+                    showOnBoardingTutorial()
+                    mainActivity.mViewModel.updateIsShowOnBoardingTutorial(false)
+                }
+            }
+        })
         }
 
     private fun setupTheRecyclerView() {
         //Setup the RecyclerView Adapter
-        mReminderRecyclerAdapter = ReminderListAdapter(context, mAppSettings?.layout ?: R.layout.reminder_card_view)
-        mReminderRecyclerAdapter.setOnItemClickListener(mViewModel)
-        val reminderRecyclerView = mBinding.reminderList
-        reminderRecyclerView.adapter = mReminderRecyclerAdapter
-        mReminderRecyclerAdapter.setDeleteReminderListener(this)
+        context?.let {
+            mReminderRecyclerAdapter = ReminderListAdapter(context, mAppSettings?.isExpandedLayout ?: true)
+            mReminderRecyclerAdapter.setOnItemClickListener(mViewModel)
+            val reminderRecyclerView = mBinding.reminderList
+            reminderRecyclerView.adapter = mReminderRecyclerAdapter
+            mReminderRecyclerAdapter.setDeleteReminderListener(this)
 
-        //Set the swipe to delete action
-        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
-        itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
+            //Set the swipe to delete action
+            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
+            itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
 
-        //Setup the layout of the next reminder card view
-        if (mAppSettings?.layout == R.layout.alt_reminder_card_view)
-            mBinding.nextCardView.viewStub?.layoutResource = R.layout.alt_next_reminder_card_view
-        mBinding.nextCardView.viewStub?.inflate()
+            //Setup the layout of the next reminder card view
+            if (mAppSettings?.isExpandedLayout == false)
+                mBinding.nextCardView.viewStub?.layoutResource = R.layout.alt_next_reminder_card_view
+            mBinding.nextCardView.viewStub?.inflate()
+        }
 
     }
 
@@ -140,12 +144,12 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 mIsFetchError = true
 
                 //Reset the month to 0 enabling refetching of the data when user selects refresh on the snackbar displayed
-                mAppSettings?.month = 0
-                mAppSettings?.let {  mViewModel.updateSettings(mAppSettings) }
+                mViewModel.month = 0
+                mainActivity.mViewModel?.updateSavedMonth()
 
                 snackbar.setText(s)
                 snackbar.setAction("Refresh") {
-                    mViewModel.fetchAllAladhanData()
+                    mainActivity.mViewModel?.fetchAllAladhanData()
                     mIsFetchError = false
                 }
                 snackbar.show()
@@ -191,7 +195,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             }
 
 
-            mViewModel.mCategoriesToDisplay.observe(this, Observer { categoryToDisplay ->
+            mainActivity.mFilteredReminderCategories?.observe(this, Observer { categoryToDisplay ->
                 myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.GONE
 
                 //Refresh the RecyclerView
@@ -213,7 +217,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             })
 
             //Used to maintain category filter when user changes frequency
-            mViewModel.mCategoriesToDisplay.value = mViewModel.mCategoriesToDisplay.value
+            mainActivity.mFilteredReminderCategories.value = mainActivity.mFilteredReminderCategories.value
         }
         else  {
             mBinding.nextReminder = null
@@ -221,22 +225,22 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     }
 
     private fun populateTheSpinner(savedSpinnerPosition: Int) {
-        val adapter = ArrayAdapter.createFromResource(context,
-                R.array.reminder_filter, android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        mSpinner = mBinding.spinner
-        mSpinner?.onItemSelectedListener = this
-        mSpinner?.adapter = adapter
-        mSpinner?.setSelection(savedSpinnerPosition)
-
+        context?.let {
+            val adapter = ArrayAdapter.createFromResource(it,
+                    R.array.reminder_filter, android.R.layout.simple_spinner_item)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            mSpinner = mBinding.spinner
+            mSpinner?.onItemSelectedListener = this
+            mSpinner?.adapter = adapter
+            mSpinner?.setSelection(savedSpinnerPosition)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         //Save the spinner position which will be used when the app is launched again
-        mAppSettings?.savedSpinnerPosition = mSpinner?.selectedItemPosition ?: 0
-        mAppSettings?.let { mViewModel.updateSettings(mAppSettings) }
+        mainActivity.mViewModel?.updateSavedSpinnerPosition(mSpinner?.selectedItemPosition ?: 0)
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

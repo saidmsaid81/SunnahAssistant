@@ -45,6 +45,7 @@ public class GeocodingRestApi {
             @Override
             public void onFailure(@NonNull Call<GeocodingData> call, @NonNull Throwable t) {
                 t.printStackTrace();
+                mData.setValue(null);
             }
         });
     }
