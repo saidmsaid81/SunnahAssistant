@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="settings"
+            type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/default_dimen"
+        android:paddingEnd="@dimen/default_dimen"
+        android:paddingBottom="@dimen/default_dimen"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hijri_date_settings"
+            android:textColor="@color/colorAccent"
+            />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/display_hijri_date_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/default_dimen"
+            android:text="@string/display_hijri_date_on_the_home_page"
+            android:button="@null"
+            android:checked="@{settings.displayHijriDate}" />
+
+        <LinearLayout
+            android:id="@+id/change_hijri_offset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{settings.displayHijriDate ? View.VISIBLE : View.GONE}"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/change_hijri_date_by" />
+
+            <TextView
+                android:id="@+id/offset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(@string/days_label_hijri, settings.hijriOffSet)}"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

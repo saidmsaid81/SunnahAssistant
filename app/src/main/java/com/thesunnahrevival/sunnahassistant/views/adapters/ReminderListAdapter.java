@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.databinding.AltReminderCardViewBinding;
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderCardViewBinding;
@@ -21,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.ViewHolder> {
-    private final int mLayout;
+    private final boolean mIsExpandedLayout;
     public boolean mShowOnBoardingTutorial = false;
     private List<Reminder> mAllReminders = new ArrayList<>();
     private ReminderItemInteractionListener mListener;
@@ -29,9 +30,9 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
     private Context mContext;
     private OnDeleteReminderListener mDeleteReminderListener;
 
-    public ReminderListAdapter(Context context, int layoutId) {
+    public ReminderListAdapter(Context context, boolean isExpandedLayout) {
         mContext = context;
-        mLayout = layoutId;
+        mIsExpandedLayout = isExpandedLayout;
     }
 
     @NonNull
@@ -40,8 +41,15 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         if (mLayoutInflater == null)
             mLayoutInflater = LayoutInflater.from(mContext);
 
+        int layoutId;
+
+        if (mIsExpandedLayout)
+            layoutId = R.layout.reminder_card_view;
+        else
+            layoutId = R.layout.alt_reminder_card_view;
+
         ViewDataBinding binding = DataBindingUtil.inflate(mLayoutInflater,
-                mLayout, viewGroup, false);
+                layoutId, viewGroup, false);
         return new ViewHolder(binding);
 
     }

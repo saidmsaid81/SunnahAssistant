@@ -94,23 +94,25 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     }
 
     private void setCategorySpinnerData() {
-        AppSettings settings = mViewModel.mSettings.getValue();
-        if (getContext() != null && settings != null && settings.getCategories() != null) {
-            mCategoryAdapter = new ArrayAdapter<>(
-                    getContext(), android.R.layout.simple_spinner_item, settings.getCategories()
-            );
-            mCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            if (mCategoryAdapter.getPosition("+ Create New Category") == -1)
-                mCategoryAdapter.add("+ Create New Category");
-            mBinding.categorySpinner.setAdapter(mCategoryAdapter);
+        if (getActivity() != null && getActivity() instanceof MainActivity) {
+            AppSettings settings = ((MainActivity) getActivity()).mViewModel.getSettings().getValue();
+            if (getContext() != null && settings != null && settings.getCategories() != null) {
+                mCategoryAdapter = new ArrayAdapter<>(
+                        getContext(), android.R.layout.simple_spinner_item, settings.getCategories()
+                );
+                mCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                if (mCategoryAdapter.getPosition("+ Create New Category") == -1)
+                    mCategoryAdapter.add("+ Create New Category");
+                mBinding.categorySpinner.setAdapter(mCategoryAdapter);
 
-            String selectedCategory = mReminder.getCategory();
-            mBinding.categorySpinner.setSelection(mCategoryAdapter.getPosition(selectedCategory));
-            mBinding.categorySpinner.setOnItemSelectedListener(this);
+                String selectedCategory = mReminder.getCategory();
+                mBinding.categorySpinner.setSelection(mCategoryAdapter.getPosition(selectedCategory));
+                mBinding.categorySpinner.setOnItemSelectedListener(this);
 
-            if (selectedCategory.matches(SunnahAssistantUtil.PRAYER)) {
-                mBinding.categorySpinner.setEnabled(false);
-                mBinding.frequencySpinner.setEnabled(false);
+                if (selectedCategory.matches(SunnahAssistantUtil.PRAYER)) {
+                    mBinding.categorySpinner.setEnabled(false);
+                    mBinding.frequencySpinner.setEnabled(false);
+                }
             }
         }
     }
@@ -218,9 +220,12 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
        }
        else if (parent.getId() == R.id.category_spinner) {
            if (((String) parent.getSelectedItem()).matches("\\+ Create New Category") ){
-               AddCategoryDialogFragment dialogFragment = new AddCategoryDialogFragment(mViewModel);
+               AddCategoryDialogFragment dialogFragment = new AddCategoryDialogFragment();
                dialogFragment.show(getFragmentManager(), "dialog");
-               Observer<String> observer = category -> parent.setSelection(mCategoryAdapter.getPosition(category));
+               Observer<String> observer = category -> {
+                   mCategoryAdapter.notifyDataSetChanged();
+                   //parent.setSelection(position);
+               };
                AddCategoryDialogFragment.category.observe(this, observer);
            }
        }

@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data.local;
 
+import android.net.Uri;
+
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
@@ -75,12 +77,20 @@ public interface ReminderDAO {
     @Query("SELECT * FROM app_settings")
     LiveData<AppSettings> getAppSettings();
 
+    @Query("SELECT * FROM app_settings")
+    AppSettings getAppSettingsValue();
+
     @Update
     void updateAppSettings(AppSettings appSettings);
 
-    @Query("UPDATE app_settings SET isLightMode =:isLightMode")
-    void setIsLightMode(boolean isLightMode);
 
     @Query("SELECT showNextReminderNotification FROM app_settings")
     boolean getIsForegroundEnabled();
+
+    @Query("UPDATE reminders_table SET category =:newCategory WHERE category == :deletedCategory")
+    void updateCategory(String deletedCategory, String newCategory);
+
+    @Query("UPDATE app_settings SET notificationToneUri =:notificationToneUri, isVibrate =:isVibrate, priority =:priority" )
+    void updateNotificationSettings(Uri notificationToneUri, boolean isVibrate, int priority);
+
 }

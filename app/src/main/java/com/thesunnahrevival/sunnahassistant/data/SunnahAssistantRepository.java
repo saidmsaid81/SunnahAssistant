@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data;
 
 import android.app.Application;
+import android.net.Uri;
 
 import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase;
@@ -22,7 +23,8 @@ import androidx.lifecycle.LiveData;
 
 import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.DELETE_HIJRI_DATA;
 import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.DELETE_LIST_OF_REMINDERS;
-import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.SET_IS_LIGHT_MODE;
+import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.UPDATE_DELETED_CATEGORIES;
+import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.UPDATE_NOTIFICATION_SETTINGS;
 import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.UPDATE_SETTINGS;
 import static com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask.ADD_REMINDER;
 import static com.thesunnahrevival.sunnahassistant.utilities.ReminderAsyncTask.DELETE_REMINDER;
@@ -116,10 +118,16 @@ public class SunnahAssistantRepository {
         new GeneralSaveDataAsyncTask(UPDATE_SETTINGS, mReminderDAO).execute(list);
     }
 
-    public void setIsLightMode(boolean isLightMode) {
+    public void updateDeletedCategories(ArrayList<String> deletedCategories){
+        new GeneralSaveDataAsyncTask(UPDATE_DELETED_CATEGORIES, mReminderDAO).execute(deletedCategories);
+    }
+
+    public void updateNotificationSettings(Uri notificationToneUri, boolean isVibrate, int priority){
         ArrayList list = new ArrayList();
-        list.add(isLightMode);
-        new GeneralSaveDataAsyncTask(SET_IS_LIGHT_MODE, mReminderDAO).execute(list);
+        list.add(notificationToneUri);
+        list.add(isVibrate);
+        list.add(priority);
+        new GeneralSaveDataAsyncTask(UPDATE_NOTIFICATION_SETTINGS, mReminderDAO).execute(list);
     }
 
     public void fetchHijriData(String monthNumber, String year, int adjustment) {
