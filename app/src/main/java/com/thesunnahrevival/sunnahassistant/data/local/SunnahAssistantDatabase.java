@@ -30,7 +30,7 @@ public abstract class SunnahAssistantDatabase extends RoomDatabase {
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                     super.onCreate(db);
                     new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_LIST_OF_REMINDERS,
-                            sDatabase.reminderDao()).execute(SunnahAssistantUtil.initialReminders());
+                            sDatabase.reminderDao()).execute(SunnahAssistantUtil.demoReminder());
                     new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_SETTINGS, sDatabase.reminderDao())
                             .execute(SunnahAssistantUtil.initialSettings());
                 }

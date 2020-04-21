@@ -51,7 +51,6 @@ dependencies {
     implementation "com.google.android.material:material:$material_version"
     implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
     implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
-    implementation "com.github.mreram:showcaseview:$showcaseview_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     kapt "androidx.room:room-compiler:$room_version"

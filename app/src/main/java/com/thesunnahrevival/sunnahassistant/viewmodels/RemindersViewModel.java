@@ -41,6 +41,10 @@ public class RemindersViewModel extends AndroidViewModel implements ReminderItem
         mHijriDate = mRepository.getHijriDate();
     }
 
+    public void addInitialReminders(){
+        mRepository.addInitialReminders();
+    }
+
     public LiveData<Spanned> getHijriDateString() {
         return Transformations.map(mHijriDate, hijriDateString -> {
                     try {

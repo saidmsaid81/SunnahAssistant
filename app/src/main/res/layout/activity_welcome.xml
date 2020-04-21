@@ -32,7 +32,7 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/default_dimen"
         android:background="@color/fabColor"
-        android:onClick="openSettings"
+        android:onClick="onClick"
         android:padding="@dimen/default_dimen"
         android:text="@string/quick_setup"
         android:textColor="@android:color/white" />

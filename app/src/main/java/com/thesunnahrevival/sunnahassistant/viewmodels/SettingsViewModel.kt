@@ -224,6 +224,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun updateIsFirstLaunch(isFirstLaunch :Boolean){
+        settingsValue?.let {
+            it.isFirstLaunch = isFirstLaunch
+            updateSettings()
+        }
+    }
+
     private fun updateSettings() {
         isSettingsUpdated = true
         mRepository.updateAppSettings(settingsValue)

@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.ViewHolder> {
     private final boolean mIsExpandedLayout;
-    public boolean mShowOnBoardingTutorial = false;
     private List<Reminder> mAllReminders = new ArrayList<>();
     private ReminderItemInteractionListener mListener;
     private LayoutInflater mLayoutInflater;
@@ -58,20 +57,6 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Reminder currentReminder = mAllReminders.get(i);
         viewHolder.bind(currentReminder);
-
-        if (i == 1 && mShowOnBoardingTutorial) {
-//            new GuideView.Builder(mContext)
-//                    .setTitle(mContext.getString(R.string.edit_reminder))
-//                    .setContentText(mContext.getString(R.string.edit_reminder_description))
-//                    .setGravity(Gravity.auto)
-//                    .setDismissType(DismissType.anywhere)
-//                    .setTargetView(viewHolder.binding.cardView)
-//                    .setContentTextSize(16)
-//                    .setTitleTextSize(20)
-//                    .build()
-//                    .show();
-            mShowOnBoardingTutorial = false;
-        }
     }
 
     @Override
