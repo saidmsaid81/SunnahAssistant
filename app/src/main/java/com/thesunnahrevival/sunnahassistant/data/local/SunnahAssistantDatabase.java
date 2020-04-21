@@ -14,9 +14,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Reminder.class, HijriDateData.Hijri.class, AppSettings.class}, version = 1)
+@Database(entities = {Reminder.class, HijriDateData.Hijri.class, AppSettings.class}, version = 2)
 @TypeConverters(RoomTypeConverter.class)
 public abstract class SunnahAssistantDatabase extends RoomDatabase {
 
@@ -36,9 +37,24 @@ public abstract class SunnahAssistantDatabase extends RoomDatabase {
                 }
             };
 
+            final Migration MIGRATION_1_2 = new Migration(1, 2) {
+                @Override
+                public void migrate(SupportSQLiteDatabase database) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN isDisplayHijriDate INTEGER DEFAULT 0 NOT NULL");
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN savedSpinnerPosition INTEGER DEFAULT 0 NOT NULL");
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN isExpandedLayout INTEGER DEFAULT 1 NOT NULL");
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN notificationToneUri TEXT DEFAULT ''");
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN isVibrate INTEGER DEFAULT 0 NOT NULL");
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN priority INTEGER DEFAULT 3 NOT NULL");
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN categories TEXT DEFAULT 'Uncategorized,Sunnah,Other,Prayer'");
+                }
+            };
+
+
             sDatabase = Room.databaseBuilder(context.getApplicationContext(),
                     SunnahAssistantDatabase.class, "SunnahAssistant.db")
                     .addCallback(roomCallback)
+                    .addMigrations(MIGRATION_1_2)
                     .build();
         }
 
