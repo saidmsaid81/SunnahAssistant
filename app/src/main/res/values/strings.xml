@@ -57,7 +57,7 @@
     <string name="would_you_like_to_receive_prayer_time_alerts">Would you like to receive prayer time Alerts?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="quick_setup">Quick Setup</string>
+    <string name="quick_setup">Get Started</string>
     <string name="delete_reminder">Reminder Deleted</string>
     <string name="undo_delete">Undo</string>
     <string name="cannot_delete_prayer_time">Prayer Reminders can only be deleted from Settings</string>
@@ -118,6 +118,11 @@
     <string name="confirm_delete_category">%s Category Deleted</string>
     <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
     <string name="customize_categories">Customize Categories</string>
+    <string name="filter_displayed_reminders">Filter Displayed Reminders</string>
+    <string name="filter_displayed_reminders_description">Such as display all categories or only one category</string>
+    <string name="add_sunnah_reminders_alerts_such_as_fasting_on_mondays_and_thursdays">Tap to add Sunnah Reminders alerts</string>
+    <string name="sunnah_reminder_alerts_description">*such as Fasting on Mondays and Thursdays</string>
+    <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>

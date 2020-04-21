@@ -1,15 +1,13 @@
 package com.thesunnahrevival.sunnahassistant.views
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -19,18 +17,20 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding
+import com.thesunnahrevival.sunnahassistant.utilities.NotificationUtil
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener
 
-class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListener {
+class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListener, View.OnClickListener {
 
     private lateinit var mBinding: ContentMainBinding
     private lateinit var mViewModel: RemindersViewModel
@@ -40,6 +40,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     private var mSpinner: Spinner? = null
     private var mIsFetchError = false
     private lateinit var mainActivity : MainActivity
+    private var mIsFirstLaunch = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(
@@ -70,14 +71,16 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 setupTheRecyclerView()
 
                 if (settings.isFirstLaunch) {
-                    //NotificationUtil.createNotificationChannels(context)
-//                    startActivity(Intent(activity, WelcomeActivity::class.java))
-//                    return@Observer
+                    NotificationUtil.createNotificationChannels(context)
+                    mIsFirstLaunch = true
+                    mainActivity.mViewModel.updateIsFirstLaunch(false)
+                    startActivity(Intent(activity, WelcomeActivity::class.java))
+                    return@Observer
                 }
-                if (!mIsFetchError)
+                if (!mIsFetchError && !mIsFirstLaunch )
                     mainActivity.mViewModel.fetchAllAladhanData()
 
-                if (settings.isShowOnBoardingTutorial) {
+                if (settings.isShowOnBoardingTutorial && !mIsFirstLaunch) {
                     showOnBoardingTutorial()
                     mainActivity.mViewModel.updateIsShowOnBoardingTutorial(false)
                 }
@@ -112,10 +115,12 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                         TapTarget.forView(activity?.findViewById(R.id.fab), getString(R.string.add_new_reminder), getString(R.string.add_new_reminder_description))
                                 .outerCircleColor(android.R.color.holo_blue_dark)
                                 .cancelable(false)
+                                .textColor(R.color.bottomSheetColor)
                                 .transparentTarget(true),
                         TapTarget.forView(mSpinner, getString(R.string.spinner_tutorial), getString(R.string.spinner_tutorial_description))
                                 .outerCircleColor(android.R.color.holo_blue_dark)
                                 .cancelable(false)
+                                .textColor(R.color.bottomSheetColor)
                                 .transparentTarget(true),
                         TapTarget.forToolbarOverflow(activity?.findViewById<View>(R.id.toolbar) as Toolbar,
                                 getString(R.string.change_theme),
@@ -123,16 +128,45 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                                 .outerCircleColor(android.R.color.holo_blue_dark)
                                 .transparentTarget(true)
                                 .cancelable(false)
-                                .tintTarget(true))
-                .listener(object : TapTargetSequence.Listener {
-                    override fun onSequenceFinish() {
-                        mReminderRecyclerAdapter.mShowOnBoardingTutorial = true
-                        mReminderRecyclerAdapter.notifyDataSetChanged()
-                    }
-                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
-                })
+                                .textColor(R.color.bottomSheetColor)
+                                .tintTarget(true),
+                            TapTarget.forView(
+                                    mBinding.reminderList,
+                                    getString(R.string.edit_reminder),
+                                    getString(R.string.edit_reminder_description))
+                                    .outerCircleColor(android.R.color.holo_blue_dark)
+                                    .cancelable(false)
+                                    .tintTarget(true)
+                                    .textColor(R.color.bottomSheetColor)
+                                    .transparentTarget(true))
+                                    .listener(object : TapTargetSequence.Listener {
+                                        override fun onSequenceFinish() {
+                                            showFilterReminderOnBoarding()
+                                        }
+                                        override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+                                        override fun onSequenceCanceled(lastTarget: TapTarget) {}
+                                    })
                 .start()
+
+    }
+
+    private fun showFilterReminderOnBoarding() {
+        TapTargetView.showFor(
+                activity,
+                TapTarget.forToolbarMenuItem(
+                        activity?.findViewById<View>(R.id.toolbar) as Toolbar,
+                        R.id.filter,
+                        getString(R.string.filter_displayed_reminders),
+                        getString(R.string.filter_displayed_reminders_description))
+                        .cancelable(false)
+                        .outerCircleColor(android.R.color.holo_blue_dark)
+                        .textColor(R.color.bottomSheetColor)
+                        .tintTarget(true), object : TapTargetView.Listener() {
+                            override fun onTargetClick(view: TapTargetView) {
+                                mReminderRecyclerAdapter.deleteReminder(0)
+                                view.dismiss(true)
+                            }
+        })
     }
 
     private fun displayApiFetchMessages() {
@@ -173,8 +207,9 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
      *
      * @param tag spinner Item
      */
-    private fun changeDisplayedData(data: ArrayList<Reminder>?, tag: String) { //Checks to see if the data that changed affects what is being displayed by spinner selection
-//Returns early if it does not affect displayed data
+    private fun changeDisplayedData(data: ArrayList<Reminder>?, tag: String) {
+        //Checks to see if the data that changed affects what is being displayed by spinner selection
+        //Returns early if it does not affect displayed data
         if (!(mSpinner?.selectedItem as String).matches(tag.toRegex()))
             return
 
@@ -221,7 +256,13 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
         }
         else  {
             mBinding.nextReminder = null
+            mReminderRecyclerAdapter.setData(data)
+            myActivity?.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
+
         }
+        myActivity?.findViewById<View>(R.id.all_done_view)?.findViewById<TextView>(R.id.sunnah_reminders_link)?.setOnClickListener(this)
+        myActivity?.findViewById<View>(R.id.all_done_view)?.findViewById<TextView>(R.id.add_prayer_time_alerts)?.setOnClickListener(this)
+
     }
 
     private fun populateTheSpinner(savedSpinnerPosition: Int) {
@@ -270,4 +311,16 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
         snackbar.setAction(getString(R.string.undo_delete)) { mViewModel.insert(mDeletedReminder) }
         snackbar.show()
     }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.sunnah_reminders_link -> mViewModel.addInitialReminders()
+            R.id.add_prayer_time_alerts -> {
+                val intent = Intent(context, SettingsActivity::class.java)
+                intent.putExtra("fragmentToShow", "prayer")
+                startActivity(intent)
+            }
+        }
+    }
+
 }

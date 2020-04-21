@@ -104,6 +104,11 @@ public class SunnahAssistantRepository {
         }
     }
 
+    public void addInitialReminders() {
+        new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_LIST_OF_REMINDERS,
+               mReminderDAO).execute(SunnahAssistantUtil.sunnahReminders());
+    }
+
     public LiveData<Hijri> getHijriDate() {
         return mReminderDAO.getHijriDate(mDay);
     }

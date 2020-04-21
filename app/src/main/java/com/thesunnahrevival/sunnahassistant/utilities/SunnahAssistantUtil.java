@@ -78,39 +78,54 @@ public class SunnahAssistantUtil {
         }
     }
 
-    public static ArrayList<Reminder> initialReminders() {
+
+    public static ArrayList<Reminder> sunnahReminders() {
         ArrayList<Reminder> listOfReminders = new ArrayList<>();
 
         listOfReminders.add(
-                (new Reminder("Praying Dhuha", "<a href=\"https://thesunnahrevival.wordpress.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips\">Read more</a> on Dhuha Prayer and the best time to pray", null,
-                        SUNNAH, DAILY, 0, 0, false,  null))
+                createReminder(-101, "Praying Dhuha", "<a href=\"https://thesunnahrevival.wordpress.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips\">Read more</a> on Dhuha Prayer and the best time to pray", SUNNAH, DAILY, 0, null)
         );
         listOfReminders.add(
-                (new Reminder("Morning Adhkar", "", null, SUNNAH, DAILY, 0, 0, false, null))
+                (createReminder(-102, "Morning Adhkar", "", SUNNAH, DAILY, 0, null))
         );
         listOfReminders.add(
-                (new Reminder("Evening Adhkar", "", null, SUNNAH, DAILY, 0, 0,false, null))
+                (createReminder(-103, "Evening Adhkar", "", SUNNAH, DAILY, 0, null))
         );
         listOfReminders.add(
-                (new Reminder("Tahajjud", "<a href=\"https://thesunnahrevival.wordpress.com/2014/04/09/tahajjud/\">Read more</a> on Tahjjud Prayer and the best time to pray", null, SUNNAH, DAILY, 0, 0, false,  null))
+                (createReminder(-104,"Tahajjud", "<a href=\"https://thesunnahrevival.wordpress.com/2014/04/09/tahajjud/\">Read more</a> on Tahjjud Prayer and the best time to pray", SUNNAH, DAILY, 0, null))
         );
 
         listOfReminders.add(
-                (new Reminder("Reading the Quran", "", null, SUNNAH, DAILY, 0, 0, false,  null))
+                (createReminder(-105, "Reading the Quran", "", SUNNAH, DAILY, 0, null))
         );
 
         ArrayList<String> listOfDays = new ArrayList<>();
         listOfDays.add("Fri");
         listOfReminders.add(
-                new Reminder("Reading Suratul Kahf", "<a href=\"https://thesunnahrevival.wordpress.com/2020/03/06/2769/\">Read more</a> on the importance of reading Suratul Kahf every Friday", null, SUNNAH, WEEKLY, -1, 0, false, listOfDays)
+                createReminder(-106, "Reading Suratul Kahf", "<a href=\"https://thesunnahrevival.wordpress.com/2020/03/06/2769/\">Read more</a> on the importance of reading Suratul Kahf every Friday", SUNNAH, WEEKLY, -1, listOfDays)
         );
         listOfDays = new ArrayList<>();
         listOfDays.add("Sun");
         listOfDays.add("Wedy");
         listOfReminders.add(
-                new Reminder("Fasting On Monday And Thursday", "<a href=\"https://thesunnahrevival.wordpress.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday/\">Read more</a> on the importance of reading fasting on Mondays and Thursday", null, SUNNAH, WEEKLY, -1,  0, false, listOfDays)
+                createReminder(-107, "Fasting On Monday And Thursday", "<a href=\"https://thesunnahrevival.wordpress.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday/\">Read more</a> on the importance of reading fasting on Mondays and Thursday", SUNNAH, WEEKLY, -1, listOfDays)
         );
 
+        return listOfReminders;
+    }
+
+    private static Reminder createReminder(int id,String name, String info, String category, String frequency, int offset, ArrayList<String> customScheduleList) {
+        Reminder reminder = new Reminder(name, info, null,
+                category, frequency, offset, 0, false, customScheduleList);
+        reminder.setId(id);
+        return reminder;
+    }
+
+    public static ArrayList<Reminder> demoReminder(){
+        ArrayList<Reminder> listOfReminders = new ArrayList<>();
+        listOfReminders.add(
+                createReminder(-100, "Demo Reminder", "Demo", OTHER, DAILY, 0, null)
+        );
         return listOfReminders;
     }
 
