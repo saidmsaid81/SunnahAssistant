@@ -11,13 +11,14 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         val transaction = supportFragmentManager.beginTransaction()
-        val fragment = if (intent.getStringExtra("fragmentToShow").matches("prayer".toRegex()))
+        val fragmentToShow = intent.getStringExtra("fragmentToShow") ?: "default"
+        val fragment = if (fragmentToShow.matches("prayer".toRegex()))
             SettingsFragment.newInstance(R.layout.prayer_time_settings)
         else
             SettingsFragment.newInstance(R.layout.settings_lists)
         transaction.replace(R.id.settings_container, fragment )
         transaction.commit()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
