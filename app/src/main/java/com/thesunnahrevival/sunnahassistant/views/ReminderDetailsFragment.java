@@ -39,6 +39,8 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     private RemindersViewModel mViewModel;
     private SelectDaysSpinnerAdapter mSelectedDaysAdapter;
     private int mDay = 0;
+    private int mMonth = 12;
+    private int mYear = 0;
     private ArrayAdapter<String> mCategoryAdapter;
 
     @Override
@@ -72,6 +74,8 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             mBinding.tip.setText(Html.fromHtml(mReminder.getReminderInfo()));
             mBinding.tip.setMovementMethod(LinkMovementMethod.getInstance());
             mDay = mReminder.getDay();
+            mMonth = mReminder.getMonth();
+            mYear = mReminder.getYear();
         }
         mBinding.timePicker.setOnClickListener(this);
         mBinding.saveButton.setOnClickListener(this);
@@ -125,11 +129,14 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
                 DialogFragment timePickerFragment = new TimePickerFragment();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 timePickerFragment.show(fm, "timePicker");
-            } else if (v.getId() == R.id.date_picker) {
-                DialogFragment datePickerFragment = new DatePickerFragment();
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                datePickerFragment.show(fm, "datePicker");
-                DatePickerFragment.mDay = mDay;
+            }
+            else if (v.getId() == R.id.date_picker){
+                    DatePickerFragment.mDay = mDay;
+                    DatePickerFragment.mMonth = mMonth;
+                    DatePickerFragment.mYear = mYear;
+                    DialogFragment datePickerFragment = new DatePickerFragment();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    datePickerFragment.show(fm, "datePicker");
             }
 
         }
@@ -165,6 +172,11 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         } else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
             mDay = DatePickerFragment.mDay;
         }
+        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.ONE_TIME)){
+            mDay = DatePickerFragment.mDay;
+            mMonth = DatePickerFragment.mMonth;
+            mYear = DatePickerFragment.mYear;
+        }
 
         String category = (String) mBinding.categorySpinner.getSelectedItem();
         if (category.matches("\\+ Create New Category")){
@@ -178,9 +190,8 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
                         null,
                 category,
                 (String) mBinding.frequencySpinner.getSelectedItem(),
-                mDay,
-                0,
-                false,
+                false, mDay,
+                mMonth, mYear, 0,
                 checkedDays
         );
         newReminder.setId(mReminder.getId());
@@ -206,9 +217,10 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
        if (parent.getId() == R.id.frequency_spinner){
-           if (position == 1) {
+           if (position == 2) {
                showSelectDaysSpinner();
-           } else if (position == 2) {
+           }
+           else if (position == 3 || position == 0) {
                mBinding.selectDaysSpinner.setVisibility(View.GONE);
                mBinding.datePicker.setVisibility(View.VISIBLE);
                mBinding.datePicker.setOnClickListener(this);
@@ -222,10 +234,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
            if (((String) parent.getSelectedItem()).matches("\\+ Create New Category") ){
                AddCategoryDialogFragment dialogFragment = new AddCategoryDialogFragment();
                dialogFragment.show(getFragmentManager(), "dialog");
-               Observer<String> observer = category -> {
-                   mCategoryAdapter.notifyDataSetChanged();
-                   //parent.setSelection(position);
-               };
+               Observer<String> observer = category -> mCategoryAdapter.notifyDataSetChanged();
                AddCategoryDialogFragment.category.observe(this, observer);
            }
        }

@@ -87,29 +87,10 @@
             android:text="@{reminder.reminderName}" />
 
         <TextView
-            android:id="@+id/reminder_category_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_edit_text"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="16dp"
-            android:text="@string/reminder_category"
-            android:textSize="16sp" />
-
-        <Spinner
-            android:id="@+id/category_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_edit_text"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="16dp" />
-
-        <TextView
             android:id="@+id/reminder_frequency_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_category_label"
+            android:layout_below="@id/reminder_edit_text"
             android:layout_alignParentStart="true"
             android:layout_marginTop="16dp"
             android:text="@string/frequency"
@@ -119,16 +100,37 @@
             android:id="@+id/frequency_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/category_spinner"
+            android:layout_below="@id/reminder_edit_text"
             android:layout_alignParentStart="true"
             android:layout_marginStart="100dp"
             android:layout_marginTop="16dp" />
 
         <TextView
-            android:id="@+id/select_day_error"
+            android:id="@+id/reminder_category_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reminder_frequency_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="16dp"
+            android:text="@string/reminder_category"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/category_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/frequency_spinner"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="16dp" />
+
+
+
+        <TextView
+            android:id="@+id/select_day_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_spinner"
             android:layout_centerInParent="true"
             android:text="@string/select_at_least_one_day_or_change_to_daily"
             android:textColor="@android:color/holo_red_light"

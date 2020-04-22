@@ -141,6 +141,7 @@
         <item>Other</item>
     </string-array>
     <string-array name="frequency">
+        <item>One Time</item>
         <item>Daily</item>
         <item>Weekly</item>
         <item>Monthly</item>

@@ -120,10 +120,10 @@ public class AladhanRestApi {
                             null,
                             SunnahAssistantUtil.SUNNAH,
                             SunnahAssistantUtil.MONTHLY,
-                            hijri.getId(),
-                            0 ,
-                            false,
+                            false, hijri.getId(),
+                            null, null, 0 ,
                             new ArrayList<>());
+                    reminder.setId(-calendarDay);
 
                     importantMonthlyReminders.add(reminder);
                 }
@@ -158,9 +158,8 @@ public class AladhanRestApi {
                             TimeDateUtil.getTimestampInSeconds(times[j]),
                             SunnahAssistantUtil.PRAYER,
                             SunnahAssistantUtil.DAILY,
-                            day,
-                            0,
-                            false,
+                            false, day,
+                            null, null, 0,
                             null);
                     listOfPrayerTimes.add(reminder);
                 }
