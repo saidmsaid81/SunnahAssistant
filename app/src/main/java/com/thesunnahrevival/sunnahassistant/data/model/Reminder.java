@@ -24,6 +24,8 @@ public class Reminder implements Parcelable {
 
     //Only For Prayer Times
     private int day;
+    private int month;
+    private int year;
     private int offset = 0;
     //For Weekly and Monthly Reminders Only
     private ArrayList<String> customScheduleDays;
@@ -47,14 +49,24 @@ public class Reminder implements Parcelable {
      * @param timeInSeconds Hours passed since last midnight in seconds for example (21:00) will be 21 * 3600 which is equal to 75600
      * @param category Either of the three categories (Sunnah, Prayer or Other)
      * @param frequency Either of the three frequencies (Daily, Weekly or Monthly)
-     * @param day  Day in the month. If its daily pass 0, if weekly pass -1.
-     * @param offset Offset for the reminder to trigger either +/- number.
      * @param isEnabled True if reminder is enabled, false if reminder is disabled
+     * @param day  Day in the month. If its daily pass 0, if weekly pass -1.
+     * @param month Only for one time reminders(Value should be from 0-11) . Pass null if daily, weekly or monthly.
+     * @param year Only for one time reminders(Value should be the year that reminder should trigger). Pass null if daily, weekly or monthly.
+     * @param offset Offset for the reminder to trigger either +/- number.
      * @param customScheduleDays Used for weekly reminders. Should Contain the name of the days represented as three characters Such as Sunday will be Sun. Pass null if its not weekly.
      */
-    public Reminder(String reminderName, String reminderInfo,@Nullable Long timeInSeconds, String category, String frequency, int day, int offset, boolean isEnabled,@Nullable ArrayList<String> customScheduleDays) {
+    public Reminder(String reminderName, String reminderInfo, @Nullable Long timeInSeconds, String category, String frequency, boolean isEnabled, int day, @Nullable Integer month, @Nullable Integer year, int offset, @Nullable ArrayList<String> customScheduleDays) {
         this.reminderName = reminderName;
         this.reminderInfo = reminderInfo;
+        if (month != null)
+            this.month = month;
+        else
+            this.month = 12;
+        if (year != null)
+            this.year = year;
+        else
+            this.year = 0;
         if (timeInSeconds != null)
             this.timeInSeconds = timeInSeconds;
         else
@@ -78,7 +90,10 @@ public class Reminder implements Parcelable {
         timeInSeconds = in.readLong();
         category = in.readString();
         frequency = in.readString();
+        year = in.readInt();
+        month = in.readInt();
         day = in.readInt();
+        offset = in.readInt();
         isEnabled = in.readByte() != 0;
         customScheduleDays = in.createStringArrayList();
     }
@@ -164,11 +179,14 @@ public class Reminder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(reminderName);
         dest.writeString(reminderInfo);
         dest.writeLong(timeInSeconds);
         dest.writeString(category);
         dest.writeString(frequency);
+        dest.writeInt(year);
+        dest.writeInt(month);
         dest.writeInt(day);
         dest.writeInt(offset);
         dest.writeValue(isEnabled);
@@ -206,5 +224,21 @@ public class Reminder implements Parcelable {
         if (this.getDay() != newReminder.getDay())
             return false;
         return this.offset == newReminder.offset;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

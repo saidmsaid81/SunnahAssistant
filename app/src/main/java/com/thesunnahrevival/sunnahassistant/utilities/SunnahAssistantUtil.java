@@ -17,6 +17,7 @@ public class SunnahAssistantUtil {
     public static final String SUNNAH = "Sunnah";
     public static final String PRAYER = "Prayer";
     public static final String OTHER = "Other";
+    public static final String ONE_TIME = "One Time";
     public static final String UNCATEGORIZED = "Uncategorized";
     public static final String DAILY = "Daily";
     public static final String WEEKLY = "Weekly";
@@ -116,7 +117,7 @@ public class SunnahAssistantUtil {
 
     private static Reminder createReminder(int id,String name, String info, String category, String frequency, int offset, ArrayList<String> customScheduleList) {
         Reminder reminder = new Reminder(name, info, null,
-                category, frequency, offset, 0, false, customScheduleList);
+                category, frequency, false, offset, null, null, 0, customScheduleList);
         reminder.setId(id);
         return reminder;
     }

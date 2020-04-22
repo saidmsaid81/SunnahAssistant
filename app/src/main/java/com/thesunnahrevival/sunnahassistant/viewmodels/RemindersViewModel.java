@@ -100,7 +100,7 @@ public class RemindersViewModel extends AndroidViewModel implements ReminderItem
             bundle.putBoolean("isNew", false);
             if (reminder == null) {
                 reminder = new Reminder(
-                        "", "", null, SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.DAILY, 0,  0, false, null
+                        "", "", null, SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.ONE_TIME, false, 0, null, null, 0, null
                 );
                 bundle.putBoolean("isNew", true);
             }

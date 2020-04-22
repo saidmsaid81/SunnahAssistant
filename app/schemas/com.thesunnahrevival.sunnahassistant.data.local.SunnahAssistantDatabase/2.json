@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "d09df3f8f7a73c4f4f8e4fb88f904325",
+    "identityHash": "3d64dd63bddb3ffdce8d014b98ebbdad",
     "entities": [
       {
         "tableName": "reminders_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `reminderName` TEXT, `reminderInfo` TEXT, `timeInSeconds` INTEGER NOT NULL, `category` TEXT, `frequency` TEXT, `isEnabled` INTEGER NOT NULL, `day` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `customScheduleDays` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `reminderName` TEXT, `reminderInfo` TEXT, `timeInSeconds` INTEGER NOT NULL, `category` TEXT, `frequency` TEXT, `isEnabled` INTEGER NOT NULL, `day` INTEGER NOT NULL, `month` INTEGER NOT NULL, `year` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `customScheduleDays` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -53,6 +53,18 @@
           {
             "fieldPath": "day",
             "columnName": "day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "month",
+            "columnName": "month",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -254,7 +266,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd09df3f8f7a73c4f4f8e4fb88f904325')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3d64dd63bddb3ffdce8d014b98ebbdad')"
     ]
   }
 }

@@ -88,11 +88,11 @@ public class SunnahAssistantRepository {
     public LiveData<List<Reminder>> getAllReminders(int filter, String nameOfTheDay) {
         switch (filter) {
             case 1:
-                return mReminderDAO.getPastReminders(TimeDateUtil.calculateOffsetFromMidnight(), mDay, nameOfTheDay);
+                return mReminderDAO.getPastReminders(TimeDateUtil.calculateOffsetFromMidnight(), nameOfTheDay, mDay,TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1 , Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis()) ));
             case 2:
-                return mReminderDAO.getRemindersOnDay(mDay, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()));
+                return mReminderDAO.getRemindersOnDay(TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()), mDay,TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1 , Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())));
             case 3:
-                return mReminderDAO.getRemindersOnDay(mDay + 1, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis() + 86400000));
+                return mReminderDAO.getRemindersOnDay(TimeDateUtil.getNameOfTheDay(System.currentTimeMillis() + 86400000), mDay + 1,TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1 , Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())));
             case 4:
                 return mReminderDAO.getPrayerTimes(mDay);
             case 5:
@@ -100,7 +100,7 @@ public class SunnahAssistantRepository {
             case 6:
                 return mReminderDAO.getMonthlyReminder();
             default:
-                return mReminderDAO.getUpcomingReminders(TimeDateUtil.calculateOffsetFromMidnight(), mDay, nameOfTheDay);
+                return mReminderDAO.getUpcomingReminders(TimeDateUtil.calculateOffsetFromMidnight(), nameOfTheDay, mDay,TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1 , Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())));
         }
     }
 
