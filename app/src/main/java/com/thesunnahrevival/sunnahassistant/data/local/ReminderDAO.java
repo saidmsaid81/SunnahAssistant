@@ -26,13 +26,13 @@ public interface ReminderDAO {
     @Delete
     void deleteReminder(Reminder reminder);
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds >= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds >= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
     LiveData<List<Reminder>> getUpcomingReminders(long offsetFromMidnight, String nameOfTheDay, int day, int month, int year);
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds <= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds <= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
     LiveData<List<Reminder>> getPastReminders(long offsetFromMidnight, String nameOfTheDay, int day, int month, int year);
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
     LiveData<List<Reminder>> getRemindersOnDay(String nameOfTheDay, int day, int month, int year);
 
     @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND day == :day) ORDER BY timeInSeconds")
@@ -62,8 +62,8 @@ public interface ReminderDAO {
     @Query("DELETE FROM reminders_table WHERE category == 'Prayer' ")
     void deleteAllPrayerTimes();
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND (day == :day OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
-    Reminder getNextScheduledReminder(long offsetFromMidnight, int day, String nameOfTheDay);
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
+    Reminder getNextScheduledReminder(long offsetFromMidnight, String nameOfTheDay, int day, int month, int year);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addHijriDate(List<Hijri> hijriDate);
