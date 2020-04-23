@@ -132,6 +132,7 @@
         <item>Prayer Times</item>
         <item>Weekly</item>
         <item>Monthly</item>
+        <item>One Time</item>
     </string-array>
 
     <string-array name="categories">
