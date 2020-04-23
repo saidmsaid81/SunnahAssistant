@@ -26,6 +26,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding
 import com.thesunnahrevival.sunnahassistant.utilities.NotificationUtil
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil
+import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener
@@ -226,7 +227,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
         }
         else  {
             mBinding.nextReminder = null
-            mReminderRecyclerAdapter.setData(data)
+            mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
             myActivity?.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
         }
         attachListenersToRecommendedReminders(myActivity)
@@ -252,15 +253,15 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 val filteredData = data.filter { it.category.matches(categoryToDisplay.toRegex()) }
                 when {
                     filteredData.isNotEmpty() -> {
-                        mReminderRecyclerAdapter.setData(filteredData)
+                        mReminderRecyclerAdapter.setData(filteredData, mBinding.spinner.selectedItemPosition)
                     }
                     else -> {
-                        mReminderRecyclerAdapter.setData(listOf())
+                        mReminderRecyclerAdapter.setData(listOf(), mBinding.spinner.selectedItemPosition)
                         myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
                     }
                 }
             } else {
-                mReminderRecyclerAdapter.setData(data)
+                mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
             }
         })
     }
@@ -268,9 +269,12 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     private fun displayTheNextReminder(data: ArrayList<Reminder>) {
         mBinding.nextReminder = null
 
-        if (data[0].isEnabled) { //&& reminder.timeInSeconds > TimeDateUtil.calculateOffsetFromMidnight()) {
-            mBinding.nextReminder = data.get(0)
+        if (data[0].isEnabled && data[0].timeInSeconds  > TimeDateUtil.calculateOffsetFromMidnight()) {
+            mBinding.nextReminder = data[0]
             data.remove(data[0]) //Remove The Next Reminder
+        }
+        else {
+            mBinding.nextReminder = data.firstOrNull { it.isEnabled && it.timeInSeconds  > TimeDateUtil.calculateOffsetFromMidnight() }
         }
     }
 

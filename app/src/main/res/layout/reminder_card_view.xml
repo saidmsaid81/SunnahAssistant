@@ -13,6 +13,9 @@
         <variable
             name="reminder"
             type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
+        <variable
+            name="frequency"
+            type="int" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -70,15 +73,27 @@
                     tools:text="Fasting Ayyamul Beidh" />
 
                 <TextView
-                    android:id="@+id/reminder_daily_info"
+                    android:id="@+id/reminder_upcoming_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="18sp"
-                    android:visibility="@{reminder.frequency.matches(&quot;Daily&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{reminder.frequency + &quot;:- &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
+                    android:visibility="@{(frequency &lt; 3 || frequency == 4) ? View.VISIBLE : View.GONE}"
+                    android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
+                    tools:text="Date" />
+
+                <TextView
+                    android:id="@+id/reminder_tomorrow_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textSize="18sp"
+                    android:visibility="@{frequency == 3 ? View.VISIBLE : View.GONE}"
+                    android:text="@{&quot;Tomorrow at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
                     tools:text="Date" />
 
                 <TextView
@@ -89,8 +104,8 @@
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="18sp"
-                    android:visibility="@{reminder.frequency.matches(&quot;Weekly&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{&quot;Every &quot; + TimeDateUtil.formatDaysFromCustomScheduledDays(reminder.customScheduleDays) + &quot;:-&quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
+                    android:visibility="@{frequency == 5 ? View.VISIBLE : View.GONE}"
+                    android:text="@{&quot;Every &quot; + TimeDateUtil.formatDaysFromCustomScheduledDays(reminder.customScheduleDays) + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
                     tools:text="Date" />
 
                 <TextView
@@ -101,8 +116,8 @@
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="18sp"
-                    android:visibility="@{reminder.frequency.matches(&quot;Monthly&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{&quot;Every Month On &quot; + reminder.day + &quot;:-&quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds())  }"
+                    android:visibility="@{frequency == 6 ? View.VISIBLE : View.GONE}"
+                    android:text="@{&quot;Every Month On &quot; + reminder.day + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds())  }"
                     tools:text="Date" />
 
                 <TextView
@@ -113,8 +128,8 @@
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="18sp"
-                    android:visibility="@{reminder.frequency.matches(&quot;One Time&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{reminder.month &lt; 12  ? &quot;On &quot; + reminder.day + &quot; &quot; + TimeDateUtil.getMonthName(reminder.month) +  &quot; &quot; + reminder.year + &quot;:-&quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) : &quot;Not Set&quot; }"
+                    android:visibility="@{frequency == 7 ? View.VISIBLE : View.GONE}"
+                    android:text="@{reminder.month &lt; 12  ? &quot;On &quot; + reminder.day + &quot; &quot; + TimeDateUtil.getMonthName(reminder.month) +  &quot; &quot; + reminder.year + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) : &quot;Not Set&quot; }"
                     tools:text="Date" />
 
                 <TextView
