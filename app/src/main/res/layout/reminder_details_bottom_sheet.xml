@@ -211,24 +211,11 @@
             android:textAllCaps="false"
             android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.INVISIBLE : View.VISIBLE}" />
 
-        <Button
-            android:id="@+id/date_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/time_picker"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/pick_date"
-            android:textAllCaps="false"
-            android:visibility="@{reminder.frequency.matches(&quot;Monthly&quot;) ? View.VISIBLE : View.GONE}" />
-
         <TextView
             android:id="@+id/more_details_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/date_picker"
+            android:layout_below="@id/time_picker"
             android:layout_marginTop="16dp"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/more_details"
