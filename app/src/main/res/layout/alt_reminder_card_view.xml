@@ -96,6 +96,17 @@
                         tools:text="(Su, Mo)" />
 
                     <TextView
+                        android:id="@+id/oneTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                        android:textSize="12sp"
+                        android:layout_marginStart="24dp"
+                        android:visibility="@{reminder.frequency.matches(&quot;One Time&quot;) ? View.VISIBLE : View.GONE}"
+                        android:text="@{reminder.month &lt; 12 ? &quot; On &quot; + reminder.day + &quot; &quot; + TimeDateUtil.getMonthName(reminder.month) + &quot; &quot; + reminder.year : &quot;Not Set&quot; }"
+                        tools:text="(Su, Mo)" />
+
+                    <TextView
                         android:id="@+id/reminder_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
