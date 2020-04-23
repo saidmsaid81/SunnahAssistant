@@ -4,6 +4,7 @@ package com.thesunnahrevival.sunnahassistant.utilities;
 import android.content.Context;
 import android.util.Log;
 
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Locale;
 
 public class TimeDateUtil {
 
-    public static final String NOT_SET = "Not Set";
+    public static final String NOT_SET = "Time Not Set";
 
     public static String getNameOfTheDay(long timeInMilliseconds) {
         return new SimpleDateFormat("EE", Locale.ENGLISH).format(timeInMilliseconds);
@@ -82,5 +83,9 @@ public class TimeDateUtil {
                 days.append(", ");
         }
         return days.toString();
+    }
+
+    public static String getMonthName(int month) {
+        return new DateFormatSymbols().getMonths()[month];
     }
 }

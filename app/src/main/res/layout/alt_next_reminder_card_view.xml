@@ -110,6 +110,18 @@
                     tools:text="(Su, Mo)" />
 
                 <TextView
+                    android:id="@+id/oneTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textSize="12sp"
+                    android:layout_marginStart="24dp"
+                    android:textColor="@android:color/white"
+                    android:visibility="@{nextReminder.frequency.matches(&quot;One Time&quot;) ? View.VISIBLE : View.GONE}"
+                    android:text="@{nextReminder.month &lt; 12 ? &quot; On &quot; + nextReminder.day + &quot; &quot; + TimeDateUtil.getMonthName(nextReminder.month) + &quot; &quot; + nextReminder.year : &quot;Not Set&quot; }"
+                    tools:text="(Su, Mo)" />
+
+                <TextView
                     android:id="@+id/reminder_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
