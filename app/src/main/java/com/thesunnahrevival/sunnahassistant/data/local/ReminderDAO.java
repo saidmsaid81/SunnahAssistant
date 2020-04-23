@@ -44,6 +44,9 @@ public interface ReminderDAO {
     @Query("SELECT * FROM reminders_table WHERE frequency == 'Monthly'")
     LiveData<List<Reminder>> getMonthlyReminder();
 
+    @Query("SELECT * FROM reminders_table WHERE frequency == 'One Time'")
+    LiveData<List<Reminder>> getOneTimeReminders();
+
     @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE id ==:id")
     void setEnabled(int id, boolean isEnabled);
 

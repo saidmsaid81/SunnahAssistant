@@ -99,6 +99,8 @@ public class SunnahAssistantRepository {
                 return mReminderDAO.getWeeklyReminders();
             case 6:
                 return mReminderDAO.getMonthlyReminder();
+            case 7:
+                return mReminderDAO.getOneTimeReminders();
             default:
                 return mReminderDAO.getUpcomingReminders(TimeDateUtil.calculateOffsetFromMidnight(), nameOfTheDay, mDay,TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1 , Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())));
         }
