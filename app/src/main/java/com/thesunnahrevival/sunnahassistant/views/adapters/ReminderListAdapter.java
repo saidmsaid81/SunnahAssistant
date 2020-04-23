@@ -28,6 +28,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private OnDeleteReminderListener mDeleteReminderListener;
+    private int mFrequency = 0;
 
     public ReminderListAdapter(Context context, boolean isExpandedLayout) {
         mContext = context;
@@ -64,8 +65,9 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         return mAllReminders.size();
     }
 
-    public void setData(List<Reminder> data) {
+    public void setData(List<Reminder> data, int frequency) {
         mAllReminders = data;
+        mFrequency = frequency;
         notifyDataSetChanged();
     }
 
@@ -107,6 +109,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
                 ((ReminderCardViewBinding) binding).toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->
                         mListener.onToggleButtonClick(buttonView, isChecked, reminder));
                 ((ReminderCardViewBinding) binding).cardView.setOnClickListener((view) -> mListener.openBottomSheet(view, reminder));
+                ((ReminderCardViewBinding) binding).setFrequency(mFrequency);
             }
             else if (binding instanceof AltReminderCardViewBinding){
                 ((AltReminderCardViewBinding) binding).toggleButton.setOnCheckedChangeListener((buttonView, isChecked) ->

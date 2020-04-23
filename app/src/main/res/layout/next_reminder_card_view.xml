@@ -77,18 +77,9 @@
                     android:textSize="@dimen/title_text_size"
                     tools:text="Fasting Ayyamul Beidh" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/reminder_time"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"-->
-<!--                    android:textColor="@android:color/white"-->
-<!--                    android:textSize="18sp"-->
-<!--                    android:text="@{nextReminder.frequency + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds())}"-->
-<!--                    tools:text="Date" />-->
 
                 <TextView
-                    android:id="@+id/reminder_daily_info"
+                    android:id="@+id/reminder_upcoming_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
@@ -96,47 +87,8 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textSize="18sp"
-                    android:visibility="@{nextReminder.frequency.matches(&quot;Daily&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{nextReminder.frequency + &quot;:- &quot; + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds()) }"
-                    tools:text="Date" />
-
-                <TextView
-                    android:id="@+id/reminder_weekly_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textColor="@android:color/white"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textSize="18sp"
-                    android:visibility="@{nextReminder.frequency.matches(&quot;Weekly&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{&quot;Every &quot; + TimeDateUtil.formatDaysFromCustomScheduledDays(nextReminder.customScheduleDays) + &quot;:-&quot; + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds())}"
-                    tools:text="Date" />
-
-                <TextView
-                    android:id="@+id/reminder_monthly_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textColor="@android:color/white"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textSize="18sp"
-                    android:visibility="@{nextReminder.frequency.matches(&quot;Monthly&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{&quot;Every Month On &quot; + nextReminder.day + &quot;:-&quot; + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds())  }"
-                    tools:text="Date" />
-
-                <TextView
-                    android:id="@+id/reminder_one_time_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textColor="@android:color/white"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textSize="18sp"
-                    android:visibility="@{nextReminder.frequency.matches(&quot;One Time&quot;) ? View.VISIBLE : View.GONE}"
-                    android:text="@{nextReminder.month &lt; 12  ? &quot;On &quot; + nextReminder.day + &quot; &quot; + TimeDateUtil.getMonthName(nextReminder.month) +  &quot; &quot; + nextReminder.year + &quot;:-&quot; + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds()) : &quot;Not Set&quot; }"
+                    android:visibility="visible"
+                    android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds()) }"
                     tools:text="Date" />
 
                 <TextView
