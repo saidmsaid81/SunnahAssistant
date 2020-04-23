@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -25,7 +26,6 @@ import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding
 import com.thesunnahrevival.sunnahassistant.utilities.NotificationUtil
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener
@@ -95,6 +95,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             mReminderRecyclerAdapter.setOnItemClickListener(mViewModel)
             val reminderRecyclerView = mBinding.reminderList
             reminderRecyclerView.adapter = mReminderRecyclerAdapter
+
             mReminderRecyclerAdapter.setDeleteReminderListener(this)
 
             //Set the swipe to delete action
@@ -216,40 +217,9 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
         val myActivity = activity
         if (myActivity != null && data != null && data.isNotEmpty()) {
             mAllReminders = data
-            if (mSpinner?.selectedItemPosition == 0 || mSpinner?.selectedItemPosition == 2) {
-                mBinding.nextReminder = null
-
-                for (reminder in data) {
-                    //Find the first reminder that is enabled and display it in the next reminder section
-                    if (reminder.isEnabled && reminder.timeInSeconds > TimeDateUtil.calculateOffsetFromMidnight()) {
-                        mBinding.nextReminder = reminder
-                        data.remove(reminder) //Remove The Next Reminder
-                        break
-                    }
-                }
-            }
-
-
-            mainActivity.mFilteredReminderCategories?.observe(this, Observer { categoryToDisplay ->
-                myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.GONE
-
-                //Refresh the RecyclerView
-                if (!categoryToDisplay.matches("".toRegex())){
-                    val filteredData = data.filter { it.category.matches(categoryToDisplay.toRegex())}
-                    when {
-                        filteredData.isNotEmpty() -> {
-                            mReminderRecyclerAdapter.setData(filteredData)
-                        }
-                        else -> {
-                            mReminderRecyclerAdapter.setData(listOf())
-                            myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
-                        }
-                    }
-                }
-                else {
-                    mReminderRecyclerAdapter.setData(data)
-                }
-            })
+            if (mSpinner?.selectedItemPosition == 0 || mSpinner?.selectedItemPosition == 2)
+                displayTheNextReminder(data)
+            filterCategories(myActivity, data)
 
             //Used to maintain category filter when user changes frequency
             mainActivity.mFilteredReminderCategories.value = mainActivity.mFilteredReminderCategories.value
@@ -258,11 +228,50 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             mBinding.nextReminder = null
             mReminderRecyclerAdapter.setData(data)
             myActivity?.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
-
         }
-        myActivity?.findViewById<View>(R.id.all_done_view)?.findViewById<TextView>(R.id.sunnah_reminders_link)?.setOnClickListener(this)
-        myActivity?.findViewById<View>(R.id.all_done_view)?.findViewById<TextView>(R.id.add_prayer_time_alerts)?.setOnClickListener(this)
+        attachListenersToRecommendedReminders(myActivity)
 
+    }
+
+    private fun attachListenersToRecommendedReminders(myActivity: FragmentActivity?) {
+        myActivity?.findViewById<View>(R.id.all_done_view)?.
+                findViewById<TextView>(R.id.sunnah_reminders_link)
+                ?.setOnClickListener(this)
+
+        myActivity?.findViewById<View>(R.id.all_done_view)
+                ?.findViewById<TextView>(R.id.add_prayer_time_alerts)
+                ?.setOnClickListener(this)
+    }
+
+    private fun filterCategories(myActivity: FragmentActivity, data: ArrayList<Reminder>) {
+        mainActivity.mFilteredReminderCategories?.observe(this, Observer { categoryToDisplay ->
+            myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.GONE
+
+            //Refresh the RecyclerView
+            if (!categoryToDisplay.matches("".toRegex())) {
+                val filteredData = data.filter { it.category.matches(categoryToDisplay.toRegex()) }
+                when {
+                    filteredData.isNotEmpty() -> {
+                        mReminderRecyclerAdapter.setData(filteredData)
+                    }
+                    else -> {
+                        mReminderRecyclerAdapter.setData(listOf())
+                        myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
+                    }
+                }
+            } else {
+                mReminderRecyclerAdapter.setData(data)
+            }
+        })
+    }
+
+    private fun displayTheNextReminder(data: ArrayList<Reminder>) {
+        mBinding.nextReminder = null
+
+        if (data[0].isEnabled) { //&& reminder.timeInSeconds > TimeDateUtil.calculateOffsetFromMidnight()) {
+            mBinding.nextReminder = data.get(0)
+            data.remove(data[0]) //Remove The Next Reminder
+        }
     }
 
     private fun populateTheSpinner(savedSpinnerPosition: Int) {

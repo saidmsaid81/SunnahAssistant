@@ -63,8 +63,8 @@ public class NextReminderService extends Service {
             mSettings = reminderDAO.getAppSettingsValue();
             return reminderDAO.getNextScheduledReminder(
                     TimeDateUtil.calculateOffsetFromMidnight(),
-                    TimeDateUtil.getDayDate(System.currentTimeMillis()),
-                    TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()));
+                    TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()), TimeDateUtil.getDayDate(System.currentTimeMillis()),
+                    TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1, Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())));
         }
 
         @Override
