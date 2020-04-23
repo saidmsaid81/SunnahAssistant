@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 
 public class DatePickerFragment extends DialogFragment
@@ -35,7 +36,6 @@ public class DatePickerFragment extends DialogFragment
         if (mYear != 0)
             year = mYear;
 
-        int lastDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
         // Create a new instance of DatePickerDialog and return it
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
         return datePickerDialog;
@@ -45,5 +45,9 @@ public class DatePickerFragment extends DialogFragment
         mDay = day;
         mMonth = month;
         mYear = year;
+        DialogFragment timePickerFragment = new TimePickerFragment();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        timePickerFragment.show(fm, "timePicker");
     }
+
 }

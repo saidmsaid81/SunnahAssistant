@@ -123,6 +123,8 @@
     <string name="add_sunnah_reminders_alerts_such_as_fasting_on_mondays_and_thursdays">Tap to add Sunnah Reminders alerts</string>
     <string name="sunnah_reminder_alerts_description">*such as Fasting on Mondays and Thursdays</string>
     <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
+    <string name="pick_date_and_time">Pick Date and Time</string>
+    <string name="please_pick_date_and_time">Please Pick Date and time</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>

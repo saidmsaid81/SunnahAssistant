@@ -80,6 +80,11 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         mBinding.timePicker.setOnClickListener(this);
         mBinding.saveButton.setOnClickListener(this);
         mBinding.moreDetailsTextView.setOnClickListener(this);
+
+        //Reset all static value
+        DatePickerFragment.mDay = 0;
+        DatePickerFragment.mYear = 0;
+        DatePickerFragment.mMonth = 12;
         return mBinding.getRoot();
     }
 
@@ -126,19 +131,21 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         if (getActivity() != null) {
 
             if (v.getId() == R.id.time_picker) {
-                DialogFragment timePickerFragment = new TimePickerFragment();
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                timePickerFragment.show(fm, "timePicker");
-            }
-            else if (v.getId() == R.id.date_picker){
+                String selectedItem = (String) mBinding.frequencySpinner.getSelectedItem();
+                if (selectedItem.matches(SunnahAssistantUtil.DAILY) || selectedItem.matches(SunnahAssistantUtil.WEEKLY) ) {
+                    DialogFragment timePickerFragment = new TimePickerFragment();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    timePickerFragment.show(fm, "timePicker");
+                }
+                else {
                     DatePickerFragment.mDay = mDay;
                     DatePickerFragment.mMonth = mMonth;
                     DatePickerFragment.mYear = mYear;
                     DialogFragment datePickerFragment = new DatePickerFragment();
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     datePickerFragment.show(fm, "datePicker");
+                }
             }
-
         }
         if (v.getId() == R.id.save_button)
             save();
@@ -169,10 +176,21 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             }
             checkedDays = mSelectedDaysAdapter.getCheckedDays();
             mDay = -1; //To distinguish from daily and monthly reminders
-        } else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
+        }
+        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
+            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 || DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null || TimePickerFragment.timeSet.getValue().matches("") ) {
+                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
+                return;
+            }
             mDay = DatePickerFragment.mDay;
+            mMonth = 12;
+            mYear = 0;
         }
         else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.ONE_TIME)){
+            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 || DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null || TimePickerFragment.timeSet.getValue().matches(TimeDateUtil.NOT_SET) ) {
+                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
+                return;
+            }
             mDay = DatePickerFragment.mDay;
             mMonth = DatePickerFragment.mMonth;
             mYear = DatePickerFragment.mYear;
@@ -222,13 +240,12 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
            }
            else if (position == 3 || position == 0) {
                mBinding.selectDaysSpinner.setVisibility(View.GONE);
-               mBinding.datePicker.setVisibility(View.VISIBLE);
-               mBinding.datePicker.setOnClickListener(this);
+               mBinding.timePicker.setText(R.string.pick_date_and_time);
                return;
            } else {
                mBinding.selectDaysSpinner.setVisibility(View.GONE);
            }
-           mBinding.datePicker.setVisibility(View.GONE);
+           mBinding.timePicker.setText(R.string.pick_time);
        }
        else if (parent.getId() == R.id.category_spinner) {
            if (((String) parent.getSelectedItem()).matches("\\+ Create New Category") ){
