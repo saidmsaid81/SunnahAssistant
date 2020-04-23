@@ -223,6 +223,10 @@ public class Reminder implements Parcelable {
             return false;
         if (this.getDay() != newReminder.getDay())
             return false;
+        if (this.getMonth() != newReminder.getMonth())
+            return false;
+        if (this.getYear() != newReminder.getYear())
+            return false;
         return this.offset == newReminder.offset;
     }
 
