@@ -116,18 +116,19 @@ public class AladhanRestApi {
                 if ((calendarDay >= 13) && (calendarDay <= 15) && !month.getEn().matches("Ramaḍān")){
                     if (month.getEn().matches("Dhū al-Ḥijjah") && calendarDay == 13)
                         continue;
-                    Reminder reminder = new Reminder(
-                            "Fasting Ayyamul Beidh (White Days)",
-                            "",
-                            null,
-                            SunnahAssistantUtil.SUNNAH,
-                            SunnahAssistantUtil.ONE_TIME,
-                            false, hijri.getId(),
-                            TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1, Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())), 0 ,
-                            new ArrayList<>());
-                    reminder.setId(-calendarDay);
-
-                    importantMonthlyReminders.add(reminder);
+                    importantMonthlyReminders.add(
+                            SunnahAssistantUtil.createReminder(
+                                    -calendarDay,
+                                    "Fasting Ayyamul Beidh (White Days)",
+                                    "<a href=\"https://telegra.ph/Revive-A-SunnahFasting-White-Days-02-09\">Read more</a> on the importance of fasting white days",
+                                    SunnahAssistantUtil.SUNNAH,
+                                    SunnahAssistantUtil.ONE_TIME,
+                                    TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
+                                    Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())),
+                                    hijri.getId(),
+                                    new ArrayList<>()
+                            )
+                    );
                 }
             }
 
