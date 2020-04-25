@@ -24,7 +24,8 @@ public interface AladhanInterface {
             @Query("month") String month,
             @Query("year") String year,
             @Query("method") int method,
-            @Query("school") int asrCalculationMethod
+            @Query("school") int asrCalculationMethod,
+            @Query("latitudeAdjustmentMethod") int adjustmentMethod
     );
 
 

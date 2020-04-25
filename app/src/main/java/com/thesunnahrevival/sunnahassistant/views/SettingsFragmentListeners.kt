@@ -77,6 +77,8 @@ open class SettingsFragmentListeners: Fragment(), AdapterView.OnItemClickListene
                 showPopup(R.array.calculation_methods, R.id.calculation_method, R.id.calculation_details)
             R.id.asr_calculation_details ->
                 showPopup(R.array.asr_juristic_method, R.id.asr_calculation_method, R.id.asr_calculation_details)
+            R.id.higher_latitude_details ->
+                showPopup(R.array.latitude_options, R.id.higher_latitude_method, R.id.higher_latitude_details)
             R.id.layout_settings -> showPopup(R.array.layout_options, R.id.layout, R.id.layout_settings)
             R.id.theme_settings -> showPopup(R.array.theme_options, R.id.theme, R.id.theme_settings)
             R.id.fab -> {
@@ -104,11 +106,13 @@ open class SettingsFragmentListeners: Fragment(), AdapterView.OnItemClickListene
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         val calculationMethods = resources.getStringArray(R.array.calculation_methods)
         val asrMethods = resources.getStringArray(R.array.asr_juristic_method)
+        val latitudeMethods = resources.getStringArray(R.array.latitude_options)
         when(item?.groupId){
             R.id.offset -> mViewModel.updateHijriDate(Integer.parseInt(item.title.toString()), false)
             R.id.calculation_details ->
                 mViewModel.updateCalculationMethod(calculationMethods.indexOf(item.title.toString()) + 1)
             R.id.asr_calculation_details -> mViewModel.updateAsrCalculationMethod(asrMethods.indexOf(item.title.toString()))
+            R.id.higher_latitude_details -> mViewModel.updateHigherLatitudeMethod(latitudeMethods.indexOf(item.title.toString()) + 1)
             R.id.layout_settings -> mViewModel.updateLayout(item.title.toString().matches("Expanded View".toRegex()))
             R.id.theme_settings -> {
                 if (item.title.toString().matches("Light".toRegex())) {
@@ -168,22 +172,22 @@ open class SettingsFragmentListeners: Fragment(), AdapterView.OnItemClickListene
         }
     }
 
-    override fun deleteReminderCategory(categoriesList: ArrayList<String>, category: String) {
+    override fun deleteReminderCategory(categoriesList: HashSet<String>, category: String) {
         val deleteInfo :String
-        if (!category.matches(SunnahAssistantUtil.UNCATEGORIZED.toRegex())) {
+        if (!category.matches(SunnahAssistantUtil.UNCATEGORIZED.toRegex()) && !category.matches(SunnahAssistantUtil.PRAYER.toRegex()) ) {
             deleteInfo = getString(R.string.confirm_delete_category, category)
             categoriesList.remove(category)
             deletedCategories.add(category)
             mViewModel.updateCategories(categoriesList)
         }
         else
-            deleteInfo = getString(R.string.category_cannot_be_deleted, SunnahAssistantUtil.UNCATEGORIZED)
+            deleteInfo = getString(R.string.category_cannot_be_deleted, category)
 
         val snackBar = Snackbar.make((mBinding as CategoriesSettingsBinding).root,
                 deleteInfo,
                 Snackbar.LENGTH_LONG)
 
-        if (!category.matches(SunnahAssistantUtil.UNCATEGORIZED.toRegex()))
+        if (!category.matches(SunnahAssistantUtil.UNCATEGORIZED.toRegex()) && !category.matches(SunnahAssistantUtil.PRAYER.toRegex()))
             snackBar.setAction(R.string.undo_delete) {
                 categoriesList.add(category)
                 deletedCategories.remove(category)

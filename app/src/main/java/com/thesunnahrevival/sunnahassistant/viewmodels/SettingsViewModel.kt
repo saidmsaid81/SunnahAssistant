@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
@@ -71,7 +72,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     mRepository.deletePrayerTimesData()
                     mRepository.fetchPrayerTimes(
                             it.latitude, it.longitude, it.toString(), TimeDateUtil.getYear(System.currentTimeMillis()),
-                            it.method, it.asrCalculationMethod)
+                            it.method, it.asrCalculationMethod, it.latitudeAdjustmentMethod)
                 }
                 if (it.isDisplayHijriDate) {
                     mRepository.deleteHijriDate()
@@ -146,14 +147,30 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun updateHigherLatitudeMethod(method: Int) {
+        settingsValue?.let {
+            if (it.latitudeAdjustmentMethod != method) {
+                it.latitudeAdjustmentMethod = method
+                updateSettings()
+            }
+        }
+    }
+
     fun updatePrayerTimesData() {
         val settings = settingsValue
         if (isSettingsUpdated && settings != null && !settings.formattedAddress.matches("Location cannot be empty".toRegex())) {
             mRepository.deletePrayerTimesData()
-            if (settings.isAutomatic) mRepository.fetchPrayerTimes(
-                    settings.latitude, settings.longitude, settings.month.toString(),
-                    TimeDateUtil.getYear(System.currentTimeMillis()), settings.method, settings.asrCalculationMethod
-            )
+            if (settings.isAutomatic) {
+                settings.categories.remove(SunnahAssistantUtil.PRAYER)
+                mRepository.fetchPrayerTimes(
+                        settings.latitude, settings.longitude, settings.month.toString(),
+                        TimeDateUtil.getYear(System.currentTimeMillis()), settings.method, settings.asrCalculationMethod,
+                        settings.latitudeAdjustmentMethod
+                )
+            }
+            else
+                settings.categories.add(SunnahAssistantUtil.PRAYER)
+            updateCategories(settings.categories)
         }
     }
 
@@ -175,7 +192,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun updateCategories(categories: ArrayList<String>) {
+    fun updateCategories(categories: HashSet<String>) {
         settingsValue?.let {
             it.categories = categories
             updateSettings()

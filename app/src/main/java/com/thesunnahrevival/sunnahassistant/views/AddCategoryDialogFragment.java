@@ -10,7 +10,7 @@ import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.viewmodels.SettingsViewModel;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,7 +37,7 @@ public class AddCategoryDialogFragment extends DialogFragment {
         builder.setView(view)
                 // Add action buttons
                 .setPositiveButton(R.string.save, (dialog, id) -> {
-                    ArrayList<String> categories;
+                    HashSet<String> categories;
 
                     AppSettings settings = mSettingsViewModel.getSettings().getValue();
                     if ( settings != null){

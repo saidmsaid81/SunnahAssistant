@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import androidx.room.TypeConverter;
 
@@ -41,6 +42,27 @@ public class RoomTypeConverter {
     @TypeConverter
     public static Uri toUri(String stringUri){
         return Uri.parse(stringUri);
+    }
+
+    @TypeConverter
+    public static String fromHashSet(HashSet<String> strings){
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String s : strings) {
+                stringBuilder.append(s);
+                stringBuilder.append(",");
+            }
+            return stringBuilder.toString();
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+
+    @TypeConverter
+    public static HashSet<String> toHashSet(String concatenatedStrings) {
+
+        return new HashSet<>(Arrays.asList(concatenatedStrings.split(",")));
+
     }
 
 }
