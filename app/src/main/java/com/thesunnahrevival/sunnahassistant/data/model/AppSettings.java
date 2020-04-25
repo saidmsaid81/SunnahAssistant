@@ -4,8 +4,8 @@ import android.net.Uri;
 
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -33,7 +33,8 @@ public class AppSettings {
     private Uri notificationToneUri;
     private boolean isVibrate = false;
     private int priority = 3;
-    private ArrayList<String> categories = new ArrayList<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
+    private int latitudeAdjustmentMethod = 3;
+    private HashSet<String> categories = new HashSet<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
 
     public AppSettings(String formattedAddress, float latitude, float longitude, int method, int asrCalculationMethod, boolean isAutomatic) {
         this.formattedAddress = formattedAddress;
@@ -164,11 +165,11 @@ public class AppSettings {
         this.savedSpinnerPosition = savedSpinnerPosition;
     }
 
-    public ArrayList<String> getCategories() {
+    public HashSet<String> getCategories() {
         return categories;
     }
 
-    public void setCategories(ArrayList<String> categories) {
+    public void setCategories(HashSet<String> categories) {
         this.categories = categories;
     }
 
@@ -202,5 +203,13 @@ public class AppSettings {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    public int getLatitudeAdjustmentMethod() {
+        return latitudeAdjustmentMethod;
+    }
+
+    public void setLatitudeAdjustmentMethod(int latitudeAdjustmentMethod) {
+        this.latitudeAdjustmentMethod = latitudeAdjustmentMethod;
     }
 }

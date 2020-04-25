@@ -67,10 +67,10 @@ public class AladhanRestApi {
     }
 
 
-    public void fetchPrayerTimes(float latitude, float longitude, final String month, final String year, int method, int asrCalculationMethod) {
+    public void fetchPrayerTimes(float latitude, float longitude, final String month, final String year, int method, int asrCalculationMethod, int latitudeAdjustmentMethod) {
         errorMessages.setValue("Refreshing Prayer Times data...");
         mAladhanInterface.getPrayerTimes(latitude, longitude, month, year, method,
-                asrCalculationMethod).enqueue(new Callback<PrayerTimes>() {
+                asrCalculationMethod, latitudeAdjustmentMethod).enqueue(new Callback<PrayerTimes>() {
             @Override
             public void onResponse(@NonNull Call<PrayerTimes> call, @NonNull Response<PrayerTimes> response) {
                 if (!response.isSuccessful()) {
@@ -113,15 +113,17 @@ public class AladhanRestApi {
 
                 //Add the important monthly reminders
                 int calendarDay = Integer.parseInt(day);
-                if ((calendarDay >= 13) && (calendarDay <= 15)){
+                if ((calendarDay >= 13) && (calendarDay <= 15) && !month.getEn().matches("Ramaḍān")){
+                    if (month.getEn().matches("Dhū al-Ḥijjah") && calendarDay == 13)
+                        continue;
                     Reminder reminder = new Reminder(
                             "Fasting Ayyamul Beidh (White Days)",
                             "",
                             null,
                             SunnahAssistantUtil.SUNNAH,
-                            SunnahAssistantUtil.MONTHLY,
+                            SunnahAssistantUtil.ONE_TIME,
                             false, hijri.getId(),
-                            null, null, 0 ,
+                            TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1, Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())), 0 ,
                             new ArrayList<>());
                     reminder.setId(-calendarDay);
 

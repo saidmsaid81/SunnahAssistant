@@ -125,6 +125,7 @@
     <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
     <string name="pick_date_and_time">Pick Date and Time</string>
     <string name="please_pick_date_and_time">Please Pick Date and time</string>
+    <string name="higher_latitude_adjustment_method">Higher Latitude Adjustment Method</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
@@ -220,6 +221,12 @@
         <item>No sound</item>
         <item>Makes a sound (Recommended)</item>
         <item>Makes a sound and heads-up notification</item>
+    </string-array>
+
+    <string-array name="latitude_options">
+        <item>Middle of the Night</item>
+        <item>One Seventh of the Night</item>
+        <item>Angle Based (Default)</item>
     </string-array>
 
 </resources>

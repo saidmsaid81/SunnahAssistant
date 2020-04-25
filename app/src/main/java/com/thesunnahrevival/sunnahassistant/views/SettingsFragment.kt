@@ -90,6 +90,9 @@ class SettingsFragment : SettingsFragmentListeners() {
                 resources.getStringArray(R.array.calculation_methods)[settings.method.minus(1)])
         (mBinding as PrayerTimeSettingsBinding).setAsrCalculationMethod(
                 resources.getStringArray(R.array.asr_juristic_method)[settings.asrCalculationMethod])
+        (mBinding as PrayerTimeSettingsBinding).latitudeAdjustmentMethod =
+                resources.getStringArray(R.array.latitude_options)[settings.latitudeAdjustmentMethod.minus(1)]
+
     }
 
     private fun customizeLayout(binding: ViewDataBinding) {
@@ -113,6 +116,7 @@ class SettingsFragment : SettingsFragmentListeners() {
                 binding.locationDetails.setOnClickListener(this)
                 binding.calculationDetails.setOnClickListener(this)
                 binding.asrCalculationDetails.setOnClickListener(this)
+                binding.higherLatitudeDetails.setOnClickListener(this)
             }
             is DisplaySettingsBinding -> {
                 binding.layoutSettings.setOnClickListener(this)

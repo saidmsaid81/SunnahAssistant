@@ -141,8 +141,8 @@ public class SunnahAssistantRepository {
         mAladhanRestApi.fetchHijriData(monthNumber, year, adjustment);
     }
 
-    public void fetchPrayerTimes(float latitude, float longitude, final String month, final String year, int method, int asrCalculationMethod) {
-        mAladhanRestApi.fetchPrayerTimes(latitude, longitude, month, year, method, asrCalculationMethod);
+    public void fetchPrayerTimes(float latitude, float longitude, final String month, final String year, int method, int asrCalculationMethod, int latitudeAdjustmentMethod) {
+        mAladhanRestApi.fetchPrayerTimes(latitude, longitude, month, year, method, asrCalculationMethod, latitudeAdjustmentMethod);
     }
 
     public LiveData<String> getErrorMessages() {

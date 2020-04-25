@@ -107,7 +107,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             AppSettings settings = ((MainActivity) getActivity()).mViewModel.getSettings().getValue();
             if (getContext() != null && settings != null && settings.getCategories() != null) {
                 mCategoryAdapter = new ArrayAdapter<>(
-                        getContext(), android.R.layout.simple_spinner_item, settings.getCategories()
+                        getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(settings.getCategories())
                 );
                 mCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 if (mCategoryAdapter.getPosition("+ Create New Category") == -1)
