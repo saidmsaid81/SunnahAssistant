@@ -127,6 +127,15 @@
     <string name="please_pick_date_and_time">Please Pick Date and time</string>
     <string name="higher_latitude_adjustment_method">Higher Latitude Adjustment Method</string>
 
+    <string name="appwidget_text">EXAMPLE</string>
+
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="display_hijri_date">Display Hijri Date</string>
+    <string name="display_the_next_reminder">Display the Next Reminder</string>
+    <string name="enable_at_least_one_option">Enable at least one option</string>
+    <string name="setup_widget">Setup Widget</string>
+    <string name="today_s_reminder">Today\'s Reminders</string>
     <string-array name="reminder_filter">
         <item>Upcoming</item>
         <item>Past</item>
@@ -137,19 +146,20 @@
         <item>Monthly</item>
         <item>One Time</item>
     </string-array>
-
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
         <item>Prayer</item>
         <item>Other</item>
     </string-array>
+
     <string-array name="frequency">
         <item>One Time</item>
         <item>Daily</item>
         <item>Weekly</item>
         <item>Monthly</item>
     </string-array>
+
     <string-array name="select_days">
         <item>Select Days</item>
         <item>Monday</item>
@@ -160,6 +170,7 @@
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
+
     <string-array name="calculation_methods">
         <item>University of Islamic Sciences, Karachi</item>
         <item>Islamic Society of North America</item>
@@ -210,19 +221,16 @@
         <item>Light</item>
         <item>Dark</item>
     </string-array>
-
     <string-array name="vibration_options">
         <item>On</item>
         <item>Off</item>
     </string-array>
-
     <string-array name="priority_options">
         <item>No Notification at all</item>
         <item>No sound</item>
         <item>Makes a sound (Recommended)</item>
         <item>Makes a sound and heads-up notification</item>
     </string-array>
-
     <string-array name="latitude_options">
         <item>Middle of the Night</item>
         <item>One Seventh of the Night</item>

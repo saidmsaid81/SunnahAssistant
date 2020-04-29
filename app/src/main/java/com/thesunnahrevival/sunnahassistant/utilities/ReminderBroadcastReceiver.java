@@ -37,6 +37,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
             context.startForegroundService(service);
         else
             context.startService(service);
+        SunnahAssistantUtil.updateHijriDateWidgets(context);
 
     }
 

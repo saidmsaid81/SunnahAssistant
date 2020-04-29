@@ -19,6 +19,10 @@ public class TimeDateUtil {
         return new SimpleDateFormat("EE", Locale.ENGLISH).format(timeInMilliseconds);
     }
 
+    public static String getFullNameOfTheDay(long timeInMilliseconds) {
+        return new SimpleDateFormat("EEEE", Locale.ENGLISH).format(timeInMilliseconds);
+    }
+
     public static int getDayDate(long timeInMilliseconds) {
         return Integer.parseInt(new SimpleDateFormat("dd", Locale.ENGLISH).format(timeInMilliseconds));
     }

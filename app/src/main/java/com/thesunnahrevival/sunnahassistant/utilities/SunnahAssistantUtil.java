@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.utilities;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -7,8 +9,13 @@ import android.net.Uri;
 import android.os.Build;
 
 import com.thesunnahrevival.sunnahassistant.BuildConfig;
+import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget;
+import com.thesunnahrevival.sunnahassistant.widgets.TodayRemindersWidget;
+import com.thesunnahrevival.sunnahassistant.widgets.TodaysRemindersWidgetDark;
+import com.thesunnahrevival.sunnahassistant.widgets.TodaysRemindersWidgetTransparent;
 
 import java.util.ArrayList;
 
@@ -136,6 +143,38 @@ public class SunnahAssistantUtil {
         ArrayList list = new ArrayList();
         list.add(initialSettings);
         return list;
+    }
+
+    public static void updateHijriDateWidgets(Context context) {
+        //Update Widgets
+        Intent widgetIntent = new Intent(context, HijriDateWidget.class);
+        widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+        // since it seems the onUpdate() is only fired on that:
+        int[] ids = AppWidgetManager.getInstance(context)
+                .getAppWidgetIds(new ComponentName(context, HijriDateWidget.class));
+
+        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        context.sendBroadcast(widgetIntent);
+    }
+
+    public static void updateTodayRemindersWidgets(Context context) {
+        //Update Widgets
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+        // since it seems the onUpdate() is only fired on that:
+        int[] ids = AppWidgetManager.getInstance(context)
+                .getAppWidgetIds(new ComponentName(context, TodayRemindersWidget.class));
+
+       appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView);
+
+        ids = AppWidgetManager.getInstance(context)
+                .getAppWidgetIds(new ComponentName(context, TodaysRemindersWidgetDark.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView);
+
+        ids = AppWidgetManager.getInstance(context)
+                .getAppWidgetIds(new ComponentName(context, TodaysRemindersWidgetTransparent.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView);
     }
 
 }
