@@ -4,10 +4,13 @@ package com.thesunnahrevival.sunnahassistant.utilities;
 import android.content.Context;
 import android.util.Log;
 
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
+
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -91,5 +94,13 @@ public class TimeDateUtil {
 
     public static String getMonthName(int month) {
         return new DateFormatSymbols().getMonths()[month];
+    }
+
+    public static String getHijriDate(){
+        Calendar hijriCalendar = new UmmalquraCalendar();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("", Locale.ENGLISH);
+        dateFormat.setCalendar(hijriCalendar);
+        dateFormat.applyPattern("EEEE d MMMM, y");
+        return dateFormat.format(hijriCalendar.getTime());
     }
 }

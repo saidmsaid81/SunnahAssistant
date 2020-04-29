@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,15 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 setTheme()
                 populateTheSpinner(settings.savedSpinnerPosition)
                 setupTheRecyclerView()
+                if (settings.isDisplayHijriDate) {
+                    mBinding.hijriDate.text = Html.fromHtml(
+                            "<b>Today's Date:</b>  " +
+                                    TimeDateUtil.getHijriDate() + " A.H")
+                    mBinding.hijriDate.visibility = View.VISIBLE
+                }
+                else
+                    mBinding.hijriDate.visibility = View.GONE
+
 
                 if (settings.isFirstLaunch) {
                     NotificationUtil.createNotificationChannels(context)

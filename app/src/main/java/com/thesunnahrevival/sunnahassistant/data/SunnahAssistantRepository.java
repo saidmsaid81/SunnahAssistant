@@ -7,7 +7,6 @@ import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.data.remote.AladhanRestApi;
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingRestApi;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
-import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.DELETE_HIJRI_DATA;
 import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.DELETE_LIST_OF_REMINDERS;
 import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.UPDATE_DELETED_CATEGORIES;
 import static com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask.UPDATE_NOTIFICATION_SETTINGS;
@@ -70,12 +68,8 @@ public class SunnahAssistantRepository {
     }
 
 
-    public void deleteHijriDate() {
-        new GeneralSaveDataAsyncTask(DELETE_HIJRI_DATA, mReminderDAO).execute(new ArrayList<Hijri>());
-    }
-
     public void deletePrayerTimesData() {
-        new GeneralSaveDataAsyncTask(DELETE_LIST_OF_REMINDERS, mReminderDAO).execute(new ArrayList<Hijri>());
+        new GeneralSaveDataAsyncTask(DELETE_LIST_OF_REMINDERS, mReminderDAO).execute(new ArrayList<>());
     }
 
     public void setReminderIsEnabled(Reminder reminder) {
@@ -111,9 +105,6 @@ public class SunnahAssistantRepository {
                mReminderDAO).execute(SunnahAssistantUtil.sunnahReminders());
     }
 
-    public LiveData<Hijri> getHijriDate() {
-        return mReminderDAO.getHijriDate(mDay);
-    }
 
     public LiveData<AppSettings> getAppSettings() {
         return mReminderDAO.getAppSettings();
@@ -135,10 +126,6 @@ public class SunnahAssistantRepository {
         list.add(isVibrate);
         list.add(priority);
         new GeneralSaveDataAsyncTask(UPDATE_NOTIFICATION_SETTINGS, mReminderDAO).execute(list);
-    }
-
-    public void fetchHijriData(String monthNumber, String year, int adjustment) {
-        mAladhanRestApi.fetchHijriData(monthNumber, year, adjustment);
     }
 
     public void fetchPrayerTimes(float latitude, float longitude, final String month, final String year, int method, int asrCalculationMethod, int latitudeAdjustmentMethod) {

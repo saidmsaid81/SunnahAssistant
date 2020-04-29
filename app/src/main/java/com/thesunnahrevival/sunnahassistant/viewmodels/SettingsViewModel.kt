@@ -29,27 +29,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun updateDisplayHijriDateSettings(isDisplay: Boolean) {
         settingsValue?.let {
             it.isDisplayHijriDate = isDisplay
-            if (isDisplay)
-                updateHijriDate(it.hijriOffSet, true)
-            else {
-                mRepository.deleteHijriDate()
-                updateSettings()
-            }
+            updateSettings()
         }
 
     }
 
-    fun updateHijriDate(offset: Int, forceUpdate: Boolean) {
-        settingsValue?.let {
-            if (it.hijriOffSet != offset || forceUpdate) {
-                it.hijriOffSet = offset
-                updateSettings()
-                mRepository.deleteHijriDate()
-                mRepository.fetchHijriData(
-                        month.toString(), TimeDateUtil.getYear(System.currentTimeMillis()), it.hijriOffSet)
-            }
-        }
-    }
 
     fun updateAutomaticPrayerTimeSettings(isEnabled: Boolean) {
         settingsValue?.let {
@@ -73,11 +57,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                     mRepository.fetchPrayerTimes(
                             it.latitude, it.longitude, it.toString(), TimeDateUtil.getYear(System.currentTimeMillis()),
                             it.method, it.asrCalculationMethod, it.latitudeAdjustmentMethod)
-                }
-                if (it.isDisplayHijriDate) {
-                    mRepository.deleteHijriDate()
-                    mRepository.fetchHijriData(
-                            month.toString(), TimeDateUtil.getYear(System.currentTimeMillis()), it.hijriOffSet)
                 }
                 //Save the Month in User Settings to prevent re-fetching the data the current month
                 updateSavedMonth()

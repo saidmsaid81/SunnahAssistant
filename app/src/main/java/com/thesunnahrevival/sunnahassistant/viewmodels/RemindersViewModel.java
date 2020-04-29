@@ -3,13 +3,10 @@ package com.thesunnahrevival.sunnahassistant.viewmodels;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.View;
 import android.widget.CompoundButton;
 
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService;
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
@@ -24,39 +21,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 
 public class RemindersViewModel extends AndroidViewModel implements ReminderItemInteractionListener {
 
     private boolean isRescheduleAtLaunch;
     private final SunnahAssistantRepository mRepository;
     public int month =  TimeDateUtil.getMonthNumber(System.currentTimeMillis());
-    private LiveData<HijriDateData.Hijri> mHijriDate;
 
     public RemindersViewModel(@NonNull Application application) {
         super(application);
         isRescheduleAtLaunch = true;
         mRepository = SunnahAssistantRepository.getInstance(application);
         mRepository.setDay(TimeDateUtil.getDayDate(System.currentTimeMillis()));
-        mHijriDate = mRepository.getHijriDate();
     }
 
     public void addInitialReminders(){
         mRepository.addInitialReminders();
-    }
-
-    public LiveData<Spanned> getHijriDateString() {
-        return Transformations.map(mHijriDate, hijriDateString -> {
-                    try {
-                        return Html.fromHtml(
-                                "<b>Today's Hijri Date:</b>  " +
-                                        hijriDateString.getDay() + " " + hijriDateString.getMonthName() + ", " +
-                                        hijriDateString.getYear() + " A.H");
-                    } catch (NullPointerException e) {
-                        return null;
-                    }
-                }
-        );
     }
 
     public void delete(Reminder reminder) {

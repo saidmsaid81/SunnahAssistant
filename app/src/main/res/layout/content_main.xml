@@ -38,9 +38,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_dimen"
                 android:layout_marginTop="@dimen/default_dimen"
-                android:text="@{viewmodel.hijriDateString}"
                 android:textSize="@dimen/default_text_size"
-                android:visibility="@{viewmodel.hijriDateString != null ? View.VISIBLE : View.GONE}" />
+                />
 
             <TextView
                 android:id="@+id/next"

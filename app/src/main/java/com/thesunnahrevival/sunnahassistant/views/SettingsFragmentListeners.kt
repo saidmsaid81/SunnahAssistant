@@ -68,7 +68,6 @@ open class SettingsFragmentListeners: Fragment(), AdapterView.OnItemClickListene
 
     override fun onClick(v: View?) {
         when(v?.id) {
-            R.id.change_hijri_offset -> showPopup(R.array.hijri_offsets, R.id.offset, R.id.offset)
             R.id.location_details -> {
                 val dialogFragment = EnterLocationDialogFragment()
                 fragmentManager?.let { dialogFragment.show(it, "dialog") }
@@ -108,7 +107,6 @@ open class SettingsFragmentListeners: Fragment(), AdapterView.OnItemClickListene
         val asrMethods = resources.getStringArray(R.array.asr_juristic_method)
         val latitudeMethods = resources.getStringArray(R.array.latitude_options)
         when(item?.groupId){
-            R.id.offset -> mViewModel.updateHijriDate(Integer.parseInt(item.title.toString()), false)
             R.id.calculation_details ->
                 mViewModel.updateCalculationMethod(calculationMethods.indexOf(item.title.toString()) + 1)
             R.id.asr_calculation_details -> mViewModel.updateAsrCalculationMethod(asrMethods.indexOf(item.title.toString()))

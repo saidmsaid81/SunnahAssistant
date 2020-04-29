@@ -46,11 +46,9 @@ internal suspend fun fetchDateFromDatabase(context: Context, appWidgetManager: A
     val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
     val appSettings = reminderDao.appSettingsValue
 
-    val hijriDate = if (appSettings.isShowHijriDateWidget)
-        reminderDao.getHijriDateValue(TimeDateUtil.getDayDate(System.currentTimeMillis())) else null
-    val hijriText = hijriDate?.let {
-        "${TimeDateUtil.getFullNameOfTheDay(System.currentTimeMillis())}, ${it.day} ${it.monthName}, ${it.year} A.H"
-    }
+    val hijriText = if (appSettings.isShowHijriDateWidget)
+        TimeDateUtil.getHijriDate() else null
+
 
 
     val nextReminder = if (appSettings.isShowNextReminderWidget)

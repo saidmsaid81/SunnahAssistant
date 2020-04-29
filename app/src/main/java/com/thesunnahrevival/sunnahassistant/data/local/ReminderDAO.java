@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.data.local;
 import android.net.Uri;
 
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 
 import java.util.List;
@@ -72,15 +71,6 @@ public interface ReminderDAO {
     Reminder getNextScheduledReminder(long offsetFromMidnight, String nameOfTheDay, int day, int month, int year);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addHijriDate(List<Hijri> hijriDate);
-
-    @Query("SELECT * FROM hijri_calendar WHERE id = :id")
-    LiveData<Hijri> getHijriDate(int id);
-
-    @Query("DELETE FROM hijri_calendar")
-    void deleteAllHijriData();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSettings(AppSettings settings);
 
     @Query("SELECT * FROM app_settings")
@@ -92,8 +82,6 @@ public interface ReminderDAO {
     @Update
     void updateAppSettings(AppSettings appSettings);
 
-    @Query("SELECT * FROM hijri_calendar WHERE id = :id")
-    Hijri getHijriDateValue(int id);
 
     @Query("SELECT showNextReminderNotification FROM app_settings")
     boolean getIsForegroundEnabled();

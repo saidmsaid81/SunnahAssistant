@@ -52,6 +52,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
     implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
+    implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version:'1.1.9'
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     kapt "androidx.room:room-compiler:$room_version"
     testImplementation "junit:junit:$junit_version"
