@@ -47,6 +47,12 @@ public interface ReminderDAO {
     @Query("SELECT * FROM reminders_table WHERE frequency == 'One Time'")
     LiveData<List<Reminder>> getOneTimeReminders();
 
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%') AND isEnabled ORDER BY timeInSeconds")
+    List<Reminder> getRemindersOnDayValue(String nameOfTheDay, int day, int month, int year);
+
+    @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND day == :day) ORDER BY timeInSeconds")
+    List<Reminder> getPrayerTimesValue(int day);
+
     @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE id ==:id")
     void setEnabled(int id, boolean isEnabled);
 
@@ -62,7 +68,7 @@ public interface ReminderDAO {
     @Query("DELETE FROM reminders_table WHERE category == 'Prayer' ")
     void deleteAllPrayerTimes();
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%') AND isEnabled ORDER BY isEnabled DESC, timeInSeconds")
     Reminder getNextScheduledReminder(long offsetFromMidnight, String nameOfTheDay, int day, int month, int year);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -86,6 +92,8 @@ public interface ReminderDAO {
     @Update
     void updateAppSettings(AppSettings appSettings);
 
+    @Query("SELECT * FROM hijri_calendar WHERE id = :id")
+    Hijri getHijriDateValue(int id);
 
     @Query("SELECT showNextReminderNotification FROM app_settings")
     boolean getIsForegroundEnabled();
@@ -95,5 +103,8 @@ public interface ReminderDAO {
 
     @Query("UPDATE app_settings SET notificationToneUri =:notificationToneUri, isVibrate =:isVibrate, priority =:priority" )
     void updateNotificationSettings(Uri notificationToneUri, boolean isVibrate, int priority);
+
+    @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextReminder" )
+    void updateWidgetSettings(boolean isShowHijriDateWidget, boolean isDisplayNextReminder);
 
 }

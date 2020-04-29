@@ -58,7 +58,6 @@ public class ReminderManager {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         AlarmManager.AlarmClockInfo alarm = new AlarmManager.AlarmClockInfo(calculateDelayFromMidnight(timeInMilliseconds), null);
         alarmManager.setAlarmClock(alarm, pendingIntent);
-
     }
 
     private long calculateDelayFromMidnight(long timeInMilliseconds) {
@@ -78,13 +77,5 @@ public class ReminderManager {
 
     }
 
-//    /**
-//     * Method for cancelling scheduled notifications
-//     */
-//    public void cancelScheduledReminder(Context context, int notificationId, String title, String text, String category) {
-//        PendingIntent pendingIntent = createNotificationPendingIntent(context, notificationId, title, text, category);
-//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.cancel(pendingIntent);
-//    }
 
 }

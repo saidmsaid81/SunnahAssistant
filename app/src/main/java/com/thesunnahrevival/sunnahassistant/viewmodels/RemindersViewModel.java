@@ -88,6 +88,9 @@ public class RemindersViewModel extends AndroidViewModel implements ReminderItem
                 cancelScheduledReminder(reminder);
         }
         isRescheduleAtLaunch = false;
+
+        SunnahAssistantUtil.updateHijriDateWidgets(getApplication());
+        SunnahAssistantUtil.updateTodayRemindersWidgets(getApplication());
     }
 
     @Override
