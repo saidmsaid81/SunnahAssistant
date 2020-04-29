@@ -1,9 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.remote;
 
 import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Hijri;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData.Month;
 import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimes;
 import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimes.Timings;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
@@ -47,25 +44,6 @@ public class AladhanRestApi {
         return instance;
     }
 
-    public void fetchHijriData(String monthNumber, String year, int adjustment) {
-        errorMessages.setValue("Refreshing Hijri date data...");
-        mAladhanInterface.getHijriCalendar(monthNumber, year, adjustment).enqueue(new Callback<HijriDateData>() {
-            @Override
-            public void onResponse(@NonNull Call<HijriDateData> call, @NonNull Response<HijriDateData> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                ProcessAladhanData.processHijriDateData(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<HijriDateData> call, @NonNull Throwable t) {
-                errorMessages.setValue("Error fetching Hijri Date. Please Check Your Internet Connection");
-            }
-        });
-
-    }
-
 
     public void fetchPrayerTimes(float latitude, float longitude, final String month, final String year, int method, int asrCalculationMethod, int latitudeAdjustmentMethod) {
         errorMessages.setValue("Refreshing Prayer Times data...");
@@ -94,49 +72,6 @@ public class AladhanRestApi {
         Inner Class for processing fetched data
      */
     private static class ProcessAladhanData {
-
-        private static void processHijriDateData(HijriDateData hijriDateData) {
-            int size = 0;
-            if (hijriDateData != null) {
-                size = hijriDateData.getData().size();
-            }
-            ArrayList<Hijri> list = new ArrayList<>();
-            ArrayList importantMonthlyReminders = new ArrayList();
-            for (int i = 0; i < size; i++) {
-                String day = hijriDateData.getData().get(i).getHijri().getDay();
-                Month month = hijriDateData.getData().get(i).getHijri().getMonth();
-                String year = hijriDateData.getData().get(i).getHijri().getYear();
-
-                Hijri hijri = new Hijri(day, month.getEn(), year);
-                hijri.setId(i + 1);
-                list.add(hijri);
-
-                //Add the important monthly reminders
-                int calendarDay = Integer.parseInt(day);
-                if ((calendarDay >= 13) && (calendarDay <= 15) && !month.getEn().matches("Ramaḍān")){
-                    if (month.getEn().matches("Dhū al-Ḥijjah") && calendarDay == 13)
-                        continue;
-                    importantMonthlyReminders.add(
-                            SunnahAssistantUtil.createReminder(
-                                    -calendarDay,
-                                    "Fasting Ayyamul Beidh (White Days)",
-                                    "<a href=\"https://telegra.ph/Revive-A-SunnahFasting-White-Days-02-09\">Read more</a> on the importance of fasting white days",
-                                    SunnahAssistantUtil.SUNNAH,
-                                    SunnahAssistantUtil.ONE_TIME,
-                                    TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
-                                    Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())),
-                                    hijri.getId(),
-                                    new ArrayList<>()
-                            )
-                    );
-                }
-            }
-
-            new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_HIJRI_DATA, mReminderDAO).execute(list);
-            new GeneralSaveDataAsyncTask(GeneralSaveDataAsyncTask.ADD_LIST_OF_REMINDERS,
-                    mReminderDAO).execute(importantMonthlyReminders);
-            errorMessages.setValue("Successful");
-        }
 
         private static void processPrayerTimesData(PrayerTimes prayerTimes) {
             ArrayList listOfPrayerTimes = new ArrayList();

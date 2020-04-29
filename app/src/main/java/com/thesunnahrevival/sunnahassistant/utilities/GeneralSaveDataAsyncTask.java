@@ -1,9 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.utilities;
 
-import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO;
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
@@ -12,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneralSaveDataAsyncTask extends AsyncTask<List, Void, Void> {
-    public static final int ADD_HIJRI_DATA = 0;
-    public static final int DELETE_HIJRI_DATA = 1;
     public static final int ADD_LIST_OF_REMINDERS = 2;
     public static final int DELETE_LIST_OF_REMINDERS = 4;
     public static final int UPDATE_SETTINGS = 5;
@@ -35,17 +31,6 @@ public class GeneralSaveDataAsyncTask extends AsyncTask<List, Void, Void> {
     @Override
     protected Void doInBackground(List... lists) {
         switch (mId) {
-            case ADD_HIJRI_DATA:
-                try {
-                    mReminderDAO.addHijriDate(lists[0]);
-                } catch (SQLiteConstraintException e) {
-                    Log.v("SQLite Exception", "Duplicate Value");
-                }
-
-                break;
-            case DELETE_HIJRI_DATA:
-                mReminderDAO.deleteAllHijriData();
-                break;
             case ADD_LIST_OF_REMINDERS:
                 mReminderDAO.addRemindersList(lists[0]);
                 break;
@@ -73,9 +58,7 @@ public class GeneralSaveDataAsyncTask extends AsyncTask<List, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (mId == DELETE_HIJRI_DATA)
-            hijriDeleteTaskComplete = true;
-        else if (mId == DELETE_LIST_OF_REMINDERS)
+        if (mId == DELETE_LIST_OF_REMINDERS)
             prayerDeleteTaskComplete = true;
     }
 

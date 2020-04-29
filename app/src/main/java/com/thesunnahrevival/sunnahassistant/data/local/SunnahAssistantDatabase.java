@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.data.local;
 import android.content.Context;
 
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.model.HijriDateData;
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter;
 import com.thesunnahrevival.sunnahassistant.utilities.GeneralSaveDataAsyncTask;
@@ -17,7 +16,7 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Reminder.class, HijriDateData.Hijri.class, AppSettings.class}, version = 2)
+@Database(entities = {Reminder.class, AppSettings.class}, version = 2)
 @TypeConverters(RoomTypeConverter.class)
 public abstract class SunnahAssistantDatabase extends RoomDatabase {
 

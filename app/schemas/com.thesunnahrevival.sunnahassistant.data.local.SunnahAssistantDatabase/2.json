@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "1994a7800657b9a1c1caff7da7a14c6b",
+    "identityHash": "99681ce980070ede1ae8197a261adb1a",
     "entities": [
       {
         "tableName": "reminders_table",
@@ -77,44 +77,6 @@
           {
             "fieldPath": "customScheduleDays",
             "columnName": "customScheduleDays",
-            "affinity": "TEXT",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "hijri_calendar",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `monthName` TEXT, `day` TEXT, `year` TEXT)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "monthName",
-            "columnName": "monthName",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "day",
-            "columnName": "day",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "year",
-            "columnName": "year",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -284,7 +246,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1994a7800657b9a1c1caff7da7a14c6b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '99681ce980070ede1ae8197a261adb1a')"
     ]
   }
 }

@@ -44,19 +44,6 @@
             android:visibility="@{settings.displayHijriDate ? View.VISIBLE : View.GONE}"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/separatorColor"
-                android:text="@string/change_hijri_date_by" />
-
-            <TextView
-                android:id="@+id/offset"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{String.format(@string/days_label_hijri, settings.hijriOffSet)}"/>
-
-
         </LinearLayout>
 
 
