@@ -42,6 +42,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     private int mMonth = 12;
     private int mYear = 0;
     private ArrayAdapter<String> mCategoryAdapter;
+    private ArrayList<String> mCheckedDays;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,15 +77,20 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             mDay = mReminder.getDay();
             mMonth = mReminder.getMonth();
             mYear = mReminder.getYear();
+            DatePickerFragment.mDay = mDay;
+            DatePickerFragment.mMonth = mMonth;
+            DatePickerFragment.mYear = mYear;
+        }
+        else
+        {
+            DatePickerFragment.mDay = 0;
+            DatePickerFragment.mMonth = 12;
+            DatePickerFragment.mYear = 0;
         }
         mBinding.timePicker.setOnClickListener(this);
         mBinding.saveButton.setOnClickListener(this);
         mBinding.moreDetailsTextView.setOnClickListener(this);
 
-        //Reset all static value
-        DatePickerFragment.mDay = 0;
-        DatePickerFragment.mYear = 0;
-        DatePickerFragment.mMonth = 12;
         return mBinding.getRoot();
     }
 
@@ -138,9 +144,6 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
                     timePickerFragment.show(fm, "timePicker");
                 }
                 else {
-                    DatePickerFragment.mDay = mDay;
-                    DatePickerFragment.mMonth = mMonth;
-                    DatePickerFragment.mYear = mYear;
                     DialogFragment datePickerFragment = new DatePickerFragment();
                     FragmentManager fm = getActivity().getSupportFragmentManager();
                     datePickerFragment.show(fm, "datePicker");
@@ -148,7 +151,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             }
         }
         if (v.getId() == R.id.save_button)
-            save();
+            validateDetails();
 
         else if (v.getId() == R.id.more_details_text_view) {
             //Toggle More details view
@@ -160,60 +163,31 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         }
     }
 
-    private void save() {
+    private void validateDetails() {
         if (TextUtils.isEmpty(mBinding.reminderEditText.getText().toString().trim())) {
             Toast.makeText(getContext(), getString(R.string.name_cannot_be_empty), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ArrayList<String> checkedDays = new ArrayList<>();
+        mCheckedDays = new ArrayList<>();
         mDay = 0;
-        if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.WEEKLY)) {
-            if (mSelectedDaysAdapter.getCheckedDays().isEmpty()) {
-                Toast.makeText(getContext(), getString(R.string.select_atleast_one_day), Toast.LENGTH_LONG).show();
-                mBinding.selectDayError.setVisibility(View.VISIBLE);
-                return;
-            }
-            checkedDays = mSelectedDaysAdapter.getCheckedDays();
-            mDay = -1; //To distinguish from daily and monthly reminders
-        }
-        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
-            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 || DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null || TimePickerFragment.timeSet.getValue().matches("") ) {
-                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
-                return;
-            }
-            mDay = DatePickerFragment.mDay;
-            mMonth = 12;
-            mYear = 0;
-        }
-        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.ONE_TIME)){
-            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 || DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null || TimePickerFragment.timeSet.getValue().matches(TimeDateUtil.NOT_SET) ) {
-                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
-                return;
-            }
-            mDay = DatePickerFragment.mDay;
-            mMonth = DatePickerFragment.mMonth;
-            mYear = DatePickerFragment.mYear;
+        mMonth = 12;
+        mYear = 0;
+        if(!validateFrequency()){
+            return;
         }
 
+        //Validate Category
         String category = (String) mBinding.categorySpinner.getSelectedItem();
         if (category.matches("\\+ Create New Category")){
             category = mReminder.getCategory();
         }
 
-        Reminder newReminder = new Reminder(mBinding.reminderEditText.getText().toString().trim(),
-                mBinding.additionalDetails.getText().toString().trim(),
-                TimePickerFragment.timeSet.getValue() != null ?
-                        TimeDateUtil.getTimestampInSeconds(TimePickerFragment.timeSet.getValue()) :
-                        null,
-                category,
-                (String) mBinding.frequencySpinner.getSelectedItem(),
-                false, mDay,
-                mMonth, mYear, 0,
-                checkedDays
-        );
-        newReminder.setId(mReminder.getId());
-        newReminder.setOffset(Integer.parseInt(mBinding.prayerOffsetValue.getText().toString().trim()));
+        Reminder newReminder = createNewReminder(category);
+        saveReminder(newReminder);
+    }
+
+    private void saveReminder(Reminder newReminder) {
         if(!mBinding.reminderTime.getText().toString().matches(TimeDateUtil.NOT_SET)){
             mViewModel.scheduleReminder(newReminder);
         }
@@ -227,9 +201,67 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             } else
                 Toast.makeText(getContext(), getString(R.string.no_changes), Toast.LENGTH_SHORT).show();
             dismiss();
-        } else {
+        }
+        else {
             Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private Reminder createNewReminder(String category) {
+        Reminder newReminder = new Reminder(mBinding.reminderEditText.getText().toString().trim(),
+                mBinding.additionalDetails.getText().toString().trim(),
+                TimePickerFragment.timeSet.getValue() != null ?
+                        TimeDateUtil.getTimestampInSeconds(TimePickerFragment.timeSet.getValue()) :
+                        null,
+                category,
+                (String) mBinding.frequencySpinner.getSelectedItem(),
+                false, mDay,
+                mMonth, mYear, 0,
+                mCheckedDays
+        );
+        newReminder.setId(mReminder.getId());
+        newReminder.setOffset(Integer.parseInt(mBinding.prayerOffsetValue.getText().toString().trim()));
+        return newReminder;
+    }
+
+    private boolean validateFrequency(){
+        if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.WEEKLY)) {
+            if (mSelectedDaysAdapter.getCheckedDays().isEmpty()) {
+                //error
+                Toast.makeText(getContext(), getString(R.string.select_atleast_one_day), Toast.LENGTH_LONG).show();
+                mBinding.selectDayError.setVisibility(View.VISIBLE);
+                return false;
+            }
+            mCheckedDays = mSelectedDaysAdapter.getCheckedDays();
+            mDay = -1; //To distinguish from daily and monthly reminders
+            mYear = 0;
+            mMonth = 12;
+        }
+
+        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
+            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 ||
+                    DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null ||
+                    TimePickerFragment.timeSet.getValue().matches("") )
+            {
+                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            mDay = DatePickerFragment.mDay;
+        }
+        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.ONE_TIME))
+        {
+            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 ||
+                    DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null ||
+                    TimePickerFragment.timeSet.getValue().matches(TimeDateUtil.NOT_SET) )
+            {
+                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            mDay = DatePickerFragment.mDay;
+            mMonth = DatePickerFragment.mMonth;
+            mYear = DatePickerFragment.mYear;
+        }
+        return true;
     }
 
     @Override
