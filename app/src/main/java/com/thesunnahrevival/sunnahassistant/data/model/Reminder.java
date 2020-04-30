@@ -3,6 +3,8 @@ package com.thesunnahrevival.sunnahassistant.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
@@ -47,16 +49,16 @@ public class Reminder implements Parcelable {
      * @param reminderName the name of the reminder
      * @param reminderInfo info on the reminder
      * @param timeInSeconds Hours passed since last midnight in seconds for example (21:00) will be 21 * 3600 which is equal to 75600
-     * @param category Either of the three categories (Sunnah, Prayer or Other)
-     * @param frequency Either of the three frequencies (Daily, Weekly or Monthly)
+     * @param category Reminder Category
+     * @param frequency Either of the four frequencies (Daily, Weekly, Monthly, One Time)
      * @param isEnabled True if reminder is enabled, false if reminder is disabled
-     * @param day  Day in the month. If its daily pass 0, if weekly pass -1.
+     * @param day  Day in the month for one time reminders and monthly reminders If its daily or weekly pass null.
      * @param month Only for one time reminders(Value should be from 0-11) . Pass null if daily, weekly or monthly.
      * @param year Only for one time reminders(Value should be the year that reminder should trigger). Pass null if daily, weekly or monthly.
      * @param offset Offset for the reminder to trigger either +/- number.
      * @param customScheduleDays Used for weekly reminders. Should Contain the name of the days represented as three characters Such as Sunday will be Sun. Pass null if its not weekly.
      */
-    public Reminder(String reminderName, String reminderInfo, @Nullable Long timeInSeconds, String category, String frequency, boolean isEnabled, int day, @Nullable Integer month, @Nullable Integer year, int offset, @Nullable ArrayList<String> customScheduleDays) {
+    public Reminder(String reminderName, String reminderInfo, @Nullable Long timeInSeconds, String category, String frequency, boolean isEnabled, @Nullable Integer day, @Nullable Integer month, @Nullable Integer year, int offset, @Nullable ArrayList<String> customScheduleDays) {
         this.reminderName = reminderName;
         this.reminderInfo = reminderInfo;
         if (month != null)
@@ -73,7 +75,14 @@ public class Reminder implements Parcelable {
             this.timeInSeconds = 172800; //48hrs
         this.category = category;
         this.frequency = frequency;
-        this.day = day;
+        if (day != null)
+            this.day = day;
+        else {
+            if (frequency.matches(SunnahAssistantUtil.DAILY))
+                this.day = 0;
+            else if (frequency.matches(SunnahAssistantUtil.WEEKLY))
+                this.day = -1;
+        }
         this.offset = offset;
         this.isEnabled = isEnabled;
         if (customScheduleDays != null)
