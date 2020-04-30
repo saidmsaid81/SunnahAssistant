@@ -22,9 +22,6 @@ public class TimeDateUtil {
         return new SimpleDateFormat("EE", Locale.ENGLISH).format(timeInMilliseconds);
     }
 
-    public static String getFullNameOfTheDay(long timeInMilliseconds) {
-        return new SimpleDateFormat("EEEE", Locale.ENGLISH).format(timeInMilliseconds);
-    }
 
     public static int getDayDate(long timeInMilliseconds) {
         return Integer.parseInt(new SimpleDateFormat("dd", Locale.ENGLISH).format(timeInMilliseconds));
@@ -56,16 +53,6 @@ public class TimeDateUtil {
         } catch (ParseException e) {
             return 0;
         }
-    }
-
-    public static long getMillisecondsFromDate(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-        try {
-            return sdf.parse(date).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public static long getTimestampInSeconds(String timeString) {
