@@ -129,20 +129,12 @@ public class SunnahAssistantUtil {
         return reminder;
     }
 
-    public static ArrayList<Reminder> demoReminder(){
-        ArrayList<Reminder> listOfReminders = new ArrayList<>();
-        listOfReminders.add(
-                createReminder(-100, "Demo Reminder", "Demo", OTHER, DAILY, null, null , null)
-        );
-        return listOfReminders;
+    public static Reminder demoReminder(){
+        return createReminder(-100, "Demo Reminder", "Demo", OTHER, DAILY, null, null , null);
     }
 
-    public static ArrayList initialSettings() {
-        AppSettings initialSettings = new AppSettings(
-                "Location cannot be empty", (float) 0, (float) 0, 3, 0, false);
-        ArrayList list = new ArrayList();
-        list.add(initialSettings);
-        return list;
+    public static AppSettings initialSettings() {
+        return new AppSettings("Location cannot be empty", (float) 0, (float) 0, 3, 0, false);
     }
 
     public static void updateHijriDateWidgets(Context context) {

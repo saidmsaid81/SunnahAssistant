@@ -31,6 +31,10 @@ import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListener, View.OnClickListener {
 
@@ -257,20 +261,30 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     private fun filterCategories(myActivity: FragmentActivity, data: ArrayList<Reminder>) {
         mainActivity.mFilteredReminderCategories?.observe(this, Observer { categoryToDisplay ->
             myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.GONE
-
+            mBinding.progressBar.visibility = View.VISIBLE
             //Refresh the RecyclerView
             if (!categoryToDisplay.matches("".toRegex())) {
-                val filteredData = data.filter { it.category.matches(categoryToDisplay.toRegex()) }
-                when {
-                    filteredData.isNotEmpty() -> {
-                        mReminderRecyclerAdapter.setData(filteredData, mBinding.spinner.selectedItemPosition)
-                    }
-                    else -> {
-                        mReminderRecyclerAdapter.setData(listOf(), mBinding.spinner.selectedItemPosition)
-                        myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
+                //Filter data in background thread because if the list is very large it may slow down the main thread
+                CoroutineScope(Dispatchers.Default).launch {
+                    val filteredData = data.filter { it.category.matches(categoryToDisplay.toRegex()) }
+                    withContext(Dispatchers.Main) {
+                        mBinding.progressBar.visibility = View.GONE
+                        when {
+                            filteredData.isNotEmpty() -> {
+                                mReminderRecyclerAdapter.setData(filteredData, mBinding.spinner.selectedItemPosition)
+                                myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.GONE
+                            }
+                            else -> {
+                                mReminderRecyclerAdapter.setData(listOf(), mBinding.spinner.selectedItemPosition)
+                                myActivity.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
+                            }
+                        }
                     }
                 }
-            } else {
+            }
+
+            else {
+                mBinding.progressBar.visibility = View.GONE
                 mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
             }
         })

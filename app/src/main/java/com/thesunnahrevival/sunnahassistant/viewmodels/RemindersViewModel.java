@@ -32,7 +32,6 @@ public class RemindersViewModel extends AndroidViewModel implements ReminderItem
         super(application);
         isRescheduleAtLaunch = true;
         mRepository = SunnahAssistantRepository.getInstance(application);
-        mRepository.setDay(TimeDateUtil.getDayDate(System.currentTimeMillis()));
     }
 
     public void addInitialReminders(){

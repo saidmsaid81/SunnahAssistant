@@ -229,7 +229,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private fun updateSettings() {
         isSettingsUpdated = true
-        mRepository.updateAppSettings(settingsValue)
+        settingsValue?.let { mRepository.updateAppSettings(it) }
     }
 
     val isDeviceOffline: Boolean
