@@ -38,9 +38,9 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     private Reminder mReminder;
     private RemindersViewModel mViewModel;
     private SelectDaysSpinnerAdapter mSelectedDaysAdapter;
-    private int mDay = 0;
-    private int mMonth = 12;
-    private int mYear = 0;
+    private Integer mDay = 0;
+    private Integer mMonth = 12;
+    private Integer mYear = 0;
     private ArrayAdapter<String> mCategoryAdapter;
     private ArrayList<String> mCheckedDays;
 
@@ -170,9 +170,9 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         }
 
         mCheckedDays = new ArrayList<>();
-        mDay = 0;
-        mMonth = 12;
-        mYear = 0;
+        mDay = null;
+        mMonth = null;
+        mYear = null;
         if(!validateFrequency()){
             return;
         }
@@ -233,9 +233,6 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
                 return false;
             }
             mCheckedDays = mSelectedDaysAdapter.getCheckedDays();
-            mDay = -1; //To distinguish from daily and monthly reminders
-            mYear = 0;
-            mMonth = 12;
         }
 
         else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
