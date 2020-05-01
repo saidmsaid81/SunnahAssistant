@@ -29,6 +29,8 @@ import com.thesunnahrevival.sunnahassistant.utilities.NotificationUtil
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel
+import com.thesunnahrevival.sunnahassistant.views.SettingsActivity.Companion.FRAGMENT_TO_SHOW
+import com.thesunnahrevival.sunnahassistant.views.SettingsActivity.Companion.PRAYER_CONSTANT
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener
 import kotlinx.coroutines.CoroutineScope
@@ -355,7 +357,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             R.id.sunnah_reminders_link -> mViewModel.addInitialReminders()
             R.id.add_prayer_time_alerts -> {
                 val intent = Intent(context, SettingsActivity::class.java)
-                intent.putExtra("fragmentToShow", "prayer")
+                intent.putExtra(FRAGMENT_TO_SHOW, PRAYER_CONSTANT)
                 startActivity(intent)
             }
         }

@@ -15,8 +15,12 @@ import android.os.Build;
 
 import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.views.MainActivity;
+import com.thesunnahrevival.sunnahassistant.views.SettingsActivity;
 
 import androidx.core.app.NotificationCompat;
+
+import static com.thesunnahrevival.sunnahassistant.views.SettingsActivity.FRAGMENT_TO_SHOW;
+import static com.thesunnahrevival.sunnahassistant.views.SettingsActivity.NOTIFICATION_SETTINGS;
 
 public class NotificationUtil {
 
@@ -37,11 +41,13 @@ public class NotificationUtil {
         // This image is used as the notification's large icon (thumbnail).
         final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.logo);
         Intent intent = new Intent(context, MainActivity.class);
-        Intent shareIntent = new Intent(context, MainActivity.class);
-        shareIntent.putExtra("show_share_menu", "share_menu");
-        shareIntent.putExtra("title", title);
-        shareIntent.putExtra("text", text);
-        PendingIntent activity = PendingIntent.getActivity(context, 0, intent, 0);
+        Intent stickyNotificationIntent = new Intent(context, SettingsActivity.class);
+        stickyNotificationIntent.putExtra(FRAGMENT_TO_SHOW, NOTIFICATION_SETTINGS);
+        PendingIntent activity;
+        if (priority != -1)
+            activity = PendingIntent.getActivity(context, 0, intent, 0);
+        else
+            activity = PendingIntent.getActivity(context, 0, stickyNotificationIntent, 0);
 
         NotificationCompat.Builder builder;
         builder = new NotificationCompat.Builder(context, category)
@@ -58,15 +64,7 @@ public class NotificationUtil {
                 .setAutoCancel(true);
 
         if (priority != -1){
-            builder = builder.addAction(
-                    0,
-                    "Remind Others",
-                    PendingIntent.getActivity(
-                            context,
-                            0,
-                            shareIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setLargeIcon(picture)
+            builder = builder.setLargeIcon(picture)
                     .setSound(notificationToneUri);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
