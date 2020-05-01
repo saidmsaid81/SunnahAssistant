@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.local;
 
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
 
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
@@ -61,9 +62,18 @@ public interface ReminderDAO {
     @Query("UPDATE reminders_table SET `offset` =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo WHERE reminderName == :prayerName")
     void updatePrayerTimeDetails(String prayerName, String newPrayerName, String reminderInfo, int offsetValue);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void addRemindersList(List<Reminder> remindersList);
 
+    default String addRemindersListIfNotExists(List<Reminder> remindersList) {
+        try {
+            addRemindersList(remindersList);
+        }
+        catch (SQLiteConstraintException e){
+            return "Reminders Already Added";
+        }
+        return "Successfully Added";
+    }
     @Query("DELETE FROM reminders_table WHERE category == 'Prayer' ")
     void deleteAllPrayerTimes();
 

@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.data
 
 import android.app.Application
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
@@ -15,8 +16,9 @@ import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SunnahAssistantRepository private constructor(application: Application){
+class SunnahAssistantRepository private constructor(val application: Application){
     private val mReminderDAO: ReminderDAO = SunnahAssistantDatabase.getInstance(application).reminderDao()
     private val mGeocodingRestApi = GeocodingRestApi.getInstance()
     private var mDay = TimeDateUtil.getDayDate(System.currentTimeMillis())
@@ -97,7 +99,10 @@ class SunnahAssistantRepository private constructor(application: Application){
 
     fun addInitialReminders() {
         CoroutineScope(Dispatchers.IO).launch {
-            mReminderDAO.addRemindersList(SunnahAssistantUtil.sunnahReminders())
+            val messages = mReminderDAO.addRemindersListIfNotExists(SunnahAssistantUtil.sunnahReminders())
+            withContext(Dispatchers.Main){
+                Toast.makeText(application, messages, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
