@@ -169,8 +169,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_delete_item" />
-                            <entry key="sourceFile" value="$USER_HOME$/Downloads/tip.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_alarm" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/ic_alarm.svg" />
                           </map>
                         </option>
                       </PersistentState>
