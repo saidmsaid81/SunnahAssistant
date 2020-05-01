@@ -77,8 +77,8 @@
     <string name="facebook_logo">Facebook logo</string>
     <string name="no_email_app_installed">No Email App Installed</string>
     <string name="contact_us">Contact Us via E-mail</string>
-    <string name="change_theme">Tap to Change Theme</string>
-    <string name="change_theme_description">Dark Theme or Light Theme</string>
+    <string name="change_theme">Tap to Change Theme or Layout</string>
+    <string name="change_theme_description">Themes:- Dark Theme or Light Theme\nLayout:- Expanded or Condensed</string>
     <string name="add_new_reminder">Add Reminder</string>
     <string name="add_new_reminder_description">Tap To add any Reminder</string>
     <string name="edit_reminder_description">~ Swipe Right or Left to delete Reminder\n~ Tap To edit Reminder\n~ Tap the bell icon (if time is set) to enable reminder</string>
