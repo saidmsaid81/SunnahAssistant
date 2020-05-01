@@ -243,6 +243,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             mBinding.nextReminder = null
             mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
             myActivity?.findViewById<View>(R.id.all_done_view)?.visibility = View.VISIBLE
+            mBinding.progressBar.visibility = View.GONE
         }
         attachListenersToRecommendedReminders(myActivity)
 
