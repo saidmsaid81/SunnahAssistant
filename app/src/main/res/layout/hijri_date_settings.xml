@@ -44,6 +44,14 @@
             android:visibility="@{settings.displayHijriDate ? View.VISIBLE : View.GONE}"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_info"
+                android:paddingTop="@dimen/default_dimen"
+                android:textSize="12sp"
+                android:drawablePadding="@dimen/default_dimen"      android:text="@string/hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx"/>
+
         </LinearLayout>
 
 
