@@ -70,23 +70,21 @@ public class NextReminderService extends Service {
         @Override
         protected void onPostExecute(Reminder reminder) {
             String title;
-            String text;
+            String text = "Tap to disable this Sticky Notification";
             Uri notificationToneUri = mSettings.getNotificationToneUri();
             boolean isVibrate = mSettings.isVibrate();
 
             if (reminder != null && reminder.isEnabled()) {
-                title = "Next Reminder Today at "
+                title = "Next Reminder: " + reminder.getReminderName()
+                        + " at "
                         + TimeDateUtil.formatTimeInMilliseconds(
                         mServiceWeakReference.get(),
                         reminder.getTimeInMilliSeconds());
-
-                text = reminder.getReminderName();
                 ReminderManager.getInstance().scheduleReminder(
                         mServiceWeakReference.get(),  "Reminder",
                         reminder.getReminderName(), reminder.getTimeInMilliSeconds(), notificationToneUri, isVibrate);
             } else {
-                title = "No Scheduled Reminder Today";
-                text = "Tap to view other day reminders";
+                title = "No Upcoming Reminder Today";
                 ReminderManager.getInstance().scheduleReminder(
                         mServiceWeakReference.get(),  "", "",
                         -TimeZone.getDefault().getRawOffset() + 10, notificationToneUri, isVibrate
