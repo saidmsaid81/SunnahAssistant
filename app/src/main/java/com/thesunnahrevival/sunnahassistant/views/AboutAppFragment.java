@@ -29,9 +29,6 @@ public class AboutAppFragment extends BottomSheetDialogFragment implements View.
         TextView appIconCredit = view.findViewById(R.id.app_icon_credit);
         appIconCredit.setText(Html.fromHtml(getString(R.string.app_icon_credit)));
         appIconCredit.setMovementMethod(LinkMovementMethod.getInstance());
-        TextView otherIconCredit = view.findViewById(R.id.other_icon_credit);
-        otherIconCredit.setText(Html.fromHtml(getString(R.string.other_icon_credit)));
-        otherIconCredit.setMovementMethod(LinkMovementMethod.getInstance());
         view.findViewById(R.id.twitter).setOnClickListener(this);
         view.findViewById(R.id.instagram).setOnClickListener(this);
         view.findViewById(R.id.telegram).setOnClickListener(this);

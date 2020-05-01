@@ -41,14 +41,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="12sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingBottom="@dimen/default_dimen"
-            android:text="@string/developed_by_tsr_apps"
-            android:textSize="12sp" />
-
     </LinearLayout>
 </layout>
