@@ -94,6 +94,11 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                     startActivity(Intent(activity, WelcomeActivity::class.java))
                     return@Observer
                 }
+                else if (settings.isAfterUpdate) {
+                    NotificationUtil.createNotificationChannels(context)
+                    mainActivity.mViewModel.updateIsAfterUpdate(false)
+                }
+
                 if (!mIsFetchError && !mIsFirstLaunch )
                     mainActivity.mViewModel.fetchAllAladhanData()
 

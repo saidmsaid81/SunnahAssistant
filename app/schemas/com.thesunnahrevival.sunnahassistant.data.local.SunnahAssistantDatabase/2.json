@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "99681ce980070ede1ae8197a261adb1a",
+    "identityHash": "edd2ae8a9d7adb1f88764ea90e4304f4",
     "entities": [
       {
         "tableName": "reminders_table",
@@ -92,7 +92,7 @@
       },
       {
         "tableName": "app_settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `formattedAddress` TEXT, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `categories` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `formattedAddress` TEXT, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `categories` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -227,6 +227,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "isAfterUpdate",
+            "columnName": "isAfterUpdate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "categories",
             "columnName": "categories",
             "affinity": "TEXT",
@@ -246,7 +252,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '99681ce980070ede1ae8197a261adb1a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edd2ae8a9d7adb1f88764ea90e4304f4')"
     ]
   }
 }

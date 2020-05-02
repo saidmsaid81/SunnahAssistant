@@ -36,6 +36,7 @@ public class AppSettings {
     private int latitudeAdjustmentMethod = 3;
     private boolean isShowHijriDateWidget = true;
     private boolean isShowNextReminderWidget = true;
+    private boolean isAfterUpdate = false;
     private HashSet<String> categories = new HashSet<>( Arrays.asList(SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.SUNNAH, SunnahAssistantUtil.PRAYER, SunnahAssistantUtil.OTHER));
 
     public AppSettings(String formattedAddress, float latitude, float longitude, int method, int asrCalculationMethod, boolean isAutomatic) {
@@ -229,5 +230,13 @@ public class AppSettings {
 
     public void setShowNextReminderWidget(boolean showNextReminderWidget) {
         isShowNextReminderWidget = showNextReminderWidget;
+    }
+
+    public boolean isAfterUpdate() {
+        return isAfterUpdate;
+    }
+
+    public void setAfterUpdate(boolean afterUpdate) {
+        isAfterUpdate = afterUpdate;
     }
 }
