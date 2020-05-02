@@ -227,6 +227,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun updateIsAfterUpdate(isAfterUpdate :Boolean){
+        settingsValue?.let {
+            it.isAfterUpdate = isAfterUpdate
+            updateSettings()
+        }
+    }
+
     private fun updateSettings() {
         isSettingsUpdated = true
         settingsValue?.let { mRepository.updateAppSettings(it) }

@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.R;
 import com.thesunnahrevival.sunnahassistant.views.MainActivity;
 import com.thesunnahrevival.sunnahassistant.views.SettingsActivity;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import static com.thesunnahrevival.sunnahassistant.views.SettingsActivity.FRAGMENT_TO_SHOW;
@@ -24,7 +25,7 @@ import static com.thesunnahrevival.sunnahassistant.views.SettingsActivity.NOTIFI
 
 public class NotificationUtil {
 
-    static Notification createNotification(Context context, String title, String text, int priority, Uri notificationToneUri, boolean isVibrate) {
+    static Notification createNotification(Context context, String title, String text, int priority, @Nullable Uri notificationToneUri, boolean isVibrate) {
 
         String category = "";
         if (priority == -1){
@@ -64,8 +65,9 @@ public class NotificationUtil {
                 .setAutoCancel(true);
 
         if (priority != -1){
-            builder = builder.setLargeIcon(picture)
-                    .setSound(notificationToneUri);
+            builder = builder.setLargeIcon(picture);
+            if (notificationToneUri !=  null)
+                    builder.setSound(notificationToneUri);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 builder.setCategory(Notification.CATEGORY_REMINDER);
@@ -86,6 +88,7 @@ public class NotificationUtil {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            deleteReminderNotificationChannel(context);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
 
             NotificationChannel channel = new NotificationChannel("remindersDefault", "Reminders", NotificationManager.IMPORTANCE_DEFAULT);
