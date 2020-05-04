@@ -60,7 +60,7 @@
     <string name="quick_setup">Get Started</string>
     <string name="delete_reminder">Reminder Deleted</string>
     <string name="undo_delete">Undo</string>
-    <string name="cannot_delete_prayer_time">Prayer Reminders can only be deleted from Settings</string>
+    <string name="cannot_delete_prayer_time">Automatic Prayer Reminders can only be deleted from Settings</string>
     <string name="time_not_set">Time not Set</string>
     <string name="general_settings">General Settings</string>
     <string name="se_ect_app_theme">Select App Theme:</string>

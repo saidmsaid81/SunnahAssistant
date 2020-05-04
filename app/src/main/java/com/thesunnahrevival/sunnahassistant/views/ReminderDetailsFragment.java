@@ -43,6 +43,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     private Integer mYear = 0;
     private ArrayAdapter<String> mCategoryAdapter;
     private ArrayList<String> mCheckedDays;
+    private AppSettings mSettings;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,10 +111,10 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
 
     private void setCategorySpinnerData() {
         if (getActivity() != null && getActivity() instanceof MainActivity) {
-            AppSettings settings = ((MainActivity) getActivity()).mViewModel.getSettings().getValue();
-            if (getContext() != null && settings != null && settings.getCategories() != null) {
+            mSettings = ((MainActivity) getActivity()).mViewModel.getSettings().getValue();
+            if (getContext() != null && mSettings != null && mSettings.getCategories() != null) {
                 mCategoryAdapter = new ArrayAdapter<>(
-                        getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(settings.getCategories())
+                        getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(mSettings.getCategories())
                 );
                 mCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 if (mCategoryAdapter.getPosition("+ Create New Category") == -1)
@@ -178,7 +179,13 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         }
 
         //Validate Category
-        String category = (String) mBinding.categorySpinner.getSelectedItem();
+        String category;
+        if (mReminder != null && mReminder.getCategory().matches(SunnahAssistantUtil.PRAYER) && mSettings.isAutomatic())
+            category = SunnahAssistantUtil.PRAYER;
+        else
+            category = (String) mBinding.categorySpinner.getSelectedItem();
+
+
         if (category.matches("\\+ Create New Category")){
             category = mReminder.getCategory();
         }
@@ -188,18 +195,18 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     }
 
     private void saveReminder(Reminder newReminder) {
-        if(!mBinding.reminderTime.getText().toString().matches(TimeDateUtil.NOT_SET)){
-            mViewModel.scheduleReminder(newReminder);
-        }
         if (mViewModel != null) {
-            if (!mReminder.equals(newReminder)) {
-                if (!newReminder.getCategory().matches(SunnahAssistantUtil.PRAYER))
+            if (!mReminder.equals(newReminder) && mSettings != null) {
+                if (!newReminder.getCategory().matches(SunnahAssistantUtil.PRAYER) || !mSettings.isAutomatic())
                     mViewModel.insert(newReminder);
-                else
+                else if (newReminder.getCategory().matches(SunnahAssistantUtil.PRAYER) && mSettings.isAutomatic())
                     mViewModel.updatePrayerTimeDetails(mReminder, newReminder);
                 Toast.makeText(getContext(), getString(R.string.successfully_updated), Toast.LENGTH_LONG).show();
             } else
                 Toast.makeText(getContext(), getString(R.string.no_changes), Toast.LENGTH_SHORT).show();
+            if(!mBinding.reminderTime.getText().toString().matches(TimeDateUtil.NOT_SET)){
+                mViewModel.scheduleReminder(newReminder);
+            }
             dismiss();
         }
         else {
