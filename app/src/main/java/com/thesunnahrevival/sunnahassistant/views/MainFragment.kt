@@ -340,7 +340,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
 
     override fun deleteReminder(position: Int) {
         val mDeletedReminder = mAllReminders[position]
-        if (mDeletedReminder.category.matches(SunnahAssistantUtil.PRAYER.toRegex())) {
+        if (mDeletedReminder.category.matches(SunnahAssistantUtil.PRAYER.toRegex()) && mAppSettings?.isAutomatic == true) {
             val snackbar = Snackbar.make(mBinding.mainLayout, getString(R.string.cannot_delete_prayer_time),
                     Snackbar.LENGTH_LONG)
             snackbar.show()
