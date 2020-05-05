@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
@@ -59,7 +58,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                             it.method, it.asrCalculationMethod, it.latitudeAdjustmentMethod)
                     //Save the Month in User Settings to prevent re-fetching the data the current month
                     updateSavedMonth()
-                    Toast.makeText(getApplication(), "Refreshing", Toast.LENGTH_LONG).show()
                 }
             }
         }
