@@ -67,11 +67,13 @@
     <string name="next_reminder_notification">Display The Next Reminder Notification</string>
     <string name="next_reminder_disclaimer">Disabling this might lead to reminders not being triggered successfully</string>
     <string name="about_app">About App</string>
-    <string name="developed_by_tsr_apps">Developed By Said Muhammad (@saidmsaid81)</string>
     <string name="version">Version: %s</string>
     <string name="icon">app icon</string>
     <string name="credits">Credits</string>
-    <string name="api_credit">Automatic prayer time data is from : &lt;a href=https://aladhan.com/>https://aladhan.com&lt;/a> </string>
+    <string name="about">
+        Is a Free and &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/>Open Source&lt;/a> app&lt;br>
+        Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/>@saidmsaid81&lt;/a>)
+    </string>
     <string name="app_icon_credit">Icons from: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a> </string>
     <string name="we_are_social">Join Us on Social Media</string>
     <string name="facebook_logo">Facebook logo</string>

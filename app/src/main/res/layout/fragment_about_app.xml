@@ -44,23 +44,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="@dimen/default_dimen"
-        android:text="@string/developed_by_tsr_apps"
-        android:textSize="16sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/credits"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/api_credit"
+        android:id="@+id/about_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -68,9 +52,18 @@
         android:focusable="true"
         android:linksClickable="true"
         android:textAlignment="center"
-        android:text="@string/api_credit"
+        android:text="@string/about"
         android:textColorLink="@android:color/holo_blue_dark"
         android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/credits"
+        android:paddingTop="@dimen/default_dimen"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/app_icon_credit"
@@ -89,6 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingBottom="@dimen/default_dimen"
+        android:paddingTop="@dimen/default_dimen"
         android:text="@string/we_are_social"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -143,6 +137,16 @@
         android:layout_gravity="center"
         android:background="@color/fabColor"
         android:padding="@dimen/default_dimen"
+        android:layout_marginBottom="@dimen/default_dimen"
         android:text="@string/contact_us" />
+
+    <Button
+        android:id="@+id/support_developer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/fabColor"
+        android:padding="@dimen/default_dimen"
+        android:text="@string/support_developer" />
 
 </LinearLayout>
