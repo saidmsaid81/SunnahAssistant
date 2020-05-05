@@ -98,6 +98,7 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                 else if (settings.isAfterUpdate) {
                     NotificationUtil.createNotificationChannels(context)
                     mainActivity.mViewModel.updateIsAfterUpdate(false)
+                    startActivity(Intent(context, ChangelogActivity::class.java))
                 }
 
                 //Safe to call every time the app launches prayer times will only be generated once a month

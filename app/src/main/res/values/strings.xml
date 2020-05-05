@@ -136,6 +136,34 @@
     <string name="setup_widget">Setup Widget</string>
     <string name="today_s_reminder">Today\'s Reminders</string>
     <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date is based on Umm al-Qura Calendar. Read more on Umm al-Qura Calendar here http://www.ummulqura.org.sa/default.aspx</string>
+
+    <string name="what_s_new">What\'s New</string>
+    <string name="important">Important</string>
+    <string name="important_changes">‣ We changed the methods for calculating prayer times which led to resetting the prayer time settings to default. But you can customize back these settings in \"Prayer Time Settings\" Section. Sorry for any inconvenience caused.</string>
+    <string name="new_features">New Features</string>
+    <string name="new_features_details">
+        ‣ Added option to customize notification settings such as setting tone and vibration
+        \n‣ Added 7 new Widgets that can display Hijri Date, Today Reminders and Prayer times on Home Screen
+        \n‣ Added option to create one time reminders
+        \n‣ Added option to create and delete reminder categories. &quot;See Customize reminder categories.&quot; section in settings
+        \n‣ Added option to filter displayed reminders based on categories
+        \n‣ Added a new layout for displaying reminders : Condensed layout. Tap the overflow menu in &quot;Home&quot;
+        \n‣ Added ability to view all reminders on a day instead of just upcoming reminders
+    </string>
+    <string name="updated">Updated</string>
+    <string name="updated_details">
+        ‣ Made Hijri and Prayer time calculations OFFLINE. Previously they required internet connection at least once a month
+        \n‣ Redesigned settings screen
+        \n‣ When creating or updating reminder details upon saving the details the reminder is automatically enabled.
+    </string>
+    <string name="fixes">Fixes</string>
+    <string name="fixes_details">
+        ‣ Minor bug fixes and improvements
+    </string>
+
+
+
+
     <string-array name="reminder_filter">
         <item>Upcoming</item>
         <item>Past</item>
