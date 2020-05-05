@@ -56,7 +56,7 @@ internal suspend fun fetchDateFromDatabase(context: Context, appWidgetManager: A
             TimeDateUtil.calculateOffsetFromMidnight(),
             TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()),
             TimeDateUtil.getDayDate(System.currentTimeMillis()),
-            TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
+            TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
             TimeDateUtil.getYear(System.currentTimeMillis()).toInt()) else null
     val reminderName = nextReminder?.reminderName
     val reminderTime = nextReminder?.timeInMilliSeconds?.let { TimeDateUtil.formatTimeInMilliseconds(context, it) }

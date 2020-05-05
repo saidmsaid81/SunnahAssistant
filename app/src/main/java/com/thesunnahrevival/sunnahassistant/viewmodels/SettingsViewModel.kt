@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
@@ -49,22 +50,22 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         mRepository.fetchGeocodingData(address)
     }
 
-    fun fetchAllAladhanData() {
+    fun updateGeneratedPrayerTimes() {
         settingsValue?.let {
             if (isLoadFreshData) {
                 if (it.isAutomatic) {
-                    mRepository.deletePrayerTimesData()
-                    mRepository.fetchPrayerTimes(
+                    mRepository.updateGeneratedPrayerTimes(
                             it.latitude, it.longitude, it.toString(), TimeDateUtil.getYear(System.currentTimeMillis()),
                             it.method, it.asrCalculationMethod, it.latitudeAdjustmentMethod)
+                    //Save the Month in User Settings to prevent re-fetching the data the current month
+                    updateSavedMonth()
+                    Toast.makeText(getApplication(), "Refreshing", Toast.LENGTH_LONG).show()
                 }
-                //Save the Month in User Settings to prevent re-fetching the data the current month
-                updateSavedMonth()
             }
         }
     }
 
-    fun updateSavedMonth() {
+    private fun updateSavedMonth() {
         settingsValue?.let{
             if (it.month != month) {
                 it.month = month
@@ -141,7 +142,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             mRepository.deletePrayerTimesData()
             if (settings.isAutomatic) {
                 settings.categories.remove(SunnahAssistantUtil.PRAYER)
-                mRepository.fetchPrayerTimes(
+                mRepository.generatePrayerTimes(
                         settings.latitude, settings.longitude, settings.month.toString(),
                         TimeDateUtil.getYear(System.currentTimeMillis()), settings.method, settings.asrCalculationMethod,
                         settings.latitudeAdjustmentMethod
@@ -248,7 +249,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private val isLoadFreshData: Boolean
         get() = if (settingsValue != null)
-            settingsValue?.month != month && !settingsValue?.isFirstLaunch!!
+            settingsValue?.month != month
         else true
 
 

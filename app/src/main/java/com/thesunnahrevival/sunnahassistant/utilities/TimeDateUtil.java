@@ -28,7 +28,7 @@ public class TimeDateUtil {
     }
 
     public static int getMonthNumber(long timeInMilliseconds) {
-        return Integer.parseInt(new SimpleDateFormat("MM", Locale.ENGLISH).format(timeInMilliseconds));
+        return Integer.parseInt(new SimpleDateFormat("MM", Locale.ENGLISH).format(timeInMilliseconds)) - 1;
     }
 
     public static String getYear(long timeInMilliseconds) {
@@ -81,6 +81,11 @@ public class TimeDateUtil {
 
     public static String getMonthName(int month) {
         return new DateFormatSymbols().getMonths()[month];
+    }
+
+    public static int getLastDayOfMonth() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
     public static String getHijriDate(){

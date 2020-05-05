@@ -8,6 +8,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase.Companion.getInstance
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,16 +26,29 @@ class NextReminderService : Service() {
             val isForegroundEnabled = mReminderDAO.isForegroundEnabled
             val settings = mReminderDAO.appSettingsValue
 
+            checkIfPrayerTimesNeedToBeUpdated(settings)
+
             val nextScheduledReminder = mReminderDAO.getNextScheduledReminder(
                     TimeDateUtil.calculateOffsetFromMidnight(),
                     TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()), TimeDateUtil.getDayDate(System.currentTimeMillis()),
-                    TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1, Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())))
+                    TimeDateUtil.getMonthNumber(System.currentTimeMillis()), Integer.parseInt(TimeDateUtil.getYear(System.currentTimeMillis())))
 
             withContext(Dispatchers.Main){
                 scheduleTheNextReminder(settings, nextScheduledReminder, context, isForegroundEnabled)
             }
         }
         return START_REDELIVER_INTENT
+    }
+
+    private fun checkIfPrayerTimesNeedToBeUpdated(settings: AppSettings) {
+        if (settings.month != TimeDateUtil.getMonthNumber(System.currentTimeMillis())) {
+            val prayerTimesReminders = PrayerTimeCalculator(settings.latitude.toDouble(), settings.longitude.toDouble(), settings.method, settings.asrCalculationMethod, settings.latitudeAdjustmentMethod).getPrayerTimeReminders()
+            for (prayerTimeReminder in prayerTimesReminders) {
+                mReminderDAO.updateGeneratedPrayerTimes(prayerTimeReminder.id, TimeDateUtil.getMonthNumber(System.currentTimeMillis()), TimeDateUtil.getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds)
+            }
+            settings.month = TimeDateUtil.getMonthNumber(System.currentTimeMillis())
+            mReminderDAO.updateAppSettings(settings)
+        }
     }
 
     private fun scheduleTheNextReminder(settings: AppSettings, nextScheduledReminder: Reminder?, context: NextReminderService, isForegroundEnabled: Boolean) {

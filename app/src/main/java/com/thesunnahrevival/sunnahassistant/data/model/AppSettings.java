@@ -17,7 +17,7 @@ public class AppSettings {
     private int id;
     private int method;
     private int asrCalculationMethod;
-    private int month = 0;
+    private int month = 12;
     private int hijriOffSet = 0;
     private float latitude;
     private float longitude;
@@ -33,7 +33,7 @@ public class AppSettings {
     private Uri notificationToneUri;
     private boolean isVibrate = false;
     private int priority = 3;
-    private int latitudeAdjustmentMethod = 3;
+    private int latitudeAdjustmentMethod = 2;
     private boolean isShowHijriDateWidget = true;
     private boolean isShowNextReminderWidget = true;
     private boolean isAfterUpdate = false;

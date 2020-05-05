@@ -8,8 +8,8 @@ import com.thesunnahrevival.sunnahassistant.data.local.ReminderDAO
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
-import com.thesunnahrevival.sunnahassistant.data.remote.AladhanRestApi
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingRestApi
 import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SunnahAssistantRepository private constructor(val application: Application){
+class SunnahAssistantRepository private constructor(private val application: Application){
     private val mReminderDAO: ReminderDAO = SunnahAssistantDatabase.getInstance(application).reminderDao()
     private val mGeocodingRestApi = GeocodingRestApi.getInstance()
     private var mDay = TimeDateUtil.getDayDate(System.currentTimeMillis())
@@ -27,8 +27,6 @@ class SunnahAssistantRepository private constructor(val application: Application
         get() = mGeocodingRestApi.data
     val appSettings: LiveData<AppSettings>
         get() = mReminderDAO.appSettings
-    val errorMessages: LiveData<String>
-        get() = AladhanRestApi.errorMessages
 
     companion object {
 
@@ -80,19 +78,21 @@ class SunnahAssistantRepository private constructor(val application: Application
     fun getAllReminders(filter: Int, nameOfTheDay: String): LiveData<List<Reminder>> {
         return when (filter) {
             1 -> mReminderDAO.getPastReminders(TimeDateUtil.calculateOffsetFromMidnight(), nameOfTheDay,
-                        mDay, TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
+                        mDay, TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
                         TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
             2 -> mReminderDAO.getRemindersOnDay(TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()),
-                    mDay, TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
+                    mDay, TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
                     TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
             3 -> mReminderDAO.getRemindersOnDay(
-                    TimeDateUtil.getNameOfTheDay(System.currentTimeMillis() + 86400000), mDay + 1, TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1, TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
-            4 -> mReminderDAO.getPrayerTimes(mDay)
+                    TimeDateUtil.getNameOfTheDay(System.currentTimeMillis() + 86400000), mDay + 1, TimeDateUtil.getMonthNumber(System.currentTimeMillis()), TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
+            4 -> mReminderDAO.getPrayerTimes(mDay,
+                    TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
+                    TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
             5 -> mReminderDAO.weeklyReminders
             6 -> mReminderDAO.monthlyReminder
             7 -> mReminderDAO.oneTimeReminders
             else -> mReminderDAO.getUpcomingReminders(TimeDateUtil.calculateOffsetFromMidnight(), nameOfTheDay,
-                    mDay, TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
+                    mDay, TimeDateUtil.getMonthNumber(System.currentTimeMillis()) ,
                     TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
         }
     }
@@ -129,8 +129,21 @@ class SunnahAssistantRepository private constructor(val application: Application
         }
     }
 
-    fun fetchPrayerTimes(latitude: Float, longitude: Float, month: String?, year: String?, method: Int, asrCalculationMethod: Int, latitudeAdjustmentMethod: Int) {
-        AladhanRestApi.fetchPrayerTimes(mReminderDAO, latitude, longitude, month, year, method, asrCalculationMethod, latitudeAdjustmentMethod)
+    fun generatePrayerTimes(latitude: Float, longitude: Float, month: String?, year: String?, method: Int, asrCalculationMethod: Int, latitudeAdjustmentMethod: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val prayerTimesReminders = PrayerTimeCalculator(latitude.toDouble(), longitude.toDouble(), method, asrCalculationMethod, latitudeAdjustmentMethod).getPrayerTimeReminders()
+            mReminderDAO.addRemindersListIfNotExists(prayerTimesReminders)
+        }
+
+    }
+
+    fun updateGeneratedPrayerTimes(latitude: Float, longitude: Float, month: String?, year: String?, method: Int, asrCalculationMethod: Int, latitudeAdjustmentMethod: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val prayerTimesReminders = PrayerTimeCalculator(latitude.toDouble(), longitude.toDouble(), method, asrCalculationMethod, latitudeAdjustmentMethod).getPrayerTimeReminders()
+            for (prayerTimeReminder in prayerTimesReminders){
+                mReminderDAO.updateGeneratedPrayerTimes(prayerTimeReminder.id, TimeDateUtil.getMonthNumber(System.currentTimeMillis()), TimeDateUtil.getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds)
+            }
+        }
     }
 
 

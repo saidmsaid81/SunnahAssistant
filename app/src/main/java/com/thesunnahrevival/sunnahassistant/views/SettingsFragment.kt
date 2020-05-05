@@ -87,11 +87,11 @@ class SettingsFragment : SettingsFragmentListeners() {
 
     private fun setCustomPrayerSettings(settings: AppSettings) {
         (mBinding as PrayerTimeSettingsBinding).setCalculationMethod(
-                resources.getStringArray(R.array.calculation_methods)[settings.method.minus(1)])
+                resources.getStringArray(R.array.calculation_methods)[settings.method])
         (mBinding as PrayerTimeSettingsBinding).setAsrCalculationMethod(
                 resources.getStringArray(R.array.asr_juristic_method)[settings.asrCalculationMethod])
         (mBinding as PrayerTimeSettingsBinding).latitudeAdjustmentMethod =
-                resources.getStringArray(R.array.latitude_options)[settings.latitudeAdjustmentMethod.minus(1)]
+                resources.getStringArray(R.array.latitude_options)[settings.latitudeAdjustmentMethod]
 
     }
 
@@ -124,9 +124,9 @@ class SettingsFragment : SettingsFragmentListeners() {
                     binding.themeSettings.setOnClickListener(this)
             }
             is CategoriesSettingsBinding -> {
-                    binding.categoriesList.adapter = mViewModel.settings.value?.categories?.let {
-                        CategoriesSettingsAdapter(it, this) }
-                    binding.fab.setOnClickListener(this)
+                binding.categoriesList.adapter = mViewModel.settings.value?.categories?.let {
+                    CategoriesSettingsAdapter(it, this) }
+                binding.fab.setOnClickListener(this)
             }
             is NotificationSettingsBinding -> {
                 binding.nextReminderStickySettings.setOnCheckedChangeListener(this)
@@ -145,4 +145,3 @@ class SettingsFragment : SettingsFragmentListeners() {
         }
     }
 }
-

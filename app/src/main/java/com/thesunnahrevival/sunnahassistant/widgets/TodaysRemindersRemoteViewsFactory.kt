@@ -36,7 +36,7 @@ class TodaysRemindersRemoteViewsFactory(
         mTodayReminders = reminderDao.getRemindersOnDayValue(
                 TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()),
                 TimeDateUtil.getDayDate(System.currentTimeMillis()),
-                TimeDateUtil.getMonthNumber(System.currentTimeMillis()) - 1,
+                TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
                 parseInt(TimeDateUtil.getYear(System.currentTimeMillis())))
 
     }
