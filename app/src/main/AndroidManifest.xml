@@ -37,6 +37,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".views.WelcomeActivity" />
+        <activity android:name=".views.ChangelogActivity"
+            android:label="@string/what_s_new"
+            android:parentActivityName=".views.MainActivity"/>
+
         <receiver android:name=".widgets.TodayRemindersWidget" android:label="Light:- Today Reminders">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
