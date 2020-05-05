@@ -26,7 +26,6 @@ public class RemindersViewModel extends AndroidViewModel implements ReminderItem
 
     private boolean isRescheduleAtLaunch;
     private final SunnahAssistantRepository mRepository;
-    public int month =  TimeDateUtil.getMonthNumber(System.currentTimeMillis());
 
     public RemindersViewModel(@NonNull Application application) {
         super(application);
@@ -48,10 +47,6 @@ public class RemindersViewModel extends AndroidViewModel implements ReminderItem
 
     public LiveData<List<Reminder>> getReminders(int frequencyFilter) {
         return mRepository.getAllReminders(frequencyFilter, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()));
-    }
-
-    public LiveData<String> getErrorMessages() {
-        return mRepository.getErrorMessages();
     }
 
     public void updatePrayerTimeDetails(Reminder oldPrayerDetails, Reminder newPrayerDetails) {

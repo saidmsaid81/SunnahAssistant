@@ -56,17 +56,6 @@ public class SunnahAssistantUtil {
                 Resources.getSystem().getConfiguration().locale.getLanguage();
     }
 
-    public static Intent showShareMenu(Intent intent) {
-        String title = intent.getStringExtra("title");
-        String text = intent.getStringExtra("text");
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT,
-                title + "\n" + text + "\n\n" + "Sent from Sunnah Assistant App - Set reminders that help you become a better person\nDownload Link: https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant");
-        sendIntent.setType("text/plain");
-
-        return Intent.createChooser(sendIntent, null);
-    }
 
     public static void openPlayStore(Context context, String appPackageName) {
         try {
@@ -134,7 +123,7 @@ public class SunnahAssistantUtil {
     }
 
     public static AppSettings initialSettings() {
-        return new AppSettings("Location cannot be empty", (float) 0, (float) 0, 3, 0, false);
+        return new AppSettings("Location cannot be empty", (float) 0, (float) 0, 0, 0, false);
     }
 
     public static void updateHijriDateWidgets(Context context) {

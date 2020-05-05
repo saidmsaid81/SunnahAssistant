@@ -7,8 +7,11 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -46,7 +49,6 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
     private lateinit var mAllReminders: List<Reminder>
     private var mAppSettings: AppSettings? = null
     private var mSpinner: Spinner? = null
-    private var mIsFetchError = false
     private lateinit var mainActivity : MainActivity
     private var mIsFirstLaunch = false
 
@@ -66,7 +68,6 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
             mBinding.viewmodel = mViewModel
 
             getSettings()
-            displayApiFetchMessages()
         }
     }
 
@@ -99,8 +100,8 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                     mainActivity.mViewModel.updateIsAfterUpdate(false)
                 }
 
-                if (!mIsFetchError && !mIsFirstLaunch )
-                    mainActivity.mViewModel.fetchAllAladhanData()
+                //Safe to call every time the app launches prayer times will only be generated once a month
+                mainActivity.mViewModel.updateGeneratedPrayerTimes()
 
                 if (settings.isShowOnBoardingTutorial && !mIsFirstLaunch) {
                     showOnBoardingTutorial()
@@ -189,30 +190,6 @@ class MainFragment : Fragment(), OnItemSelectedListener, OnDeleteReminderListene
                                 mReminderRecyclerAdapter.deleteReminder(0)
                                 view.dismiss(true)
                             }
-        })
-    }
-
-    private fun displayApiFetchMessages() {
-        mViewModel.errorMessages.observe(this, Observer { s: String? ->
-            val snackbar = Snackbar.make(mBinding.mainLayout, "", Snackbar.LENGTH_INDEFINITE)
-
-            if (!(s == null || s.isEmpty() || s.matches("Successful".toRegex()) || s.contains("Refreshing"))) {
-                //Error occurred
-                mIsFetchError = true
-
-                //Reset the month to 0 enabling refetching of the data when user selects refresh on the snackbar displayed
-                mViewModel.month = 0
-                mainActivity.mViewModel?.updateSavedMonth()
-
-                snackbar.setText(s)
-                snackbar.setAction("Refresh") {
-                    mainActivity.mViewModel?.fetchAllAladhanData()
-                    mIsFetchError = false
-                }
-                snackbar.show()
-            } else if (s != null && s.matches("Successful".toRegex()) && mAppSettings != null) //Successful
-                snackbar.dismiss() else if (s != null && s.contains("Refreshing")) //Ongoing
-                Toast.makeText(context, s, Toast.LENGTH_LONG).show()
         })
     }
 

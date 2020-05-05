@@ -108,9 +108,9 @@ open class SettingsFragmentListeners: Fragment(), AdapterView.OnItemClickListene
         val latitudeMethods = resources.getStringArray(R.array.latitude_options)
         when(item?.groupId){
             R.id.calculation_details ->
-                mViewModel.updateCalculationMethod(calculationMethods.indexOf(item.title.toString()) + 1)
+                mViewModel.updateCalculationMethod(calculationMethods.indexOf(item.title.toString()))
             R.id.asr_calculation_details -> mViewModel.updateAsrCalculationMethod(asrMethods.indexOf(item.title.toString()))
-            R.id.higher_latitude_details -> mViewModel.updateHigherLatitudeMethod(latitudeMethods.indexOf(item.title.toString()) + 1)
+            R.id.higher_latitude_details -> mViewModel.updateHigherLatitudeMethod(latitudeMethods.indexOf(item.title.toString()))
             R.id.layout_settings -> mViewModel.updateLayout(item.title.toString().matches("Expanded View".toRegex()))
             R.id.theme_settings -> {
                 if (item.title.toString().matches("Light".toRegex())) {

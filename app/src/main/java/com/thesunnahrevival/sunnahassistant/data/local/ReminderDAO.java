@@ -35,8 +35,8 @@ public interface ReminderDAO {
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
     LiveData<List<Reminder>> getRemindersOnDay(String nameOfTheDay, int day, int month, int year);
 
-    @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND day == :day) ORDER BY timeInSeconds")
-    LiveData<List<Reminder>> getPrayerTimes(int day);
+    @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
+    LiveData<List<Reminder>> getPrayerTimes(int day, int month, int year);
 
     @Query("SELECT * FROM reminders_table WHERE frequency == 'Weekly'")
     LiveData<List<Reminder>> getWeeklyReminders();
@@ -50,8 +50,8 @@ public interface ReminderDAO {
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :nameOfTheDay || '%') AND isEnabled ORDER BY timeInSeconds")
     List<Reminder> getRemindersOnDayValue(String nameOfTheDay, int day, int month, int year);
 
-    @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND day == :day) ORDER BY timeInSeconds")
-    List<Reminder> getPrayerTimesValue(int day);
+    @Query("SELECT * FROM reminders_table WHERE (category == 'Prayer' AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
+    List<Reminder> getPrayerTimesValue(int day, int month, int year);
 
     @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE id ==:id")
     void setEnabled(int id, boolean isEnabled);
@@ -61,6 +61,9 @@ public interface ReminderDAO {
 
     @Query("UPDATE reminders_table SET `offset` =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo WHERE reminderName == :prayerName")
     void updatePrayerTimeDetails(String prayerName, String newPrayerName, String reminderInfo, int offsetValue);
+
+    @Query("UPDATE reminders_table SET month =:month, year =:year, timeInSeconds =:timeInSeconds WHERE id == :id")
+    void updateGeneratedPrayerTimes(int id, int month, int year, long timeInSeconds);
 
     @Insert
     void addRemindersList(List<Reminder> remindersList);

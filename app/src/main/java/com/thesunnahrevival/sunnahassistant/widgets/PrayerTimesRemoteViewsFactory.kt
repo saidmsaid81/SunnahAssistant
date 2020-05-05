@@ -31,8 +31,9 @@ class PrayerTimesRemoteViewsFactory(
 
     override fun onDataSetChanged() {
         val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
-        mPrayerReminders = reminderDao.getPrayerTimesValue(TimeDateUtil.getDayDate(System.currentTimeMillis()))
-
+        mPrayerReminders = reminderDao.getPrayerTimesValue(TimeDateUtil.getDayDate(System.currentTimeMillis()),
+                TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
+                TimeDateUtil.getYear(System.currentTimeMillis()).toInt())
     }
 
     override fun hasStableIds(): Boolean {
