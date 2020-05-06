@@ -22,6 +22,10 @@ public class TimeDateUtil {
         return new SimpleDateFormat("EE", Locale.ENGLISH).format(timeInMilliseconds);
     }
 
+    public static String getFullNameOfTheDay(long timeInMilliseconds) {
+        return new SimpleDateFormat("EEEE", Locale.ENGLISH).format(timeInMilliseconds);
+    }
+
 
     public static int getDayDate(long timeInMilliseconds) {
         return Integer.parseInt(new SimpleDateFormat("dd", Locale.ENGLISH).format(timeInMilliseconds));
@@ -88,11 +92,39 @@ public class TimeDateUtil {
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
+    public static String getIslamicMonthName(int monthNumber){
+        switch (monthNumber) {
+            case 0:
+                return "Muharram";
+            case 1:
+                return "Safar";
+            case 3:
+                return "Rabi' al-Awwal";
+            case 4:
+                return "Rabi' al-Thani";
+            case 5:
+                return "Jumada al-Ula";
+            case 6:
+                return "Rajab";
+            case 7:
+                return "Sha'ban";
+            case 8:
+                return "Ramadhan";
+            case 9:
+                return "Shawwal";
+            case 10:
+                return "Dhul-Qa'dah";
+            case 11:
+                return "Dhul-Hijjah";
+        }
+        return "Unknown";
+    }
+
     public static String getHijriDate(){
-        Calendar hijriCalendar = new UmmalquraCalendar();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("", Locale.ENGLISH);
-        dateFormat.setCalendar(hijriCalendar);
-        dateFormat.applyPattern("EEEE d MMMM, y");
-        return dateFormat.format(hijriCalendar.getTime());
+        Calendar uCal = new UmmalquraCalendar();
+        int year = uCal.get(Calendar.YEAR);
+        int month = uCal.get(Calendar.MONTH);
+        int day = uCal.get(Calendar.DAY_OF_MONTH);
+        return getFullNameOfTheDay(System.currentTimeMillis()) + " " + day + " " + getIslamicMonthName(month) + ", " + year;
     }
 }
