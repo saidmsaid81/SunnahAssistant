@@ -5,50 +5,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.AppSettings;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
 import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService;
-import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
+import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 import com.thesunnahrevival.sunnahassistant.views.MainActivity;
 import com.thesunnahrevival.sunnahassistant.views.ReminderDetailsFragment;
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener;
 
-public class RemindersViewModel extends SunnahAssistantViewModel implements ReminderItemInteractionListener {
+import java.util.List;
 
-    public MutableLiveData<Integer> allDoneViewVisibility = new MutableLiveData<>();
-    private ReminderManager mReminderManager = ReminderManager.getInstance();
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
+public class RemindersViewModel extends AndroidViewModel implements ReminderItemInteractionListener {
+
+    private boolean isRescheduleAtLaunch;
+    private final SunnahAssistantRepository mRepository;
 
     public RemindersViewModel(@NonNull Application application) {
         super(application);
-        mReminderManager.createNotificationChannel(application);
+        isRescheduleAtLaunch = true;
+        mRepository = SunnahAssistantRepository.getInstance(application);
     }
 
-    public void fetchAllAladhanData() {
-        if (mSettings.getValue() != null && isLoadFreshData()) {
-            if (mSettings.getValue().isAutomatic()) {
-                mRepository.deletePrayerTimesData();
-                mRepository.fetchPrayerTimes(
-                        mSettings.getValue().getLatitude(), mSettings.getValue().getLongitude(),
-                        String.valueOf(month), mYear, mSettings.getValue().getMethod(),
-                        mSettings.getValue().getAsrCalculationMethod());
-            }
-            mRepository.deleteHijriDate();
-            mRepository.fetchHijriData(String.valueOf(month), mYear, mSettings.getValue().getHijriOffSet());
-            //Save the Month in User Settings to prevent re-fetching the data the current month
-            mSettings.getValue().setMonth(month);
-            updateSettings(mSettings.getValue());
-
-        }
+    public void addInitialReminders(){
+        mRepository.addInitialReminders();
     }
 
     public void delete(Reminder reminder) {
@@ -59,26 +45,8 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
         mRepository.addReminder(reminder);
     }
 
-    public LiveData<List<Reminder>> getReminders(int filter) {
-        return mRepository.getAllReminders(filter, mNameOfTheDay);
-    }
-
-    public LiveData<String> getErrorMessages() {
-        return mRepository.getErrorMessages();
-    }
-
-    private boolean isLoadFreshData() {
-        if (mSettings.getValue() != null)
-            return mSettings.getValue().getMonth() != month && !mSettings.getValue().isFirstLaunch();
-        return true;
-    }
-
-    public void updateSettings(AppSettings settings) {
-        mRepository.updateAppSettings(settings);
-    }
-
-    public void setIsLightMode(boolean isLightMode) {
-        mRepository.setIsLightMode(isLightMode);
+    public LiveData<List<Reminder>> getReminders(int frequencyFilter) {
+        return mRepository.getAllReminders(frequencyFilter, TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()));
     }
 
     public void updatePrayerTimeDetails(Reminder oldPrayerDetails, Reminder newPrayerDetails) {
@@ -87,20 +55,20 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
 
     @Override
     public void onToggleButtonClick(CompoundButton buttonView, boolean isChecked, Reminder reminder) {
-        if (buttonView.isPressed()) {
+        if (buttonView.isPressed() || isRescheduleAtLaunch) {
             if (isChecked)
                 scheduleReminder(reminder);
             else
                 cancelScheduledReminder(reminder);
         }
+        isRescheduleAtLaunch = false;
+
+        SunnahAssistantUtil.updateHijriDateWidgets(getApplication());
+        SunnahAssistantUtil.updateTodayRemindersWidgets(getApplication());
     }
 
     @Override
-    public void openBottomSheet(View v, Reminder reminder, boolean isNextReminder) {
-        if (isNextReminder) {
-            Toast.makeText(getApplication(), "Disable the Reminder First before editing...", Toast.LENGTH_LONG).show();
-            return;
-        }
+    public void openBottomSheet(View v, Reminder reminder) {
         ReminderDetailsFragment bottomSheetFragment = new ReminderDetailsFragment();
         if (v.getContext() instanceof MainActivity) {
             FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
@@ -109,7 +77,7 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
             bundle.putBoolean("isNew", false);
             if (reminder == null) {
                 reminder = new Reminder(
-                        "", "", "Not Set", "Sunnah", "Daily", 0, false, new ArrayList<>()
+                        "", "", null, SunnahAssistantUtil.UNCATEGORIZED, SunnahAssistantUtil.ONE_TIME, false, 0, null, null, 0, null
                 );
                 bundle.putBoolean("isNew", true);
             }
@@ -119,22 +87,16 @@ public class RemindersViewModel extends SunnahAssistantViewModel implements Remi
 
     }
 
-    private void scheduleReminder(Reminder reminder) {
+    public void scheduleReminder(Reminder reminder) {
         reminder.setEnabled(true);
         mRepository.setReminderIsEnabled(reminder);
         getApplication().startService(new Intent(getApplication(), NextReminderService.class));
-        Toast.makeText(getApplication(), R.string.reminder_successfully_enabled, Toast.LENGTH_SHORT).show();
     }
 
     public void cancelScheduledReminder(Reminder reminder) {
         reminder.setEnabled(false);
-        getApplication().startService(new Intent(getApplication(), NextReminderService.class));
-        mReminderManager.cancelScheduledReminder(
-                getApplication(), reminder.getId(), reminder.getCategory() + " Reminder",
-                reminder.getReminderName(), reminder.getCategory()
-        );
         mRepository.setReminderIsEnabled(reminder);
-        Toast.makeText(getApplication(), R.string.reminder_successfully_disabled, Toast.LENGTH_SHORT).show();
+        getApplication().startService(new Intent(getApplication(), NextReminderService.class));
     }
 
 }
