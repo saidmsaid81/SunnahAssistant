@@ -8,6 +8,8 @@ Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?i
 
 - Optionally get prayer time alerts based on your preferred settings
 
+- Widgets to display reminders and date.
+
 - View Hijri (Islamic) date
 
 - Two themes are avialble (Light and Dark Theme).
@@ -16,7 +18,9 @@ PRs, issues (bugs, feedback and suggestions) are welcomed.
 
 <h4>Credits</h4>
 
-- Thanks to https://aladhan.com/ for access to their Prayer Times and Hijri Calendar API.
+- Offline Hijri Date calculation is facilitated by https://github.com/msarhan/ummalqura-calendar library
+
+- Offline Prayer time Calculation is facilitated by https://github.com/batoulapps/adhan-java library
 
 <b>*The app is still in beta phase</b>
 

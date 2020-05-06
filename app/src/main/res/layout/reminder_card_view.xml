@@ -5,6 +5,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <import type="android.content.Context" />
+        <import type="android.view.View" />
+        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil"/>
+
+        <variable
+            name="reminder"
+            type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
+        <variable
+            name="frequency"
+            type="int" />
+    </data>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
@@ -60,20 +73,74 @@
                     tools:text="Fasting Ayyamul Beidh" />
 
                 <TextView
-                    android:id="@+id/reminder_time"
+                    android:id="@+id/reminder_upcoming_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:visibility="@{(frequency &lt; 3 || frequency == 4) ? View.VISIBLE : View.GONE}"
+                    android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
+                    tools:text="Date" />
+
+                <TextView
+                    android:id="@+id/reminder_tomorrow_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textSize="18sp"
+                    android:visibility="@{frequency == 3 ? View.VISIBLE : View.GONE}"
+                    android:text="@{&quot;Tomorrow at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
+                    tools:text="Date" />
+
+                <TextView
+                    android:id="@+id/reminder_weekly_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textSize="18sp"
+                    android:visibility="@{frequency == 5 ? View.VISIBLE : View.GONE}"
+                    android:text="@{&quot;Every &quot; + TimeDateUtil.formatDaysFromCustomScheduledDays(reminder.customScheduleDays) + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) }"
+                    tools:text="Date" />
+
+                <TextView
+                    android:id="@+id/reminder_monthly_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textSize="18sp"
+                    android:visibility="@{frequency == 6 ? View.VISIBLE : View.GONE}"
+                    android:text="@{&quot;Every Month On &quot; + reminder.day + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds())  }"
+                    tools:text="Date" />
+
+                <TextView
+                    android:id="@+id/reminder_one_time_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textSize="18sp"
+                    android:visibility="@{frequency == 7 ? View.VISIBLE : View.GONE}"
+                    android:text="@{reminder.month &lt; 12  ? &quot;On &quot; + reminder.day + &quot; &quot; + TimeDateUtil.getMonthName(reminder.month) +  &quot; &quot; + reminder.year + &quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds()) : &quot;Not Set&quot; }"
                     tools:text="Date" />
 
                 <TextView
                     android:id="@+id/reminder_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="@dimen/default_text_size"
-                    android:text="@{reminder.frequencyAndCategory}"
+                    android:text="@{reminder.category}"
                     tools:text="Category" />
             </LinearLayout>
 
@@ -90,7 +157,7 @@
                 android:textOff=""
                 android:textOn=""
                 android:checked="@{reminder.enabled}"
-                android:visibility="@{reminder.getTimeInMilliSeconds() == 86399000 ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{reminder.getTimeInMilliSeconds() == 172800000 ? View.INVISIBLE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -100,13 +167,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <data>
 
-        <import type="android.view.View" />
-
-        <variable
-            name="reminder"
-            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
-    </data>
 </layout>
 

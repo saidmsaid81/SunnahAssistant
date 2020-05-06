@@ -2,6 +2,19 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="reminder"
+            type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
+
+        <variable
+            name="isNew"
+            type="boolean" />
+    </data>
+
     <RelativeLayout
         android:id="@+id/bottom_sheet"
         style="@style/AppTheme"
@@ -13,109 +26,6 @@
         app:behavior_hideable="false"
         app:behavior_peekHeight="90dp"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="60dp"
-            android:layout_height="35dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="8dp"
-            android:background="@color/fabColor"
-            android:text="@string/save"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/time_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_time"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/change_time"
-            android:textAllCaps="false"
-            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.INVISIBLE : View.VISIBLE}" />
-
-        <Button
-            android:id="@+id/date_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/time_picker"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/pick_date"
-            android:textAllCaps="false"
-            android:visibility="@{reminder.frequency.matches(&quot;Monthly&quot;) ? View.VISIBLE : View.GONE}" />
-
-        <EditText
-            android:id="@+id/reminder_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/reminder_name_label"
-            android:layout_alignParentStart="true"
-            android:layout_marginEnd="16dp"
-            android:hint="@string/reminder_name_hint"
-            android:importantForAutofill="no"
-            android:inputType="textAutoComplete"
-            android:text="@{reminder.reminderName}" />
-
-        <EditText
-            android:id="@+id/prayerOffsetValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_time"
-            android:layout_centerInParent="true"
-            android:layout_toEndOf="@id/change_prayer_time_offset_label"
-            android:hint="@string/value"
-            android:importantForAutofill="no"
-            android:inputType="numberSigned"
-            android:paddingTop="20dp"
-            android:text="@{String.valueOf(reminder.offset)}"
-            android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
-
-        <MultiAutoCompleteTextView
-            android:id="@+id/additional_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/more_details_text_view"
-            android:hint="@string/enter_additional_details"
-            android:text="@{reminder.reminderInfo}"
-            android:visibility="gone" />
-
-
-        <Spinner
-            android:id="@+id/category_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_edit_text"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="16dp" />
-
-        <Spinner
-            android:id="@+id/frequency_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/category_spinner"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="16dp" />
-
-        <Spinner
-            android:id="@+id/select_days_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/select_day_error"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/reminder_action_label"
@@ -130,44 +40,111 @@
             android:textAppearance="@android:style/TextAppearance.Material.Title"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="60dp"
+            android:layout_height="35dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:background="@color/fabColor"
+            android:text="@string/save"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:visibility="visible" />
+
         <TextView
-            android:id="@+id/reminder_name_label"
+            android:id="@+id/tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/reminder_action_label"
             android:layout_alignParentStart="true"
+            android:drawableStart="@drawable/ic_tip"
+            android:layout_marginBottom="8dp"
+            android:drawablePadding="8dp"
+            android:visibility="@{reminder.reminderInfo.contains(&quot;href&quot;) ? View.VISIBLE : View.GONE}"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/reminder_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tip"
+            android:layout_alignParentStart="true"
             android:text="@string/reminder_name_label"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/reminder_category_label"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/reminder_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_edit_text"
+            android:layout_below="@+id/reminder_name_label"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="16dp"
-            android:text="@string/reminder_category"
-            android:textSize="16sp" />
+            android:layout_marginEnd="16dp"
+            android:hint="@string/reminder_name_hint"
+            android:importantForAutofill="no"
+            android:inputType="textAutoComplete"
+            android:text="@{reminder.reminderName}" />
 
         <TextView
             android:id="@+id/reminder_frequency_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_category_label"
+            android:layout_below="@id/reminder_edit_text"
             android:layout_alignParentStart="true"
             android:layout_marginTop="16dp"
             android:text="@string/frequency"
             android:textSize="16sp" />
 
+        <Spinner
+            android:id="@+id/frequency_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reminder_edit_text"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/reminder_category_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reminder_frequency_label"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="16dp"
+            android:text="@string/reminder_category"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/category_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/frequency_spinner"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="16dp" />
+
+
+
         <TextView
             android:id="@+id/select_day_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/frequency_spinner"
+            android:layout_below="@id/category_spinner"
             android:layout_centerInParent="true"
             android:text="@string/select_at_least_one_day_or_change_to_daily"
             android:textColor="@android:color/holo_red_light"
             android:textSize="14sp"
+            android:visibility="gone" />
+
+
+        <Spinner
+            android:id="@+id/select_days_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/select_day_error"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
             android:visibility="gone" />
 
         <TextView
@@ -191,6 +168,21 @@
             android:textSize="@dimen/default_text_size"
             android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
 
+        <EditText
+            android:id="@+id/prayerOffsetValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reminder_time"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/change_prayer_time_offset_label"
+            android:hint="@string/value"
+            android:importantForAutofill="no"
+            android:inputType="numberSigned"
+            android:paddingTop="20dp"
+            android:text="@{String.valueOf(reminder.offset)}"
+            android:textSize="@dimen/default_text_size"
+            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
+
         <TextView
             android:id="@+id/minutes_label"
             android:layout_width="wrap_content"
@@ -204,29 +196,41 @@
             android:textSize="@dimen/default_text_size"
             android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
 
+
+
+        <Button
+            android:id="@+id/time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reminder_time"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/change_time"
+            android:textAllCaps="false"
+            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.INVISIBLE : View.VISIBLE}" />
+
         <TextView
             android:id="@+id/more_details_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/date_picker"
+            android:layout_below="@id/time_picker"
             android:layout_marginTop="16dp"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/more_details"
             android:textColor="@android:color/holo_blue_dark"
+            android:visibility="@{reminder.reminderInfo.contains(&quot;href&quot;) ? View.GONE : View.VISIBLE}"
             android:textSize="16sp" />
 
+        <MultiAutoCompleteTextView
+            android:id="@+id/additional_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/more_details_text_view"
+            android:hint="@string/enter_additional_details"
+            android:text="@{reminder.reminderInfo}"
+            android:visibility="gone" />
+
     </RelativeLayout>
-
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="reminder"
-            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
-
-        <variable
-            name="isNew"
-            type="boolean" />
-    </data>
 </layout>
