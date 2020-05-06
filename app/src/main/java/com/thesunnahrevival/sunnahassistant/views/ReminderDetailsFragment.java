@@ -1,7 +1,9 @@
 package com.thesunnahrevival.sunnahassistant.views;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,11 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.Reminder;
-import com.thesunnahrevival.sunnahassistant.data.SelectDays;
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings;
+import com.thesunnahrevival.sunnahassistant.data.model.Reminder;
+import com.thesunnahrevival.sunnahassistant.data.model.SelectDays;
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderDetailsBottomSheetBinding;
+import com.thesunnahrevival.sunnahassistant.utilities.SunnahAssistantUtil;
 import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil;
 import com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel;
 import com.thesunnahrevival.sunnahassistant.views.adapters.SelectDaysSpinnerAdapter;
@@ -25,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 public class ReminderDetailsFragment extends BottomSheetDialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -33,7 +38,12 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     private Reminder mReminder;
     private RemindersViewModel mViewModel;
     private SelectDaysSpinnerAdapter mSelectedDaysAdapter;
-    private int mDay = 0;
+    private Integer mDay = 0;
+    private Integer mMonth = 12;
+    private Integer mYear = 0;
+    private ArrayAdapter<String> mCategoryAdapter;
+    private ArrayList<String> mCheckedDays;
+    private AppSettings mSettings;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,11 +73,25 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         if (mReminder != null) {
             mBinding.reminderTime.setText(TimeDateUtil.formatTimeInMilliseconds(getContext(),
                     mReminder.getTimeInMilliSeconds()));
+            mBinding.tip.setText(Html.fromHtml(mReminder.getReminderInfo()));
+            mBinding.tip.setMovementMethod(LinkMovementMethod.getInstance());
             mDay = mReminder.getDay();
+            mMonth = mReminder.getMonth();
+            mYear = mReminder.getYear();
+            DatePickerFragment.mDay = mDay;
+            DatePickerFragment.mMonth = mMonth;
+            DatePickerFragment.mYear = mYear;
+        }
+        else
+        {
+            DatePickerFragment.mDay = 0;
+            DatePickerFragment.mMonth = 12;
+            DatePickerFragment.mYear = 0;
         }
         mBinding.timePicker.setOnClickListener(this);
         mBinding.saveButton.setOnClickListener(this);
         mBinding.moreDetailsTextView.setOnClickListener(this);
+
         return mBinding.getRoot();
     }
 
@@ -86,15 +110,26 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
     }
 
     private void setCategorySpinnerData() {
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(
-                mBinding.bottomSheet.getContext(), R.array.categories, android.R.layout.simple_spinner_item);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mBinding.categorySpinner.setAdapter(categoryAdapter);
-        String category = mReminder.getCategory();
-        mBinding.categorySpinner.setSelection(categoryAdapter.getPosition(category));
-        if (category.matches("Prayer")) {
-            mBinding.categorySpinner.setEnabled(false);
-            mBinding.frequencySpinner.setEnabled(false);
+        if (getActivity() != null && getActivity() instanceof MainActivity) {
+            mSettings = ((MainActivity) getActivity()).mViewModel.getSettings().getValue();
+            if (getContext() != null && mSettings != null && mSettings.getCategories() != null) {
+                mCategoryAdapter = new ArrayAdapter<>(
+                        getContext(), android.R.layout.simple_spinner_item, new ArrayList<>(mSettings.getCategories())
+                );
+                mCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                if (mCategoryAdapter.getPosition("+ Create New Category") == -1)
+                    mCategoryAdapter.add("+ Create New Category");
+                mBinding.categorySpinner.setAdapter(mCategoryAdapter);
+
+                String selectedCategory = mReminder.getCategory();
+                mBinding.categorySpinner.setSelection(mCategoryAdapter.getPosition(selectedCategory));
+                mBinding.categorySpinner.setOnItemSelectedListener(this);
+
+                if (selectedCategory.matches(SunnahAssistantUtil.PRAYER)) {
+                    mBinding.categorySpinner.setEnabled(false);
+                    mBinding.frequencySpinner.setEnabled(false);
+                }
+            }
         }
     }
 
@@ -103,19 +138,21 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         if (getActivity() != null) {
 
             if (v.getId() == R.id.time_picker) {
-                DialogFragment timePickerFragment = new TimePickerFragment();
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                timePickerFragment.show(fm, "timePicker");
-            } else if (v.getId() == R.id.date_picker) {
-                DialogFragment datePickerFragment = new DatePickerFragment();
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                datePickerFragment.show(fm, "datePicker");
-                DatePickerFragment.mDay = mDay;
+                String selectedItem = (String) mBinding.frequencySpinner.getSelectedItem();
+                if (selectedItem.matches(SunnahAssistantUtil.DAILY) || selectedItem.matches(SunnahAssistantUtil.WEEKLY) ) {
+                    DialogFragment timePickerFragment = new TimePickerFragment();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    timePickerFragment.show(fm, "timePicker");
+                }
+                else {
+                    DialogFragment datePickerFragment = new DatePickerFragment();
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    datePickerFragment.show(fm, "datePicker");
+                }
             }
-
         }
         if (v.getId() == R.id.save_button)
-            save();
+            validateDetails();
 
         else if (v.getId() == R.id.more_details_text_view) {
             //Toggle More details view
@@ -127,66 +164,134 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
         }
     }
 
-    private void save() {
+    private void validateDetails() {
         if (TextUtils.isEmpty(mBinding.reminderEditText.getText().toString().trim())) {
             Toast.makeText(getContext(), getString(R.string.name_cannot_be_empty), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ArrayList<String> checkedDays = new ArrayList<>();
-        mDay = 0;
-        if (((String) mBinding.frequencySpinner.getSelectedItem()).matches("Weekly")) {
-            if (mSelectedDaysAdapter.getCheckedDays().isEmpty()) {
-                Toast.makeText(getContext(), getString(R.string.select_atleast_one_day), Toast.LENGTH_LONG).show();
-                mBinding.selectDayError.setVisibility(View.VISIBLE);
-                return;
-            }
-            checkedDays = mSelectedDaysAdapter.getCheckedDays();
-            mDay = -1; //To distinguish from daily and monthly reminders
-        } else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches("Monthly")) {
-            mDay = DatePickerFragment.mDay;
+        mCheckedDays = new ArrayList<>();
+        mDay = null;
+        mMonth = null;
+        mYear = null;
+        if(!validateFrequency()){
+            return;
         }
-        Reminder newReminder = new Reminder(mBinding.reminderEditText.getText().toString().trim(),
-                mBinding.additionalDetails.getText().toString().trim(),
-                TimePickerFragment.timeSet.getValue() != null ?
-                        TimePickerFragment.timeSet.getValue() :
-                        TimeDateUtil.formatTimeInMilliseconds(getContext(), mReminder.getTimeInMilliSeconds()),
-                (String) mBinding.categorySpinner.getSelectedItem(),
-                (String) mBinding.frequencySpinner.getSelectedItem(),
-                mDay,
-                false,
-                checkedDays
-        );
-        newReminder.setId(mReminder.getId());
-        newReminder.setOffset(Integer.parseInt(mBinding.prayerOffsetValue.getText().toString().trim()));
+
+        //Validate Category
+        String category;
+        if (mReminder != null && mReminder.getCategory().matches(SunnahAssistantUtil.PRAYER) && mSettings.isAutomatic())
+            category = SunnahAssistantUtil.PRAYER;
+        else
+            category = (String) mBinding.categorySpinner.getSelectedItem();
+
+
+        if (category.matches("\\+ Create New Category")){
+            category = mReminder.getCategory();
+        }
+
+        Reminder newReminder = createNewReminder(category);
+        saveReminder(newReminder);
+    }
+
+    private void saveReminder(Reminder newReminder) {
         if (mViewModel != null) {
-            if (!mReminder.equals(newReminder)) {
-                if (!newReminder.getCategory().matches("Prayer"))
+            if (!mReminder.equals(newReminder) && mSettings != null) {
+                if (!newReminder.getCategory().matches(SunnahAssistantUtil.PRAYER) || !mSettings.isAutomatic())
                     mViewModel.insert(newReminder);
-                else
+                else if (newReminder.getCategory().matches(SunnahAssistantUtil.PRAYER) && mSettings.isAutomatic())
                     mViewModel.updatePrayerTimeDetails(mReminder, newReminder);
                 Toast.makeText(getContext(), getString(R.string.successfully_updated), Toast.LENGTH_LONG).show();
             } else
                 Toast.makeText(getContext(), getString(R.string.no_changes), Toast.LENGTH_SHORT).show();
+            if(!mBinding.reminderTime.getText().toString().matches(TimeDateUtil.NOT_SET)){
+                mViewModel.scheduleReminder(newReminder);
+            }
             dismiss();
-        } else {
+        }
+        else {
             Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
         }
     }
 
+    private Reminder createNewReminder(String category) {
+        Reminder newReminder = new Reminder(mBinding.reminderEditText.getText().toString().trim(),
+                mBinding.additionalDetails.getText().toString().trim(),
+                TimePickerFragment.timeSet.getValue() != null ?
+                        TimeDateUtil.getTimestampInSeconds(TimePickerFragment.timeSet.getValue()) :
+                        null,
+                category,
+                (String) mBinding.frequencySpinner.getSelectedItem(),
+                false, mDay,
+                mMonth, mYear, 0,
+                mCheckedDays
+        );
+        newReminder.setId(mReminder.getId());
+        newReminder.setOffset(Integer.parseInt(mBinding.prayerOffsetValue.getText().toString().trim()));
+        return newReminder;
+    }
+
+    private boolean validateFrequency(){
+        if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.WEEKLY)) {
+            if (mSelectedDaysAdapter.getCheckedDays().isEmpty()) {
+                //error
+                Toast.makeText(getContext(), getString(R.string.select_atleast_one_day), Toast.LENGTH_LONG).show();
+                mBinding.selectDayError.setVisibility(View.VISIBLE);
+                return false;
+            }
+            mCheckedDays = mSelectedDaysAdapter.getCheckedDays();
+        }
+
+        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.MONTHLY)) {
+            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 ||
+                    DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null ||
+                    TimePickerFragment.timeSet.getValue().matches("") )
+            {
+                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            mDay = DatePickerFragment.mDay;
+        }
+        else if (((String) mBinding.frequencySpinner.getSelectedItem()).matches(SunnahAssistantUtil.ONE_TIME))
+        {
+            if (DatePickerFragment.mDay == 0 ||DatePickerFragment.mMonth == 12 ||
+                    DatePickerFragment.mYear == 0 ||TimePickerFragment.timeSet.getValue() == null ||
+                    TimePickerFragment.timeSet.getValue().matches(TimeDateUtil.NOT_SET) )
+            {
+                Toast.makeText(getContext(), R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show();
+                return false;
+            }
+            mDay = DatePickerFragment.mDay;
+            mMonth = DatePickerFragment.mMonth;
+            mYear = DatePickerFragment.mYear;
+        }
+        return true;
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position == 1) {
-            showSelectDaysSpinner();
-        } else if (position == 2) {
-            mBinding.selectDaysSpinner.setVisibility(View.GONE);
-            mBinding.datePicker.setVisibility(View.VISIBLE);
-            mBinding.datePicker.setOnClickListener(this);
-            return;
-        } else {
-            mBinding.selectDaysSpinner.setVisibility(View.GONE);
-        }
-        mBinding.datePicker.setVisibility(View.GONE);
+       if (parent.getId() == R.id.frequency_spinner){
+           if (position == 2) {
+               showSelectDaysSpinner();
+           }
+           else if (position == 3 || position == 0) {
+               mBinding.selectDaysSpinner.setVisibility(View.GONE);
+               mBinding.timePicker.setText(R.string.pick_date_and_time);
+               return;
+           } else {
+               mBinding.selectDaysSpinner.setVisibility(View.GONE);
+           }
+           mBinding.timePicker.setText(R.string.pick_time);
+       }
+       else if (parent.getId() == R.id.category_spinner) {
+           if (((String) parent.getSelectedItem()).matches("\\+ Create New Category") ){
+               AddCategoryDialogFragment dialogFragment = new AddCategoryDialogFragment();
+               dialogFragment.show(getFragmentManager(), "dialog");
+               Observer<String> observer = category -> mCategoryAdapter.notifyDataSetChanged();
+               AddCategoryDialogFragment.category.observe(this, observer);
+           }
+       }
+
     }
 
 
@@ -207,7 +312,7 @@ public class ReminderDetailsFragment extends BottomSheetDialogFragment implement
             day.setSelected(isDayScheduled);
             listOfAllDays.add(day);
         }
-        if (mReminder.getFrequency().matches("Weekly"))
+        if (mReminder.getFrequency().matches(SunnahAssistantUtil.WEEKLY))
             mSelectedDaysAdapter = new SelectDaysSpinnerAdapter(
                     getContext(), 0, listOfAllDays, mReminder.getCustomScheduleDays()
             );

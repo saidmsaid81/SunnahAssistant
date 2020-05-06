@@ -1,7 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.adapters;
 
 import android.content.Context;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.thesunnahrevival.sunnahassistant.R;
-import com.thesunnahrevival.sunnahassistant.data.SelectDays;
+import com.thesunnahrevival.sunnahassistant.data.model.SelectDays;
 
 import java.util.ArrayList;
 
