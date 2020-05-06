@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/setup_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setup_widget"
+        android:layout_gravity="center_horizontal" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/display_hijri_date_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/default_dimen"
+        android:text="@string/display_hijri_date"
+        android:checked="true"
+        android:button="@null"
+         />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/display_next_reminder_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/default_dimen"
+        android:text="@string/display_the_next_reminder"
+        android:checked="true"
+        android:button="@null"
+        />
+
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/fabColor"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_widget" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_at_least_one_option"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="gone"/>
+
+</LinearLayout>

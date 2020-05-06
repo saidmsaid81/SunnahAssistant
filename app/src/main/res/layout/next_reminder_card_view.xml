@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil"/>
+        <import type="android.content.Context" />
+
+        <variable
+            name="viewmodel"
+            type="com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel" />
+
+        <variable
+            name="nextReminder"
+            type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
+    </data>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -12,7 +26,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="@dimen/margin_dimen"
         android:layout_marginEnd="@dimen/default_dimen"
-        android:onClick="@{(view)-> viewmodel.openBottomSheet(view, nextReminder, true)}"
+        android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}"
+        android:onClick="@{(view)-> viewmodel.openBottomSheet(view, nextReminder)}"
         app:cardBackgroundColor="@color/nextReminderCardColor"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"
@@ -62,20 +77,25 @@
                     android:textSize="@dimen/title_text_size"
                     tools:text="Fasting Ayyamul Beidh" />
 
+
                 <TextView
-                    android:id="@+id/reminder_time"
+                    android:id="@+id/reminder_upcoming_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="18sp"
+                    android:visibility="visible"
+                    android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds()) }"
                     tools:text="Date" />
 
                 <TextView
                     android:id="@+id/reminder_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{nextReminder.frequencyAndCategory}"
+                    android:text="@{nextReminder.category}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/default_text_size"
@@ -105,18 +125,5 @@
 
     </androidx.cardview.widget.CardView>
 
-    <data>
 
-        <import type="android.view.View" />
-
-        <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil" />
-
-        <variable
-            name="viewmodel"
-            type="com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel" />
-
-        <variable
-            name="nextReminder"
-            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
-    </data>
 </layout>

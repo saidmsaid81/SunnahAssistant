@@ -4,67 +4,11 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:id="@+id/main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_dimen"
-            android:layout_marginTop="@dimen/default_dimen"
-            android:text="@string/next_string"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textSize="@dimen/default_text_size"
-            android:textStyle="bold"
-            android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}" />
-
-        <TextView
-            android:id="@+id/hijri_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_dimen"
-            android:layout_marginTop="@dimen/default_dimen"
-            android:text="@{viewmodel.hijriDateString}"
-            android:textSize="@dimen/default_text_size"
-            android:visibility="@{viewmodel.hijriDateString != null ? View.VISIBLE : View.GONE}" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reminder_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="visible"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp" />
-
-        <include
-            android:id="@+id/next_card_view"
-            layout="@layout/next_reminder_card_view"
-            android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}"
-            bind:nextReminder="@{nextReminder}"
-            bind:viewmodel="@{viewmodel}" />
-
-    </LinearLayout>
-
-
     <data>
 
         <import type="android.view.View" />
 
-        <import type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
+        <import type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
 
         <variable
             name="viewmodel"
@@ -72,8 +16,90 @@
 
         <variable
             name="nextReminder"
-            type="com.thesunnahrevival.sunnahassistant.data.Reminder" />
+            type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
 
     </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.MainActivity">
+
+        <LinearLayout
+            android:id="@+id/main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/hijri_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_dimen"
+                android:layout_marginTop="@dimen/default_dimen"
+                android:textSize="@dimen/default_text_size"
+                />
+
+            <TextView
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_dimen"
+                android:layout_marginTop="@dimen/default_dimen"
+                android:text="@string/next_string"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textSize="@dimen/default_text_size"
+                android:textStyle="bold"
+                android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}" />
+
+            <ViewStub
+                android:id="@+id/next_card_view"
+                bind:nextReminder="@{nextReminder}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_dimen"
+                android:layout_marginEnd="@dimen/default_dimen"
+                android:layout="@layout/next_reminder_card_view"
+                bind:viewmodel="@{viewmodel}" />
+
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reminder_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="8dp" />
+
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/default_dimen"
+            android:onClick="@{(view)-> viewmodel.openBottomSheet(view,(Reminder) null)}"
+            app:backgroundTint="@color/fabColor"
+            app:srcCompat="@drawable/ic_add_reminder" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
 

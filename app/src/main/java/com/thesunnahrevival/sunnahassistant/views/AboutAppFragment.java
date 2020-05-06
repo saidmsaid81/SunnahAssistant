@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.views;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -24,17 +23,18 @@ public class AboutAppFragment extends BottomSheetDialogFragment implements View.
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_about_app, container, false);
         ((TextView) view.findViewById(R.id.version)).setText(String.format(getString(R.string.version), BuildConfig.VERSION_NAME));
+        TextView apiCredit = view.findViewById(R.id.about_app);
+        apiCredit.setText(Html.fromHtml(getString(R.string.about)));
+        apiCredit.setMovementMethod(LinkMovementMethod.getInstance());
         TextView appIconCredit = view.findViewById(R.id.app_icon_credit);
         appIconCredit.setText(Html.fromHtml(getString(R.string.app_icon_credit)));
         appIconCredit.setMovementMethod(LinkMovementMethod.getInstance());
-        TextView otherIconCredit = view.findViewById(R.id.other_icon_credit);
-        otherIconCredit.setText(Html.fromHtml(getString(R.string.other_icon_credit)));
-        otherIconCredit.setMovementMethod(LinkMovementMethod.getInstance());
         view.findViewById(R.id.twitter).setOnClickListener(this);
         view.findViewById(R.id.instagram).setOnClickListener(this);
         view.findViewById(R.id.telegram).setOnClickListener(this);
         view.findViewById(R.id.facebook).setOnClickListener(this);
         view.findViewById(R.id.contact_us).setOnClickListener(this);
+        view.findViewById(R.id.support_developer).setOnClickListener(this);
         return view;
     }
 
@@ -60,6 +60,11 @@ public class AboutAppFragment extends BottomSheetDialogFragment implements View.
                 break;
             case R.id.contact_us:
                 intent = SunnahAssistantUtil.generateEmailIntent();
+                break;
+            case R.id.support_developer:
+                if (getContext() != null)
+                    SunnahAssistantUtil.openPlayStore(getContext(), "com.thesunnahrevival.supportdeveloper");
+                break;
         }
         if (intent != null)
             startActivity(intent);
