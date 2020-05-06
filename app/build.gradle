@@ -11,7 +11,7 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 2
+        versionCode 3
         versionName "1.0-pre-release-2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
