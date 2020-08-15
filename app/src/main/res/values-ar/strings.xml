@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مساعد السنة</string>
+    <string name="next_string">التالي:</string>
+    <string name="done_for_the_day">لا يوجد تذكير مجدول لهذه الفئة</string>
+    <string name="switch_to_dark_mode">الإنتقال إلى الوضع الليلي</string>
+    <string name="reminder_name_label">الاسم:</string>
+    <string name="reminder_name_hint">أدخل اسم التذكير</string>
+    <string name="edit_reminder">تعديل التذكير</string>
+    <string name="add_reminder">إضافة تذكير</string>
+    <string name="reminder_category">الفئة:</string>
+    <string name="frequency">التكرار:</string>
+    <string name="pick_time">اختيار الوقت</string>
+    <string name="change_time">تغيير الوقت</string>
+    <string name="save">حفظ</string>
+    <string name="successfully_updated">تم التحديث بنجاح</string>
+    <string name="no_changes">لم يتم إدخال أي تغييرات.</string>
+    <string name="name_cannot_be_empty">لا يمكن أن يكون الاسم فارغا</string>
+    <string name="select_days">اختر اليوم</string>
+    <string name="select_atleast_one_day">حدد يوما واحدا على الأقل</string>
+    <string name="more_details">المزيد من التفاصيل</string>
+    <string name="enter_additional_details">أدخل تفاصيل إضافية</string>
+    <string name="settings">الإعدادات</string>
+    <string name="hijri_date_settings">إعدادات تاريخ الهجري</string>
+    <string name="prayer_time_settings">إعدادات وقت الصلاة</string>
+    <string name="enter_city_town_name">اسم المدينة/المدينة + الدولة</string>
+    <string name="city_name_example">* مثال: لندن، المملكة المتحدة</string>
+    <string name="location_hint">ادخل الموقع</string>
+    <string name="error_updating_location">حدث خطأ أثناء تحديث الموقع. الرجاء التحقق من اتصالك بالإنترنت</string>
+    <string name="prayer_time_calculation_method">طريقة الحساب:</string>
+    <string name="asr_juristic_method">طريقة حساب صلاة العصر:</string>
+    <string name="change_prayer_time_offset_by">تغيير %s الوقت:</string>
+    <string name="prayer_offset_minute">دقيقة(/دقائق)</string>
+    <string name="value">القيمة</string>
+    <string name="add_prayer_time">تفعيل التنبيهات الزمنية الخاصة بصلاة تلقائية</string>
+    <string name="welcome">مرحبا بكم في مساعد السنة:</string>
+    <string name="tagline">قم بتعيين تذكيرات تساعدك على أن تصبح مسلم بشكل أفضل</string>
+    <string name="quick_setup">ابدأ الاستخدام</string>
+    <string name="delete_reminder">تم حذف التذكير</string>
+    <string name="undo_delete">التراجع</string>
+    <string name="cannot_delete_prayer_time">يمكن حذف تذكيرات الصلاة التلقائية فقط من الإعدادات</string>
+    <string name="time_not_set">لم يتم تعيين الوقت</string>
+    <string name="general_settings">الإعدادات العامة</string>
+    <string name="next_reminder_notification">عرض إشعار التذكير التالي</string>
+    <string name="next_reminder_disclaimer">تعطيل هذا قد يؤدي إلى عدم تشغيل التذكيرات بنجاح</string>
+    <string name="about_app">حول التطبيق</string>
+    <string name="version">الإصدار: %s</string>
+    <string name="icon">أيقونة التطبيق</string>
+    <string name="credits">المساهمون في العمل</string>
+    <string name="about">        هو تطبيق مجاني و &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/&gt;مفتوح المصدر&lt;/a&gt;&lt;br&gt;
+        تم تطويره من قبل سعيد محمد (&lt;a href=https://twitter.com/saidmsaid81/&gt;@saidmsaid81&lt;/a&gt;)
+    </string>
+    <string name="app_icon_credit">أيقونات من: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;https://www.flaticon.com/authors/frehavik&lt;/a&gt; </string>
+    <string name="we_are_social">تابعنا على وسائل التواصل الاجتماعية</string>
+    <string name="facebook_logo">شعار الفيسبوك</string>
+    <string name="no_email_app_installed">لا يوجد تطبيق بريد إلكتروني مثبت</string>
+    <string name="contact_us">اتصل بنا عبر البريد الإلكتروني</string>
+    <string name="change_theme">انقر لتغيير السمة أو التخطيط</string>
+    <string name="change_theme_description">السمات:- السمة المظلمة أو السمة الخفيفة\nتخطيط:- موسع أو مختصر</string>
+    <string name="add_new_reminder">إضافة تذكير</string>
+    <string name="add_new_reminder_description">انقر لإضافة أي تذكير</string>
+    <string name="edit_reminder_description">~ اسحب لليمين أو لليسار لحذف التذكير\n~ اضغط لتحرير التذكير\n~ اضغط على أيقونة الجرس (إذا تم تعيين الوقت) لتمكين التذكير</string>
+    <string name="spinner_tutorial">التذكير</string>
+    <string name="spinner_tutorial_description">التبديل بين اليوم ، غدا ، أسبوعيا وشهريا لتذكيرات</string>
+    <string name="support_developer">دعم المطورين</string>
+    <string name="more_apps">المزيد من التطبيقات</string>
+    <string name="rate_this_app">قيّم هذا التطبيق</string>
+    <string name="send_feedback">أرسل ملاحظاتك</string>
+    <string name="telegram_logo">شعار تيليجرام</string>
+    <string name="instagram_logo">شعار انستجرام</string>
+    <string name="twitter_logo">شعار تويتر</string>
+    <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_reminder">اضغط على أيقونة + في الزاوية السفلية لإضافة تذكير جديد</string>
+    <string name="open_source_licenses">ترخيص مفتوح المصدر</string>
+    <string name="name_of_the_new_category">اسم الفئة الجديدة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="display_all">عرض الكل</string>
+    <string name="alternate_display_of_data">التبديل إلى العرض المختصر</string>
+    <string name="default_display_of_data">التبديل إلى العرض الموسع</string>
+    <string name="display_hijri_date_on_the_home_page">عرض تاريخ الهجري على الصفحة الرئيسية</string>
+    <string name="updating">جارٍ التحديث…</string>
+    <string name="unavailable_location">تعذر العثور على هذا الموقع. الرجاء إدخال موقع آخر</string>
+    <string name="location_cannot_be_empty">لا يمكن أن يكون المحتوى فارغ</string>
+    <string name="notification_settings">إعدادات الإشعارات</string>
+    <string name="notification_tone">نغمة الإشعار</string>
+    <string name="vibrate">اهتزاز</string>
+    <string name="importance">السلوك</string>
+    <string name="next_reminder_sticky_notification">تنبيه التذكير التالي</string>
+    <string name="layout_and_theme_settings">إعدادات التخطيط والسمة</string>
+    <string name="layout">الواجهة</string>
+    <string name="theme">السِمة</string>
+    <string name="theme_in_android_10_follows_system_settings">اتبع النظام</string>
+    <string name="delete_category">حذف الفئة؟</string>
+    <string name="confirm_delete_category">تم حذف الفئة %s</string>
+    <string name="category_cannot_be_deleted">لا يمكن حذف الفئة %s</string>
+    <string name="customize_categories">تخصيص الفئات</string>
+    <string name="filter_displayed_reminders">التنبيهات المعروضة</string>
+    <string name="filter_displayed_reminders_description">مثل عرض جميع الفئات أو فئة واحدة فقط</string>
+    <string name="add_sunnah_reminders_alerts_such_as_fasting_on_mondays_and_thursdays">انقر لإضافة تنبيهات تذكيرات السنة</string>
+    <string name="sunnah_reminder_alerts_description">* مثل الصوم في أيام الاثنين والخميس</string>
+    <string name="add_salah_prayer_time_alerts">انقر لإضافة تنبيهات وقت (الصلاة)</string>
+    <string name="pick_date_and_time">اختيار التاريخ والوقت</string>
+    <string name="please_pick_date_and_time">الرجاء اختيار التاريخ والوقت</string>
+    <string name="higher_latitude_adjustment_method">طريقة تعديل خط العرض العالي</string>
+    <string name="add_widget">إضافة ويدجت</string>
+    <string name="display_hijri_date">عرض تاريخ الهجري</string>
+    <string name="display_the_next_reminder">عرض التذكير التالي</string>
+    <string name="enable_at_least_one_option">تمكين خيار واحد على الأقل</string>
+    <string name="setup_widget">تهيئة الودجت</string>
+    <string name="today_s_reminder">تذكيرات اليوم</string>
+    <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">التاريخ الهجري المستخدم في هذا التطبيق مبني على تقويم أم القرى. اقرأ المزيد على تقويم أم القرى هنا http://www.ummulqura.org.sa/default.aspx</string>
+    <string name="read_more">اقرأ المزيد</string>
+    <string name="read_more_on_dhuha_prayer">على صلاة الضحى وأفضل وقت للصلاة</string>
+    <string name="read_more_on_tahajjud_prayer">على صلاة التهجد وأفضل وقت للصلاة</string>
+    <string name="read_more_on_suratul_kahf">عن أهمية قراءة سورة الكهف كل يوم جمعة</string>
+    <string name="read_more_on_fasting_mondays_and_thursdays">عن أهمية صيام يوم الإثنين والخميس</string>
+    <string name="what_s_new">ما الجديد</string>
+    <string name="create_new_categories">إنشاء فئة جديدة</string>
+    <string name="important">هام</string>
+    <string name="important_changes">قمنا بتغيير طرق حساب أوقات الصلاة التي أدت إلى إعادة ضبط ظروف وقت الصلاة بشكل افتراضي. ولكن يمكنك إعادة تخصيص هذه الإعدادات في قسم \"إعدادات وقت الصلاة\".</string>
+    <string name="new_features">ميزات جديدة</string>
+    <string name="new_features_details">        &lt;unk&gt; إضافة خيار لتخصيص إعدادات الإشعارات مثل نغمة الإعداد والاهتزاز
+        \nأضيفت 7 أدوات جديدة يمكن أن تعرض تاريخ الهجري، تذكير اليوم وأوقات الصلاة على الشاشة الرئيسية
+        \nأضيف خيار لإنشاء تذكيرات مرة واحدة
+        \nأضيف خيار لإنشاء وحذف فئات التذكير. &quot;انظر فئات التذكير المخصصة&quot; القسم في الإعدادات
+        \nأضيف خيار لتصفية التذكيرات المعروضة استناداً إلى الفئات
+        \n&lt;unk&gt; أضاف تخطيط جديد لعرض التذكيرات: مخطط مكثف. اضغط على القائمة المتداخلة في &quot;المنزل&quot;
+        \n&lt;unk&gt; تم إضافة القدرة على عرض جميع التذكيرات في يوم واحد بدلاً من مجرد التذكير القادمة
+    </string>
+    <string name="updated">تم التحديث</string>
+    <string name="updated_details">        حساب التاريخ الهجري و وقت الصلاة بدون انترنت. في السابق كانت تتطلب الاتصال بالإنترنت مرة واحدة في الشهر على الأقل
+       \n إعادة تصميم إعدادات
+        \n عند إنشاء أو تحديث تفاصيل التذكير عند حفظ التفاصيل يتم تمكين التذكير تلقائياً.
+    </string>
+    <string name="fixes">الإصلاحات</string>
+    <string name="fixes_details">         إصلاحات وتحسينات ثانوية
+    </string>
+    <string name="add_or_delete_categories">إضافة أو حذف الفئة</string>
+    <string name="unavialable">لا شَيْء</string>
+    <string name="successfuly_added_sunnah_reminders">تمت الإضافة بنجاح</string>
+    <string name="sticky_notification_description">إشعار مثبت لعرض التذكير التالي</string>
+    <string name="dhuha_prayer">صلاة الضحى</string>
+    <string name="morning_adhkar">اذكار الصباح</string>
+    <string name="evening_adhkar">أذكار المساء</string>
+    <string name="tahajjud">صلاة التهجد</string>
+    <string name="reading_the_quran">قراءة القرآن</string>
+    <string name="reading_suratul_kahf">قراءة سورة الكهف</string>
+    <string name="fasting_on_monday_and_thursday">صيام يوم الاثنين والخميس</string>
+    <string name="demo_reminder">تذكير تجريبي</string>
+    <string name="error_adding_prayer_reminders">خطأ. لا يمكن إضافة أوقات الصلاة عندما يتم تمكين أوقات الصلاة التلقائية</string>
+    <string name="tomorrow_at">غدا الساعة&#160;</string>
+    <string name="today_at">اليوم الساعة&#160;</string>
+    <string name="daily">يوميًا&#160;</string>
+    <string name="monthly_frequency_display">في %d كل شهر&#160;</string>
+    <string name="one_time_frequency_display">في %d %s %d&#160;</string>
+    <string name="at_time_example_at_9_pm">الساعة %s&#160;</string>
+    <string name="expanded_view">عرض موسع</string>
+    <string name="condesed_view">عرض مختصر</string>
+    <string name="on">تشغيل</string>
+    <string name="off">إغلاق</string>
+    <string name="prayer">الصلاة</string>
+    <string name="add_new_category">إضافة فئة جديدة</string>
+    <string name="hijri_date"><![CDATA[<b>تاريخ اليوم:</b> %s هجري]]></string>
+    <string-array name="reminder_filter">
+        <item>القادم</item>
+        <item>الماضي</item>
+        <item>اليوم</item>
+        <item>غداً</item>
+        <item>أوقات الصلاة</item>
+        <item>أسبوعياً</item>
+        <item>شهرياً</item>
+        <item>مرة واحدة</item>
+    </string-array>
+    <string-array name="categories">
+        <item>غير مصنف</item>
+        <item>السنة</item>
+        <item>الصلاة</item>
+        <item>أخرى</item>
+    </string-array>
+    <string-array name="frequency">
+        <item>مرة واحدة</item>
+        <item>يومياً</item>
+        <item>أسبوعياً</item>
+        <item>شهرياً</item>
+    </string-array>
+    <string-array name="calculation_methods">
+        <item>رابطة العالم الإسلامي (افتراضي)</item>
+        <item>الهيئة العامة المصرية.</item>
+        <item>جامعة العلوم الإسلامية، كراتشي</item>
+        <item>جامعة أم القرى، مكة </item>
+        <item>الإمارات العربية المتحدة</item>
+        <item>لجنة رؤية القمر</item>
+        <item>الجمعية الإسلامية لأمريكا الشمالية (ISNA)</item>
+        <item>الكويت</item>
+        <item>قطر</item>
+        <item>سنغافورا</item>
+    </string-array>
+    <string-array name="asr_juristic_method">
+        <item>المعيار (حنبلي، شافعي، مالكي)</item>
+        <item>حنيفة</item>
+    </string-array>
+    <string-array name="settings_lists">
+        <item>إعدادات تاريخ الهجري</item>
+        <item>إعدادات وقت الصلاة</item>
+        <item>تخصيص فئات التذكير</item>
+        <item>إعدادات الإشعارات</item>
+        <item>إعدادات التخطيط والسمة</item>
+        <item>إتصل بنا</item>
+    </string-array>
+    <string-array name="layout_options">
+        <item>عرض موسع</item>
+        <item>عرض مختصر</item>
+    </string-array>
+    <string-array name="theme_options">
+        <item>فاتح (ابيض)</item>
+        <item>داكن</item>
+    </string-array>
+    <string-array name="vibration_options">
+        <item>تشغيل</item>
+        <item>إغلاق</item>
+    </string-array>
+    <string-array name="priority_options">
+        <item>لا يوجد إشعار على الإطلاق</item>
+        <item>بلا صوت</item>
+        <item>صوت (مستحسن)</item>
+        <item>تنبيه وإشعار</item>
+    </string-array>
+    <string-array name="latitude_options">
+        <item>منتصف الليل</item>
+        <item>سبُع الليل</item>
+        <item>الزاوية (افتراضي)</item>
+    </string-array>
+    <string-array name="prayer_names">
+        <item>صلاة الفجر</item>
+        <item>صلاة الظهر</item>
+        <item>صلاة العصر</item>
+        <item>صلاة المغرب</item>
+        <item>صلاة العشاء</item>
+    </string-array>
+</resources>
