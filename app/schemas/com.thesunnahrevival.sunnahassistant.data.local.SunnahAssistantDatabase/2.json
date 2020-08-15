@@ -2,23 +2,29 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "5a161509358d68e1f817ea37689c9dfc",
+    "identityHash": "edd2ae8a9d7adb1f88764ea90e4304f4",
     "entities": [
       {
         "tableName": "reminders_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reminderName` TEXT NOT NULL, `reminderInfo` TEXT NOT NULL, `timeInSeconds` INTEGER NOT NULL, `category` TEXT NOT NULL, `frequency` TEXT NOT NULL, `isEnabled` INTEGER NOT NULL, `day` INTEGER NOT NULL, `month` INTEGER NOT NULL, `year` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `customScheduleDays` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `reminderName` TEXT, `reminderInfo` TEXT, `timeInSeconds` INTEGER NOT NULL, `category` TEXT, `frequency` TEXT, `isEnabled` INTEGER NOT NULL, `day` INTEGER NOT NULL, `month` INTEGER NOT NULL, `year` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `customScheduleDays` TEXT)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "reminderName",
             "columnName": "reminderName",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "reminderInfo",
             "columnName": "reminderInfo",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "timeInSeconds",
@@ -30,13 +36,13 @@
             "fieldPath": "category",
             "columnName": "category",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "frequency",
             "columnName": "frequency",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "isEnabled",
@@ -69,16 +75,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "customScheduleDays",
             "columnName": "customScheduleDays",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -92,11 +92,23 @@
       },
       {
         "tableName": "app_settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `isShowNextReminderNotification` INTEGER NOT NULL, `isShowOnBoardingTutorial` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `categories` TEXT NOT NULL, `formattedAddress` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `formattedAddress` TEXT, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `categories` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "method",
+            "columnName": "method",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "asrCalculationMethod",
+            "columnName": "asrCalculationMethod",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -113,6 +125,24 @@
             "notNull": true
           },
           {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formattedAddress",
+            "columnName": "formattedAddress",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "isLightMode",
             "columnName": "isLightMode",
             "affinity": "INTEGER",
@@ -125,14 +155,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "isShowNextReminderNotification",
-            "columnName": "isShowNextReminderNotification",
+            "fieldPath": "showNextReminderNotification",
+            "columnName": "showNextReminderNotification",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "isShowOnBoardingTutorial",
-            "columnName": "isShowOnBoardingTutorial",
+            "fieldPath": "showOnBoardingTutorial",
+            "columnName": "showOnBoardingTutorial",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isAutomatic",
+            "columnName": "isAutomatic",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -200,43 +236,7 @@
             "fieldPath": "categories",
             "columnName": "categories",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "formattedAddress",
-            "columnName": "formattedAddress",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "latitude",
-            "columnName": "latitude",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "longitude",
-            "columnName": "longitude",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "method",
-            "columnName": "method",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "asrCalculationMethod",
-            "columnName": "asrCalculationMethod",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isAutomatic",
-            "columnName": "isAutomatic",
-            "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -252,7 +252,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5a161509358d68e1f817ea37689c9dfc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edd2ae8a9d7adb1f88764ea90e4304f4')"
     ]
   }
 }
