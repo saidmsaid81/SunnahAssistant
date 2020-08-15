@@ -18,9 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/default_dimen"
-        android:paddingEnd="@dimen/default_dimen"
-        android:paddingBottom="@dimen/default_dimen"
+        android:padding="@dimen/default_dimen"
         android:orientation="vertical">
 
         <TextView
@@ -72,7 +70,7 @@
                 android:id="@+id/vibration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{notificationSettings.shouldVibrate ? &quot;On&quot; : &quot;Off&quot;}" />
+                android:text="@{notificationSettings.shouldVibrate ? @string/on : @string/off}" />
 
         </LinearLayout>
 

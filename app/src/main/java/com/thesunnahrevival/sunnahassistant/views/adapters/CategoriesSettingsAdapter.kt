@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import java.util.*
 
-class CategoriesSettingsAdapter(private val categoriesList: HashSet<String>, private val deleteListener: DeleteCategoryListener) : RecyclerView.Adapter<CategoriesSettingsAdapter.ViewHolder>() {
+class CategoriesSettingsAdapter(private val categoriesList: TreeSet<String>, private val deleteListener: DeleteCategoryListener) : RecyclerView.Adapter<CategoriesSettingsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -36,7 +36,7 @@ class CategoriesSettingsAdapter(private val categoriesList: HashSet<String>, pri
     }
 
     interface DeleteCategoryListener {
-       fun deleteReminderCategory(categoriesList: HashSet<String>,category :String)
+       fun deleteReminderCategory(categoriesList: TreeSet<String>, category:String)
     }
 
 }

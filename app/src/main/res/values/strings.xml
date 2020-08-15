@@ -1,20 +1,8 @@
 <resources>
     <string name="app_name">Sunnah Assistant</string>
-    <string name="next_string">Next (Today):</string>
-    <string name="date">Date</string>
-    <string name="category">Category</string>
-    <string name="schedule">Weekly</string>
-    <string name="date_number">5</string>
-    <string name="upcoming_btn_text">Upcoming</string>
-    <string name="weekly_btn_text">Weekly</string>
-    <string name="monthly_btn_txt">Monthly</string>
-    <string name="error_message">Error Fetching Hijri Date or Prayer Times Data</string>
-    <string name="refresh">Refresh</string>
+    <string name="next_string">Next:</string>
     <string name="done_for_the_day">No Scheduled Reminder For This Category</string>
-    <string name="switch_to_tomorrow">Add Reminder</string>
     <string name="switch_to_dark_mode">Switch To Dark Mode</string>
-    <string name="reminder_successfully_enabled">Successfully Enabled</string>
-    <string name="reminder_successfully_disabled">Successfully Disabled</string>
     <string name="reminder_name_label">Name:</string>
     <string name="reminder_name_hint">Enter Name of Reminder</string>
     <string name="edit_reminder">Edit Reminder</string>
@@ -29,41 +17,29 @@
     <string name="name_cannot_be_empty">Name Cannot Be Empty</string>
     <string name="select_days">Select Days</string>
     <string name="select_atleast_one_day">Select at least One Day</string>
-    <string name="select_at_least_one_day_or_change_to_daily">Select at least one day or change to daily</string>
     <string name="more_details">More Details</string>
     <string name="enter_additional_details">Enter Additional Details</string>
     <string name="settings">Settings</string>
-    <string name="change_hijri_date">Update Hijri Date</string>
-    <string name="days_label_hijri">%d day(s)</string>
-    <string name="change_hijri_date_by">Change Hijri Date By:</string>
     <string name="hijri_date_settings">Hijri Date Settings</string>
     <string name="prayer_time_settings">Prayer Time Settings</string>
     <string name="enter_city_town_name">City/Town name + Country</string>
     <string name="city_name_example">*Example:London, United Kingdom</string>
     <string name="location_hint">Enter Location</string>
-    <string name="update_location">Update Prayer Time Settings</string>
     <string name="error_updating_location">Error updating Location. Please check your internet connection</string>
     <string name="prayer_time_calculation_method">Calculation Method:</string>
     <string name="asr_juristic_method">Asr Juristic Method:</string>
-    <string name="no_internet_connection">Error! Please check Internet Connection</string>
     <string name="change_prayer_time_offset_by">Change %s time By:</string>
     <string name="prayer_offset_minute">minute(s)</string>
     <string name="value">Value</string>
     <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
-    <string name="manual">Manually</string>
-    <string name="automatic">Automatically</string>
     <string name="welcome">Welcome to Sunnah Assistant:</string>
     <string name="tagline">Set Reminders that will help you become a better Muslim</string>
-    <string name="would_you_like_to_receive_prayer_time_alerts">Would you like to receive prayer time Alerts?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="quick_setup">Get Started</string>
     <string name="delete_reminder">Reminder Deleted</string>
     <string name="undo_delete">Undo</string>
     <string name="cannot_delete_prayer_time">Automatic Prayer Reminders can only be deleted from Settings</string>
     <string name="time_not_set">Time not Set</string>
     <string name="general_settings">General Settings</string>
-    <string name="se_ect_app_theme">Select App Theme:</string>
     <string name="next_reminder_notification">Display The Next Reminder Notification</string>
     <string name="next_reminder_disclaimer">Disabling this might lead to reminders not being triggered successfully</string>
     <string name="about_app">About App</string>
@@ -86,7 +62,6 @@
     <string name="edit_reminder_description">~ Swipe Right or Left to delete Reminder\n~ Tap To edit Reminder\n~ Tap the bell icon (if time is set) to enable reminder</string>
     <string name="spinner_tutorial">Reminders Switcher</string>
     <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly reminders</string>
-    <string name="automatic_prayer_settings_info">*Automatic prayer settings Requires Internet connection at least once a month to fetch prayer times</string>
     <string name="support_developer">Support Developer</string>
     <string name="more_apps">More Apps</string>
     <string name="rate_this_app">Rate this App</string>
@@ -94,14 +69,13 @@
     <string name="telegram_logo">Telegram Logo</string>
     <string name="instagram_logo">Instagram Logo</string>
     <string name="twitter_logo">Twitter Logo</string>
-    <string name="pick_date">Pick Date</string>
-    <string name="error">There seems to be an error. Please try again. If it persists report to the developer. Thanks</string>
     <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_reminder">Tap the + icon at the bottom corner to add a new reminder</string>
     <string name="open_source_licenses">Open Source Licenses</string>
     <string name="name_of_the_new_category">Name of the New Category</string>
     <string name="cancel">Cancel</string>
     <string name="display_all">Display All</string>
     <string name="alternate_display_of_data">Switch to Condensed View</string>
+    <string name="default_display_of_data">Switch to Expanded View</string>
     <string name="display_hijri_date_on_the_home_page">Display Hijri Date on the home page</string>
     <string name="updating">Updating…</string>
     <string name="unavailable_location">Couldn\'t find this location. Please enter another location</string>
@@ -127,19 +101,20 @@
     <string name="pick_date_and_time">Pick Date and Time</string>
     <string name="please_pick_date_and_time">Please Pick Date and time</string>
     <string name="higher_latitude_adjustment_method">Higher Latitude Adjustment Method</string>
-
-    <string name="appwidget_text">EXAMPLE</string>
-
-    <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="display_hijri_date">Display Hijri Date</string>
     <string name="display_the_next_reminder">Display the Next Reminder</string>
     <string name="enable_at_least_one_option">Enable at least one option</string>
     <string name="setup_widget">Setup Widget</string>
     <string name="today_s_reminder">Today\'s Reminders</string>
-    <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date is based on Umm al-Qura Calendar. Read more on Umm al-Qura Calendar here http://www.ummulqura.org.sa/default.aspx</string>
-
+    <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date used in this app is based on Umm al-Qura Calendar. Read more on Umm al-Qura Calendar here http://www.ummulqura.org.sa/default.aspx</string>
+    <string name="read_more">Read more</string>
+    <string name="read_more_on_dhuha_prayer">Read more on Dhuha Prayer and the best time to pray</string>
+    <string name="read_more_on_tahajjud_prayer">Read more on Tahajjud Prayer and the best time to pray</string>
+    <string name="read_more_on_suratul_kahf">Read more on the importance of reading Suratul Kahf every Friday</string>
+    <string name="read_more_on_fasting_mondays_and_thursdays">Read more on the importance of reading fasting on Mondays and Thursday</string>
     <string name="what_s_new">What\'s New</string>
+    <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
     <string name="important_changes">‣ We changed the methods for calculating prayer times which led to resetting the prayer time settings to default. But you can customize back these settings in \"Prayer Time Settings\" Section. Sorry for any inconvenience caused.</string>
     <string name="new_features">New Features</string>
@@ -162,8 +137,38 @@
     <string name="fixes_details">
         ‣ Minor bug fixes and improvements
     </string>
-
-
+    <string name="add_or_delete_categories">Add or Delete Categories</string>
+    <string name="unavialable">None</string>
+    <string name="successfuly_added_sunnah_reminders">Successfully Added</string>
+    <string name="sticky_notification_description">Sticky Notification to display the next scheduled reminder</string>
+    <string name="dhuha_prayer">Praying Dhuha</string>
+    <string name="morning_adhkar">Morning Adhkar</string>
+    <string name="evening_adhkar">Evening Adhkar</string>
+    <string name="tahajjud">Tahajjud</string>
+    <string name="reading_the_quran">Reading the Quran</string>
+    <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
+    <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
+    <string name="demo_reminder">Demo Reminder</string>
+    <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
+    <string name="tomorrow_at">Tomorrow at&#160;</string>
+    <string name="today_at">Today at&#160;</string>
+    <string name="daily">Daily&#160;</string>
+    <string name="monthly_frequency_display">On %d every month&#160;</string>
+    <string name="one_time_frequency_display">On %d %s %d&#160;</string>
+    <string name="at_time_example_at_9_pm">at %s&#160;</string>
+    <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
+    <string name="expanded_view">Expanded View</string>
+    <string name="condesed_view">Condensed View</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="prayer">Prayer</string>
+    <string name="add_new_category">Add New Category</string>
+    <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s A.H]]></string>
+    <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
+    <string name="no_upcoming_reminder_today">No Upcoming Reminder Today</string>
+    <string name="tomorrow_at_notification">. Tomorrow at </string>
+    <string name="at"> at </string>
+    <string name="next_reminder_dhuhr_prayer_at_12_45">Next Reminder: %s %s %s</string>
 
 
     <string-array name="reminder_filter">
@@ -188,17 +193,6 @@
         <item>Daily</item>
         <item>Weekly</item>
         <item>Monthly</item>
-    </string-array>
-
-    <string-array name="select_days">
-        <item>Select Days</item>
-        <item>Monday</item>
-        <item>Tuesday</item>
-        <item>Wednesday</item>
-        <item>Thursday</item>
-        <item>Friday</item>
-        <item>Saturday</item>
-        <item>Sunday</item>
     </string-array>
 
     <string-array name="calculation_methods">
@@ -252,6 +246,13 @@
         <item>Middle of the Night</item>
         <item>One Seventh of the Night</item>
         <item>Angle Based (Default)</item>
+    </string-array>
+    <string-array name="prayer_names">
+        <item>Fajr Prayer</item>
+        <item>Dhuhr Prayer</item>
+        <item>Asr Prayer</item>
+        <item>Maghrib Prayer</item>
+        <item>Isha Prayer</item>
     </string-array>
 
 </resources>
