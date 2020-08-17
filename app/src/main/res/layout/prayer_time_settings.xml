@@ -3,6 +3,10 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="android.os.Build"/>
+        <import type="android.os.Build.VERSION"/>
+        <import type="android.os.Build.VERSION_CODES"/>
+
         <variable
             name="settings"
             type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings" />
@@ -137,6 +141,47 @@
                 android:text="@{latitudeAdjustmentMethod}"/>
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prayer_times_notification_settings"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/do_not_disturb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/set_phone_to_do_not_disturb_mode_for" />
+
+            <TextView
+                android:id="@+id/do_not_disturb_minutes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(@string/dnd_minutes, settings.doNotDisturbMinutes)}"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_info"
+            android:paddingTop="@dimen/default_dimen"
+            android:textSize="12sp"
+            android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
+            android:drawablePadding="@dimen/default_dimen"
+            android:text="@string/use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered"/>
 
 
     </LinearLayout>

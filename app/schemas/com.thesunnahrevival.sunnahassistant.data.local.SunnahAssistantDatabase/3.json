@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "f129a991e6e55c2474af1383e7b06790",
+    "identityHash": "15366e0de45058820e8fe1e3f8ea3e59",
     "entities": [
       {
         "tableName": "reminders_table",
@@ -92,7 +92,7 @@
       },
       {
         "tableName": "app_settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `formattedAddress` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `categories` TEXT, `language` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `formattedAddress` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `categories` TEXT, `language` TEXT NOT NULL, `doNotDisturbMinutes` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -243,6 +243,12 @@
             "columnName": "language",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "doNotDisturbMinutes",
+            "columnName": "doNotDisturbMinutes",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -258,7 +264,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f129a991e6e55c2474af1383e7b06790')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15366e0de45058820e8fe1e3f8ea3e59')"
     ]
   }
 }

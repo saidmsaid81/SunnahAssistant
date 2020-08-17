@@ -68,6 +68,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("UPDATE app_settings SET formattedAddress = '' WHERE formattedAddress = 'Location cannot be empty'")
                 database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN language TEXT DEFAULT 'en' NOT NULL")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN doNotDisturbMinutes INTEGER DEFAULT 0 NOT NULL")
             }
         }
 
