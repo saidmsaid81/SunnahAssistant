@@ -55,6 +55,9 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             mReminder = mViewModel.selectedReminder!!
             mBinding.reminder = mViewModel.selectedReminder
             mBinding.isNew = mReminder.reminderName.isNullOrBlank()
+            mBinding.isAutomaticPrayerTime =
+                    (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
+                            mViewModel.settingsValue?.isAutomatic == true)
             mBinding.lifecycleOwner = this
 
             observeReminderTimeChange()
@@ -110,7 +113,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             mBinding.categorySpinner.onItemSelectedListener = this
 
             val prayerCategory = resources.getStringArray(R.array.categories)[2]
-            if (selectedCategory?.matches(prayerCategory.toRegex()) == true) {
+            if (selectedCategory?.matches(prayerCategory.toRegex()) == true && settings.isAutomatic) {
                 //Disable changing category and frequency for prayer times.
                 mBinding.categorySpinner.isEnabled = false
                 mBinding.frequencySpinner.isEnabled = false
@@ -291,7 +294,8 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         }
         else
             Toast.makeText(context, getString(R.string.no_changes), Toast.LENGTH_SHORT).show()
-        mViewModel.scheduleReminder(reminder)
+        if (reminder.isEnabled)
+            mViewModel.scheduleReminder(reminder)
         dismiss()
     }
 }
