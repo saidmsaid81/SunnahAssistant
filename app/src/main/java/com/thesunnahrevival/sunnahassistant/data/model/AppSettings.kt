@@ -34,4 +34,5 @@ class AppSettings {
     var categories: TreeSet<String>? = null
     var language: String = "en"
     var doNotDisturbMinutes: Int = 0
+    var useReliableAlarms: Boolean = true
 }

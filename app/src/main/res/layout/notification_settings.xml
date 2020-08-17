@@ -99,6 +99,24 @@
 
         </LinearLayout>
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/use_reliable_alarms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/default_dimen"
+            android:button="@null"
+            android:text="@string/use_reliable_alarms_for_notifications"
+            android:checked="@{settings.useReliableAlarms}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_clock"
+            android:paddingTop="@dimen/default_dimen"
+            android:textSize="12sp"
+            android:drawablePadding="@dimen/default_dimen"
+            android:text="@string/enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

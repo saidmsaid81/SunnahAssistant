@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -22,7 +23,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.createReminderNotification
 import com.thesunnahrevival.sunnahassistant.utilities.deleteReminderNotificationChannel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
-class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener {
+class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private lateinit var mViewModel: SunnahAssistantViewModel
     private var isSettingsUpdated = false
@@ -59,13 +60,8 @@ class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickL
             binding.notificationToneSettings.setOnClickListener(this)
             binding.notificationPrioritySettings.setOnClickListener(this)
             binding.notificationVibrationSettings.setOnClickListener(this)
-            binding.nextReminderStickySettings.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (buttonView.isPressed){
-                    mViewModel.settingsValue?.showNextReminderNotification = isChecked
-                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-                    requireContext().startService(Intent(requireContext(), NextReminderService::class.java))
-                }
-            }
+            binding.nextReminderStickySettings.setOnCheckedChangeListener(this)
+            binding.useReliableAlarms.setOnCheckedChangeListener(this)
         }
         return binding.root
     }
@@ -115,8 +111,8 @@ class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickL
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         if (isSettingsUpdated) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context?.let { deleteReminderNotificationChannel(it) }
@@ -127,6 +123,17 @@ class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickL
                     }
                 }
             }
+        }
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        if (buttonView?.isPressed == true){
+            if (buttonView.id == R.id.next_reminder_sticky_settings)
+                mViewModel.settingsValue?.showNextReminderNotification = isChecked
+            else if (buttonView.id == R.id.use_reliable_alarms)
+                mViewModel.settingsValue?.useReliableAlarms = isChecked
+            mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+            requireContext().startService(Intent(requireContext(), NextReminderService::class.java))
         }
     }
 }

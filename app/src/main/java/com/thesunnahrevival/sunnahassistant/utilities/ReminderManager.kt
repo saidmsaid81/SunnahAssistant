@@ -2,10 +2,12 @@ package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.app.AlarmManager
 import android.app.AlarmManager.AlarmClockInfo
+import android.app.AlarmManager.RTC_WAKEUP
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import java.util.*
 
 class ReminderManager private constructor() {
@@ -31,16 +33,29 @@ class ReminderManager private constructor() {
      * Schedule A reminder to fire at a later time
      */
     fun scheduleReminder(context: Context, title: String, text: String, category: String?, timeInMilliseconds: Long,
-                         notificationUri: Uri, isVibrate: Boolean, doNotDisturbMinutes: Int, calculateDelayFromMidnight: Boolean = true, isOneShot: Boolean = false) {
+                         notificationUri: Uri, isVibrate: Boolean, doNotDisturbMinutes: Int,
+                         calculateDelayFromMidnight: Boolean = true, isOneShot: Boolean = false, useReliableAlarms: Boolean = false) {
+
         val pendingIntent = createNotificationPendingIntent(
                 context, title, text, category, notificationUri, isVibrate, doNotDisturbMinutes, isOneShot
         )
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarm = if (calculateDelayFromMidnight)
-            AlarmClockInfo(calculateDelayFromMidnight(timeInMilliseconds), null)
+
+        val delay = if (calculateDelayFromMidnight)
+            calculateDelayFromMidnight(timeInMilliseconds)
         else
-            AlarmClockInfo(timeInMilliseconds, null)
-        alarmManager.setAlarmClock(alarm, pendingIntent)
+            timeInMilliseconds
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarm = AlarmClockInfo(delay, null)
+        if (useReliableAlarms)
+            alarmManager.setAlarmClock(alarm, pendingIntent)
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(RTC_WAKEUP, delay, pendingIntent )
+            }
+            else
+                alarmManager.setExact(RTC_WAKEUP, delay, pendingIntent)
+        }
     }
 
     private fun calculateDelayFromMidnight(timeInMilliseconds: Long): Long {
