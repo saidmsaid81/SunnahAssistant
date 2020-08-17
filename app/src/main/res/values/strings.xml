@@ -169,6 +169,13 @@
     <string name="tomorrow_at_notification">. Tomorrow at </string>
     <string name="at"> at </string>
     <string name="next_reminder_dhuhr_prayer_at_12_45">Next Reminder: %s %s %s</string>
+    <string name="prayer_times_notification_settings">Prayer Times Notification Settings</string>
+    <string name="dnd_minutes">%d minutes</string>
+    <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
+    <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time reminder is triggered</string>
+    <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
+    <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
+    <string name="go_to_settings">Go to Settings</string>
 
 
     <string-array name="reminder_filter">
@@ -253,6 +260,14 @@
         <item>Asr Prayer</item>
         <item>Maghrib Prayer</item>
         <item>Isha Prayer</item>
+    </string-array>
+
+    <string-array name="do_not_disturb_minutes">
+        <item>0</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
     </string-array>
 
 </resources>

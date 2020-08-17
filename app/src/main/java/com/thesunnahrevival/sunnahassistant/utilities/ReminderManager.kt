@@ -13,25 +13,33 @@ class ReminderManager private constructor() {
     /**
      * Method for creating notification and PendingIntent
      */
-    private fun createNotificationPendingIntent(context: Context, title: String, text: String, notificationUri: Uri, isVibrate: Boolean): PendingIntent {
+    private fun createNotificationPendingIntent(context: Context, title: String, text: String, category: String?, notificationUri: Uri, isVibrate: Boolean, doNotDisturbMinutes: Int, isOneShot: Boolean = false): PendingIntent {
         val notificationIntent = Intent(context, ReminderBroadcastReceiver::class.java)
         notificationIntent.putExtra(NOTIFICATION_TITLE, title)
         notificationIntent.putExtra(NOTIFICATION_TEXT, text)
         notificationIntent.putExtra(NOTIFICATION_TONE_URI, notificationUri.toString())
         notificationIntent.putExtra(NOTIFICATION_VIBRATE, isVibrate)
-        return PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        notificationIntent.putExtra(NOTIFICATION_CATEGORY, category)
+        notificationIntent.putExtra(NOTIFICATION_DND_MINUTES, doNotDisturbMinutes)
+        return if (!isOneShot)
+            PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        else
+            PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT)
     }
 
     /**
      * Schedule A reminder to fire at a later time
      */
-    fun scheduleReminder(context: Context, title: String, text: String, timeInMilliseconds: Long,
-                         notificationUri: Uri, isVibrate: Boolean) {
+    fun scheduleReminder(context: Context, title: String, text: String, category: String?, timeInMilliseconds: Long,
+                         notificationUri: Uri, isVibrate: Boolean, doNotDisturbMinutes: Int, calculateDelayFromMidnight: Boolean = true, isOneShot: Boolean = false) {
         val pendingIntent = createNotificationPendingIntent(
-                context, title, text, notificationUri, isVibrate
+                context, title, text, category, notificationUri, isVibrate, doNotDisturbMinutes, isOneShot
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarm = AlarmClockInfo(calculateDelayFromMidnight(timeInMilliseconds), null)
+        val alarm = if (calculateDelayFromMidnight)
+            AlarmClockInfo(calculateDelayFromMidnight(timeInMilliseconds), null)
+        else
+            AlarmClockInfo(timeInMilliseconds, null)
         alarmManager.setAlarmClock(alarm, pendingIntent)
     }
 
@@ -51,10 +59,12 @@ class ReminderManager private constructor() {
     }
 
     companion object {
-        var NOTIFICATION_TITLE = "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
-        var NOTIFICATION_TEXT = "com.thesunnahrevival.sunnahassistant.utilities.notificationText"
-        var NOTIFICATION_TONE_URI = "com.thesunnahrevival.sunnahassistant.utilities.notificationToneUri"
-        var NOTIFICATION_VIBRATE = "com.thesunnahrevival.sunnahassistant.utilities.notificationVibrate"
+        val NOTIFICATION_TITLE = "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
+        val NOTIFICATION_TEXT = "com.thesunnahrevival.sunnahassistant.utilities.notificationText"
+        val NOTIFICATION_TONE_URI = "com.thesunnahrevival.sunnahassistant.utilities.notificationToneUri"
+        val NOTIFICATION_VIBRATE = "com.thesunnahrevival.sunnahassistant.utilities.notificationVibrate"
+        val NOTIFICATION_CATEGORY = "com.thesunnahrevival.sunnahassistant.utilities.notificationCategory"
+        val NOTIFICATION_DND_MINUTES = "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
 
         @Volatile
         private var mRemManagerInstance: ReminderManager? = null

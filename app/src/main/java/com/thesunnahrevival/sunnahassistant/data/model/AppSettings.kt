@@ -33,4 +33,5 @@ class AppSettings {
     var isAfterUpdate = false
     var categories: TreeSet<String>? = null
     var language: String = "en"
+    var doNotDisturbMinutes: Int = 0
 }

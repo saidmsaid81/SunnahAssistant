@@ -21,11 +21,13 @@ import java.util.*
 class NextReminderService : Service() {
 
     private val mReminderDAO = getInstance(this).reminderDao()
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val context = this
+
         CoroutineScope(Dispatchers.IO).launch{
-            val isForegroundEnabled = mReminderDAO.isForegroundEnabled()
             val settings = mReminderDAO.getAppSettingsValue()
+            val isForegroundEnabled = settings?.showNextReminderNotification ?: false
 
             if (settings != null) {
                 checkIfPrayerTimesNeedToBeUpdated(settings)
@@ -33,6 +35,7 @@ class NextReminderService : Service() {
 
             var timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
+
             var nextScheduledReminder = mReminderDAO.getNextScheduledReminderToday(
                     calculateOffsetFromMidnight(),
                     dayOfTheWeek.toString(),
@@ -64,14 +67,18 @@ class NextReminderService : Service() {
                     application.resources.getStringArray(R.array.categories)[2]).getPrayerTimeReminders()
 
             for (prayerTimeReminder in prayerTimesReminders) {
-                mReminderDAO.updateGeneratedPrayerTimes(prayerTimeReminder.id, getMonthNumber(System.currentTimeMillis()), getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds)
+                mReminderDAO.updateGeneratedPrayerTimes(prayerTimeReminder.id,
+                        getMonthNumber(System.currentTimeMillis()),
+                        getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds)
             }
+
             settings.month = getMonthNumber(System.currentTimeMillis())
             mReminderDAO.updateAppSettings(settings)
         }
     }
 
-    private fun scheduleTheNextReminder(settings: AppSettings, nextScheduledReminder: Reminder?, context: NextReminderService, isForegroundEnabled: Boolean, dayString: String) {
+    private fun scheduleTheNextReminder(settings: AppSettings, nextScheduledReminder: Reminder?,
+                                        context: NextReminderService, isForegroundEnabled: Boolean, dayString: String) {
         val title: String
         val text = getString(R.string.tap_to_disable_sticky_notification)
         val notificationToneUri: Uri? = settings.notificationToneUri
@@ -86,25 +93,31 @@ class NextReminderService : Service() {
                 nextScheduledReminder.reminderName?.let { name ->
                     ReminderManager.getInstance().scheduleReminder(
                             context, "Reminder",
-                            name, nextScheduledReminder.timeInMilliseconds, it, isVibrate)
+                            name, nextScheduledReminder.category, nextScheduledReminder.timeInMilliseconds, it,
+                            isVibrate, settings.doNotDisturbMinutes)
                 }
             }
-        } else {
+        }
+
+        else {
+
+            //A dummy notification which enables scheduling reminders for the next day
+
             title = getString(R.string.no_upcoming_reminder_today)
             notificationToneUri?.let {
                 ReminderManager.getInstance().scheduleReminder(
-                        context, "", "",
-                        (-TimeZone.getDefault().rawOffset + 10).toLong(), it, isVibrate
+                        context, "", "", "null",
+                        (-TimeZone.getDefault().rawOffset + 10).toLong(), it, isVibrate, settings.doNotDisturbMinutes
                 )
             }
         }
 
 
-        val notification: Notification = createNotification(
+        val stickyNotification: Notification = createNotification(
                 context, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate)
 
         if (isForegroundEnabled)
-            context.startForeground(1, notification)
+            context.startForeground(1, stickyNotification)
         else
             context.stopForeground(true)
     }
