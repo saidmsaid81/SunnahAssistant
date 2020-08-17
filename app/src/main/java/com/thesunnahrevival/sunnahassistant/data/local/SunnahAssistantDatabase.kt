@@ -69,6 +69,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN language TEXT DEFAULT 'en' NOT NULL")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN doNotDisturbMinutes INTEGER DEFAULT 0 NOT NULL")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN useReliableAlarms INTEGER DEFAULT 1 NOT NULL")
             }
         }
 

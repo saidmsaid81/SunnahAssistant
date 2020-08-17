@@ -92,9 +92,9 @@ class NextReminderService : Service() {
             notificationToneUri?.let {
                 nextScheduledReminder.reminderName?.let { name ->
                     ReminderManager.getInstance().scheduleReminder(
-                            context, "Reminder",
-                            name, nextScheduledReminder.category, nextScheduledReminder.timeInMilliseconds, it,
-                            isVibrate, settings.doNotDisturbMinutes)
+                            context = context, title = "Reminder",
+                            text = name, category = nextScheduledReminder.category, timeInMilliseconds = nextScheduledReminder.timeInMilliseconds, notificationUri = it,
+                            isVibrate = isVibrate, doNotDisturbMinutes = settings.doNotDisturbMinutes, useReliableAlarms = settings.useReliableAlarms)
                 }
             }
         }
@@ -106,8 +106,9 @@ class NextReminderService : Service() {
             title = getString(R.string.no_upcoming_reminder_today)
             notificationToneUri?.let {
                 ReminderManager.getInstance().scheduleReminder(
-                        context, "", "", "null",
-                        (-TimeZone.getDefault().rawOffset + 10).toLong(), it, isVibrate, settings.doNotDisturbMinutes
+                        context = context, title = "", text = "", category = "null",
+                        timeInMilliseconds = (-TimeZone.getDefault().rawOffset + 10).toLong(), notificationUri = it, isVibrate = isVibrate, doNotDisturbMinutes = settings.doNotDisturbMinutes,
+                        useReliableAlarms = settings.useReliableAlarms
                 )
             }
         }
