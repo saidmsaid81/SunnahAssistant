@@ -23,7 +23,7 @@ interface ReminderDao {
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
     fun getRemindersOnDay(numberOfTheWeekDay: String, day: Int, month: Int, year: Int): LiveData<List<Reminder>>
 
-    @Query("SELECT * FROM reminders_table WHERE (category == :categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE (category == :categoryName AND (day == :day AND month == :month AND year =:year OR day == 0)) ORDER BY timeInSeconds")
     fun getPrayerTimes(day: Int, month: Int, year: Int, categoryName: String): LiveData<List<Reminder>>
 
     @Query("SELECT * FROM reminders_table WHERE frequency == 2")

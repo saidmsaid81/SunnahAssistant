@@ -15,6 +15,10 @@
             type="boolean" />
 
         <variable
+            name="isAutomaticPrayerTime"
+            type="boolean" />
+
+        <variable
             name="days"
             type="String[]" />
     </data>
@@ -217,7 +221,7 @@
             android:paddingTop="20dp"
             android:text="@{String.format(@string/change_prayer_time_offset_by, reminder.reminderName)}"
             android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(@string/prayer) ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}" />
 
         <EditText
             android:id="@+id/prayerOffsetValue"
@@ -232,7 +236,7 @@
             android:paddingTop="20dp"
             android:text="@{String.valueOf(reminder.offset)}"
             android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(@string/prayer) ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}" />
 
         <TextView
             android:id="@+id/minutes_label"
@@ -245,7 +249,7 @@
             android:paddingTop="20dp"
             android:text="@string/prayer_offset_minute"
             android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(@string/prayer) ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}" />
 
 
 
@@ -260,7 +264,7 @@
             android:paddingEnd="16dp"
             android:text="@string/change_time"
             android:textAllCaps="false"
-            android:visibility="@{reminder.category.matches(@string/prayer) ? View.INVISIBLE : View.VISIBLE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.INVISIBLE : View.VISIBLE}" />
 
         <TextView
             android:id="@+id/more_details_text_view"
