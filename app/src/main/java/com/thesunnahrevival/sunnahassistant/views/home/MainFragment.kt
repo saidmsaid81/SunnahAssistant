@@ -40,6 +40,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     private lateinit var mAllReminders: ArrayList<Reminder>
     private var mSpinner: Spinner? = null
     private var isRescheduleAtLaunch = true
+    var nextScheduledReminder: Reminder? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(
@@ -165,7 +166,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     private fun displayTheReminders(data: ArrayList<Reminder>) {
         mViewModel.viewModelScope.launch(Dispatchers.IO) {
             var dayString = getString(R.string.today_at)
-            var nextScheduledReminder = mViewModel.getNextScheduledReminderToday(calculateOffsetFromMidnight(),
+            nextScheduledReminder = mViewModel.getNextScheduledReminderToday(calculateOffsetFromMidnight(),
                      getDayDate(System.currentTimeMillis()),
                     getMonthNumber(System.currentTimeMillis()), Integer.parseInt(getYear(System.currentTimeMillis())))
             if (nextScheduledReminder == null) {
@@ -257,11 +258,17 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
         if (mDeletedReminder.isEnabled)
             mViewModel.cancelScheduledReminder(mDeletedReminder)
 
+        if (mDeletedReminder == nextScheduledReminder) {
+            mAllReminders.remove(mDeletedReminder)
+            displayTheReminders(mAllReminders)
+        }
+
         mViewModel.delete(mDeletedReminder)
         val snackbar = Snackbar.make(mBinding.mainLayout, getString(R.string.delete_reminder),
                 Snackbar.LENGTH_LONG)
         snackbar.setAction(getString(R.string.undo_delete)) { mViewModel.insert(mDeletedReminder) }
         snackbar.show()
+
     }
 
     override fun onClick(v: View?) {
