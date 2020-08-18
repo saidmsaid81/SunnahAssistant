@@ -81,6 +81,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:text="@string/translators"
+        android:paddingTop="@dimen/default_dimen"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/translate_credit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:linksClickable="true"
+        android:text="@string/arabic_translation_by_malkalashter313"
+        android:textColorLink="@android:color/holo_blue_dark"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:paddingBottom="@dimen/default_dimen"
         android:paddingTop="@dimen/default_dimen"
         android:text="@string/we_are_social"
@@ -128,27 +149,13 @@
 
     </LinearLayout>
 
-
-
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/contact_us"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/fabColor"
         android:padding="@dimen/margin_dimen"
-        android:layout_marginBottom="@dimen/default_dimen"
         android:textAllCaps="false"
         android:text="@string/contact_us" />
-
-    <Button
-        android:id="@+id/support_developer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/fabColor"
-        android:padding="@dimen/margin_dimen"
-        android:textAllCaps="false"
-        android:text="@string/support_developer" />
 
 </LinearLayout>
