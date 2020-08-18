@@ -32,7 +32,6 @@ class AboutAppFragment : BottomSheetDialogFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.telegram).setOnClickListener(this)
         view.findViewById<View>(R.id.facebook).setOnClickListener(this)
         view.findViewById<View>(R.id.contact_us).setOnClickListener(this)
-        view.findViewById<View>(R.id.support_developer).setOnClickListener(this)
         return view
     }
 

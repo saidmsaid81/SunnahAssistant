@@ -119,13 +119,8 @@
     <string name="important_changes">‣ We changed the methods for calculating prayer times which led to resetting the prayer time settings to default. But you can customize back these settings in \"Prayer Time Settings\" Section. Sorry for any inconvenience caused.</string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">
-        ‣ Added option to customize notification settings such as setting tone and vibration
-        \n‣ Added 7 new Widgets that can display Hijri Date, Today Reminders and Prayer times on Home Screen
-        \n‣ Added option to create one time reminders
-        \n‣ Added option to create and delete reminder categories. &quot;See Customize reminder categories.&quot; section in settings
-        \n‣ Added option to filter displayed reminders based on categories
-        \n‣ Added a new layout for displaying reminders : Condensed layout. Tap the overflow menu in &quot;Home&quot;
-        \n‣ Added ability to view all reminders on a day instead of just upcoming reminders
+        ‣ Added option to set phone to Do Not Disturb mode(Silent Mode) when prayer time reminders are triggered
+        \n‣ Added Arabic translations
     </string>
     <string name="updated">Updated</string>
     <string name="updated_details">
@@ -149,14 +144,12 @@
     <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
     <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
     <string name="demo_reminder">Demo Reminder</string>
-    <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
     <string name="tomorrow_at">Tomorrow at&#160;</string>
     <string name="today_at">Today at&#160;</string>
     <string name="daily">Daily&#160;</string>
     <string name="monthly_frequency_display">On %d every month&#160;</string>
     <string name="one_time_frequency_display">On %d %s %d&#160;</string>
     <string name="at_time_example_at_9_pm">at %s&#160;</string>
-    <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
     <string name="expanded_view">Expanded View</string>
     <string name="condesed_view">Condensed View</string>
     <string name="on">On</string>
@@ -164,6 +157,7 @@
     <string name="prayer">Prayer</string>
     <string name="add_new_category">Add New Category</string>
     <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s A.H]]></string>
+    <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
     <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
     <string name="no_upcoming_reminder_today">No Upcoming Reminder Today</string>
     <string name="tomorrow_at_notification">. Tomorrow at </string>
@@ -180,7 +174,12 @@
     <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when reminders are scheduled</string>
     <string name="update_downloaded">An update has just been downloaded.</string>
     <string name="restart">RESTART</string>
-
+    <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
+    <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
+    <string name="help_translate_app">Help translate the app to %s</string>
+    <string name="translate">Translate</string>
+    <string name="translators">Translators</string>
+    <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
