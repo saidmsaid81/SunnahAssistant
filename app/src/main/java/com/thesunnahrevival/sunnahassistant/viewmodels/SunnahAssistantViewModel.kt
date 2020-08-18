@@ -75,6 +75,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun getSettings() = mRepository.appSettings
 
+    suspend fun getAppSettingsValue(): AppSettings? {
+        return mRepository.getAppSettingsValue()
+    }
+
     fun updateGeneratedPrayerTimes(settings: AppSettings) {
         viewModelScope.launch(Dispatchers.IO) {
             if (isLoadFreshData(settings.month)) {

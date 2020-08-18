@@ -35,4 +35,5 @@ class AppSettings {
     var language: String = "en"
     var doNotDisturbMinutes: Int = 0
     var useReliableAlarms: Boolean = true
+    var numberOfLaunches: Int = 0
 }
