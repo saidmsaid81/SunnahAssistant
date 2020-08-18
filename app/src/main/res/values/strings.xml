@@ -178,6 +178,8 @@
     <string name="go_to_settings">Go to Settings</string>
     <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
     <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when reminders are scheduled</string>
+    <string name="update_downloaded">An update has just been downloaded.</string>
+    <string name="restart">RESTART</string>
 
 
     <string-array name="reminder_filter">
