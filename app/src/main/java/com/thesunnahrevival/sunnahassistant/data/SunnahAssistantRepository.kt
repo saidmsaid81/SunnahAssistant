@@ -148,6 +148,10 @@ class SunnahAssistantRepository private constructor(private val application: App
         return mGeocodingRestApi.getGeocodingData(address, ApiKey.API_KEY, locale)
     }
 
+    suspend fun getAppSettingsValue(): AppSettings? {
+        return mReminderDao.getAppSettingsValue()
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: SunnahAssistantRepository? = null
