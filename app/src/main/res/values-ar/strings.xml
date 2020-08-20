@@ -118,6 +118,10 @@
     <string name="important">هام</string>
     <string name="important_changes">قمنا بتغيير طرق حساب أوقات الصلاة التي أدت إلى إعادة ضبط ظروف وقت الصلاة بشكل افتراضي. ولكن يمكنك إعادة تخصيص هذه الإعدادات في قسم \"إعدادات وقت الصلاة\".</string>
     <string name="new_features">ميزات جديدة</string>
+    <string name="new_features_details">
+        ‣ اضافة خيار  لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) عند تشغيل تذكيرات مواقيت الصلاة
+        \ n‣ أضيفت الترجمة عربية
+    </string>
     <string name="updated">تم التحديث</string>
     <string name="updated_details">        حساب التاريخ الهجري و وقت الصلاة بدون انترنت. في السابق كانت تتطلب الاتصال بالإنترنت مرة واحدة في الشهر على الأقل
        \n إعادة تصميم إعدادات
@@ -227,4 +231,29 @@
         <item>صلاة المغرب</item>
         <item>صلاة العشاء</item>
     </string-array>
+    <string name="weekly_frequency_display_example_2_days_every_week">٪ d يوم كل أسبوع</string>
+    <string name="tap_to_disable_sticky_notification">انقر لتعطيل هذا الإشعار</string>
+    <string name="no_upcoming_reminder_today">لا يوجد تذكير قادم اليوم</string>
+    <string name="tomorrow_at_notification">. غدا في</string>
+    <string name="at">في</string>
+    <string name="next_reminder_dhuhr_prayer_at_12_45">التذكير التالي:%s %s %s </string>
+    <string name="prayer_times_notification_settings">إعدادات تنبيهات أوقات الصلاة</string>
+    <string name="dnd_minutes">٪ d دقائق</string>
+    <string name="set_phone_to_do_not_disturb_mode_for">اضبط الهاتف على وضع عدم الإزعاج لـ</string>
+    <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">استخدم هذا الخيار لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) بعد تشغيل تذكير بوقت الصلاة</string>
+    <string name="dnd_dialog_title">السماح بالوصول إلى \"عدم الإزعاج\" من \"الإعدادات\"</string>
+    <string name="dnd_message">الرجاء السماح بالوصول إلى \"عدم الإزعاج\" بتحديد \"مساعد السنة\" في الشاشة التالية والضغط على \"سماح\".</string>
+    <string name="go_to_settings">أذهب إلي الاعدادت</string>
+    <string name="use_reliable_alarms_for_notifications">استخدم إنذارات موثوقة للإشعارات</string>
+    <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">سيؤدي تمكين التنبيهات الموثوقة إلى إضافة رمز ساعة على شريط الحالة عند جدولة التذكيرات</string>
+    <string name="update_downloaded">تم تحميل التحديث للتو.</string>
+    <string name="restart">إعادة التشغيل</string>
+    <string name="error_adding_prayer_reminders">خطأ. لا يمكن إضافة أوقات الصلاة عند تمكين أوقات الصلاة التلقائية</string>
+    <string name="please_write_feedback_in_english">يرجى كتابة ملاحظاتك أدناه باللغة الإنجليزية</string>
+    <string name="help_translate_app">ساعد في ترجمة التطبيق إلى٪ s</string>
+    <string name="translate">ترجمة</string>
+    <string name="translators">المترجمين</string>
+    <string name="arabic_translation_by_malkalashter313">ترجمة: مالك الاشتر 313</string>
+
+
 </resources>
