@@ -45,7 +45,7 @@ class NextReminderService : Service() {
                 timeInMilliseconds = System.currentTimeMillis() + 86400000
                 dayString = getString(R.string.tomorrow_at_notification)
                 nextScheduledReminder = mReminderDAO.getNextScheduledReminderTomorrow(
-                        dayOfTheWeek.toString(), getDayDate(timeInMilliseconds),
+                        tomorrowDayOfTheWeek.toString(), getDayDate(timeInMilliseconds),
                         getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds)))
             }
 

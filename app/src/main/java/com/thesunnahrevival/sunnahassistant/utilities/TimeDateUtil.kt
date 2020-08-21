@@ -117,3 +117,9 @@ val hijriDate: String
     }
 
 val dayOfTheWeek =  Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+
+val tomorrowDayOfTheWeek =
+        if (dayOfTheWeek == 7)
+            1
+        else
+        Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 1
