@@ -26,7 +26,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var selectedReminder: Reminder? = null
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
-    private val mDay = getDayDate(System.currentTimeMillis())
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -57,8 +56,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun getReminders(filter: Int): LiveData<List<Reminder>> {
         return when (filter) {
             1 -> mRepository.getPastReminders()
-            2 -> mRepository.getRemindersOnDay(mDay)
-            3 -> mRepository.getRemindersOnDay(mDay + 1)
+            2 -> mRepository.getRemindersOnDay(false)
+            3 -> mRepository.getRemindersOnDay(true)
             4 -> mRepository.getPrayerTimes()
             5 -> mRepository.getWeeklyReminders()
             6 -> mRepository.getMonthlyReminders()

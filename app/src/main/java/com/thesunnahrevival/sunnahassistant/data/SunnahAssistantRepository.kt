@@ -61,8 +61,8 @@ class SunnahAssistantRepository private constructor(private val application: App
     }
 
     suspend fun getNextScheduledReminderTomorrow(day: Int, month: Int, year: Int): Reminder? {
-
-        return mReminderDao.getNextScheduledReminderTomorrow(dayOfTheWeek.toString(), day, month, year)
+        val weekDay = tomorrowDayOfTheWeek
+        return mReminderDao.getNextScheduledReminderTomorrow(weekDay.toString(), day, month, year)
     }
 
     fun getUpcomingReminders(): LiveData<List<Reminder>> {
@@ -84,10 +84,23 @@ class SunnahAssistantRepository private constructor(private val application: App
                 getYear(System.currentTimeMillis()).toInt(), application.resources.getStringArray(R.array.categories)[2])
     }
 
-    fun getRemindersOnDay(day: Int): LiveData<List<Reminder>> {
-        
+    fun getRemindersOnDay(isTomorrow: Boolean): LiveData<List<Reminder>> {
+        val currentTimeInMillis = if (!isTomorrow)
+                System.currentTimeMillis()
+        else
+            System.currentTimeMillis() + 86400000
+
+        val day = getDayDate(currentTimeInMillis)
+        val monthNumber = getMonthNumber(currentTimeInMillis)
+        val yearNumber = getYear(currentTimeInMillis).toInt()
+
+            val weekDay: Int = if (!isTomorrow){
+            tomorrowDayOfTheWeek
+        }
+        else
+            dayOfTheWeek
         return mReminderDao.getRemindersOnDay(
-                dayOfTheWeek.toString(), day, getMonthNumber(System.currentTimeMillis()), getYear(System.currentTimeMillis()).toInt())
+                weekDay.toString(), day, monthNumber, yearNumber)
     }
 
     fun getPastReminders(): LiveData<List<Reminder>> {
