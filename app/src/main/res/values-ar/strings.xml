@@ -231,14 +231,14 @@
         <item>صلاة المغرب</item>
         <item>صلاة العشاء</item>
     </string-array>
-    <string name="weekly_frequency_display_example_2_days_every_week">٪ d يوم كل أسبوع</string>
+    <string name="weekly_frequency_display_example_2_days_every_week">%d يوم كل أسبوع</string>
     <string name="tap_to_disable_sticky_notification">انقر لتعطيل هذا الإشعار</string>
     <string name="no_upcoming_reminder_today">لا يوجد تذكير قادم اليوم</string>
     <string name="tomorrow_at_notification">. غدا في</string>
     <string name="at">في</string>
     <string name="next_reminder_dhuhr_prayer_at_12_45">التذكير التالي:%s %s %s </string>
     <string name="prayer_times_notification_settings">إعدادات تنبيهات أوقات الصلاة</string>
-    <string name="dnd_minutes">٪ d دقائق</string>
+    <string name="dnd_minutes">%d دقائق</string>
     <string name="set_phone_to_do_not_disturb_mode_for">اضبط الهاتف على وضع عدم الإزعاج لـ</string>
     <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">استخدم هذا الخيار لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) بعد تشغيل تذكير بوقت الصلاة</string>
     <string name="dnd_dialog_title">السماح بالوصول إلى \"عدم الإزعاج\" من \"الإعدادات\"</string>
