@@ -15,7 +15,10 @@ import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Compa
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
-import com.thesunnahrevival.sunnahassistant.utilities.*
+import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService
+import com.thesunnahrevival.sunnahassistant.utilities.getMonthNumber
+import com.thesunnahrevival.sunnahassistant.utilities.sunnahReminders
+import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,6 +56,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         return mRepository.getNextScheduledReminderTomorrow(day, month, year)
     }
 
+    fun getStatusOfAddingListOfReminders() = mRepository.statusOfAddingListOfReminders
+
     fun getReminders(filter: Int): LiveData<List<Reminder>> {
         return when (filter) {
             1 -> mRepository.getPastReminders()
@@ -85,7 +90,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     mRepository.updateGeneratedPrayerTimes(
                             settings.latitude, settings.longitude,
                             settings.method, settings.asrCalculationMethod,
-                            settings.latitudeAdjustmentMethod, getLocale())
+                            settings.latitudeAdjustmentMethod)
                     //Save the Month in User Settings to prevent re-fetching the data the current month
                     settings.month = getMonthNumber(System.currentTimeMillis())
                     updateSettings(settings)
@@ -148,7 +153,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 if (settings.isAutomatic) {
                     mRepository.generatePrayerTimes(
                             settings.latitude, settings.longitude, settings.method, settings.asrCalculationMethod,
-                            settings.latitudeAdjustmentMethod, getLocale()
+                            settings.latitudeAdjustmentMethod
                     )
                 }
                 updateSettings(settings)
