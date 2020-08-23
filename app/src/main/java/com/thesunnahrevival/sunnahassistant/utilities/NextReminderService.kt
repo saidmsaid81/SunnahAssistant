@@ -92,7 +92,7 @@ class NextReminderService : Service() {
             notificationToneUri?.let {
                 nextScheduledReminder.reminderName?.let { name ->
                     ReminderManager.getInstance().scheduleReminder(
-                            context = context, title = "Reminder",
+                            context = context, title = getString(R.string.reminder),
                             text = name, category = nextScheduledReminder.category, timeInMilliseconds = nextScheduledReminder.timeInMilliseconds, notificationUri = it,
                             isVibrate = isVibrate, doNotDisturbMinutes = settings.doNotDisturbMinutes, useReliableAlarms = settings.useReliableAlarms)
                 }

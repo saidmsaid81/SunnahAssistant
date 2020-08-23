@@ -180,6 +180,7 @@
     <string name="translate">Translate</string>
     <string name="translators">Translators</string>
     <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
+    <string name="reminder">Reminder</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
