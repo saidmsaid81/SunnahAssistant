@@ -7,8 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTargetView
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
+
+val requestCodeForUpdate: Int = 1
 
 fun showOnBoardingTutorial(activity: MainActivity, reminderRecyclerAdapter: ReminderListAdapter, spinner: Spinner, recyclerView: RecyclerView) {
     TapTargetSequence(activity)
@@ -68,4 +76,57 @@ private fun showFilterReminderOnBoarding(activity: MainActivity, reminderRecycle
             view.dismiss(true)
         }
     })
+}
+
+fun showInAppReviewPrompt(activity: MainActivity) {
+    val manager = ReviewManagerFactory.create(activity)
+    val request = manager.requestReviewFlow()
+    request.addOnCompleteListener {
+        if (it.isSuccessful) {
+            // We got the ReviewInfo object
+            val reviewInfo = it.result
+            manager.launchReviewFlow(activity, reviewInfo)
+        }
+    }
+}
+
+fun checkForUpdates(activity: MainActivity) {
+    // Creates instance of the manager.
+    val appUpdateManager = AppUpdateManagerFactory.create(activity)
+
+    // Returns an intent object that you use to check for an update.
+    val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+    // Checks that the platform will allow the specified type of update.
+    appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+        ) {
+
+            appUpdateManager.registerListener { state ->
+                if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                    // After the update is downloaded, show a notification
+                    // and request user confirmation to restart the app.
+                    popupSnackbar(activity, activity.getString(R.string.update_downloaded),  Snackbar.LENGTH_INDEFINITE, activity.getString(R.string.restart), View.OnClickListener { appUpdateManager.completeUpdate() } )
+                }
+            }
+            // Request the update.
+            appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    AppUpdateType.FLEXIBLE,
+                    activity,
+                    requestCodeForUpdate)
+        }
+    }
+}
+
+fun popupSnackbar(activity: MainActivity, message: String, duration: Int, actionMessage: String, listener: View.OnClickListener) {
+    Snackbar.make(
+            activity.findViewById(R.id.coordinator_layout),
+            message,
+            duration
+    ).apply {
+        setAction(actionMessage, listener)
+        show()
+    }
 }

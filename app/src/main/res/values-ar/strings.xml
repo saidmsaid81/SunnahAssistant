@@ -250,7 +250,7 @@
     <string name="restart">إعادة التشغيل</string>
     <string name="error_adding_prayer_reminders">خطأ. لا يمكن إضافة أوقات الصلاة عند تمكين أوقات الصلاة التلقائية</string>
     <string name="please_write_feedback_in_english">يرجى كتابة ملاحظاتك أدناه باللغة الإنجليزية</string>
-    <string name="help_translate_app">ساعد في ترجمة التطبيق إلى٪ s</string>
+    <string name="help_translate_app">ساعد في ترجمة التطبيق إلى %s</string>
     <string name="translate">ترجمة</string>
     <string name="translators">المترجمين</string>
     <string name="arabic_translation_by_malkalashter313">ترجمة: مالك الاشتر 313</string>
