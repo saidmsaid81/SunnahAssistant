@@ -94,11 +94,11 @@ class SunnahAssistantRepository private constructor(private val application: App
         val monthNumber = getMonthNumber(currentTimeInMillis)
         val yearNumber = getYear(currentTimeInMillis).toInt()
 
-            val weekDay: Int = if (!isTomorrow){
-            tomorrowDayOfTheWeek
+        val weekDay: Int = if (!isTomorrow){
+            dayOfTheWeek
         }
         else
-            dayOfTheWeek
+            tomorrowDayOfTheWeek
         return mReminderDao.getRemindersOnDay(
                 weekDay.toString(), day, monthNumber, yearNumber)
     }
