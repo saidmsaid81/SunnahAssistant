@@ -122,6 +122,17 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
             mBinding.nextCardView.viewStub?.inflate()
         }
 
+        mViewModel.getStatusOfAddingListOfReminders().observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                mBinding.reminderList.visibility = View.GONE
+                mBinding.progressBar.visibility = View.VISIBLE
+            }
+            else {
+                mBinding.reminderList.visibility = View.VISIBLE
+                mBinding.progressBar.visibility = View.GONE
+            }
+        })
+
     }
 
     private fun populateTheSpinner(savedSpinnerPosition: Int) {
