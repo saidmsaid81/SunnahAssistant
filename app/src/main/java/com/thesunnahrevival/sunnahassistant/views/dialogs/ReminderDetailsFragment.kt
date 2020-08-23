@@ -254,11 +254,18 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
     }
 
     private fun createNewReminder(timeSet: String?, frequency: Frequency, day: Int, month: Int, year: Int, offset: Int, customScheduleDays: ArrayList<Int?>?): Reminder {
+        val category =
+                if((mBinding.categorySpinner.selectedItem as String)
+                                .matches(getString(R.string.create_new_categories).toRegex()))
+            resources.getStringArray(R.array.categories)[0]
+        else
+            mBinding.categorySpinner.selectedItem as String
+
         return Reminder(
                 mBinding.reminderEditText.text.toString(),
                 mBinding.additionalDetails.text.toString(),
                 getTimestampInSeconds(requireContext(), timeSet),
-                mBinding.categorySpinner.selectedItem as String,
+                category,
                 frequency,
                 timeSet?.matches(getString(R.string.time_not_set).toRegex()) == false,
                 day,
