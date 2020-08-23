@@ -14,13 +14,13 @@ interface ReminderDao {
     @Delete
     suspend fun deleteReminder(reminder: Reminder)
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds >= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds >= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY timeInSeconds")
     fun getUpcomingReminders(offsetFromMidnight: Long, numberOfTheWeekDay: String, day: Int, month: Int, year: Int): LiveData<List<Reminder>>
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds <= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds <= :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY timeInSeconds")
     fun getPastReminders(offsetFromMidnight: Long, numberOfTheWeekDay: String, day: Int, month: Int, year: Int): LiveData<List<Reminder>>
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY isEnabled DESC, timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY timeInSeconds")
     fun getRemindersOnDay(numberOfTheWeekDay: String, day: Int, month: Int, year: Int): LiveData<List<Reminder>>
 
     @Query("SELECT * FROM reminders_table WHERE (category == :categoryName AND (day == :day AND month == :month AND year =:year OR day == 0)) ORDER BY timeInSeconds")
@@ -59,10 +59,10 @@ interface ReminderDao {
     @Query("DELETE FROM reminders_table WHERE category ==:categoryName ")
     suspend fun deleteAllPrayerTimes(categoryName: String)
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY isEnabled DESC, timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
     suspend fun getNextScheduledReminderToday(offsetFromMidnight: Long, numberOfTheWeekDay: String, day: Int, month: Int, year: Int): Reminder?
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY isEnabled DESC, timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
     suspend fun getNextScheduledReminderTomorrow(numberOfTheWeekDay: String, day: Int, month: Int, year: Int): Reminder?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
