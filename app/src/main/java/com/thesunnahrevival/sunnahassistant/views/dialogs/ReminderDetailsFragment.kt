@@ -301,8 +301,6 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         }
         else
             Toast.makeText(context, getString(R.string.no_changes), Toast.LENGTH_SHORT).show()
-        if (reminder.isEnabled)
-            mViewModel.scheduleReminder(reminder)
         dismiss()
     }
 }

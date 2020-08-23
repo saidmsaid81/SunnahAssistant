@@ -45,6 +45,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun insert(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.addReminder(reminder)
+            if (reminder.isEnabled)
+                startServiceFromCoroutine()
         }
     }
 
@@ -173,9 +175,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             reminder.isEnabled = true
             mRepository.setReminderIsEnabled(reminder)
-            withContext(Dispatchers.Main) {
-                getApplication<Application>().startService(Intent(getApplication(), NextReminderService::class.java))
-            }
+            startServiceFromCoroutine()
         }
     }
 
@@ -183,11 +183,15 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             reminder.isEnabled = false
             mRepository.setReminderIsEnabled(reminder)
-            withContext(Dispatchers.Main) {
-                getApplication<Application>().startService(Intent(getApplication(), NextReminderService::class.java))
-            }
+            startServiceFromCoroutine()
         }
 
+    }
+
+    private suspend fun startServiceFromCoroutine() {
+        withContext(Dispatchers.Main) {
+            getApplication<Application>().startService(Intent(getApplication(), NextReminderService::class.java))
+        }
     }
 
     fun localeUpdate() {
