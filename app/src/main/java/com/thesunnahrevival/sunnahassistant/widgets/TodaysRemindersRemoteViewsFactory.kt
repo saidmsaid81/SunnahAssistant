@@ -8,7 +8,7 @@ import android.widget.RemoteViewsService
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import java.lang.Integer.parseInt
 
 
@@ -17,7 +17,7 @@ class TodaysRemindersRemoteViewsFactory(
         private val intent: Intent?
 ) : RemoteViewsService.RemoteViewsFactory  {
 
-    private lateinit var mTodayReminders: MutableList<Reminder>
+    private lateinit var mTodayReminders: List<Reminder>
 
     override fun onCreate() {
 
@@ -34,10 +34,10 @@ class TodaysRemindersRemoteViewsFactory(
     override fun onDataSetChanged() {
         val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
         mTodayReminders = reminderDao.getRemindersOnDayValue(
-                TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()),
-                TimeDateUtil.getDayDate(System.currentTimeMillis()),
-                TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
-                parseInt(TimeDateUtil.getYear(System.currentTimeMillis())))
+                dayOfTheWeek.toString(),
+                getDayDate(System.currentTimeMillis()),
+                getMonthNumber(System.currentTimeMillis()),
+                parseInt(getYear(System.currentTimeMillis())))
 
     }
 
@@ -48,8 +48,8 @@ class TodaysRemindersRemoteViewsFactory(
     override fun getViewAt(position: Int): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_reminder_list_item)
         remoteViews.setTextViewText(R.id.reminder_name,
-                "${TimeDateUtil.formatTimeInMilliseconds(context, 
-                        mTodayReminders[position].timeInMilliSeconds)}: ${mTodayReminders[position].reminderName}")
+                "${formatTimeInMilliseconds(context, 
+                        mTodayReminders[position].timeInMilliseconds)}: ${mTodayReminders[position].reminderName}")
         remoteViews.setTextColor(R.id.reminder_name, intent?.getIntExtra(TEXT_COLOR, Color.BLACK) ?: Color.BLACK)
         val fillInIntent = Intent()
         remoteViews.setOnClickFillInIntent(R.id.widget_item_container, fillInIntent)

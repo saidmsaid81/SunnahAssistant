@@ -13,11 +13,18 @@
         <variable
             name="isNew"
             type="boolean" />
+
+        <variable
+            name="isAutomaticPrayerTime"
+            type="boolean" />
+
+        <variable
+            name="days"
+            type="String[]" />
     </data>
 
     <RelativeLayout
         android:id="@+id/bottom_sheet"
-        style="@style/AppTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/default_dimen"
@@ -25,7 +32,7 @@
         android:paddingBottom="@dimen/default_dimen"
         app:behavior_hideable="false"
         app:behavior_peekHeight="90dp"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <TextView
             android:id="@+id/reminder_action_label"
@@ -132,26 +139,74 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/category_spinner"
             android:layout_centerInParent="true"
-            android:text="@string/select_at_least_one_day_or_change_to_daily"
-            android:textColor="@android:color/holo_red_light"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            android:layout_marginTop="@dimen/default_dimen"
+            android:text="@string/select_days"
+            android:visibility="gone"
+            android:textSize="14sp" />
 
-
-        <Spinner
-            android:id="@+id/select_days_spinner"
-            android:layout_width="wrap_content"
+        <com.nex3z.togglebuttongroup.MultiSelectToggleGroup
+            android:id="@+id/select_days_toggle_group"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/select_day_error"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:visibility="gone" />
+            app:tbgChildSpacing="auto">
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/sun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[1]}"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/mon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[2]}"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/tue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[3]}"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/wed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[4]}"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/thu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[5]}"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/fri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[6]}"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/sat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@{days[7]}"/>
+
+        </com.nex3z.togglebuttongroup.MultiSelectToggleGroup>
 
         <TextView
             android:id="@+id/reminder_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/select_days_spinner"
+            android:layout_below="@id/select_days_toggle_group"
             android:layout_centerInParent="true"
             android:layout_marginTop="8dp"
             android:textSize="16sp" />
@@ -166,7 +221,7 @@
             android:paddingTop="20dp"
             android:text="@{String.format(@string/change_prayer_time_offset_by, reminder.reminderName)}"
             android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}" />
 
         <EditText
             android:id="@+id/prayerOffsetValue"
@@ -181,7 +236,7 @@
             android:paddingTop="20dp"
             android:text="@{String.valueOf(reminder.offset)}"
             android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}" />
 
         <TextView
             android:id="@+id/minutes_label"
@@ -194,7 +249,7 @@
             android:paddingTop="20dp"
             android:text="@string/prayer_offset_minute"
             android:textSize="@dimen/default_text_size"
-            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}" />
 
 
 
@@ -209,7 +264,7 @@
             android:paddingEnd="16dp"
             android:text="@string/change_time"
             android:textAllCaps="false"
-            android:visibility="@{reminder.category.matches(&quot;Prayer&quot;) ? View.INVISIBLE : View.VISIBLE}" />
+            android:visibility="@{isAutomaticPrayerTime == true ? View.INVISIBLE : View.VISIBLE}" />
 
         <TextView
             android:id="@+id/more_details_text_view"

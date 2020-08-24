@@ -14,9 +14,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/default_dimen"
-        android:paddingEnd="@dimen/default_dimen"
-        android:paddingBottom="@dimen/default_dimen"
+        android:padding="@dimen/default_dimen"
         android:orientation="vertical">
 
         <TextView
@@ -46,7 +44,7 @@
                 android:id="@+id/layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{settings.expandedLayout ? &quot;Expanded View&quot; : &quot;Condensed View&quot;}" />
+                android:text="@{settings.expandedLayout ? @string/expanded_view : @string/condesed_view}" />
 
         </LinearLayout>
 

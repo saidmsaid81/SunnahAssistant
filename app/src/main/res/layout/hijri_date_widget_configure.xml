@@ -6,7 +6,6 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/setup_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/setup_widget"

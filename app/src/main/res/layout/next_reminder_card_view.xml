@@ -11,12 +11,15 @@
         <import type="android.content.Context" />
 
         <variable
-            name="viewmodel"
-            type="com.thesunnahrevival.sunnahassistant.viewmodels.RemindersViewModel" />
+            name="reminderInteractionListener"
+            type="com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener" />
 
         <variable
             name="nextReminder"
             type="com.thesunnahrevival.sunnahassistant.data.model.Reminder" />
+        <variable
+            name="dayString"
+            type="String" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -27,7 +30,7 @@
         android:layout_marginTop="@dimen/margin_dimen"
         android:layout_marginEnd="@dimen/default_dimen"
         android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}"
-        android:onClick="@{(view)-> viewmodel.openBottomSheet(view, nextReminder)}"
+        android:onClick="@{(view)-> reminderInteractionListener.openBottomSheet(view, nextReminder)}"
         app:cardBackgroundColor="@color/nextReminderCardColor"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"
@@ -50,7 +53,7 @@
                 android:layout_marginBottom="@dimen/margin_dimen"
                 android:gravity="center"
                 android:src="@drawable/ic_star"
-                android:visibility='@{nextReminder.category.matches("Fardh") ? View.VISIBLE : View.INVISIBLE}'
+                android:visibility='@{nextReminder.category.matches(@string/prayer) ? View.VISIBLE : View.INVISIBLE}'
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -88,7 +91,7 @@
                     android:maxLines="1"
                     android:textSize="18sp"
                     android:visibility="visible"
-                    android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.getTimeInMilliSeconds()) }"
+                    android:text="@{dayString + TimeDateUtil.formatTimeInMilliseconds(context, nextReminder.timeInMilliseconds) }"
                     tools:text="Date" />
 
                 <TextView
@@ -113,7 +116,7 @@
                 android:layout_marginBottom="@dimen/margin_dimen"
                 android:background="@drawable/toggle_selector_alt"
                 android:checked="@{nextReminder != null ? nextReminder.enabled : false}"
-                android:onCheckedChanged="@{(buttonView, isChecked) -> viewmodel.onToggleButtonClick(buttonView,isChecked, nextReminder) }"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> reminderInteractionListener.onToggleButtonClick(buttonView,isChecked, nextReminder) }"
                 android:textOff=""
                 android:textOn=""
                 app:layout_constraintBottom_toBottomOf="parent"
