@@ -1,6 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.views.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -42,7 +41,6 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     private var mSpinner: Spinner? = null
     private var isRescheduleAtLaunch = true
     var nextScheduledReminder: Reminder? = null
-    private var count = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = DataBindingUtil.inflate(
@@ -56,7 +54,6 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
             mBinding.lifecycleOwner = this
             mBinding.reminderInteractionListener = this
 
-            requireContext().startService(Intent(requireContext(), NextReminderService::class.java))
             getSettings()
         }
         return mBinding.root
@@ -162,8 +159,6 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
         if (!(mSpinner?.selectedItem as String).matches(tag.toRegex()))
             return
 
-        count++
-        println("Count $count")
         val myActivity = activity
         if (myActivity != null && data != null && data.isNotEmpty()) {
             displayTheReminders(data)

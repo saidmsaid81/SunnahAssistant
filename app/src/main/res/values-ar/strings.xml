@@ -120,7 +120,7 @@
     <string name="new_features">ميزات جديدة</string>
     <string name="new_features_details">
         ‣ اضافة خيار  لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) عند تشغيل تذكيرات مواقيت الصلاة
-        \ n‣ أضيفت الترجمة عربية
+        \n‣ أضيفت الترجمة عربية
     </string>
     <string name="updated">تم التحديث</string>
     <string name="updated_details">        حساب التاريخ الهجري و وقت الصلاة بدون انترنت. في السابق كانت تتطلب الاتصال بالإنترنت مرة واحدة في الشهر على الأقل
@@ -253,7 +253,7 @@
     <string name="help_translate_app">ساعد في ترجمة التطبيق إلى %s</string>
     <string name="translate">ترجمة</string>
     <string name="translators">المترجمين</string>
-    <string name="arabic_translation_by_malkalashter313">ترجمة: مالك الاشتر 313</string>
+    <string name="arabic_translation_by_malkalashter313">ترجمةالعربية: مالك الاشتر 313</string>
     <string name="reminder">التذكير</string>
 
 
