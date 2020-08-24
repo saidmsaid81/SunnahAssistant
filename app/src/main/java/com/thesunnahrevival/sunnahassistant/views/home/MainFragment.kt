@@ -291,7 +291,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     }
 
     override fun onToggleButtonClick(buttonView: CompoundButton, isChecked: Boolean, reminder: Reminder?) {
-        if (reminder != null && buttonView.isPressed) {
+        if (reminder != null &&(buttonView.isPressed || isRescheduleAtLaunch)) {
             if (isChecked) {
                 mViewModel.scheduleReminder(reminder)
             }
