@@ -11,7 +11,7 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 5
+        versionCode 6
         versionName "1.0-pre-release-3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,6 +35,15 @@ android {
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
+    }
+
+    bundle {
+        language {
+            //Downloads all locales supported
+            //Temporary solution will be optimized in the next update to utilize Play Core On demand delivery
+            // thereby reducing the app size
+            enableSplit = false
+        }
     }
 }
 
