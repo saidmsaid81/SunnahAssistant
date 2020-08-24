@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/app_name"
+        android:textColor="@color/fabColor"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -61,6 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/credits"
+        android:textColor="@color/fabColor"
         android:paddingTop="@dimen/default_dimen"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -82,6 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/translators"
+        android:textColor="@color/fabColor"
         android:paddingTop="@dimen/default_dimen"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -156,6 +159,7 @@
         android:layout_gravity="center"
         android:padding="@dimen/margin_dimen"
         android:textAllCaps="false"
+        app:backgroundTint="@color/fabColor"
         android:text="@string/contact_us" />
 
 </LinearLayout>
