@@ -9,6 +9,7 @@
         <import type="android.content.Context" />
         <import type="android.view.View" />
         <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil"/>
+        <import type="com.thesunnahrevival.sunnahassistant.R"/>
 
         <variable
             name="reminder"
@@ -77,8 +78,8 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                         android:textSize="12sp"
                         android:layout_marginStart="24dp"
-                        android:visibility="@{reminder.frequency.matches(&quot;Daily&quot;) ? View.VISIBLE : View.GONE}"
-                        android:text="@{reminder.frequency}"
+                        android:visibility="@{reminder.frequency.ordinal() == 1 ? View.VISIBLE : View.GONE}"
+                        android:text="@string/daily"
                         tools:text="Sun, Mon" />
 
                     <TextView
@@ -88,7 +89,7 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                         android:textSize="12sp"
                         android:layout_marginStart="24dp"
-                        android:visibility="@{reminder.frequency.matches(&quot;Weekly&quot;) ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{reminder.frequency.ordinal() == 2 ? View.VISIBLE : View.GONE}"
                         android:text="@{TimeDateUtil.formatDaysFromCustomScheduledDays(reminder.customScheduleDays)}"
                         tools:text="Sun, Mon" />
 
@@ -99,8 +100,8 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                         android:textSize="12sp"
                         android:layout_marginStart="24dp"
-                        android:visibility="@{reminder.frequency.matches(&quot;Monthly&quot;) ? View.VISIBLE : View.GONE}"
-                        android:text="@{&quot; On &quot; + reminder.day + &quot; Every Month&quot; }"
+                        android:visibility="@{reminder.frequency.ordinal() == 3 ? View.VISIBLE : View.GONE}"
+                        android:text="@{String.format(@string/monthly_frequency_display, reminder.day)}"
                         tools:text="(Su, Mo)" />
 
                     <TextView
@@ -110,8 +111,8 @@
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                         android:textSize="12sp"
                         android:layout_marginStart="24dp"
-                        android:visibility="@{reminder.frequency.matches(&quot;One Time&quot;) ? View.VISIBLE : View.GONE}"
-                        android:text="@{reminder.month &lt; 12 ? &quot; On &quot; + reminder.day + &quot; &quot; + TimeDateUtil.getMonthName(reminder.month) + &quot; &quot; + reminder.year : &quot;Not Set&quot; }"
+                        android:visibility="@{reminder.frequency.ordinal() == 0 ? View.VISIBLE : View.GONE}"
+                        android:text="@{reminder.month &lt; 12 ? String.format(@string/one_time_frequency_display, reminder.day, TimeDateUtil.getMonthName(reminder.month), reminder.year ) : @string/time_not_set }"
                         tools:text="(Su, Mo)" />
 
                     <TextView
@@ -120,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                         android:textSize="12sp"
-                        android:text="@{&quot; at &quot; + TimeDateUtil.formatTimeInMilliseconds(context, reminder.getTimeInMilliSeconds())}"
+                        android:text="@{String.format(@string/at_time_example_at_9_pm, TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds))}"
                         tools:text="Date" />
                     </LinearLayout>
 
@@ -141,7 +142,7 @@
                 android:textOff=""
                 android:textOn=""
                 android:checked="@{reminder.enabled}"
-                android:visibility="@{reminder.getTimeInMilliSeconds() == 172800000 ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{reminder.timeInMilliseconds == 172800000 ? View.INVISIBLE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

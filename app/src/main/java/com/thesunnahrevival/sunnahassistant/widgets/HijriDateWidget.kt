@@ -6,7 +6,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,29 +37,29 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
-internal fun updateWidgetSettings(context: Context, isDisplayHijriDate: Boolean, isDisplayNextReminder: Boolean ){
+internal suspend fun updateWidgetSettings(context: Context, isDisplayHijriDate: Boolean, isDisplayNextReminder: Boolean ){
     val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
     reminderDao.updateWidgetSettings(isDisplayHijriDate, isDisplayNextReminder)
 }
 
 internal suspend fun fetchDateFromDatabase(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: Array<Int>){
     val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
-    val appSettings = reminderDao.appSettingsValue
+    val appSettings = reminderDao.getAppSettingsValue()
 
-    val hijriText = if (appSettings.isShowHijriDateWidget)
-        TimeDateUtil.getHijriDate() else null
+    val hijriText = if (appSettings?.isShowHijriDateWidget == true)
+        hijriDate else null
 
 
 
-    val nextReminder = if (appSettings.isShowNextReminderWidget)
-        reminderDao.getNextScheduledReminder(
-            TimeDateUtil.calculateOffsetFromMidnight(),
-            TimeDateUtil.getNameOfTheDay(System.currentTimeMillis()),
-            TimeDateUtil.getDayDate(System.currentTimeMillis()),
-            TimeDateUtil.getMonthNumber(System.currentTimeMillis()),
-            TimeDateUtil.getYear(System.currentTimeMillis()).toInt()) else null
+    val nextReminder = if (appSettings?.isShowNextReminderWidget == true)
+        reminderDao.getNextScheduledReminderToday(
+            calculateOffsetFromMidnight(),
+            dayOfTheWeek.toString(),
+            getDayDate(System.currentTimeMillis()),
+            getMonthNumber(System.currentTimeMillis()),
+            getYear(System.currentTimeMillis()).toInt()) else null
     val reminderName = nextReminder?.reminderName
-    val reminderTime = nextReminder?.timeInMilliSeconds?.let { TimeDateUtil.formatTimeInMilliseconds(context, it) }
+    val reminderTime = nextReminder?.timeInMilliseconds?.let { formatTimeInMilliseconds(context, it) }
 
     withContext(Dispatchers.Main){
         // There may be multiple widgets active, so update all of them
