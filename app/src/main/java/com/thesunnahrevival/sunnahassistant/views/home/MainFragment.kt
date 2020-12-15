@@ -37,7 +37,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
 
     private lateinit var mBinding: ContentMainBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
-    private lateinit var mAllReminders: ArrayList<Reminder>
+    private var mAllReminders: ArrayList<Reminder> = arrayListOf()
     private var mSpinner: Spinner? = null
     private var isRescheduleAtLaunch = true
     var nextScheduledReminder: Reminder? = null
