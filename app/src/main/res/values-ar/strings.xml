@@ -255,6 +255,7 @@
     <string name="translators">المترجمين</string>
     <string name="arabic_translation_by_malkalashter313">ترجمةالعربية: مالك الاشتر 313</string>
     <string name="reminder">التذكير</string>
+    <string name="server_error_occured">عذرا ، فشل الطلب بسبب خطأ في الخادم. تم إخطار المطور وسيتم إصلاحه قريبًا.</string>
 
 
 </resources>
