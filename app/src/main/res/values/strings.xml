@@ -181,6 +181,7 @@
     <string name="translators">Translators</string>
     <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
     <string name="reminder">Reminder</string>
+    <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
