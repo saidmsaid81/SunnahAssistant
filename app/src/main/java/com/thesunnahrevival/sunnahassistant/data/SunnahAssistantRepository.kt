@@ -13,6 +13,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
+import com.thesunnahrevival.sunnahassistant.data.remote.SunnahAssistantApiInterface
 import com.thesunnahrevival.sunnahassistant.utilities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,6 +24,7 @@ import java.util.*
 class SunnahAssistantRepository private constructor(private val application: Application){
     private val mReminderDao: ReminderDao = SunnahAssistantDatabase.getInstance(application).reminderDao()
     private val mGeocodingRestApi: GeocodingInterface
+    private val mSunnahAssistantApi: SunnahAssistantApiInterface
     private var mDay = getDayDate(System.currentTimeMillis())
     val statusOfAddingListOfReminders = MutableLiveData<Boolean>()
 
@@ -35,6 +37,12 @@ class SunnahAssistantRepository private constructor(private val application: App
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         mGeocodingRestApi = retrofit.create(GeocodingInterface::class.java)
+
+        mSunnahAssistantApi = Retrofit.Builder()
+                .baseUrl("https://us-central1-sunnah-assistant.cloudfunctions.net/")
+                .build()
+                .create(SunnahAssistantApiInterface::class.java)
+
     }
 
     suspend fun addReminder(reminder: Reminder) = mReminderDao.insertReminder(reminder)
@@ -177,6 +185,10 @@ class SunnahAssistantRepository private constructor(private val application: App
 
     suspend fun getAppSettingsValue(): AppSettings? {
         return mReminderDao.getAppSettingsValue()
+    }
+
+    suspend fun reportGeocodingServerError(status: String) {
+        mSunnahAssistantApi.reportGeocodingError(status)
     }
 
     companion object {
