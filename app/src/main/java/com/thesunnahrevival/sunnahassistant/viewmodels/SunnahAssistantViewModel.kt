@@ -118,18 +118,35 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
 
     fun getGeocodingData(address: String) {
+        val unavailableLocationString = getApplication<Application>().getString(R.string.unavailable_location)
+        val serverError: String = getApplication<Application>().getString(R.string.server_error_occured)
+        val noNetworkString = getApplication<Application>().getString(R.string.error_updating_location)
+
         viewModelScope.launch(Dispatchers.IO) {
             val data = mRepository.getGeocodingData(address, settingsValue?.language ?: "en")
+            val message: String
+
+            when {
+                data != null && data.results.isNotEmpty() -> {
+                    updateLocationDetails(data)
+                    message = "Successful"
+                }
+                data != null && data.results.isEmpty() -> {
+                    if (data.status == "ZERO_RESULTS")
+                        message = unavailableLocationString
+                    else {
+                        message = serverError
+                        mRepository.reportGeocodingServerError(data.status)
+                    }
+
+                }
+                else -> {
+                    message = noNetworkString
+                }
+            }
 
             withContext(Dispatchers.Main) {
-                if (data != null && data.results.isNotEmpty()) {
-                    updateLocationDetails(data)
-                    messages.value = "Successful"
-                } else if (data != null && data.results.isEmpty()) {
-                    messages.value = getApplication<Application>().getString(R.string.unavailable_location)
-                } else {
-                    messages.value = getApplication<Application>().getString(R.string.error_updating_location)
-                }
+               messages.value = message
             }
         }
 
