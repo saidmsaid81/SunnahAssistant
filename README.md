@@ -14,21 +14,24 @@ Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?i
 
 - Two themes are avialble (Light and Dark Theme).
 
-PRs, issues (bugs, feedback and suggestions) are welcomed.
+<h4>Contributing</h4>
+
+Development is done in the "develop" branch and the "master" branch reflects the stable version in Google Play Store.
+
+- PRs, issues (bugs, feedback and suggestions) are welcomed.
+- Help translate the app:- https://crwd.in/sunnah-assistant
+
+Thanks 😀
+
+<h4>Translators</h4>
+
+- Arabic Translation by MalkAlashter313
 
 <h4>Credits</h4>
 
 - Offline Hijri Date calculation is facilitated by https://github.com/msarhan/ummalqura-calendar library
 
 - Offline Prayer time Calculation is facilitated by https://github.com/batoulapps/adhan-java library
-
-<h4>Translators</h4>
-
-- Arabic Translation by MalkAlashter313
-
-Help translate the app:- https://crwd.in/sunnah-assistant
-
-<b>*The app is still in beta phase</b>
 
 <h4>Screenshots</h4>
 
