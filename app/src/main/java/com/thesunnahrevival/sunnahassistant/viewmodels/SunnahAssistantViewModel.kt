@@ -91,7 +91,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 if (settings.isAutomatic) {
                     mRepository.updateGeneratedPrayerTimes(
                             settings.latitude, settings.longitude,
-                            settings.method, settings.asrCalculationMethod,
+                            settings.calculationMethod, settings.asrCalculationMethod,
                             settings.latitudeAdjustmentMethod)
                     //Save the Month in User Settings to prevent re-fetching the data the current month
                     settings.month = getMonthNumber(System.currentTimeMillis())
@@ -171,7 +171,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 mRepository.deletePrayerTimesData()
                 if (settings.isAutomatic) {
                     mRepository.generatePrayerTimes(
-                            settings.latitude, settings.longitude, settings.method, settings.asrCalculationMethod,
+                            settings.latitude, settings.longitude, settings.calculationMethod, settings.asrCalculationMethod,
                             settings.latitudeAdjustmentMethod
                     )
                 }

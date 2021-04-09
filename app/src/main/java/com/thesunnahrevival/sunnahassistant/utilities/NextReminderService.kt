@@ -62,7 +62,7 @@ class NextReminderService : Service() {
 
     private suspend fun updateGeneratedPrayerTimes(settings: AppSettings) {
         val prayerTimesReminders = PrayerTimeCalculator(
-                settings.latitude.toDouble(), settings.longitude.toDouble(), settings.method,
+                settings.latitude.toDouble(), settings.longitude.toDouble(), settings.calculationMethod,
                 settings.asrCalculationMethod, settings.latitudeAdjustmentMethod,
                 application.resources.getStringArray(R.array.prayer_names),
                 application.resources.getStringArray(R.array.categories)[2]).getPrayerTimeReminders()

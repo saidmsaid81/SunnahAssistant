@@ -1,8 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.data.model
 
 import android.net.Uri
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Madhab
 import java.util.*
 
 @Entity(tableName = "app_settings")
@@ -12,8 +15,10 @@ class AppSettings {
     var formattedAddress: String? = ""
     var latitude = 0F
     var longitude = 0F
-    var method = 0
-    var asrCalculationMethod = 0
+
+    @ColumnInfo(name = "method")
+    var calculationMethod: CalculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE
+    var asrCalculationMethod: Madhab = Madhab.SHAFI
     var isAutomatic = false
     var month = 12
     var hijriOffSet = 0

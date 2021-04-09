@@ -2,6 +2,8 @@ package com.thesunnahrevival.sunnahassistant.data.typeconverters
 
 import android.net.Uri
 import androidx.room.TypeConverter
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import java.lang.Integer.parseInt
 import java.util.*
@@ -84,5 +86,25 @@ class RoomTypeConverter {
         catch(exception: NumberFormatException) {
             Frequency.Daily
         }
+    }
+
+    @TypeConverter
+    fun toCalculationMethod(number: Int): CalculationMethod {
+        return CalculationMethod.values()[number]
+    }
+
+    @TypeConverter
+    fun fromCalculationMethod(calculationMethod: CalculationMethod): Int {
+        return calculationMethod.ordinal
+    }
+
+    @TypeConverter
+    fun toMadhab(number: Int): Madhab {
+        return Madhab.values()[number]
+    }
+
+    @TypeConverter
+    fun fromMadhab(madhab: Madhab): Int {
+        return madhab.ordinal
     }
 }
