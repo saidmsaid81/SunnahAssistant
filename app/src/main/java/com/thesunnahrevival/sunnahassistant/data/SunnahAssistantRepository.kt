@@ -4,6 +4,8 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.ApiKey
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.ReminderDao
@@ -146,7 +148,7 @@ class SunnahAssistantRepository private constructor(private val application: App
         mReminderDao.updateCategory(deletedCategory, newCategory)
     }
 
-    suspend fun generatePrayerTimes(latitude: Float, longitude: Float, method: Int, asrCalculationMethod: Int, latitudeAdjustmentMethod: Int) {
+    suspend fun generatePrayerTimes(latitude: Float, longitude: Float, method: CalculationMethod, asrCalculationMethod: Madhab, latitudeAdjustmentMethod: Int) {
         updateStatusOfAddingLists(false)
         val prayerTimesReminders = PrayerTimeCalculator(latitude.toDouble(), longitude.toDouble(),
                 method, asrCalculationMethod, latitudeAdjustmentMethod, application.resources.getStringArray(R.array.prayer_names), application.resources.getStringArray(R.array.categories)[2])
@@ -161,7 +163,7 @@ class SunnahAssistantRepository private constructor(private val application: App
         }
     }
 
-    suspend fun updateGeneratedPrayerTimes(latitude: Float, longitude: Float, method: Int, asrCalculationMethod: Int, latitudeAdjustmentMethod: Int) {
+    suspend fun updateGeneratedPrayerTimes(latitude: Float, longitude: Float, method: CalculationMethod, asrCalculationMethod: Madhab, latitudeAdjustmentMethod: Int) {
         updateStatusOfAddingLists(false)
         val prayerTimesReminders = PrayerTimeCalculator(latitude.toDouble(), longitude.toDouble(),
                 method, asrCalculationMethod, latitudeAdjustmentMethod,

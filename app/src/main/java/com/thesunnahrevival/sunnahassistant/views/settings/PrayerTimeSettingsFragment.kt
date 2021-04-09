@@ -14,6 +14,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.PrayerTimeSettingsBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -35,9 +37,9 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
                 if (it != null){
                     mViewModel.settingsValue = it
                     binding.settings = it
-                    binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.method])
+                    binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.calculationMethod.ordinal])
                     binding.setAsrCalculationMethod(
-                            resources.getStringArray(R.array.asr_juristic_method)[it.asrCalculationMethod]
+                            resources.getStringArray(R.array.asr_juristic_method)[it.asrCalculationMethod.ordinal]
                     )
                     binding.latitudeAdjustmentMethod =
                             resources.getStringArray(R.array.latitude_options)[it.latitudeAdjustmentMethod]
@@ -83,19 +85,21 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        val calculationMethods = resources.getStringArray(R.array.calculation_methods)
+        val calculationMethodsStrings = resources.getStringArray(R.array.calculation_methods)
         val asrMethods = resources.getStringArray(R.array.asr_juristic_method)
         val latitudeMethods = resources.getStringArray(R.array.latitude_options)
 
         when (item?.groupId) {
             R.id.calculation_details -> {
-                mViewModel.settingsValue?.method = calculationMethods.indexOf(item.title.toString())
+                mViewModel.settingsValue?.calculationMethod =
+                        CalculationMethod.values()[calculationMethodsStrings.indexOf(item.title.toString())]
             }
             R.id.asr_calculation_details -> {
-                mViewModel.settingsValue?.asrCalculationMethod = asrMethods.indexOf(item.title.toString())
+                mViewModel.settingsValue?.asrCalculationMethod =
+                        Madhab.values()[asrMethods.indexOf(item.title.toString())]
             }
             R.id.higher_latitude_details -> {
-                mViewModel.settingsValue?.asrCalculationMethod = latitudeMethods.indexOf(item.title.toString())
+                mViewModel.settingsValue?.latitudeAdjustmentMethod = latitudeMethods.indexOf(item.title.toString())
             }
             R.id.do_not_disturb -> {
                 mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
