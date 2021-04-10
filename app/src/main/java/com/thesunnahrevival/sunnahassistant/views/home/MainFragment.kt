@@ -168,7 +168,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
             if (data != null) {
                 mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
             }
-            mBinding.allDoneView.visibility = View.VISIBLE
+            mBinding.allDoneView.root.visibility = View.VISIBLE
             mBinding.progressBar.visibility = View.GONE
         }
         attachListenersToRecommendedReminders()
@@ -200,16 +200,17 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     }
 
     private fun attachListenersToRecommendedReminders() {
-        mBinding.allDoneView.findViewById<TextView>(R.id.sunnah_reminders_link)
-                ?.setOnClickListener(this)
+        mBinding.allDoneView
+                .sunnahRemindersLink
+                .setOnClickListener(this)
 
         mBinding.allDoneView
-                .findViewById<TextView>(R.id.add_prayer_time_alerts)
-                ?.setOnClickListener(this)
+                .addPrayerTimeAlerts
+                .setOnClickListener(this)
     }
 
     override fun filterData() {
-        mBinding.allDoneView.visibility = View.GONE
+        mBinding.allDoneView.root.visibility = View.GONE
         mBinding.progressBar.visibility = View.VISIBLE
 
         //Refresh the RecyclerView
@@ -224,11 +225,11 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
                     when {
                         filteredData.isNotEmpty() -> {
                             mReminderRecyclerAdapter.setData(filteredData, mBinding.spinner.selectedItemPosition)
-                            mBinding.allDoneView.visibility = View.GONE
+                            mBinding.allDoneView.root.visibility = View.GONE
                         }
                         else -> {
                             mReminderRecyclerAdapter.setData(listOf(), mBinding.spinner.selectedItemPosition)
-                            mBinding.allDoneView.visibility = View.VISIBLE
+                            mBinding.allDoneView.root.visibility = View.VISIBLE
                         }
                     }
                 }
