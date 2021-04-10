@@ -33,8 +33,12 @@ android {
 
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures {
+
+        dataBinding = true
+
+        //for view binding:
+        viewBinding = true
     }
     compileOptions {
         sourceCompatibility = '1.8'
@@ -65,7 +69,7 @@ dependencies {
     implementation 'com.nex3z:toggle-button-group:1.2.3'
 
     implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version:'1.1.9'
-    implementation 'com.batoulapps.adhan:adhan:1.2.0'
+    implementation 'com.batoulapps.adhan:adhan:1.2.1'
 
     //Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
@@ -90,7 +94,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //Play Core
-    implementation 'com.google.android.play:core:1.8.0'
+    implementation 'com.google.android.play:core:1.10.0'
     implementation 'com.google.android.play:core-ktx:1.8.1'
 
     testImplementation "junit:junit:$junit_version"
