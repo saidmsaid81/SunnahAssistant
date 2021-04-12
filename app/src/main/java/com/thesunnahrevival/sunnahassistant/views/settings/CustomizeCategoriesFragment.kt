@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.CategoriesSettingsBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.adapters.CategoriesSettingsAdapter
 import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
 import java.util.*
@@ -87,5 +89,13 @@ class CustomizeCategoriesFragment: Fragment(), CategoriesSettingsAdapter.DeleteC
     override fun onPause() {
         super.onPause()
         mViewModel.updatedDeletedCategories(deletedCategories)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
+        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
     }
 }
