@@ -86,6 +86,7 @@
     <string name="importance">السلوك</string>
     <string name="next_reminder_sticky_notification">تنبيه التذكير التالي</string>
     <string name="layout_and_theme_settings">إعدادات التخطيط والسمة</string>
+    <string name="privacy_settings">إعدادات الخصوصية</string>
     <string name="layout">الواجهة</string>
     <string name="theme">السِمة</string>
     <string name="theme_in_android_10_follows_system_settings">اتبع النظام</string>
@@ -199,6 +200,7 @@
         <item>تخصيص فئات التذكير</item>
         <item>إعدادات الإشعارات</item>
         <item>إعدادات التخطيط والسمة</item>
+        <item>إعدادات الخصوصية</item>
         <item>إتصل بنا</item>
     </string-array>
     <string-array name="layout_options">
@@ -256,6 +258,10 @@
     <string name="arabic_translation_by_malkalashter313">ترجمةالعربية: مالك الاشتر 313</string>
     <string name="reminder">التذكير</string>
     <string name="server_error_occured">عذرا ، فشل الطلب بسبب خطأ في الخادم. تم إخطار المطور وسيتم إصلاحه قريبًا.</string>
+    <string name="share_anonymous_usage_data"><![CDATA[<b>مشاركة بيانات الاستخدام المجهولة</b><br /><small>ستساعدنا البيانات في تحسين التطبيق</small><br />]]></string>
+    <string name="share_anonymous_usage_data_string">مشاركة بيانات الاستخدام المجهولة. \n ستساعدنا البيانات في تحسين التطبيق</string>
+    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية لهذا التطبيق</string>
+    <string name="read_privacy_policy">سياسة خاصة</string>
 
 
 </resources>
