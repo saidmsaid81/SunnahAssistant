@@ -41,4 +41,5 @@ class AppSettings {
     var doNotDisturbMinutes: Int = 0
     var useReliableAlarms: Boolean = true
     var numberOfLaunches: Int = 0
+    var shareAnonymousUsageData: Boolean = true
 }

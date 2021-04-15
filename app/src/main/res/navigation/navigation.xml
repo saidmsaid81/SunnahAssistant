@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_settingsListFragment_to_layoutSettingsFragment"
             app:destination="@id/layoutSettingsFragment" />
+        <action
+            android:id="@+id/action_settingsListFragment_to_privacySettingsFragment"
+            app:destination="@id/privacySettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/welcomeFragment"
@@ -87,4 +90,15 @@
         android:name="com.thesunnahrevival.sunnahassistant.views.settings.LayoutSettingsFragment"
         tools:layout="@layout/display_settings"
         android:label="@string/layout_and_theme_settings" />
+
+    <fragment
+        android:id="@+id/privacySettingsFragment"
+        android:name="com.thesunnahrevival.sunnahassistant.views.settings.PrivacySettingsFragment"
+        tools:layout="@layout/display_settings"
+        android:label="@string/privacy_settings" />
+
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.thesunnahrevival.sunnahassistant.views.settings.PrivacyPolicyFragment"
+        android:label="@string/read_privacy_policy" />
 </navigation>
