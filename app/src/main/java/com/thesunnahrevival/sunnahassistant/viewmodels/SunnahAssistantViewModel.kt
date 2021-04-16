@@ -29,6 +29,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var selectedReminder: Reminder? = null
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
+    var isPrayerSettingsUpdated = false
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -161,6 +162,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             tempSettings.latitude = result.geometry.location.lat
             tempSettings.longitude = result.geometry.location.lng
             updateSettings(tempSettings)
+            isPrayerSettingsUpdated = true
         }
     }
 

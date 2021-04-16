@@ -12,7 +12,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
@@ -26,14 +25,15 @@ import java.lang.Integer.parseInt
 class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickListener {
 
     private lateinit var mViewModel: SunnahAssistantViewModel
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding: PrayerTimeSettingsBinding = DataBindingUtil.inflate(
                 inflater, R.layout.prayer_time_settings, container, false)
         val myActivity = activity
         if (myActivity != null) {
 
             mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            mViewModel.getSettings().observe(viewLifecycleOwner, Observer {
+            mViewModel.isPrayerSettingsUpdated = false
+            mViewModel.getSettings().observe(viewLifecycleOwner, {
                 if (it != null){
                     mViewModel.settingsValue = it
                     binding.settings = it
@@ -105,7 +105,10 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
                 mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
             }
         }
-        mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+        mViewModel.settingsValue?.let {
+            mViewModel.updateSettings(it)
+            mViewModel.isPrayerSettingsUpdated = true
+        }
         return true
     }
 
@@ -145,6 +148,7 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
 
     override fun onPause() {
         super.onPause()
-        mViewModel.updatePrayerTimesData()
+        if (mViewModel.isPrayerSettingsUpdated)
+            mViewModel.updatePrayerTimesData()
     }
 }
