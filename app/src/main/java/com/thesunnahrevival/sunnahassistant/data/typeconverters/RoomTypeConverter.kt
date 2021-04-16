@@ -90,7 +90,12 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun toCalculationMethod(number: Int): CalculationMethod {
-        return CalculationMethod.values()[number]
+        return try {
+            CalculationMethod.values()[number]
+        }
+        catch (exception: ArrayIndexOutOfBoundsException){
+            CalculationMethod.MUSLIM_WORLD_LEAGUE
+        }
     }
 
     @TypeConverter
@@ -100,7 +105,12 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun toMadhab(number: Int): Madhab {
-        return Madhab.values()[number]
+        return try {
+            Madhab.values()[number]
+        }
+        catch (exception: ArrayIndexOutOfBoundsException){
+            return Madhab.SHAFI
+        }
     }
 
     @TypeConverter
