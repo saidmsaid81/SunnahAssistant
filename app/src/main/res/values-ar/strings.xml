@@ -262,6 +262,10 @@
     <string name="share_anonymous_usage_data_string">مشاركة بيانات الاستخدام المجهولة. \n ستساعدنا البيانات في تحسين التطبيق</string>
     <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية لهذا التطبيق</string>
     <string name="read_privacy_policy">سياسة خاصة</string>
+    <string name="help_improve_app">ساعدنا في تحسين التطبيق</string>
+    <string name="help_us_grow">شارك التطبيق مع العائلة والأصدقاء</string>
+    <string name="share_app">شارك التطبيق</string>
+
 
 
 </resources>
