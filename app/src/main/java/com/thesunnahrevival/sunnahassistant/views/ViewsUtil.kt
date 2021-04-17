@@ -1,8 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.views
 
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
@@ -14,7 +17,11 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
+import com.thesunnahrevival.sunnahassistant.views.home.MainFragment
+import kotlinx.android.synthetic.main.content_main.*
+import java.util.*
 
 val requestCodeForUpdate: Int = 1
 
@@ -107,7 +114,8 @@ fun checkForUpdates(activity: MainActivity) {
                 if (state.installStatus() == InstallStatus.DOWNLOADED) {
                     // After the update is downloaded, show a notification
                     // and request user confirmation to restart the app.
-                    popupSnackbar(activity, activity.getString(R.string.update_downloaded),  Snackbar.LENGTH_INDEFINITE, activity.getString(R.string.restart), View.OnClickListener { appUpdateManager.completeUpdate() } )
+                    popupSnackbar(activity, activity.getString(R.string.update_downloaded), Snackbar.LENGTH_INDEFINITE,
+                            activity.getString(R.string.restart)) { appUpdateManager.completeUpdate() }
                 }
             }
             // Request the update.
@@ -120,13 +128,83 @@ fun checkForUpdates(activity: MainActivity) {
     }
 }
 
-fun popupSnackbar(activity: MainActivity, message: String, duration: Int, actionMessage: String, listener: View.OnClickListener) {
+fun popupSnackbar(fragment: MainFragment, message: String, duration: Int, actionMessage: String, listener: View.OnClickListener) {
     Snackbar.make(
-            activity.findViewById(R.id.coordinator_layout),
+            fragment.coordinator_layout,
             message,
             duration
     ).apply {
         setAction(actionMessage, listener)
+        view.setBackgroundColor(ContextCompat.getColor(fragment.requireContext(), R.color.fabColor))
+        setActionTextColor(fragment.resources.getColor(android.R.color.black))
         show()
     }
+}
+
+fun popupSnackbar(activity: MainActivity, message: String, duration: Int, actionMessage: String, listener: View.OnClickListener) {
+    Snackbar.make(
+            activity.coordinator_layout,
+            message,
+            duration
+    ).apply {
+        setAction(actionMessage, listener)
+        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.fabColor))
+        setActionTextColor(activity.resources.getColor(android.R.color.black))
+        show()
+    }
+}
+
+fun showHelpTranslateSnackBar(mainFragment  : MainFragment) {
+    if (!supportedLocales.contains(Locale.getDefault().language)){
+        val message = mainFragment.getString(R.string.help_translate_app, Locale.getDefault().displayLanguage)
+        val messageAction = mainFragment.getString(R.string.translate)
+        val listener = View.OnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://crwd.in/sunnah-assistant"))
+            if (mainFragment.activity?.packageManager?.let { it1 -> browserIntent.resolveActivity(it1) } != null) {
+                mainFragment.startActivity(browserIntent)
+            }
+        }
+        popupSnackbar(mainFragment,
+                message,
+                10000,
+                messageAction,
+                listener)
+    }
+}
+
+fun showSendFeedbackSnackBar(mainFragment: MainFragment) {
+    val message = mainFragment.getString(R.string.help_improve_app)
+    val messageAction = mainFragment.getString(R.string.send_feedback)
+    val listener = View.OnClickListener {
+        val browserIntent = Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://forms.gle/78xZW7hqSE6SS4Ko6"))
+        if (mainFragment.activity?.packageManager?.let { it1 -> browserIntent.resolveActivity(it1) } != null) {
+            mainFragment.startActivity(browserIntent)
+        }
+    }
+    popupSnackbar(mainFragment,
+            message,
+            10000,
+            messageAction,
+            listener)
+}
+
+fun showShareAppSnackBar(mainFragment: MainFragment) {
+    val message = mainFragment.getString(R.string.help_us_grow)
+    val messageAction = mainFragment.getString(R.string.share_app)
+    val listener = View.OnClickListener {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(
+                Intent.EXTRA_TEXT,
+                "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To set any reminders\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \nDownload here for free:- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant ")
+        mainFragment.startActivity(Intent.createChooser(intent, mainFragment.getString(R.string.share_app)))
+    }
+
+    popupSnackbar(mainFragment,
+            message,
+            10000,
+            messageAction,
+            listener)
 }

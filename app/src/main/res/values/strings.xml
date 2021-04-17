@@ -187,6 +187,9 @@
     <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
     <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
     <string name="read_privacy_policy">Privacy Policy</string>
+  <string name="help_improve_app">Help us improve the app</string>
+    <string name="help_us_grow">Share App with family and friends</string>
+    <string name="share_app">Share App</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
