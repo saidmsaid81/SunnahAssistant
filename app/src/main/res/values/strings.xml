@@ -117,7 +117,11 @@
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
-    <string name="important_changes">‣ We changed the methods for calculating prayer times which led to resetting the prayer time settings to default. But you can customize back these settings in \"Prayer Time Settings\" Section. Sorry for any inconvenience caused.</string>
+    <string name="important_changes">
+        ‣ We added a Privacy Policy, by continuing to use this app you agree to the Privacy Policy. Tap the "Privacy Policy " button below to read it\n
+        ‣ The app now collects anonymous usage data to help us improve the app. The anonymous usage data is collected by Google Firebase Analytics. \n
+        ‣To DISABLE COLLECTION OF USAGE DATA turn off the setting below or go to App Settings (gear icon at the top) > Privacy Settings.
+    </string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">
         ‣ Added option to set phone to Do Not Disturb mode(Silent Mode) when prayer time reminders are triggered
@@ -131,6 +135,8 @@
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">
+        ‣ Fixed Prayer Settings bug that led to prayer reminders being updated even when no changes are made\n
+        ‣ Fixed crash due to incorrect prayer calculation method on Android 10\n
         ‣ Minor bug fixes and improvements
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
