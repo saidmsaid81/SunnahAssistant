@@ -77,6 +77,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
         private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN shareAnonymousUsageData INTEGER DEFAULT 1 NOT NULL")
+                database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
             }
         }
 

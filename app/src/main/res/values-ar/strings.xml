@@ -117,7 +117,9 @@
     <string name="what_s_new">ما الجديد</string>
     <string name="create_new_categories">إنشاء فئة جديدة</string>
     <string name="important">هام</string>
-    <string name="important_changes">قمنا بتغيير طرق حساب أوقات الصلاة التي أدت إلى إعادة ضبط ظروف وقت الصلاة بشكل افتراضي. ولكن يمكنك إعادة تخصيص هذه الإعدادات في قسم \"إعدادات وقت الصلاة\".</string>
+    <string name="important_changes">‣ أضفنا سياسة الخصوصية ، من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية. اضغط على زر "سياسة الخصوصية" أدناه لقراءته \n
+        ‣ يجمع التطبيق الآن بيانات الاستخدام المجهولة لمساعدتنا في تحسين التطبيق. يتم جمع بيانات الاستخدام المجهولة بواسطة Google Firebase Analytics. \n
+        ‣ لتعطيل تجميع بيانات الاستخدام ، قم بإيقاف تشغيل الإعداد أدناه أو انتقل إلى إعدادات التطبيق (رمز الترس في الأعلى)> إعدادات الخصوصية.</string>
     <string name="new_features">ميزات جديدة</string>
     <string name="new_features_details">
         ‣ اضافة خيار  لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) عند تشغيل تذكيرات مواقيت الصلاة
@@ -129,7 +131,10 @@
         \n عند إنشاء أو تحديث تفاصيل التذكير عند حفظ التفاصيل يتم تمكين التذكير تلقائياً.
     </string>
     <string name="fixes">الإصلاحات</string>
-    <string name="fixes_details">         إصلاحات وتحسينات ثانوية
+    <string name="fixes_details">      ‣ خطأ ثابت في إعدادات الصلاة أدى إلى تحديث تذكيرات الصلاة حتى في حالة عدم إجراء أي
+        تغييرات \n
+        ‣ تم إصلاح الانهيار بسبب طريقة حساب الصلاة غير الصحيحة على Android 10 \n
+        ‣ إصلاحات الشوائب الطفيفة والتحسينات
     </string>
     <string name="add_or_delete_categories">إضافة أو حذف الفئة</string>
     <string name="unavialable">لا شَيْء</string>
@@ -261,7 +266,7 @@
     <string name="share_anonymous_usage_data"><![CDATA[<b>مشاركة بيانات الاستخدام المجهولة</b><br /><small>ستساعدنا البيانات في تحسين التطبيق</small><br />]]></string>
     <string name="share_anonymous_usage_data_string">مشاركة بيانات الاستخدام المجهولة. \n ستساعدنا البيانات في تحسين التطبيق</string>
     <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية لهذا التطبيق</string>
-    <string name="read_privacy_policy">سياسة خاصة</string>
+    <string name="read_privacy_policy">سياسة الخصوصية</string>
     <string name="help_improve_app">ساعدنا في تحسين التطبيق</string>
     <string name="help_us_grow">شارك التطبيق مع العائلة والأصدقاء</string>
     <string name="share_app">شارك التطبيق</string>
