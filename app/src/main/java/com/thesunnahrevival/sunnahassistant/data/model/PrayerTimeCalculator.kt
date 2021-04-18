@@ -13,7 +13,7 @@ import java.util.*
 
 class PrayerTimeCalculator(
         private val latitude: Double, private val longitude: Double,
-        private val calculationMethod: Int, private val asrCalculationMethod: Int,
+        private val calculationMethod: CalculationMethod, private val asrCalculationMethod: Madhab,
         private val latitudeAdjustmentMethod: Int, private val prayerNames: Array<String>, private val categoryName: String) {
 
     fun getPrayerTimeReminders(): ArrayList<Reminder>
@@ -36,8 +36,8 @@ class PrayerTimeCalculator(
                 getMonthNumber(System.currentTimeMillis()), day).time
         val coordinates = Coordinates(latitude, longitude)
         val date: DateComponents = DateComponents.from(dateObject)
-        val params: CalculationParameters = CalculationMethod.values()[calculationMethod].parameters
-        params.madhab = Madhab.values()[asrCalculationMethod]
+        val params: CalculationParameters = calculationMethod.parameters
+        params.madhab = asrCalculationMethod
         params.highLatitudeRule = HighLatitudeRule.values()[latitudeAdjustmentMethod]
         val prayerTimes = PrayerTimes(coordinates, date, params)
         val formatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)

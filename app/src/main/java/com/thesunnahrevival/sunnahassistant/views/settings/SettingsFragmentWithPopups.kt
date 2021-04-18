@@ -1,8 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.views.settings
 
+import android.os.Bundle
 import android.view.Menu
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 abstract class SettingsFragmentWithPopups: Fragment(), PopupMenu.OnMenuItemClickListener {
 
@@ -13,5 +16,13 @@ abstract class SettingsFragmentWithPopups: Fragment(), PopupMenu.OnMenuItemClick
         }
         popupMenu.setOnMenuItemClickListener(this)
         popupMenu.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
+        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
     }
 }

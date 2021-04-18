@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
@@ -168,7 +169,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
             if (data != null) {
                 mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
             }
-            mBinding.allDoneView.visibility = View.VISIBLE
+            mBinding.allDoneView.root.visibility = View.VISIBLE
             mBinding.progressBar.visibility = View.GONE
         }
         attachListenersToRecommendedReminders()
@@ -200,16 +201,17 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     }
 
     private fun attachListenersToRecommendedReminders() {
-        mBinding.allDoneView.findViewById<TextView>(R.id.sunnah_reminders_link)
-                ?.setOnClickListener(this)
+        mBinding.allDoneView
+                .sunnahRemindersLink
+                .setOnClickListener(this)
 
         mBinding.allDoneView
-                .findViewById<TextView>(R.id.add_prayer_time_alerts)
-                ?.setOnClickListener(this)
+                .addPrayerTimeAlerts
+                .setOnClickListener(this)
     }
 
     override fun filterData() {
-        mBinding.allDoneView.visibility = View.GONE
+        mBinding.allDoneView.root.visibility = View.GONE
         mBinding.progressBar.visibility = View.VISIBLE
 
         //Refresh the RecyclerView
@@ -224,11 +226,11 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
                     when {
                         filteredData.isNotEmpty() -> {
                             mReminderRecyclerAdapter.setData(filteredData, mBinding.spinner.selectedItemPosition)
-                            mBinding.allDoneView.visibility = View.GONE
+                            mBinding.allDoneView.root.visibility = View.GONE
                         }
                         else -> {
                             mReminderRecyclerAdapter.setData(listOf(), mBinding.spinner.selectedItemPosition)
-                            mBinding.allDoneView.visibility = View.VISIBLE
+                            mBinding.allDoneView.root.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -312,5 +314,12 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
         fm?.let { bottomSheetFragment.show(it, "bottomSheetFragment") }
 
 
+    }
+    override fun onResume() {
+        super.onResume()
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
+        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
     }
 }

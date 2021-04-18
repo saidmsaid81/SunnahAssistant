@@ -86,6 +86,7 @@
     <string name="importance">Behavior</string>
     <string name="next_reminder_sticky_notification">Next Reminder Sticky Notification</string>
     <string name="layout_and_theme_settings">Layout and Theme Settings</string>
+    <string name="privacy_settings">Privacy Settings</string>
     <string name="layout">Layout</string>
     <string name="theme">Theme</string>
     <string name="theme_in_android_10_follows_system_settings">Follows System</string>
@@ -116,7 +117,11 @@
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
-    <string name="important_changes">‣ We changed the methods for calculating prayer times which led to resetting the prayer time settings to default. But you can customize back these settings in \"Prayer Time Settings\" Section. Sorry for any inconvenience caused.</string>
+    <string name="important_changes">
+        ‣ We added a Privacy Policy, by continuing to use this app you agree to the Privacy Policy. Tap the "Privacy Policy " button below to read it\n
+        ‣ The app now collects anonymous usage data to help us improve the app. The anonymous usage data is collected by Google Firebase Analytics. \n
+        ‣To DISABLE COLLECTION OF USAGE DATA turn off the setting below or go to App Settings (gear icon at the top) > Privacy Settings.
+    </string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">
         ‣ Added option to set phone to Do Not Disturb mode(Silent Mode) when prayer time reminders are triggered
@@ -130,6 +135,8 @@
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">
+        ‣ Fixed Prayer Settings bug that led to prayer reminders being updated even when no changes are made\n
+        ‣ Fixed crash due to incorrect prayer calculation method on Android 10\n
         ‣ Minor bug fixes and improvements
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
@@ -182,6 +189,13 @@
     <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
     <string name="reminder">Reminder</string>
     <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
+    <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
+    <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
+    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
+    <string name="read_privacy_policy">Privacy Policy</string>
+  <string name="help_improve_app">Help us improve the app</string>
+    <string name="help_us_grow">Share App with family and friends</string>
+    <string name="share_app">Share App</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
@@ -231,6 +245,7 @@
         <item>Customize Reminder Categories</item>
         <item>Notifications Settings</item>
         <item>Layout and Theme Settings</item>
+        <item>Privacy Settings</item>
         <item>Contact Us</item>
 
     </string-array>
@@ -274,5 +289,7 @@
         <item>45</item>
         <item>60</item>
     </string-array>
+
+
 
 </resources>
