@@ -14,7 +14,18 @@ Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?i
 
 - Two themes are avialble (Light and Dark Theme).
 
-PRs, issues (bugs, feedback and suggestions) are welcomed.
+<h4>Contributing</h4>
+
+Development is done in the "develop" branch and the "master" branch reflects the stable version in Google Play Store.
+
+- PRs, issues (bugs, feedback and suggestions) are welcomed.
+- Help translate the app:- https://crwd.in/sunnah-assistant
+
+Thanks 😀
+
+<h4>Translators</h4>
+
+- Arabic Translation by MalkAlashter313
 
 <h4>Credits</h4>
 
@@ -22,7 +33,12 @@ PRs, issues (bugs, feedback and suggestions) are welcomed.
 
 - Offline Prayer time Calculation is facilitated by https://github.com/batoulapps/adhan-java library
 
-<b>*The app is still in beta phase</b>
+<h4>Screenshots</h4>
+
+![Screenshots](https://lh3.googleusercontent.com/iUbXNPec2EsaAvel_T4Wc489AmG-xZEH1GfZAQw6yHWSDcQFvRPXwve8KbFhuqz0sw=w720-h310)
+![Screenshots](https://lh3.googleusercontent.com/Rhd38Qz77qYXrcoGcLZt_5mLdTXkMS5wAaz5J2bL9wMmicL62jLftDXOpDAg3k_tjSxx=w720-h310)
+![Screenshots](https://lh3.googleusercontent.com/wsukzRjBsUTw5za5j_R7ZT5AEC79yC4_Yyhu8egAF_Cux8x-_Kz6cirBvVGCtOn7Q-Af=w720-h310)
+![Screenshots](https://lh3.googleusercontent.com/MVjChOHu7fNS5jUaZnLDcMaiHHXsx-02_Vbx629qwGrQdc2rofI_lTpvEzuSCr71qw=w720-h310)
 
     Copyright (C) 2019  Said Mohamed
 
