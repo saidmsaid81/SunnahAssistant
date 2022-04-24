@@ -183,7 +183,7 @@
     <string name="restart">RESTART</string>
     <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
     <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
-    <string name="help_translate_app">Help translate the app to %s</string>
+    <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
     <string name="translate">Translate</string>
     <string name="translators">Translators</string>
     <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
@@ -193,9 +193,10 @@
     <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
     <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
     <string name="read_privacy_policy">Privacy Policy</string>
-  <string name="help_improve_app">Help us improve the app</string>
-    <string name="help_us_grow">Share App with family and friends</string>
+    <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
+    <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
     <string name="share_app">Share App</string>
+    <string name="dismiss">Dismiss</string>
 
     <string-array name="reminder_filter">
         <item>Upcoming</item>
