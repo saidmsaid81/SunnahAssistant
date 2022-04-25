@@ -115,9 +115,8 @@ class NextReminderService : Service() {
 
         val stickyNotification: Notification = createNotification(
                 context, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate)
-
         if (isForegroundEnabled)
-            context.startForeground(1, stickyNotification)
+            startForeground(1, stickyNotification)
         else
             context.stopForeground(true)
     }
