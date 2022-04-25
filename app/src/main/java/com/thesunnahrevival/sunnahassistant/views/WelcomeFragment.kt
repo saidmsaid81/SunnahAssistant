@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import kotlinx.android.synthetic.main.fragment_welcome.*
 
@@ -20,13 +19,13 @@ class WelcomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        context?.let { createNotificationChannels(it) }
         val myActivity = activity
 
         if (myActivity != null){
-            val viewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            viewModel.getSettings().observe(viewLifecycleOwner, { settings: AppSettings? ->
-                if (settings?.isFirstLaunch == false){
+            val viewModel =
+                ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
+            viewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
+                if (settings?.isFirstLaunch == false) {
                     findNavController().navigate(R.id.mainFragment)
                 }
 
@@ -37,14 +36,17 @@ class WelcomeFragment : Fragment() {
                         read_privacy_policy.visibility = View.INVISIBLE
                         progress_bar.visibility = View.VISIBLE
                         settings.notificationToneUri = RingtoneManager.getActualDefaultRingtoneUri(
-                                context, RingtoneManager.TYPE_NOTIFICATION)
+                            context, RingtoneManager.TYPE_NOTIFICATION
+                        )
                         settings.isFirstLaunch = false
                         settings.shareAnonymousUsageData = checkbox.isChecked
-                        (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(checkbox.isChecked)
+                        (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
+                            checkbox.isChecked
+                        )
                         viewModel.updateSettings(settings)
                     }
                 }
-            })
+            }
 
             read_privacy_policy.setOnClickListener {
                 findNavController().navigate(R.id.privacyPolicyFragment)

@@ -2,7 +2,6 @@ package com.thesunnahrevival.sunnahassistant.views
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -17,6 +16,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MainFragment
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         val navController = this.findNavController(R.id.myNavHostFragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
@@ -66,7 +67,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applySettings(settings: AppSettings) {
-        Log.v("Random Count", settings.numberOfLaunches.toString())
         //Set theme
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) //Android 9 and below
             if (settings.isLightMode)
@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
             checkForUpdates(activity)
         } else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
             val random = Random.nextInt(1, 5)
-            Log.v("Random", random.toString())
             //Work-around to get the active fragment
             val navHostFragment: Fragment? = supportFragmentManager
                 .findFragmentById(R.id.myNavHostFragment)

@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -22,8 +21,6 @@ class ChangelogFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.changelog_layout, container, false)
-
-        context?.let { createNotificationChannels(it) }
         val myActivity = activity
 
         if (myActivity != null){
