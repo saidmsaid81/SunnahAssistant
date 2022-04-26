@@ -22,34 +22,42 @@ import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFrag
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
 import java.lang.Integer.parseInt
 
-class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickListener {
+class PrayerTimeSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener {
 
     private lateinit var mViewModel: SunnahAssistantViewModel
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val binding: PrayerTimeSettingsBinding = DataBindingUtil.inflate(
-                inflater, R.layout.prayer_time_settings, container, false)
+            inflater, R.layout.prayer_time_settings, container, false
+        )
         val myActivity = activity
         if (myActivity != null) {
 
             mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
             mViewModel.isPrayerSettingsUpdated = false
-            mViewModel.getSettings().observe(viewLifecycleOwner, {
-                if (it != null){
+            mViewModel.getSettings().observe(viewLifecycleOwner) {
+                if (it != null) {
                     mViewModel.settingsValue = it
                     binding.settings = it
                     binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.calculationMethod.ordinal])
                     binding.setAsrCalculationMethod(
-                            resources.getStringArray(R.array.asr_juristic_method)[it.asrCalculationMethod.ordinal]
+                        resources.getStringArray(R.array.asr_juristic_method)[it.asrCalculationMethod.ordinal]
                     )
                     binding.latitudeAdjustmentMethod =
-                            resources.getStringArray(R.array.latitude_options)[it.latitudeAdjustmentMethod]
+                        resources.getStringArray(R.array.latitude_options)[it.latitudeAdjustmentMethod]
                 }
-            })
+            }
 
             binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (buttonView.isPressed) {
                     mViewModel.settingsValue?.isAutomatic = isChecked
-                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                    mViewModel.settingsValue?.let {
+                        mViewModel.updateSettings(it)
+                        mViewModel.isPrayerSettingsUpdated = true
+                    }
                 }
             }
 
@@ -63,23 +71,33 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
     }
 
     override fun onClick(v: View?) {
-        when(v?.id) {
+        when (v?.id) {
             R.id.location_details -> {
                 val dialogFragment = EnterLocationDialogFragment()
                 fragmentManager?.let { dialogFragment.show(it, "dialog") }
             }
             R.id.calculation_details ->
-                showPopup(resources.getStringArray(R.array.calculation_methods), R.id.calculation_method, R.id.calculation_details)
+                showPopup(
+                    resources.getStringArray(R.array.calculation_methods),
+                    R.id.calculation_method,
+                    R.id.calculation_details
+                )
             R.id.asr_calculation_details ->
-                showPopup(resources.getStringArray(R.array.asr_juristic_method),
-                        R.id.asr_calculation_method, R.id.asr_calculation_details)
+                showPopup(
+                    resources.getStringArray(R.array.asr_juristic_method),
+                    R.id.asr_calculation_method, R.id.asr_calculation_details
+                )
             R.id.higher_latitude_details ->
-                showPopup(resources.getStringArray(R.array.latitude_options),
-                        R.id.higher_latitude_method, R.id.higher_latitude_details)
+                showPopup(
+                    resources.getStringArray(R.array.latitude_options),
+                    R.id.higher_latitude_method, R.id.higher_latitude_details
+                )
             R.id.do_not_disturb -> {
                 if (isNotificationPolicyGranted())
-                    showPopup(resources.getStringArray(R.array.do_not_disturb_minutes),
-                            R.id.do_not_disturb_minutes, R.id.do_not_disturb)
+                    showPopup(
+                        resources.getStringArray(R.array.do_not_disturb_minutes),
+                        R.id.do_not_disturb_minutes, R.id.do_not_disturb
+                    )
             }
         }
     }
@@ -92,14 +110,15 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
         when (item?.groupId) {
             R.id.calculation_details -> {
                 mViewModel.settingsValue?.calculationMethod =
-                        CalculationMethod.values()[calculationMethodsStrings.indexOf(item.title.toString())]
+                    CalculationMethod.values()[calculationMethodsStrings.indexOf(item.title.toString())]
             }
             R.id.asr_calculation_details -> {
                 mViewModel.settingsValue?.asrCalculationMethod =
-                        Madhab.values()[asrMethods.indexOf(item.title.toString())]
+                    Madhab.values()[asrMethods.indexOf(item.title.toString())]
             }
             R.id.higher_latitude_details -> {
-                mViewModel.settingsValue?.latitudeAdjustmentMethod = latitudeMethods.indexOf(item.title.toString())
+                mViewModel.settingsValue?.latitudeAdjustmentMethod =
+                    latitudeMethods.indexOf(item.title.toString())
             }
             R.id.do_not_disturb -> {
                 mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
@@ -114,9 +133,9 @@ class PrayerTimeSettingsFragment: SettingsFragmentWithPopups(), View.OnClickList
 
     private fun isNotificationPolicyGranted(): Boolean {
         val notificationManager =
-                requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Check if the notification policy access has been granted for the app.
             return if (!notificationManager.isNotificationPolicyAccessGranted) {
                 showConfirmationDialog()
