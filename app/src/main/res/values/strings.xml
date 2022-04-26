@@ -140,7 +140,6 @@
         ‣ Minor bug fixes and improvements
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
-    <string name="unavialable">None</string>
     <string name="successfuly_added_sunnah_reminders">Successfully Added</string>
     <string name="sticky_notification_description">Sticky Notification to display the next scheduled reminder</string>
     <string name="dhuha_prayer">Praying Dhuha</string>
@@ -183,7 +182,6 @@
     <string name="restart">RESTART</string>
     <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
     <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
-    <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
     <string name="translate">Translate</string>
     <string name="translators">Translators</string>
     <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
@@ -196,6 +194,8 @@
     <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
     <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
     <string name="share_app">Share App</string>
+    <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
+    <string name="unavialable">Default</string>
     <string name="dismiss">Dismiss</string>
 
     <string-array name="reminder_filter">
