@@ -124,8 +124,8 @@
     </string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">
-        ‣ Added option to set phone to Do Not Disturb mode(Silent Mode) when prayer time reminders are triggered
-        \n‣ Added Arabic translations
+        ‣ Added partial indonesian translations.\n
+        ‣ Help us translate the app to your language by tapping \"Help Translate App\" button below. Thank you.
     </string>
     <string name="updated">Updated</string>
     <string name="updated_details">
@@ -135,8 +135,8 @@
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">
-        ‣ Fixed Prayer Settings bug that led to prayer reminders being updated even when no changes are made\n
-        ‣ Fixed crash due to incorrect prayer calculation method on Android 10\n
+        ‣ Fixed bug that persisted prayer time alerts even when automatic prayer time alerts are disabled\n
+        ‣ Fixed crash on some devices when scheduling reminders \n
         ‣ Minor bug fixes and improvements
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
@@ -187,26 +187,31 @@
     <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
     <string name="reminder">Reminder</string>
     <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
-    <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
-    <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
-    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
-    <string name="read_privacy_policy">Privacy Policy</string>
-    <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
-    <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
-    <string name="share_app">Share App</string>
-    <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
-    <string name="unavialable">Default</string>
-    <string name="dismiss">Dismiss</string>
+  <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
+  <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
+  <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
+  <string name="read_privacy_policy">Privacy Policy</string>
+  <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
+  <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
+  <string name="share_app">Share App</string>
+  <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
+  <string name="unavialable">Default</string>
+  <string name="dismiss">Dismiss</string>
+  <string name="help_translate_app_button">Help Translate App</string>
+  <string name="light_theme">Light</string>
+  <string name="today_widget_label">Today Reminders (Light, Dark, Transparent)</string>
+  <string name="prayer_times_widget_label">Prayer Times (Light, Dark, Transparent)</string>
+  <string name="hijri_date_widget_label">Hijri Date Widget</string>
 
-    <string-array name="reminder_filter">
-        <item>Upcoming</item>
-        <item>Past</item>
-        <item>Today</item>
-        <item>Tomorrow</item>
-        <item>Prayer Times</item>
-        <item>Weekly</item>
-        <item>Monthly</item>
-        <item>One Time</item>
+  <string-array name="reminder_filter">
+    <item>Upcoming</item>
+    <item>Past</item>
+    <item>Today</item>
+    <item>Tomorrow</item>
+    <item>Prayer Times</item>
+    <item>Weekly</item>
+    <item>Monthly</item>
+    <item>One Time</item>
     </string-array>
     <string-array name="categories">
         <item>Uncategorized</item>
@@ -251,25 +256,31 @@
 
     </string-array>
 
-    <string-array name="layout_options">
-        <item>Expanded View</item>
-        <item>Condensed View</item>
-    </string-array>
+  <string-array name="layout_options">
+    <item>Expanded View</item>
+    <item>Condensed View</item>
+  </string-array>
 
-    <string-array name="theme_options">
-        <item>Light</item>
-        <item>Dark</item>
-    </string-array>
-    <string-array name="vibration_options">
-        <item>On</item>
-        <item>Off</item>
-    </string-array>
-    <string-array name="priority_options">
-        <item>No Notification at all</item>
-        <item>No sound</item>
-        <item>Makes a sound (Recommended)</item>
-        <item>Makes a sound and heads-up notification</item>
-    </string-array>
+  <string-array name="theme_options">
+    <item>Light</item>
+    <item>Dark</item>
+  </string-array>
+
+  <string-array name="widget_theme_options">
+    <item>Light</item>
+    <item>Dark</item>
+    <item>Transparent</item>
+  </string-array>
+  <string-array name="vibration_options">
+    <item>On</item>
+    <item>Off</item>
+  </string-array>
+  <string-array name="priority_options">
+    <item>No Notification at all</item>
+    <item>No sound</item>
+    <item>Makes a sound (Recommended)</item>
+    <item>Makes a sound and heads-up notification</item>
+  </string-array>
     <string-array name="latitude_options">
         <item>Middle of the Night</item>
         <item>One Seventh of the Night</item>

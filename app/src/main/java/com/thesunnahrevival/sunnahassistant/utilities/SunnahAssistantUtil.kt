@@ -17,8 +17,6 @@ import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayRemindersWidget
-import com.thesunnahrevival.sunnahassistant.widgets.TodaysRemindersWidgetDark
-import com.thesunnahrevival.sunnahassistant.widgets.TodaysRemindersWidgetTransparent
 import java.util.*
 
 val supportedLocales = arrayOf("en", "ar")
@@ -143,14 +141,8 @@ fun updateTodayRemindersWidgets(context: Context?) {
 
         // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
         // since it seems the onUpdate() is only fired on that:
-        var ids = AppWidgetManager.getInstance(context)
-                .getAppWidgetIds(ComponentName(context, TodayRemindersWidget::class.java))
-        appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
-        ids = AppWidgetManager.getInstance(context)
-                .getAppWidgetIds(ComponentName(context, TodaysRemindersWidgetDark::class.java))
-        appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
-        ids = AppWidgetManager.getInstance(context)
-                .getAppWidgetIds(ComponentName(context, TodaysRemindersWidgetTransparent::class.java))
+        val ids = AppWidgetManager.getInstance(context)
+            .getAppWidgetIds(ComponentName(context, TodayRemindersWidget::class.java))
         appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
     }
 
