@@ -18,7 +18,9 @@
         android:hasFragileUserData="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".widgets.HijriDateWidgetConfigureActivity">
+        <activity
+            android:name=".widgets.HijriDateWidgetConfigureActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
