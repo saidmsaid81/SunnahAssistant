@@ -14,7 +14,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
-import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 
 class AboutAppFragment : BottomSheetDialogFragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +47,6 @@ class AboutAppFragment : BottomSheetDialogFragment(), View.OnClickListener {
             R.id.telegram -> intent = Intent(Intent.ACTION_VIEW,
                     Uri.parse("https://t.me/thesunnahrevival"))
             R.id.contact_us -> intent = generateEmailIntent()
-            R.id.support_developer -> context?.let { openPlayStore(it, "com.thesunnahrevival.supportdeveloper") }
         }
         intent?.let { startActivity(it) }
     }
