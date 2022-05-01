@@ -1,0 +1,288 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 5,
+    "identityHash": "dab576296fd585f4dc5a00f83dd21cd2",
+    "entities": [
+      {
+        "tableName": "reminders_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`reminderName` TEXT, `reminderInfo` TEXT, `timeInSeconds` INTEGER NOT NULL, `category` TEXT, `frequency` TEXT, `isEnabled` INTEGER NOT NULL, `day` INTEGER NOT NULL, `month` INTEGER NOT NULL, `year` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `customScheduleDays` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "reminderName",
+            "columnName": "reminderName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reminderInfo",
+            "columnName": "reminderInfo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeInSeconds",
+            "columnName": "timeInSeconds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "frequency",
+            "columnName": "frequency",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isEnabled",
+            "columnName": "isEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day",
+            "columnName": "day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "month",
+            "columnName": "month",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "offset",
+            "columnName": "offset",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "customScheduleDays",
+            "columnName": "customScheduleDays",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "app_settings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `formattedAddress` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `categories` TEXT, `language` TEXT NOT NULL, `doNotDisturbMinutes` INTEGER NOT NULL, `useReliableAlarms` INTEGER NOT NULL, `numberOfLaunches` INTEGER NOT NULL, `shareAnonymousUsageData` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formattedAddress",
+            "columnName": "formattedAddress",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "calculationMethod",
+            "columnName": "method",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "asrCalculationMethod",
+            "columnName": "asrCalculationMethod",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isAutomatic",
+            "columnName": "isAutomatic",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "month",
+            "columnName": "month",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hijriOffSet",
+            "columnName": "hijriOffSet",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isLightMode",
+            "columnName": "isLightMode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFirstLaunch",
+            "columnName": "isFirstLaunch",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showNextReminderNotification",
+            "columnName": "showNextReminderNotification",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "showOnBoardingTutorial",
+            "columnName": "showOnBoardingTutorial",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDisplayHijriDate",
+            "columnName": "isDisplayHijriDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "savedSpinnerPosition",
+            "columnName": "savedSpinnerPosition",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isExpandedLayout",
+            "columnName": "isExpandedLayout",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificationToneUri",
+            "columnName": "notificationToneUri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isVibrate",
+            "columnName": "isVibrate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "priority",
+            "columnName": "priority",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitudeAdjustmentMethod",
+            "columnName": "latitudeAdjustmentMethod",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShowHijriDateWidget",
+            "columnName": "isShowHijriDateWidget",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isShowNextReminderWidget",
+            "columnName": "isShowNextReminderWidget",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isAfterUpdate",
+            "columnName": "isAfterUpdate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categories",
+            "columnName": "categories",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "language",
+            "columnName": "language",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "doNotDisturbMinutes",
+            "columnName": "doNotDisturbMinutes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "useReliableAlarms",
+            "columnName": "useReliableAlarms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfLaunches",
+            "columnName": "numberOfLaunches",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shareAnonymousUsageData",
+            "columnName": "shareAnonymousUsageData",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dab576296fd585f4dc5a00f83dd21cd2')"
+    ]
+  }
+}
