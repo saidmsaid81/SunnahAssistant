@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity() {
         activity = this
         firebaseAnalytics = Firebase.analytics
         getSettings()
-
+        if (intent.extras?.get("link") != null)
+            findNavController(R.id.myNavHostFragment).navigate(R.id.webviewFragment, intent.extras)
     }
 
     private fun getSettings() {
@@ -103,9 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onSupportNavigateUp(): Boolean {
-        val navController = this.findNavController(R.id.myNavHostFragment)
+        val navController = findNavController(R.id.myNavHostFragment)
         return navController.navigateUp()
     }
 

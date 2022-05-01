@@ -117,11 +117,7 @@
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
-    <string name="important_changes">
-        ‣ We added a Privacy Policy, by continuing to use this app you agree to the Privacy Policy. Tap the "Privacy Policy " button below to read it\n
-        ‣ The app now collects anonymous usage data to help us improve the app. The anonymous usage data is collected by Google Firebase Analytics. \n
-        ‣To DISABLE COLLECTION OF USAGE DATA turn off the setting below or go to App Settings (gear icon at the top) > Privacy Settings.
-    </string>
+    <string name="important_changes"></string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">
         ‣ Added partial indonesian translations.\n
@@ -129,9 +125,7 @@
     </string>
     <string name="updated">Updated</string>
     <string name="updated_details">
-        ‣ Made Hijri and Prayer time calculations OFFLINE. Previously they required internet connection at least once a month
-        \n‣ Redesigned settings screen
-        \n‣ When creating or updating reminder details upon saving the details the reminder is automatically enabled.
+        ‣ Updated and optimized all widgets.
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">
@@ -202,6 +196,10 @@
   <string name="today_widget_label">Today Reminders (Light, Dark, Transparent)</string>
   <string name="prayer_times_widget_label">Prayer Times (Light, Dark, Transparent)</string>
   <string name="hijri_date_widget_label">Hijri Date Widget</string>
+  <string name="reminders">Reminders</string>
+  <string name="developers_messages">Developer Messages</string>
+  <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
+  <string name="share_message">Share Message</string>
 
   <string-array name="reminder_filter">
     <item>Upcoming</item>
