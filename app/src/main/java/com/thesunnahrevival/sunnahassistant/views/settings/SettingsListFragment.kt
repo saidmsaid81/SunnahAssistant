@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +20,55 @@ class SettingsListFragment : Fragment(), AdapterView.OnItemClickListener {
         val view = inflater.inflate(R.layout.settings_lists, container, false)
         val listView = view.findViewById<ListView>(R.id.settings_lists)
         listView.adapter =
-                ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, resources.getStringArray(R.array.settings_lists))
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                resources.getStringArray(R.array.settings_lists)
+            )
         listView.onItemClickListener = this
-        view.findViewById<TextView>(R.id.version).text = String.format(getString(R.string.version), BuildConfig.VERSION_NAME)
+        view.findViewById<TextView>(R.id.version).text =
+            String.format(getString(R.string.version), BuildConfig.VERSION_NAME)
+
+        view.findViewById<ImageView>(R.id.website).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.thesunnahrevival.com")
+                )
+            )
+        }
+        view.findViewById<ImageView>(R.id.facebook).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.facebook.com/thesunnahrevival")
+                )
+            )
+        }
+        view.findViewById<ImageView>(R.id.twitter).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.twitter.com/thesunahrevival")
+                )
+            )
+        }
+        view.findViewById<ImageView>(R.id.instagram).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.instagram.com/thesunnahrevival")
+                )
+            )
+        }
+        view.findViewById<ImageView>(R.id.telegram).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://t.me/thesunnahrevival")
+                )
+            )
+        }
         return view
     }
 
