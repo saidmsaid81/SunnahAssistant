@@ -110,37 +110,30 @@
     <string name="today_s_reminder">تذكيرات اليوم</string>
     <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">التاريخ الهجري المستخدم في هذا التطبيق مبني على تقويم أم القرى. اقرأ المزيد على تقويم أم القرى هنا http://www.ummulqura.org.sa/default.aspx</string>
     <string name="read_more">اقرأ المزيد</string>
-    <string name="read_more_on_dhuha_prayer">على صلاة الضحى وأفضل وقت للصلاة</string>
-    <string name="read_more_on_tahajjud_prayer">على صلاة التهجد وأفضل وقت للصلاة</string>
-    <string name="read_more_on_suratul_kahf">عن أهمية قراءة سورة الكهف كل يوم جمعة</string>
-    <string name="read_more_on_fasting_mondays_and_thursdays">عن أهمية صيام يوم الإثنين والخميس</string>
+    <string name="read_more_on_dhuha_prayer">اقرأ المزيد على صلاة الضحى وأفضل وقت للصلاة</string>
+    <string name="read_more_on_tahajjud_prayer">اقرأ المزيد على صلاة التهجد وأفضل وقت للصلاة</string>
+    <string name="read_more_on_suratul_kahf">اقرأ المزيد عن أهمية قراءة سورة الكهف كل يوم جمعة</string>
+    <string name="read_more_on_fasting_mondays_and_thursdays">اقرأ المزيد عن أهمية صيام يوم الإثنين والخميس</string>
     <string name="what_s_new">ما الجديد</string>
     <string name="create_new_categories">إنشاء فئة جديدة</string>
     <string name="important">هام</string>
-    <string name="important_changes">‣ أضفنا سياسة الخصوصية ، من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية. اضغط على زر "سياسة الخصوصية" أدناه لقراءته \n
-        ‣ يجمع التطبيق الآن بيانات الاستخدام المجهولة لمساعدتنا في تحسين التطبيق. يتم جمع بيانات الاستخدام المجهولة بواسطة Google Firebase Analytics. \n
-        ‣ لتعطيل تجميع بيانات الاستخدام ، قم بإيقاف تشغيل الإعداد أدناه أو انتقل إلى إعدادات التطبيق (رمز الترس في الأعلى)> إعدادات الخصوصية.</string>
+    <string name="important_changes"></string>
     <string name="new_features">ميزات جديدة</string>
-    <string name="new_features_details">
-        ‣ اضافة خيار  لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) عند تشغيل تذكيرات مواقيت الصلاة
-        \n‣ أضيفت الترجمة عربية
+    <string name="new_features_details">        ‣ أضيفت ترجمات إندونيسي جزئية.\n
+       ‣ ساعدنا على ترجمة التطبيق إلى لغتك بالنقر على زر \"المساعدة في ترجمة التطبيق\" أدناه. شكراً لك.
     </string>
     <string name="updated">تم التحديث</string>
-    <string name="updated_details">        حساب التاريخ الهجري و وقت الصلاة بدون انترنت. في السابق كانت تتطلب الاتصال بالإنترنت مرة واحدة في الشهر على الأقل
-       \n إعادة تصميم إعدادات
-        \n عند إنشاء أو تحديث تفاصيل التذكير عند حفظ التفاصيل يتم تمكين التذكير تلقائياً.
+    <string name="updated_details">        ‣ تم تحديث وتحسين جميع الأدوات المصغرة.
     </string>
     <string name="fixes">الإصلاحات</string>
-    <string name="fixes_details">      ‣ خطأ ثابت في إعدادات الصلاة أدى إلى تحديث تذكيرات الصلاة حتى في حالة عدم إجراء أي
-        تغييرات \n
-        ‣ تم إصلاح الانهيار بسبب طريقة حساب الصلاة غير الصحيحة على Android 10 \n
-        ‣ إصلاحات الشوائب الطفيفة والتحسينات
+    <string name="fixes_details">       ‣ إصلاح الأخطاء التي استمرت في تنبيهات وقت الصلاة حتى عندما يتم تعطيل تنبيهات وقت الصلاة التلقائية\n
+        ‣ إصلاح الأعطال على بعض الأجهزة عند جدولة التنبيهات \n
+      ‣ إصلاحات الشوائب الطفيفة والتحسينات
     </string>
     <string name="add_or_delete_categories">إضافة أو حذف الفئة</string>
-    <string name="unavialable">لا شَيْء</string>
     <string name="successfuly_added_sunnah_reminders">تمت الإضافة بنجاح</string>
     <string name="sticky_notification_description">إشعار مثبت لعرض التذكير التالي</string>
-    <string name="dhuha_prayer">صلاة الضحى</string>
+    <string name="dhuha_prayer">صلاة ظهر</string>
     <string name="morning_adhkar">اذكار الصباح</string>
     <string name="evening_adhkar">أذكار المساء</string>
     <string name="tahajjud">صلاة التهجد</string>
@@ -161,6 +154,50 @@
     <string name="prayer">الصلاة</string>
     <string name="add_new_category">إضافة فئة جديدة</string>
     <string name="hijri_date"><![CDATA[<b>تاريخ اليوم:</b> %s هجري]]></string>
+    <string name="weekly_frequency_display_example_2_days_every_week">%d يوم كل أسبوع</string>
+    <string name="tap_to_disable_sticky_notification">انقر لتعطيل هذا الإشعار</string>
+    <string name="no_upcoming_reminder_today">لا يوجد تذكير قادم اليوم</string>
+    <string name="tomorrow_at_notification">. غدا في</string>
+    <string name="at">في</string>
+    <string name="next_reminder_dhuhr_prayer_at_12_45">التذكير التالي:%s %s %s </string>
+    <string name="prayer_times_notification_settings">إعدادات تنبيهات أوقات الصلاة</string>
+    <string name="dnd_minutes">%d دقائق</string>
+    <string name="set_phone_to_do_not_disturb_mode_for">اضبط الهاتف على وضع عدم الإزعاج لـ</string>
+    <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">استخدم هذا الخيار لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) بعد تشغيل تذكير بوقت الصلاة</string>
+    <string name="dnd_dialog_title">السماح بالوصول إلى \"عدم الإزعاج\" من \"الإعدادات\"</string>
+    <string name="dnd_message">الرجاء السماح بالوصول إلى \"عدم الإزعاج\" بتحديد \"مساعد السنة\" في الشاشة التالية والضغط على \"سماح\".</string>
+    <string name="go_to_settings">أذهب إلي الاعدادت</string>
+    <string name="use_reliable_alarms_for_notifications">استخدم إنذارات موثوقة للإشعارات</string>
+    <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">سيؤدي تمكين التنبيهات الموثوقة إلى إضافة رمز ساعة على شريط الحالة عند جدولة التذكيرات</string>
+    <string name="update_downloaded">تم تحميل التحديث للتو.</string>
+    <string name="restart">إعادة التشغيل</string>
+    <string name="error_adding_prayer_reminders">خطأ. لا يمكن إضافة أوقات الصلاة عند تمكين أوقات الصلاة التلقائية</string>
+    <string name="please_write_feedback_in_english">يرجى كتابة ملاحظاتك أدناه باللغة الإنجليزية</string>
+    <string name="translate">ترجمة</string>
+    <string name="translators">المترجمين</string>
+    <string name="arabic_translation_by_malkalashter313">الترجمة العربية: MalkAlashter313\n
+    الترجمة الإندونيسية:  Ilham Syahid S</string>
+    <string name="reminder">تذكير</string>
+    <string name="server_error_occured">عذرا ، فشل الطلب بسبب خطأ في الخادم. تم إخطار المطور وسيتم إصلاحه قريبًا.</string>
+    <string name="share_anonymous_usage_data"><![CDATA[<b>مشاركة بيانات الاستخدام المجهولة</b><br /><small>ستساعدنا البيانات في تحسين التطبيق</small><br />]]></string>
+    <string name="share_anonymous_usage_data_string">مشاركة بيانات الاستخدام المجهولة. \n ستساعدنا البيانات في تحسين التطبيق</string>
+    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية لهذا التطبيق</string>
+    <string name="read_privacy_policy">سياسة الخصوصية</string>
+    <string name="help_improve_app">ساعدنا على تحسين التطبيق بإرسال ملاحظات. سوف يستغرق الأمر بضع دقائق فقط ويعني الكثير لنا. شكراً لكم.</string>
+    <string name="help_us_grow">أحببت التطبيق؟ ساعدنا في الوصول إلى المزيد من الناس من خلال مشاركة التطبيق مع العائلة والأصدقاء. شكرا لكم.</string>
+    <string name="share_app">شارك التطبيق</string>
+    <string name="help_translate_app">ساعدنا على الوصول إلى المزيد من الناس من خلال ترجمة التطبيق إلى %s. شكراً لكم.</string>
+    <string name="unavialable">الافتراضي</string>
+    <string name="dismiss">إلغاء</string>
+    <string name="help_translate_app_button">ساعد في ترجمة التطبيق</string>
+    <string name="light_theme">فاتح (ابيض)</string>
+    <string name="today_widget_label">التذكيرات اليوم (ضوء ، مظلم، شفافية)</string>
+    <string name="prayer_times_widget_label">أوقات الصلاة (ضوء ، داكن، شفافية)</string>
+    <string name="hijri_date_widget_label">أداة تاريخ الهجري</string>
+    <string name="reminders">التذكيرات</string>
+    <string name="developers_messages">رسائل مطوّر البرامج</string>
+    <string name="developer_messages_description">قد يقوم المطور في بعض الأحيان بإرسال رسائل هامة فيما يتعلق بالتطبيق.</string>
+    <string name="share_message">شارك الرسالة</string>
     <string-array name="reminder_filter">
         <item>القادم</item>
         <item>الماضي</item>
@@ -216,6 +253,11 @@
         <item>فاتح (ابيض)</item>
         <item>داكن</item>
     </string-array>
+    <string-array name="widget_theme_options">
+        <item>فاتح (ابيض)</item>
+        <item>داكن</item>
+        <item>شفاف</item>
+    </string-array>
     <string-array name="vibration_options">
         <item>تشغيل</item>
         <item>إغلاق</item>
@@ -238,39 +280,11 @@
         <item>صلاة المغرب</item>
         <item>صلاة العشاء</item>
     </string-array>
-    <string name="weekly_frequency_display_example_2_days_every_week">%d يوم كل أسبوع</string>
-    <string name="tap_to_disable_sticky_notification">انقر لتعطيل هذا الإشعار</string>
-    <string name="no_upcoming_reminder_today">لا يوجد تذكير قادم اليوم</string>
-    <string name="tomorrow_at_notification">. غدا في</string>
-    <string name="at">في</string>
-    <string name="next_reminder_dhuhr_prayer_at_12_45">التذكير التالي:%s %s %s </string>
-    <string name="prayer_times_notification_settings">إعدادات تنبيهات أوقات الصلاة</string>
-    <string name="dnd_minutes">%d دقائق</string>
-    <string name="set_phone_to_do_not_disturb_mode_for">اضبط الهاتف على وضع عدم الإزعاج لـ</string>
-    <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">استخدم هذا الخيار لضبط الهاتف على وضع عدم الإزعاج (الوضع الصامت) بعد تشغيل تذكير بوقت الصلاة</string>
-    <string name="dnd_dialog_title">السماح بالوصول إلى \"عدم الإزعاج\" من \"الإعدادات\"</string>
-    <string name="dnd_message">الرجاء السماح بالوصول إلى \"عدم الإزعاج\" بتحديد \"مساعد السنة\" في الشاشة التالية والضغط على \"سماح\".</string>
-    <string name="go_to_settings">أذهب إلي الاعدادت</string>
-    <string name="use_reliable_alarms_for_notifications">استخدم إنذارات موثوقة للإشعارات</string>
-    <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">سيؤدي تمكين التنبيهات الموثوقة إلى إضافة رمز ساعة على شريط الحالة عند جدولة التذكيرات</string>
-    <string name="update_downloaded">تم تحميل التحديث للتو.</string>
-    <string name="restart">إعادة التشغيل</string>
-    <string name="error_adding_prayer_reminders">خطأ. لا يمكن إضافة أوقات الصلاة عند تمكين أوقات الصلاة التلقائية</string>
-    <string name="please_write_feedback_in_english">يرجى كتابة ملاحظاتك أدناه باللغة الإنجليزية</string>
-    <string name="help_translate_app">ساعد في ترجمة التطبيق إلى %s</string>
-    <string name="translate">ترجمة</string>
-    <string name="translators">المترجمين</string>
-    <string name="arabic_translation_by_malkalashter313">ترجمةالعربية: مالك الاشتر 313</string>
-    <string name="reminder">التذكير</string>
-    <string name="server_error_occured">عذرا ، فشل الطلب بسبب خطأ في الخادم. تم إخطار المطور وسيتم إصلاحه قريبًا.</string>
-    <string name="share_anonymous_usage_data"><![CDATA[<b>مشاركة بيانات الاستخدام المجهولة</b><br /><small>ستساعدنا البيانات في تحسين التطبيق</small><br />]]></string>
-    <string name="share_anonymous_usage_data_string">مشاركة بيانات الاستخدام المجهولة. \n ستساعدنا البيانات في تحسين التطبيق</string>
-    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية لهذا التطبيق</string>
-    <string name="read_privacy_policy">سياسة الخصوصية</string>
-    <string name="help_improve_app">ساعدنا في تحسين التطبيق</string>
-    <string name="help_us_grow">شارك التطبيق مع العائلة والأصدقاء</string>
-    <string name="share_app">شارك التطبيق</string>
-
-
-
+    <string-array name="do_not_disturb_minutes">
+        <item>٠</item>
+        <item>١٥</item>
+        <item>٣٠</item>
+        <item>٤٥</item>
+        <item>٦٠</item>
+    </string-array>
 </resources>
