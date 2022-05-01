@@ -23,6 +23,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.AboutAppFragment
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.shareAppIntent
 import com.thesunnahrevival.sunnahassistant.views.translateLink
 
 abstract class MenuBarFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
@@ -75,6 +76,16 @@ abstract class MenuBarFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                 R.id.about -> {
                     val fragment = AboutAppFragment()
                     fragment.show(myActivity.supportFragmentManager, "about")
+                    return true
+                }
+                R.id.share_app -> {
+                    val shareAppIntent = shareAppIntent()
+                    startActivity(
+                        Intent.createChooser(
+                            shareAppIntent,
+                            getString(R.string.share_app)
+                        )
+                    )
                     return true
                 }
                 R.id.feedback -> {
