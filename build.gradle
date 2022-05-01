@@ -8,8 +8,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
-        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.3'
+        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.5'
 
@@ -36,7 +36,7 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 29
+    targetSdkVersion = 30
     compileSdkVersion = 29
 
     //App dependencies

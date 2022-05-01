@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = [Reminder::class, AppSettings::class], version = 4)
+@Database(entities = [Reminder::class, AppSettings::class], version = 5)
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
@@ -81,30 +81,43 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
+            }
+        }
+
 
         fun getInstance(context: Context): SunnahAssistantDatabase =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
-                }
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
+            }
 
 
-        private fun buildDatabase(context: Context) = Room.databaseBuilder(context.applicationContext,
-                SunnahAssistantDatabase::class.java, "SunnahAssistant.db")
+        private fun buildDatabase(context: Context) = Room.databaseBuilder(
+            context.applicationContext,
+            SunnahAssistantDatabase::class.java, "SunnahAssistant.db"
+        )
                 .addCallback(
                         object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 CoroutineScope(Dispatchers.IO).launch {
-                    INSTANCE?.reminderDao()?.insertReminder(demoReminder(context.getString(R.string.demo_reminder), context.resources.getStringArray(R.array.categories)[3]))
+                    INSTANCE?.reminderDao()?.insertReminder(
+                        demoReminder(
+                            context.getString(R.string.demo_reminder),
+                            context.resources.getStringArray(R.array.categories)[3]
+                        )
+                    )
 
                     val categories = TreeSet<String>()
                     categories.addAll(context.resources.getStringArray(R.array.categories))
                     INSTANCE?.reminderDao()?.insertSettings(initialSettings(categories))
                 }
             }
-        }
+                        }
                 )
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .build()
     }
 }

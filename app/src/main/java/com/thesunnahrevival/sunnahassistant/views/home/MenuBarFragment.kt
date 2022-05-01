@@ -23,6 +23,8 @@ import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.AboutAppFragment
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.shareAppIntent
+import com.thesunnahrevival.sunnahassistant.views.translateLink
 
 abstract class MenuBarFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
@@ -76,20 +78,34 @@ abstract class MenuBarFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                     fragment.show(myActivity.supportFragmentManager, "about")
                     return true
                 }
+                R.id.share_app -> {
+                    val shareAppIntent = shareAppIntent()
+                    startActivity(
+                        Intent.createChooser(
+                            shareAppIntent,
+                            getString(R.string.share_app)
+                        )
+                    )
+                    return true
+                }
                 R.id.feedback -> {
                     val intent = generateEmailIntent()
                     if (intent.resolveActivity(myActivity.packageManager) != null)
                         startActivity(intent)
                     else
-                        Toast.makeText(context, getString(R.string.no_email_app_installed), Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            getString(R.string.no_email_app_installed),
+                            Toast.LENGTH_LONG
+                        ).show()
                     return true
                 }
                 R.id.rate_this_app -> {
                     context?.let { openPlayStore(it, "com.thesunnahrevival.sunnahassistant") }
                     return true
                 }
-                R.id.support_developer -> {
-                    context?.let { openPlayStore(it, "com.thesunnahrevival.supportdeveloper") }
+                R.id.help_translate_app -> {
+                    context?.let { translateLink(this) }
                     return true
                 }
                 R.id.more_apps -> {

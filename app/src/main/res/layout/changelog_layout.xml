@@ -16,21 +16,15 @@
             android:paddingEnd="16dp"
             android:text="@string/important"
             android:textStyle="bold"
+            android:visibility="gone"
             android:textColor="@android:color/holo_red_dark"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
+            android:visibility="gone"
             android:text="@string/important_changes"/>
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/collect_data_switch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/default_dimen"
-            android:button="@null"
-            android:checked="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,14 +33,12 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="@string/new_features"
-            android:visibility="gone"
             android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:visibility="gone"
             android:text="@string/new_features_details"/>
 
         <TextView
@@ -56,14 +48,12 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="@string/updated"
-            android:visibility="gone"
             android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:visibility="gone"
             android:text="@string/updated_details"/>
 
         <TextView
@@ -81,17 +71,18 @@
             android:padding="16dp"
             android:text="@string/fixes_details"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/privacy_policy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/fabColor"
-            android:layout_marginBottom="@dimen/default_dimen"
-            android:padding="@dimen/margin_dimen"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:text="@string/read_privacy_policy"/>
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/help_translate_app"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:backgroundTint="@color/fabColor"
+          android:layout_marginBottom="@dimen/default_dimen"
+          android:padding="@dimen/margin_dimen"
+          android:layout_gravity="center_horizontal"
+          android:textAllCaps="false"
+          android:textColor="@android:color/white"
+          android:text="@string/help_translate_app_button"
+          />
 
 
         <com.google.android.material.button.MaterialButton

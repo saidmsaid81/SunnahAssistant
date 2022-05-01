@@ -15,17 +15,29 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
-fun createNotification(context: Context, title: String?, text: String?, priority: Int, notificationToneUri: Uri?, isVibrate: Boolean): Notification {
+fun createNotification(
+    context: Context,
+    title: String?,
+    text: String?,
+    priority: Int,
+    notificationToneUri: Uri?,
+    isVibrate: Boolean,
+    isFCMMessage: Boolean = false
+): Notification {
     var category = ""
 
     if (priority == -1) {
         category = "Next Reminder"
-    }
-    else {
-        val reminderNotificationChannel = getReminderNotificationChannel(context)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && reminderNotificationChannel != null) {
-            category = reminderNotificationChannel.id
-        }
+    } else {
+        if (!isFCMMessage) {
+            val reminderNotificationChannel = getReminderNotificationChannel(context)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                reminderNotificationChannel != null
+            ) {
+                category = reminderNotificationChannel.id
+            }
+        } else
+            category = "Developer"
     }
 
     val res = context.resources
@@ -34,24 +46,24 @@ fun createNotification(context: Context, title: String?, text: String?, priority
     val picture = BitmapFactory.decodeResource(res, R.drawable.logo)
     val intent = Intent(context, MainActivity::class.java)
 
-    var activity: PendingIntent
-            if (priority != -1)
-            activity = PendingIntent.getActivity(context, 0, intent, 0)
-        else
-            activity = NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.navigation)
-                    .setDestination(R.id.notificationSettingsFragment)
-                    .createPendingIntent()
+    val activity = if (priority != -1)
+        PendingIntent.getActivity(context, 0, intent, 0)
+    else
+        NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.navigation)
+            .setDestination(R.id.notificationSettingsFragment)
+            .createPendingIntent()
     var builder: NotificationCompat.Builder
     builder = NotificationCompat.Builder(context, category)
-            .setSmallIcon(R.drawable.ic_alarm)
-            .setContentTitle(title)
-            .setContentText(text)
-            .setContentIntent(activity)
-            .setPriority(priority)
-            .setTicker(title)
-            .setStyle(NotificationCompat.BigTextStyle()
-                    .bigText(text)
+        .setSmallIcon(R.drawable.ic_alarm)
+        .setContentTitle(title)
+        .setContentText(text)
+        .setContentIntent(activity)
+        .setPriority(priority)
+        .setTicker(title)
+        .setStyle(
+            NotificationCompat.BigTextStyle()
+                .bigText(text)
                     .setBigContentTitle(title)
                     .setSummaryText("Reminder"))
             .setAutoCancel(true)
@@ -76,12 +88,29 @@ fun createNotificationChannels(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         deleteReminderNotificationChannel(context)
         val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel("remindersDefault", "Reminders", NotificationManager.IMPORTANCE_DEFAULT)
+        val channel = NotificationChannel(
+            "remindersDefault",
+            context.getString(R.string.reminders),
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
         notificationManager.createNotificationChannel(channel)
+
         val nextReminderChannel = NotificationChannel(
-                "Next Reminder", context.getString(R.string.next_reminder_sticky_notification), NotificationManager.IMPORTANCE_LOW)
-        nextReminderChannel.description = context.getString(R.string.sticky_notification_description)
+            "Next Reminder",
+            context.getString(R.string.next_reminder_sticky_notification),
+            NotificationManager.IMPORTANCE_LOW
+        )
+        nextReminderChannel.description =
+            context.getString(R.string.sticky_notification_description)
         notificationManager.createNotificationChannel(nextReminderChannel)
+
+        val messagesFromDeveloper = NotificationChannel(
+            "Developer",
+            context.getString(R.string.developers_messages),
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        nextReminderChannel.description = context.getString(R.string.developer_messages_description)
+        notificationManager.createNotificationChannel(messagesFromDeveloper)
     }
 }
 

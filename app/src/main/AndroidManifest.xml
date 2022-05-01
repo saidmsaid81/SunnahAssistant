@@ -18,7 +18,25 @@
         android:hasFragileUserData="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".widgets.HijriDateWidgetConfigureActivity">
+        <activity
+            android:name=".widgets.HijriDateWidgetConfigureActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".widgets.PrayerTimesWidgetConfigureActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".widgets.TodayRemindersWidgetConfigureActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -35,7 +53,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widgets.TodayRemindersWidget" android:label="Light:- Today Reminders">
+        <receiver
+            android:name=".widgets.TodayRemindersWidget"
+            android:label="@string/today_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -45,27 +65,9 @@
                 android:resource="@xml/today_reminders_widget_info" />
         </receiver>
 
-        <receiver android:name=".widgets.TodaysRemindersWidgetDark" android:label="Dark:- Today Reminders">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/today_reminders_widget_info_dark" />
-        </receiver>
-
-        <receiver android:name=".widgets.TodaysRemindersWidgetTransparent" android:label="Transparent:- Today Reminders">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/today_reminders_widget_info_transparent" />
-        </receiver>
-
-        <receiver android:name=".widgets.PrayerTimesWidget" android:label="Light:- Prayer Times">
+        <receiver
+            android:name=".widgets.PrayerTimesWidget"
+            android:label="@string/prayer_times_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -75,29 +77,9 @@
                 android:resource="@xml/prayer_reminders_widget_info" />
         </receiver>
 
-        <receiver android:name=".widgets.PrayerTimesWidgetDark" android:label="Dark:- Prayer Times">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/prayer_reminders_widget_info_dark" />
-        </receiver>
-
-        <receiver android:name=".widgets.PrayerTimesWidgetTransparent" android:label="Transparent:- Prayer Times">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/prayer_reminders_widget_info_transparent" />
-        </receiver>
-
         <receiver
             android:name=".widgets.HijriDateWidget"
-            android:label="Hijri Date Widget">
+            android:label="@string/hijri_date_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -118,10 +100,27 @@
         <service
             android:name=".utilities.NextReminderService"
             android:exported="false" />
-        <service android:name=".widgets.TodaysRemindersRemoteViewsService"
-        android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service android:name=".widgets.PrayerRemindersRemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service
+            android:name=".widgets.TodaysRemindersRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".widgets.PrayerRemindersRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".firebase.SAFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_alarm" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="Developer" />
+
     </application>
 
 

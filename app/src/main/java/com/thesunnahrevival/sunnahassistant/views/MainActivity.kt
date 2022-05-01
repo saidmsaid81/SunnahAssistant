@@ -16,6 +16,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MainFragment
 import kotlinx.coroutines.CoroutineScope
@@ -34,13 +35,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         val navController = this.findNavController(R.id.myNavHostFragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
         activity = this
         firebaseAnalytics = Firebase.analytics
         getSettings()
-
+        if (intent.extras?.get("link") != null)
+            findNavController(R.id.myNavHostFragment).navigate(R.id.webviewFragment, intent.extras)
     }
 
     private fun getSettings() {
@@ -72,18 +75,16 @@ class MainActivity : AppCompatActivity() {
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
 
-        if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
-            showInAppReviewPrompt(activity)
-        } else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0) {
+        if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0) {
             checkForUpdates(activity)
-        } else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 4 == 0) {
-            val random = Random.nextInt(1, 4)
-
+        } else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
+            val random = Random.nextInt(1, 5)
             //Work-around to get the active fragment
-            val navHostFragment: Fragment? = supportFragmentManager.findFragmentById(R.id.myNavHostFragment)
+            val navHostFragment: Fragment? = supportFragmentManager
+                .findFragmentById(R.id.myNavHostFragment)
             val fragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
 
-            if (fragment is MainFragment){
+            if (fragment is MainFragment) {
                 when (random) {
                     1 -> {
                         showHelpTranslateSnackBar(fragment)
@@ -91,8 +92,11 @@ class MainActivity : AppCompatActivity() {
                     2 -> {
                         showSendFeedbackSnackBar(fragment)
                     }
-                    else -> {
+                    3 -> {
                         showShareAppSnackBar(fragment)
+                    }
+                    4 -> {
+                        showInAppReviewPrompt(activity)
                     }
                 }
             }
@@ -100,9 +104,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onSupportNavigateUp(): Boolean {
-        val navController = this.findNavController(R.id.myNavHostFragment)
+        val navController = findNavController(R.id.myNavHostFragment)
         return navController.navigateUp()
     }
 
@@ -112,14 +115,16 @@ class MainActivity : AppCompatActivity() {
         // Creates instance of the manager.
         val appUpdateManager = AppUpdateManagerFactory.create(this)
         appUpdateManager
-                .appUpdateInfo
-                .addOnSuccessListener { appUpdateInfo ->
-                    // If the update is downloaded but not installed,
-                    // notify the user to complete the update.
-                    if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                        popupSnackbar(activity, getString(R.string.update_downloaded), Snackbar.LENGTH_INDEFINITE,
-                                getString(R.string.restart)) { appUpdateManager.completeUpdate() }
-                    }
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                // If the update is downloaded but not installed,
+                // notify the user to complete the update.
+                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbar(
+                        activity, getString(R.string.update_downloaded), Snackbar.LENGTH_INDEFINITE,
+                        getString(R.string.restart)
+                    ) { appUpdateManager.completeUpdate() }
                 }
+            }
     }
 }
