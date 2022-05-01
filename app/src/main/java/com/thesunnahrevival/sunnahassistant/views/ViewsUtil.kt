@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
@@ -179,17 +180,7 @@ fun popupSnackbar(
 fun showHelpTranslateSnackBar(mainFragment: MainFragment) {
     if (!supportedLocales.contains(Locale.getDefault().language)) {
         val onClickListener = BannerInterface.OnClickListener {
-            val browserIntent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://crwd.in/sunnah-assistant")
-            )
-            if (mainFragment.activity?.packageManager?.let { it1 ->
-                    browserIntent.resolveActivity(
-                        it1
-                    )
-                } != null) {
-                mainFragment.startActivity(browserIntent)
-            }
+            translateLink(mainFragment)
         }
         showBanner(
             mainFragment.banner,
@@ -201,6 +192,20 @@ fun showHelpTranslateSnackBar(mainFragment: MainFragment) {
             mainFragment.getString(R.string.translate),
             onClickListener
         )
+    }
+}
+
+fun translateLink(fragment: Fragment) {
+    val browserIntent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse("https://crwd.in/sunnah-assistant")
+    )
+    if (fragment.activity?.packageManager?.let { it1 ->
+            browserIntent.resolveActivity(
+                it1
+            )
+        } != null) {
+        fragment.startActivity(browserIntent)
     }
 }
 
@@ -225,15 +230,10 @@ fun showSendFeedbackSnackBar(mainFragment: MainFragment) {
 
 fun showShareAppSnackBar(mainFragment: MainFragment) {
     val onClickListener = BannerInterface.OnClickListener {
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "text/plain"
-        intent.putExtra(
-            Intent.EXTRA_TEXT,
-            "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To set any reminders\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
-        )
+        val shareAppIntent = shareAppIntent()
         mainFragment.startActivity(
             Intent.createChooser(
-                intent,
+                shareAppIntent,
                 mainFragment.getString(R.string.share_app)
             )
         )
@@ -245,6 +245,16 @@ fun showShareAppSnackBar(mainFragment: MainFragment) {
         mainFragment.getString(R.string.share_app),
         onClickListener
     )
+}
+
+fun shareAppIntent(): Intent {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = "text/plain"
+    intent.putExtra(
+        Intent.EXTRA_TEXT,
+        "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To set any reminders\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+    )
+    return intent
 }
 
 private fun showBanner(
