@@ -24,8 +24,11 @@ val supportedLocales = arrayOf("en", "ar")
 fun generateEmailIntent(): Intent {
     val intent = Intent(Intent.ACTION_SENDTO)
     intent.data = Uri.parse("mailto:")
-    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("thesunnahrevival.tsr@gmail.com"))
-    intent.putExtra(Intent.EXTRA_SUBJECT, "Sunnah Assistant App" + " - Version " + BuildConfig.VERSION_NAME)
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("contact@thesunnahrevival.com"))
+    intent.putExtra(
+        Intent.EXTRA_SUBJECT,
+        "Sunnah Assistant App" + " - Version " + BuildConfig.VERSION_NAME
+    )
     intent.putExtra(Intent.EXTRA_TEXT, emailText)
     return intent
 }
