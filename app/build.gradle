@@ -11,8 +11,8 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 8
-        versionName "1.0.1-release"
+        versionCode 9
+        versionName "1.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -99,6 +99,10 @@ dependencies {
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:27.0.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging'
+
+    //Material Banner
+    implementation "com.sergivonavi:materialbanner:1.2.0"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"

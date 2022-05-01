@@ -29,6 +29,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/share_app"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share_app"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/feedback"
         android:title="@string/send_feedback"
         app:showAsAction="never" />
@@ -44,8 +50,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/support_developer"
-        android:title="@string/support_developer"
+        android:id="@+id/help_translate_app"
+        android:title="@string/help_translate_app_button"
         app:showAsAction="never" />
 
     <item

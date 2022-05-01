@@ -117,30 +117,23 @@
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
-    <string name="important_changes">
-        ‣ We added a Privacy Policy, by continuing to use this app you agree to the Privacy Policy. Tap the "Privacy Policy " button below to read it\n
-        ‣ The app now collects anonymous usage data to help us improve the app. The anonymous usage data is collected by Google Firebase Analytics. \n
-        ‣To DISABLE COLLECTION OF USAGE DATA turn off the setting below or go to App Settings (gear icon at the top) > Privacy Settings.
-    </string>
+    <string name="important_changes"></string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">
-        ‣ Added option to set phone to Do Not Disturb mode(Silent Mode) when prayer time reminders are triggered
-        \n‣ Added Arabic translations
+        ‣ Added partial indonesian translations.\n
+        ‣ Help us translate the app to your language by tapping \"Help Translate App\" button below. Thank you.
     </string>
     <string name="updated">Updated</string>
     <string name="updated_details">
-        ‣ Made Hijri and Prayer time calculations OFFLINE. Previously they required internet connection at least once a month
-        \n‣ Redesigned settings screen
-        \n‣ When creating or updating reminder details upon saving the details the reminder is automatically enabled.
+        ‣ Updated and optimized all widgets.
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">
-        ‣ Fixed Prayer Settings bug that led to prayer reminders being updated even when no changes are made\n
-        ‣ Fixed crash due to incorrect prayer calculation method on Android 10\n
+        ‣ Fixed bug that persisted prayer time alerts even when automatic prayer time alerts are disabled\n
+        ‣ Fixed crash on some devices when scheduling reminders \n
         ‣ Minor bug fixes and improvements
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
-    <string name="unavialable">None</string>
     <string name="successfuly_added_sunnah_reminders">Successfully Added</string>
     <string name="sticky_notification_description">Sticky Notification to display the next scheduled reminder</string>
     <string name="dhuha_prayer">Praying Dhuha</string>
@@ -175,37 +168,49 @@
     <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
     <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time reminder is triggered</string>
     <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
-    <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
-    <string name="go_to_settings">Go to Settings</string>
-    <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
-    <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when reminders are scheduled</string>
-    <string name="update_downloaded">An update has just been downloaded.</string>
-    <string name="restart">RESTART</string>
-    <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
-    <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
-    <string name="help_translate_app">Help translate the app to %s</string>
-    <string name="translate">Translate</string>
-    <string name="translators">Translators</string>
-    <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313</string>
-    <string name="reminder">Reminder</string>
-    <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
-    <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
-    <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
-    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
-    <string name="read_privacy_policy">Privacy Policy</string>
-  <string name="help_improve_app">Help us improve the app</string>
-    <string name="help_us_grow">Share App with family and friends</string>
-    <string name="share_app">Share App</string>
+  <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
+  <string name="go_to_settings">Go to Settings</string>
+  <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
+  <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when reminders are scheduled</string>
+  <string name="update_downloaded">An update has just been downloaded.</string>
+  <string name="restart">RESTART</string>
+  <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
+  <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
+  <string name="translate">Translate</string>
+  <string name="translators">Translators</string>
+  <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313\n
+    Indonesian Translation by: Ilham Syahid S</string>
+  <string name="reminder">Reminder</string>
+  <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
+  <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
+  <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
+  <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
+  <string name="read_privacy_policy">Privacy Policy</string>
+  <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
+  <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
+  <string name="share_app">Share App</string>
+  <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
+  <string name="unavialable">Default</string>
+  <string name="dismiss">Dismiss</string>
+  <string name="help_translate_app_button">Help Translate App</string>
+  <string name="light_theme">Light</string>
+  <string name="today_widget_label">Today Reminders (Light, Dark, Transparent)</string>
+  <string name="prayer_times_widget_label">Prayer Times (Light, Dark, Transparent)</string>
+  <string name="hijri_date_widget_label">Hijri Date Widget</string>
+  <string name="reminders">Reminders</string>
+  <string name="developers_messages">Developer Messages</string>
+  <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
+  <string name="share_message">Share Message</string>
 
-    <string-array name="reminder_filter">
-        <item>Upcoming</item>
-        <item>Past</item>
-        <item>Today</item>
-        <item>Tomorrow</item>
-        <item>Prayer Times</item>
-        <item>Weekly</item>
-        <item>Monthly</item>
-        <item>One Time</item>
+  <string-array name="reminder_filter">
+    <item>Upcoming</item>
+    <item>Past</item>
+    <item>Today</item>
+    <item>Tomorrow</item>
+    <item>Prayer Times</item>
+    <item>Weekly</item>
+    <item>Monthly</item>
+    <item>One Time</item>
     </string-array>
     <string-array name="categories">
         <item>Uncategorized</item>
@@ -250,25 +255,31 @@
 
     </string-array>
 
-    <string-array name="layout_options">
-        <item>Expanded View</item>
-        <item>Condensed View</item>
-    </string-array>
+  <string-array name="layout_options">
+    <item>Expanded View</item>
+    <item>Condensed View</item>
+  </string-array>
 
-    <string-array name="theme_options">
-        <item>Light</item>
-        <item>Dark</item>
-    </string-array>
-    <string-array name="vibration_options">
-        <item>On</item>
-        <item>Off</item>
-    </string-array>
-    <string-array name="priority_options">
-        <item>No Notification at all</item>
-        <item>No sound</item>
-        <item>Makes a sound (Recommended)</item>
-        <item>Makes a sound and heads-up notification</item>
-    </string-array>
+  <string-array name="theme_options">
+    <item>Light</item>
+    <item>Dark</item>
+  </string-array>
+
+  <string-array name="widget_theme_options">
+    <item>Light</item>
+    <item>Dark</item>
+    <item>Transparent</item>
+  </string-array>
+  <string-array name="vibration_options">
+    <item>On</item>
+    <item>Off</item>
+  </string-array>
+  <string-array name="priority_options">
+    <item>No Notification at all</item>
+    <item>No sound</item>
+    <item>Makes a sound (Recommended)</item>
+    <item>Makes a sound and heads-up notification</item>
+  </string-array>
     <string-array name="latitude_options">
         <item>Middle of the Night</item>
         <item>One Seventh of the Night</item>
