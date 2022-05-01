@@ -27,12 +27,69 @@
         android:text="@string/app_name"
         android:paddingTop="@dimen/default_dimen"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        />
 
     <TextView
         android:id="@+id/version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/default_dimen"
+        >
+
+        <ImageView
+            android:id="@+id/website"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/default_dimen"
+            android:contentDescription="Website"
+            android:src="@drawable/ic_web"
+            />
+
+        <ImageView
+            android:id="@+id/facebook"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/default_dimen"
+            android:contentDescription="@string/facebook_logo"
+            android:src="@drawable/ic_facebook"
+            />
+
+        <ImageView
+            android:id="@+id/twitter"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/default_dimen"
+            android:contentDescription="@string/twitter_logo"
+            android:src="@drawable/ic_twitter"
+            />
+
+        <ImageView
+            android:id="@+id/instagram"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/default_dimen"
+            android:contentDescription="@string/instagram_logo"
+            android:src="@drawable/ic_instagram"
+            />
+
+        <ImageView
+            android:id="@+id/telegram"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="@string/telegram_logo"
+            android:src="@drawable/ic_telegram"
+            />
+
+
+    </LinearLayout>
 </LinearLayout>
