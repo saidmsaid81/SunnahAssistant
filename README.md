@@ -32,6 +32,7 @@ Thanks 😀
 <h4>Translators</h4>
 
 - Arabic Translation by MalkAlashter313
+- Indonesian translation by Ilham Syahid S
 
 <h4>Credits</h4>
 
