@@ -102,17 +102,12 @@ class SunnahAssistantRepository private constructor(private val application: App
         else
             System.currentTimeMillis() + 86400000
 
-        val day = getDayDate(currentTimeInMillis)
-        val monthNumber = getMonthNumber(currentTimeInMillis)
-        val yearNumber = getYear(currentTimeInMillis).toInt()
-
-        val weekDay: Int = if (!isTomorrow){
-            dayOfTheWeek
-        }
-        else
-            tomorrowDayOfTheWeek
         return mReminderDao.getRemindersOnDay(
-                weekDay.toString(), day, monthNumber, yearNumber)
+            calendar.get(Calendar.DAY_OF_WEEK).toString(),
+            calendar.get(Calendar.DAY_OF_MONTH),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.YEAR)
+        )
     }
 
     fun getPastReminders(): LiveData<List<Reminder>> {

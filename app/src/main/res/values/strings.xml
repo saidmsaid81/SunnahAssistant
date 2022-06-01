@@ -149,7 +149,7 @@
     <string name="daily">Daily&#160;</string>
     <string name="monthly_frequency_display">On %d every month&#160;</string>
     <string name="one_time_frequency_display">On %d %s %d&#160;</string>
-    <string name="at_time_example_at_9_pm">at %s&#160;</string>
+    <string name="at_time_example_at_9_pm">%s&#160;</string>
     <string name="expanded_view">Expanded View</string>
     <string name="condesed_view">Condensed View</string>
     <string name="on">On</string>

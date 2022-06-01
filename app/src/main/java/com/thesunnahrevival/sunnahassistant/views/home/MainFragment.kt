@@ -5,8 +5,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +18,9 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding
-import com.thesunnahrevival.sunnahassistant.utilities.*
+import com.thesunnahrevival.sunnahassistant.utilities.hijriDate
+import com.thesunnahrevival.sunnahassistant.utilities.updateHijriDateWidgets
+import com.thesunnahrevival.sunnahassistant.utilities.updateTodayRemindersWidgets
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeToDeleteCallback
@@ -34,18 +35,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminderListener, View.OnClickListener, ReminderItemInteractionListener {
+class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
+    ReminderItemInteractionListener {
 
     private lateinit var mBinding: ContentMainBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
     private var mAllReminders: ArrayList<Reminder> = arrayListOf()
-    private var mSpinner: Spinner? = null
     private var isRescheduleAtLaunch = true
-    var nextScheduledReminder: Reminder? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         mBinding = DataBindingUtil.inflate(
-                inflater, R.layout.content_main, container, false)
+            inflater, R.layout.content_main, container, false
+        )
         setHasOptionsMenu(true)
 
         val myActivity = activity
@@ -78,12 +83,12 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
                     mViewModel.localeUpdate()
                 }
 
-                populateTheSpinner(settings.savedSpinnerPosition)
                 setupTheRecyclerView()
 
                 if (settings.isDisplayHijriDate) {
                     mBinding.hijriDate.text = Html.fromHtml(
-                            getString(R.string.hijri_date, hijriDate))
+                        getString(R.string.hijri_date, hijriDate)
+                    )
                     mBinding.hijriDate.visibility = View.VISIBLE
                 }
 
@@ -91,13 +96,17 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
                 mViewModel.updateGeneratedPrayerTimes(settings)
 
                 if (settings.showOnBoardingTutorial) {
-                    mSpinner?.let {
-                        showOnBoardingTutorial((activity as MainActivity), mReminderRecyclerAdapter,
-                                it, mBinding.reminderList)
-                    }
+                    showOnBoardingTutorial(
+                        (activity as MainActivity), mReminderRecyclerAdapter,
+                        mBinding.reminderList
+                    )
                     settings.showOnBoardingTutorial = false
                     mViewModel.updateSettings(settings)
                 }
+                mViewModel.getReminders(System.currentTimeMillis())
+                    .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
+                        displayTheReminders(reminders as ArrayList<Reminder>)
+                    }
             }
         })
     }
@@ -105,8 +114,10 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     private fun setupTheRecyclerView() {
         //Setup the RecyclerView Adapter
         context?.let {
-            mReminderRecyclerAdapter = ReminderListAdapter(it, mAppSettings?.isExpandedLayout
-                    ?: true)
+            mReminderRecyclerAdapter = ReminderListAdapter(
+                it, mAppSettings?.isExpandedLayout
+                    ?: true
+            )
             mReminderRecyclerAdapter.setOnItemClickListener(this)
 
             val reminderRecyclerView = mBinding.reminderList
@@ -117,97 +128,50 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
             //Set the swipe to delete action
             val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
             itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
-
-            //Setup the layout of the next reminder card view
-            if (mAppSettings?.isExpandedLayout == false)
-                mBinding.nextCardView.viewStub?.layoutResource = R.layout.alt_next_reminder_card_view
-            mBinding.nextCardView.viewStub?.inflate()
         }
 
-        mViewModel.getStatusOfAddingListOfReminders().observe(viewLifecycleOwner, Observer {
+        mViewModel.getStatusOfAddingListOfReminders().observe(viewLifecycleOwner) {
             if (!it) {
                 mBinding.reminderList.visibility = View.GONE
                 mBinding.progressBar.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 mBinding.reminderList.visibility = View.VISIBLE
                 mBinding.progressBar.visibility = View.GONE
             }
-        })
-
-    }
-
-    private fun populateTheSpinner(savedSpinnerPosition: Int) {
-        context?.let {
-            val adapter = ArrayAdapter.createFromResource(it,
-                    R.array.reminder_filter, android.R.layout.simple_spinner_item)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            mSpinner = mBinding.spinner
-            mSpinner?.onItemSelectedListener = this
-            mSpinner?.adapter = adapter
-            mSpinner?.setSelection(savedSpinnerPosition)
         }
+
     }
 
-    /**
-     * Changes The Displayed data
-     *
-     * @param tag spinner Item
-     */
-    private fun changeDisplayedData(data: ArrayList<Reminder>?, tag: String) {
-        //Checks to see if the data that changed affects what is being displayed by spinner selection
-        //Returns early if it does not affect displayed data
-        if (!(mSpinner?.selectedItem as String).matches(tag.toRegex()))
-            return
+    private fun displayTheReminders(data: ArrayList<Reminder>?) {
 
         val myActivity = activity
         if (myActivity != null && data != null && data.isNotEmpty()) {
-            displayTheReminders(data)
+            mViewModel.viewModelScope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.Main) {
+                    mAllReminders = data
+                    mBinding.dayString = getString(R.string.today_at)
+                    filterData()
+                }
+            }
         }
-
         else {
             if (data != null) {
-                mReminderRecyclerAdapter.setData(data, mBinding.spinner.selectedItemPosition)
+                mReminderRecyclerAdapter.setData(data)
             }
             mBinding.allDoneView.root.visibility = View.VISIBLE
             mBinding.progressBar.visibility = View.GONE
         }
         attachListenersToRecommendedReminders()
-
-    }
-
-    private fun displayTheReminders(data: ArrayList<Reminder>) {
-        mViewModel.viewModelScope.launch(Dispatchers.IO) {
-            var dayString = getString(R.string.today_at)
-            nextScheduledReminder = mViewModel.getNextScheduledReminderToday(calculateOffsetFromMidnight(),
-                     getDayDate(System.currentTimeMillis()),
-                    getMonthNumber(System.currentTimeMillis()), Integer.parseInt(getYear(System.currentTimeMillis())))
-            if (nextScheduledReminder == null) {
-                val timeInMilliseconds = System.currentTimeMillis() + 86400000
-                nextScheduledReminder = mViewModel.getNextScheduledReminderTomorrow(
-                        getDayDate(timeInMilliseconds),
-                        getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds)))
-                dayString = getString(R.string.tomorrow_at)
-            }
-            withContext(Dispatchers.Main) {
-                if (mSpinner?.selectedItemPosition == 0)
-                    data.remove(nextScheduledReminder)
-                mAllReminders = data
-                mBinding.nextReminder = nextScheduledReminder
-                mBinding.dayString = dayString
-                filterData()
-            }
-        }
     }
 
     private fun attachListenersToRecommendedReminders() {
         mBinding.allDoneView
-                .sunnahRemindersLink
-                .setOnClickListener(this)
+            .sunnahRemindersLink
+            .setOnClickListener(this)
 
         mBinding.allDoneView
-                .addPrayerTimeAlerts
-                .setOnClickListener(this)
+            .addPrayerTimeAlerts
+            .setOnClickListener(this)
     }
 
     override fun filterData() {
@@ -216,7 +180,8 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
 
         //Refresh the RecyclerView
         if (!categoryToDisplay.matches("".toRegex())) {
-            //Filter data in background thread because if the list is very large it may slow down the main thread
+            //Filter data in background thread because if the list is very large
+            // it may slow down the main thread
             CoroutineScope(Dispatchers.Default).launch {
                 val filteredData = mAllReminders.filter {
                     it.category?.matches(categoryToDisplay.toRegex()) == true
@@ -225,11 +190,11 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
                     mBinding.progressBar.visibility = View.GONE
                     when {
                         filteredData.isNotEmpty() -> {
-                            mReminderRecyclerAdapter.setData(filteredData, mBinding.spinner.selectedItemPosition)
+                            mReminderRecyclerAdapter.setData(filteredData)
                             mBinding.allDoneView.root.visibility = View.GONE
                         }
                         else -> {
-                            mReminderRecyclerAdapter.setData(listOf(), mBinding.spinner.selectedItemPosition)
+                            mReminderRecyclerAdapter.setData(listOf())
                             mBinding.allDoneView.root.visibility = View.VISIBLE
                         }
                     }
@@ -237,7 +202,7 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
             }
         } else {
             mBinding.progressBar.visibility = View.GONE
-            mReminderRecyclerAdapter.setData(mAllReminders, mBinding.spinner.selectedItemPosition)
+            mReminderRecyclerAdapter.setData(mAllReminders)
         }
 
     }
@@ -245,26 +210,18 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
     override fun onPause() {
         super.onPause()
         //Save the spinner position which will be used when the app is launched again
-        mAppSettings?.savedSpinnerPosition = mSpinner?.selectedItemPosition ?: 0
         mAppSettings?.let { mViewModel.updateSettings(it) }
     }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        mViewModel.getReminders(position)
-                .observe(this, Observer { reminders: List<Reminder> ->
-                    changeDisplayedData(reminders as ArrayList<Reminder>, mSpinner?.getItemAtPosition(position) as String)
-                })
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     override fun deleteReminder(position: Int) {
         val mDeletedReminder = mAllReminders[position]
         val prayer = resources.getStringArray(R.array.categories)[2]
 
         if (mDeletedReminder.category?.matches(prayer.toRegex()) == true && mAppSettings?.isAutomatic == true) {
-            val snackbar = Snackbar.make(mBinding.mainLayout, getString(R.string.cannot_delete_prayer_time),
-                    Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(
+                mBinding.mainLayout, getString(R.string.cannot_delete_prayer_time),
+                Snackbar.LENGTH_LONG
+            )
             snackbar.show()
             mReminderRecyclerAdapter.notifyDataSetChanged()
             return
@@ -272,14 +229,11 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
         if (mDeletedReminder.isEnabled)
             mViewModel.cancelScheduledReminder(mDeletedReminder)
 
-        if (mDeletedReminder == nextScheduledReminder) {
-            mAllReminders.remove(mDeletedReminder)
-            displayTheReminders(mAllReminders)
-        }
-
         mViewModel.delete(mDeletedReminder)
-        val snackbar = Snackbar.make(mBinding.mainLayout, getString(R.string.delete_reminder),
-                Snackbar.LENGTH_LONG)
+        val snackbar = Snackbar.make(
+            mBinding.mainLayout, getString(R.string.delete_reminder),
+            Snackbar.LENGTH_LONG
+        )
         snackbar.setAction(getString(R.string.undo_delete)) { mViewModel.insert(mDeletedReminder) }
         snackbar.show()
 
@@ -292,12 +246,15 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
         }
     }
 
-    override fun onToggleButtonClick(buttonView: CompoundButton, isChecked: Boolean, reminder: Reminder?) {
-        if (reminder != null &&(buttonView.isPressed || isRescheduleAtLaunch)) {
+    override fun onToggleButtonClick(
+        buttonView: CompoundButton,
+        isChecked: Boolean,
+        reminder: Reminder?
+    ) {
+        if (reminder != null && (buttonView.isPressed || isRescheduleAtLaunch)) {
             if (isChecked) {
                 mViewModel.scheduleReminder(reminder)
-            }
-            else {
+            } else {
                 mViewModel.cancelScheduledReminder(reminder)
             }
         }
@@ -315,11 +272,15 @@ class MainFragment : MenuBarFragment(), OnItemSelectedListener, OnDeleteReminder
 
 
     }
+
     override fun onResume() {
         super.onResume()
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
         bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
+        (activity as MainActivity).firebaseAnalytics.logEvent(
+            FirebaseAnalytics.Event.SCREEN_VIEW,
+            bundle
+        )
     }
 }
