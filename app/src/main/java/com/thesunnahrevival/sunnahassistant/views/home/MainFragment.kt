@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -218,25 +219,29 @@ class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickLi
         val prayer = resources.getStringArray(R.array.categories)[2]
 
         if (mDeletedReminder.category?.matches(prayer.toRegex()) == true && mAppSettings?.isAutomatic == true) {
-            val snackbar = Snackbar.make(
+            Snackbar.make(
                 mBinding.mainLayout, getString(R.string.cannot_delete_prayer_time),
                 Snackbar.LENGTH_LONG
-            )
-            snackbar.show()
-            mReminderRecyclerAdapter.notifyDataSetChanged()
+            ).apply {
+                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
+                show()
+            }
+            mReminderRecyclerAdapter.notifyItemChanged(position)
             return
         }
         if (mDeletedReminder.isEnabled)
             mViewModel.cancelScheduledReminder(mDeletedReminder)
 
         mViewModel.delete(mDeletedReminder)
-        val snackbar = Snackbar.make(
+        Snackbar.make(
             mBinding.mainLayout, getString(R.string.delete_reminder),
             Snackbar.LENGTH_LONG
-        )
-        snackbar.setAction(getString(R.string.undo_delete)) { mViewModel.insert(mDeletedReminder) }
-        snackbar.show()
-
+        ).apply {
+            view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
+            setAction(getString(R.string.undo_delete)) { mViewModel.insert(mDeletedReminder) }
+            setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+            show()
+        }
     }
 
     override fun onClick(v: View?) {
