@@ -51,28 +51,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    suspend fun getNextScheduledReminderToday(offsetFromMidnight: Long, day: Int, month: Int, year: Int): Reminder? {
-        return mRepository.getNextScheduledReminderToday(offsetFromMidnight, day, month, year)
-    }
-
-    suspend fun getNextScheduledReminderTomorrow(day: Int, month: Int, year: Int): Reminder? {
-        return mRepository.getNextScheduledReminderTomorrow(day, month, year)
-    }
-
     fun getStatusOfAddingListOfReminders() = mRepository.statusOfAddingListOfReminders
 
-    fun getReminders(filter: Int): LiveData<List<Reminder>> {
-        return when (filter) {
-            1 -> mRepository.getPastReminders()
-            2 -> mRepository.getRemindersOnDay(false)
-            3 -> mRepository.getRemindersOnDay(true)
-            4 -> mRepository.getPrayerTimes()
-            5 -> mRepository.getWeeklyReminders()
-            6 -> mRepository.getMonthlyReminders()
-            7 -> mRepository.getOneTimeReminders()
-            else -> mRepository.getUpcomingReminders()
-        }
-    }
+    fun getReminders(date: Long): LiveData<List<Reminder>> =
+        mRepository.getRemindersOnDay(Date(date))
 
     fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {

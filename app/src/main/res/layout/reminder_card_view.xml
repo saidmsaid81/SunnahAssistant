@@ -80,57 +80,9 @@
                     android:maxLines="1"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textSize="18sp"
-                    android:visibility="@{(frequency &lt; 3 || frequency == 4) ? View.VISIBLE : View.GONE}"
                     android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds) }"
                     tools:text="Date" />
 
-                <TextView
-                    android:id="@+id/reminder_tomorrow_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="18sp"
-                    android:visibility="@{frequency == 3 ? View.VISIBLE : View.GONE}"
-                    android:text="@{@string/tomorrow_at + TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds)}"
-                    tools:text="Date" />
-
-                <TextView
-                    android:id="@+id/reminder_weekly_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="18sp"
-                    android:visibility="@{frequency == 5 ? View.VISIBLE : View.GONE}"
-                    android:text="@{String.format(@string/weekly_frequency_display_example_2_days_every_week, reminder.customScheduleDays.size(), TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds)) }"
-                    tools:text="Date" />
-
-                <TextView
-                    android:id="@+id/reminder_monthly_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="18sp"
-                    android:visibility="@{frequency == 6 ? View.VISIBLE : View.GONE}"
-                    android:text="@{String.format(@string/monthly_frequency_display, reminder.day) + String.format(@string/at_time_example_at_9_pm, TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds) ) }"
-                    tools:text="Date" />
-
-                <TextView
-                    android:id="@+id/reminder_one_time_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="18sp"
-                    android:visibility="@{frequency == 7 ? View.VISIBLE : View.GONE}"
-                    android:text="@{reminder.month &lt; 12 ? String.format(@string/one_time_frequency_display, reminder.day, TimeDateUtil.getMonthName(reminder.month), reminder.year ) + String.format(@string/at_time_example_at_9_pm, TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds)) : @string/time_not_set}"
-                    tools:text="Date" />
 
                 <TextView
                     android:id="@+id/reminder_category"

@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.views
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,7 +30,6 @@ val requestCodeForUpdate: Int = 1
 fun showOnBoardingTutorial(
     activity: MainActivity,
     reminderRecyclerAdapter: ReminderListAdapter,
-    spinner: Spinner,
     recyclerView: RecyclerView
 ) {
     TapTargetSequence(activity)
@@ -40,15 +38,6 @@ fun showOnBoardingTutorial(
                 activity.findViewById(R.id.fab),
                 activity.getString(R.string.add_new_reminder),
                 activity.getString(R.string.add_new_reminder_description)
-            )
-                .outerCircleColor(android.R.color.holo_blue_dark)
-                .cancelable(false)
-                .textColor(R.color.bottomSheetColor)
-                .transparentTarget(true),
-            TapTarget.forView(
-                spinner,
-                activity.getString(R.string.spinner_tutorial),
-                activity.getString(R.string.spinner_tutorial_description)
             )
                 .outerCircleColor(android.R.color.holo_blue_dark)
                 .cancelable(false)

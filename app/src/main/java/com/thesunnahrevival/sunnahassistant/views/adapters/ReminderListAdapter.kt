@@ -8,21 +8,25 @@ import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.databinding.library.baseAdapters.BR
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
+import com.thesunnahrevival.sunnahassistant.data.model.RemindersDiffCallback
 import com.thesunnahrevival.sunnahassistant.databinding.AltReminderCardViewBinding
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderCardViewBinding
 import com.thesunnahrevival.sunnahassistant.views.interfaces.OnDeleteReminderListener
 import com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: Boolean) : RecyclerView.Adapter<ReminderListAdapter.ViewHolder>() {
     private var mAllReminders: List<Reminder> = ArrayList()
     private var mListener: ReminderItemInteractionListener? = null
     private lateinit var mLayoutInflater: LayoutInflater
     private var mDeleteReminderListener: OnDeleteReminderListener? = null
-    private var mFrequency = 0
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         mLayoutInflater = LayoutInflater.from(context)
@@ -44,10 +48,15 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
         return mAllReminders.size
     }
 
-    fun setData(data: List<Reminder>, frequency: Int) {
-        mAllReminders = data
-        mFrequency = frequency
-        notifyDataSetChanged()
+    fun setData(data: List<Reminder>) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val diffResult = DiffUtil.calculateDiff(RemindersDiffCallback(mAllReminders, data))
+            withContext(Dispatchers.Main) {
+                mAllReminders = data
+                diffResult.dispatchUpdatesTo(this@ReminderListAdapter)
+            }
+        }
+
     }
 
     /**
@@ -74,7 +83,6 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
             if (binding is ReminderCardViewBinding) {
                 binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean -> mListener?.onToggleButtonClick(buttonView, isChecked, reminder) }
                 binding.cardView.setOnClickListener { view: View -> mListener?.openBottomSheet(view, reminder) }
-                binding.frequency = mFrequency
             } else if (binding is AltReminderCardViewBinding) {
                 binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean -> mListener?.onToggleButtonClick(buttonView, isChecked, reminder) }
                 binding.cardView.setOnClickListener { view: View -> mListener?.openBottomSheet(view, reminder) }
