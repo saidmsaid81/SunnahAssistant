@@ -31,7 +31,7 @@ class WelcomeFragment : Fragment() {
                 ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
             viewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
                 if (settings?.isFirstLaunch == false) {
-                    findNavController().navigate(R.id.mainFragment)
+                    findNavController().navigate(R.id.todayFragment)
                 }
 
                 quick_setup_button.setOnClickListener {

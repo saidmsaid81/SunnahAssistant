@@ -21,11 +21,12 @@ import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
-import com.thesunnahrevival.sunnahassistant.views.home.MainFragment
-import kotlinx.android.synthetic.main.content_main.*
+import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
+import kotlinx.android.synthetic.main.activity_main.coordinator_layout
+import kotlinx.android.synthetic.main.today_fragment.*
 import java.util.*
 
-val requestCodeForUpdate: Int = 1
+const val requestCodeForUpdate: Int = 1
 
 fun showOnBoardingTutorial(
     activity: MainActivity,
@@ -44,7 +45,7 @@ fun showOnBoardingTutorial(
                 .textColor(R.color.bottomSheetColor)
                 .transparentTarget(true),
             TapTarget.forToolbarOverflow(
-                activity?.findViewById<View>(R.id.toolbar) as Toolbar,
+                activity.findViewById<View>(R.id.toolbar) as Toolbar,
                 activity.getString(R.string.change_theme),
                 activity.getString(R.string.change_theme_description)
             )
@@ -166,19 +167,19 @@ fun popupSnackbar(
     }
 }
 
-fun showHelpTranslateSnackBar(mainFragment: MainFragment) {
+fun showHelpTranslateSnackBar(todayFragment: TodayFragment) {
     if (!supportedLocales.contains(Locale.getDefault().language)) {
         val onClickListener = BannerInterface.OnClickListener {
-            translateLink(mainFragment)
+            translateLink(todayFragment)
         }
         showBanner(
-            mainFragment.banner,
-            mainFragment.getString(
+            todayFragment.banner,
+            todayFragment.getString(
                 R.string.help_translate_app,
                 Locale.getDefault().displayLanguage
             ),
             R.drawable.help_translate,
-            mainFragment.getString(R.string.translate),
+            todayFragment.getString(R.string.translate),
             onClickListener
         )
     }
@@ -198,40 +199,40 @@ fun translateLink(fragment: Fragment) {
     }
 }
 
-fun showSendFeedbackSnackBar(mainFragment: MainFragment) {
+fun showSendFeedbackSnackBar(todayFragment: TodayFragment) {
     val onClickListener = BannerInterface.OnClickListener {
         val browserIntent = Intent(
             Intent.ACTION_VIEW,
             Uri.parse("https://forms.gle/78xZW7hqSE6SS4Ko6")
         )
-        if (mainFragment.activity?.packageManager?.let { it1 -> browserIntent.resolveActivity(it1) } != null) {
-            mainFragment.startActivity(browserIntent)
+        if (todayFragment.activity?.packageManager?.let { it1 -> browserIntent.resolveActivity(it1) } != null) {
+            todayFragment.startActivity(browserIntent)
         }
     }
     showBanner(
-        mainFragment.banner,
-        mainFragment.getString(R.string.help_improve_app),
+        todayFragment.banner,
+        todayFragment.getString(R.string.help_improve_app),
         R.drawable.feedback,
-        mainFragment.getString(R.string.send_feedback),
+        todayFragment.getString(R.string.send_feedback),
         onClickListener
     )
 }
 
-fun showShareAppSnackBar(mainFragment: MainFragment) {
+fun showShareAppSnackBar(todayFragment: TodayFragment) {
     val onClickListener = BannerInterface.OnClickListener {
         val shareAppIntent = shareAppIntent()
-        mainFragment.startActivity(
+        todayFragment.startActivity(
             Intent.createChooser(
                 shareAppIntent,
-                mainFragment.getString(R.string.share_app)
+                todayFragment.getString(R.string.share_app)
             )
         )
     }
     showBanner(
-        mainFragment.banner,
-        mainFragment.getString(R.string.help_us_grow),
+        todayFragment.banner,
+        todayFragment.getString(R.string.help_us_grow),
         R.drawable.social_media,
-        mainFragment.getString(R.string.share_app),
+        todayFragment.getString(R.string.share_app),
         onClickListener
     )
 }
