@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -18,7 +19,8 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
-import com.thesunnahrevival.sunnahassistant.views.home.MainFragment
+import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,6 +46,26 @@ class MainActivity : AppCompatActivity() {
         getSettings()
         if (intent.extras?.get("link") != null)
             findNavController(R.id.myNavHostFragment).navigate(R.id.webviewFragment, intent.extras)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.todayFragment -> bottom_navigation_view.visibility = View.VISIBLE
+                R.id.calendarFragment -> {
+                    bottom_navigation_view.visibility = View.VISIBLE
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                }
+                else -> bottom_navigation_view.visibility = View.GONE
+            }
+        }
+
+        bottom_navigation_view.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.today -> findNavController(R.id.myNavHostFragment).navigate(R.id.todayFragment)
+                R.id.calendar ->
+                    findNavController(R.id.myNavHostFragment).navigate(R.id.calendarFragment)
+            }
+            return@setOnNavigationItemSelectedListener true
+        }
     }
 
     private fun getSettings() {
@@ -84,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 .findFragmentById(R.id.myNavHostFragment)
             val fragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
 
-            if (fragment is MainFragment) {
+            if (fragment is TodayFragment) {
                 when (random) {
                     1 -> {
                         showHelpTranslateSnackBar(fragment)

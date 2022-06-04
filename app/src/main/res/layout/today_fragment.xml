@@ -15,15 +15,6 @@
         type="com.thesunnahrevival.sunnahassistant.views.interfaces.ReminderItemInteractionListener"
         />
 
-    <variable
-        name="nextReminder"
-        type="com.thesunnahrevival.sunnahassistant.data.model.Reminder"
-        />
-    <variable
-        name="dayString"
-        type="String"
-        />
-
   </data>
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -61,39 +52,6 @@
           android:textSize="@dimen/default_text_size"
           />
 
-      <!--      <TextView-->
-      <!--          android:id="@+id/next"-->
-      <!--          android:layout_width="wrap_content"-->
-      <!--          android:layout_height="wrap_content"-->
-      <!--          android:layout_marginStart="@dimen/default_dimen"-->
-      <!--          android:layout_marginTop="@dimen/default_dimen"-->
-      <!--          android:text="@string/next_string"-->
-      <!--          android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
-      <!--          android:textSize="@dimen/default_text_size"-->
-      <!--          android:textStyle="bold"-->
-      <!--          android:visibility="@{nextReminder.reminderName != null ? View.VISIBLE : View.GONE}"-->
-      <!--          />-->
-
-      <!--      <ViewStub-->
-      <!--          android:id="@+id/next_card_view"-->
-      <!--          android:layout_width="match_parent"-->
-      <!--          android:layout_height="wrap_content"-->
-      <!--          android:layout_marginStart="@dimen/default_dimen"-->
-      <!--          android:layout_marginEnd="@dimen/default_dimen"-->
-      <!--          android:layout="@layout/next_reminder_card_view"-->
-      <!--          bind:nextReminder="@{nextReminder}"-->
-      <!--          bind:dayString="@{dayString}"-->
-      <!--          bind:reminderInteractionListener="@{reminderInteractionListener}"-->
-      <!--          />-->
-
-
-      <!--      <Spinner-->
-      <!--          android:id="@+id/spinner"-->
-      <!--          android:layout_width="wrap_content"-->
-      <!--          android:layout_height="wrap_content"-->
-      <!--          android:layout_gravity="end"-->
-      <!--          android:layout_marginTop="16dp"-->
-      <!--          />-->
 
       <androidx.recyclerview.widget.RecyclerView
           android:id="@+id/reminder_list"

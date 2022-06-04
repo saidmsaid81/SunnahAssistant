@@ -18,7 +18,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
-import com.thesunnahrevival.sunnahassistant.databinding.ContentMainBinding
+import com.thesunnahrevival.sunnahassistant.databinding.TodayFragmentBinding
 import com.thesunnahrevival.sunnahassistant.utilities.hijriDate
 import com.thesunnahrevival.sunnahassistant.utilities.updateHijriDateWidgets
 import com.thesunnahrevival.sunnahassistant.utilities.updateTodayRemindersWidgets
@@ -36,10 +36,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
+open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
     ReminderItemInteractionListener {
 
-    private lateinit var mBinding: ContentMainBinding
+    lateinit var mBinding: TodayFragmentBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
     private var mAllReminders: ArrayList<Reminder> = arrayListOf()
     private var isRescheduleAtLaunch = true
@@ -49,8 +49,9 @@ class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickLi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         mBinding = DataBindingUtil.inflate(
-            inflater, R.layout.content_main, container, false
+            inflater, R.layout.today_fragment, container, false
         )
         setHasOptionsMenu(true)
 
@@ -65,7 +66,6 @@ class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickLi
         }
         return mBinding.root
     }
-
 
     private fun getSettings() {
         mViewModel.getSettings().observe(viewLifecycleOwner, Observer { settings: AppSettings? ->
@@ -86,7 +86,7 @@ class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickLi
 
                 setupTheRecyclerView()
 
-                if (settings.isDisplayHijriDate) {
+                if (settings.isDisplayHijriDate && this !is CalendarFragment) {
                     mBinding.hijriDate.text = Html.fromHtml(
                         getString(R.string.hijri_date, hijriDate)
                     )
@@ -150,7 +150,6 @@ class MainFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickLi
             mViewModel.viewModelScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
                     mAllReminders = data
-                    mBinding.dayString = getString(R.string.today_at)
                     filterData()
                 }
             }
