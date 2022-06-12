@@ -6,9 +6,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" >
+    <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ThemeOverlay.BottomNavView" parent="">
+        <item name="colorPrimary">@color/fabColor</item>
+        <item name="colorOnSurface">@color/colorAccent</item>
     </style>
 
 </resources>
