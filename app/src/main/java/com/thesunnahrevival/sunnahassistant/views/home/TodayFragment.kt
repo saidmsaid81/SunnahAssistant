@@ -63,16 +63,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
             mBinding.reminderInteractionListener = this
 
             getSettings()
-            setupTheRecyclerView()
-
-            if (this !is CalendarFragment) {
-                mViewModel.setDateOfReminders(System.currentTimeMillis())
-                mViewModel.getReminders()
-                    .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
-                        displayTheReminders(reminders as ArrayList<Reminder>)
-                    }
-            }
-
         }
         return mBinding.root
     }
@@ -80,8 +70,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
     private fun getSettings() {
         mViewModel.getSettings().observe(viewLifecycleOwner, Observer { settings: AppSettings? ->
             if (settings != null) {
-                mAppSettings = settings
-
                 if (this !is CalendarFragment) {
                     mViewModel.settingsValue = settings
                     if (settings.isFirstLaunch) {
@@ -115,6 +103,15 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                         mViewModel.updateSettings(settings)
                     }
                 }
+
+                mAppSettings = settings
+                setupTheRecyclerView()
+
+                mViewModel.setDateOfReminders(System.currentTimeMillis())
+                mViewModel.getReminders()
+                    .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
+                        displayTheReminders(reminders as ArrayList<Reminder>)
+                    }
             }
         })
     }
