@@ -52,20 +52,40 @@
           android:textSize="@dimen/default_text_size"
           />
 
-
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/reminder_list"
+      <androidx.core.widget.NestedScrollView
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:layout_marginBottom="8dp"
-          android:visibility="visible"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          tools:layout_editor_absoluteX="8dp"
-          tools:layout_editor_absoluteY="8dp"
-          />
+          android:layout_height="match_parent"
+          android:layout_marginTop="@dimen/default_dimen"
+          >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
+          <ViewStub
+              android:id="@+id/view_stub"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:inflatedId="@+id/calendar"
+              android:layout="@layout/calendar_view"
+              />
+
+          <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/reminder_list"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="8dp"
+              android:visibility="visible"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              tools:layout_editor_absoluteX="8dp"
+              tools:layout_editor_absoluteY="8dp"
+              android:nestedScrollingEnabled="false"
+              />
+
+        </LinearLayout>
+      </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 
     <ProgressBar
