@@ -63,6 +63,16 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
             mBinding.reminderInteractionListener = this
 
             getSettings()
+            setupTheRecyclerView()
+
+            if (this !is CalendarFragment) {
+                mViewModel.setDateOfReminders(System.currentTimeMillis())
+                mViewModel.getReminders()
+                    .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
+                        displayTheReminders(reminders as ArrayList<Reminder>)
+                    }
+            }
+
         }
         return mBinding.root
     }
@@ -71,43 +81,40 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         mViewModel.getSettings().observe(viewLifecycleOwner, Observer { settings: AppSettings? ->
             if (settings != null) {
                 mAppSettings = settings
-                mViewModel.settingsValue = settings
-                if (settings.isFirstLaunch) {
-                    findNavController().navigate(R.id.welcomeFragment)
-                    return@Observer
-                } else if (settings.isAfterUpdate) {
-                    findNavController().navigate(R.id.changelogFragment)
-                    return@Observer
-                }
 
-                if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
-                    mViewModel.localeUpdate()
-                }
-
-                setupTheRecyclerView()
-
-                if (settings.isDisplayHijriDate && this !is CalendarFragment) {
-                    mBinding.hijriDate.text = Html.fromHtml(
-                        getString(R.string.hijri_date, hijriDate)
-                    )
-                    mBinding.hijriDate.visibility = View.VISIBLE
-                }
-
-                //Safe to call every time the app launches prayer times will only be generated once a month
-                mViewModel.updateGeneratedPrayerTimes(settings)
-
-                if (settings.showOnBoardingTutorial) {
-                    showOnBoardingTutorial(
-                        (activity as MainActivity), mReminderRecyclerAdapter,
-                        mBinding.reminderList
-                    )
-                    settings.showOnBoardingTutorial = false
-                    mViewModel.updateSettings(settings)
-                }
-                mViewModel.getReminders(System.currentTimeMillis())
-                    .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
-                        displayTheReminders(reminders as ArrayList<Reminder>)
+                if (this !is CalendarFragment) {
+                    mViewModel.settingsValue = settings
+                    if (settings.isFirstLaunch) {
+                        findNavController().navigate(R.id.welcomeFragment)
+                        return@Observer
+                    } else if (settings.isAfterUpdate) {
+                        findNavController().navigate(R.id.changelogFragment)
+                        return@Observer
                     }
+
+                    if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
+                        mViewModel.localeUpdate()
+                    }
+
+                    if (settings.isDisplayHijriDate) {
+                        mBinding.hijriDate.text = Html.fromHtml(
+                            getString(R.string.hijri_date, hijriDate)
+                        )
+                        mBinding.hijriDate.visibility = View.VISIBLE
+                    }
+
+                    //Safe to call every time the app launches prayer times will only be generated once a month
+                    mViewModel.updateGeneratedPrayerTimes(settings)
+
+                    if (settings.showOnBoardingTutorial) {
+                        showOnBoardingTutorial(
+                            (activity as MainActivity), mReminderRecyclerAdapter,
+                            mBinding.reminderList
+                        )
+                        settings.showOnBoardingTutorial = false
+                        mViewModel.updateSettings(settings)
+                    }
+                }
             }
         })
     }
@@ -123,6 +130,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
             val reminderRecyclerView = mBinding.reminderList
             reminderRecyclerView.adapter = mReminderRecyclerAdapter
+            reminderRecyclerView.itemAnimator = null
 
             mReminderRecyclerAdapter.setDeleteReminderListener(this)
 
@@ -140,10 +148,9 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                 mBinding.progressBar.visibility = View.GONE
             }
         }
-
     }
 
-    private fun displayTheReminders(data: ArrayList<Reminder>?) {
+    fun displayTheReminders(data: ArrayList<Reminder>?) {
 
         val myActivity = activity
         if (myActivity != null && data != null && data.isNotEmpty()) {
@@ -204,7 +211,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
             mBinding.progressBar.visibility = View.GONE
             mReminderRecyclerAdapter.setData(mAllReminders)
         }
-
     }
 
     override fun onPause() {

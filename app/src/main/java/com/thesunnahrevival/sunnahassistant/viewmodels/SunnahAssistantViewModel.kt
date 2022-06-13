@@ -5,10 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
@@ -30,6 +27,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
+    private val mutableDateOfReminders = MutableLiveData<Long>()
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -53,8 +51,15 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun getStatusOfAddingListOfReminders() = mRepository.statusOfAddingListOfReminders
 
-    fun getReminders(date: Long): LiveData<List<Reminder>> =
-        mRepository.getRemindersOnDay(Date(date))
+    fun setDateOfReminders(date: Long) {
+        mutableDateOfReminders.value = date
+    }
+
+    fun getReminders(): LiveData<List<Reminder>> {
+        return Transformations.switchMap(mutableDateOfReminders) { dateOfReminders ->
+            mRepository.getRemindersOnDay(Date(dateOfReminders))
+        }
+    }
 
     fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
