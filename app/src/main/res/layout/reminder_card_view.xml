@@ -40,15 +40,16 @@
 
             <ImageView
                 android:id="@+id/prayer_times_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginEnd="@dimen/margin_dimen"
-                android:layout_marginBottom="@dimen/margin_dimen"
+                android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:src="@drawable/ic_star"
-                android:visibility='@{reminder.category.matches(@string/prayer) ? View.VISIBLE : View.INVISIBLE}'
+                android:src="@drawable/mosque"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <LinearLayout
                 android:id="@+id/reminder_details"

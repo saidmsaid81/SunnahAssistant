@@ -22,7 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: Boolean) : RecyclerView.Adapter<ReminderListAdapter.ViewHolder>() {
+class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: Boolean) :
+    RecyclerView.Adapter<ReminderListAdapter.ViewHolder>() {
     private var mAllReminders: List<Reminder> = ArrayList()
     private var mListener: ReminderItemInteractionListener? = null
     private lateinit var mLayoutInflater: LayoutInflater
@@ -34,8 +35,10 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
             R.layout.reminder_card_view
         else
             R.layout.alt_reminder_card_view
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(mLayoutInflater,
-                layoutId, viewGroup, false)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            mLayoutInflater,
+            layoutId, viewGroup, false
+        )
         return ViewHolder(binding)
     }
 
@@ -77,15 +80,43 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
     /**
      * Inner Class
      */
-    inner class ViewHolder(private val binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(reminder: Reminder) {
             binding.setVariable(BR.reminder, reminder)
             if (binding is ReminderCardViewBinding) {
-                binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean -> mListener?.onToggleButtonClick(buttonView, isChecked, reminder) }
-                binding.cardView.setOnClickListener { view: View -> mListener?.openBottomSheet(view, reminder) }
+                if (reminder.category?.matches(context.getString(R.string.prayer).toRegex()) == true
+                ) {
+                    binding.prayerTimesIcon.visibility = View.VISIBLE
+                }
+
+                binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+                    mListener?.onToggleButtonClick(
+                        buttonView,
+                        isChecked,
+                        reminder
+                    )
+                }
+                binding.cardView.setOnClickListener { view: View ->
+                    mListener?.openBottomSheet(
+                        view,
+                        reminder
+                    )
+                }
             } else if (binding is AltReminderCardViewBinding) {
-                binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean -> mListener?.onToggleButtonClick(buttonView, isChecked, reminder) }
-                binding.cardView.setOnClickListener { view: View -> mListener?.openBottomSheet(view, reminder) }
+                binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+                    mListener?.onToggleButtonClick(
+                        buttonView,
+                        isChecked,
+                        reminder
+                    )
+                }
+                binding.cardView.setOnClickListener { view: View ->
+                    mListener?.openBottomSheet(
+                        view,
+                        reminder
+                    )
+                }
             }
         }
 
