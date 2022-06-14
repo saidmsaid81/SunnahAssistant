@@ -128,7 +128,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.myNavHostFragment)
-        return navController.navigateUp()
+        val homeFragments = listOf(R.id.todayFragment, R.id.calendarFragment)
+        if (!homeFragments.contains(navController.currentDestination?.id))
+            return navController.navigateUp()
+        else
+            finish()
+        return true
+    }
+
+    override fun onBackPressed() {
+        onSupportNavigateUp()
     }
 
     // Checks that the in app update is not stalled during 'onResume()'.
