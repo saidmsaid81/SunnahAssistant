@@ -85,10 +85,13 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
         fun bind(reminder: Reminder) {
             binding.setVariable(BR.reminder, reminder)
             if (binding is ReminderCardViewBinding) {
-                if (reminder.category?.matches(context.getString(R.string.prayer).toRegex()) == true
-                ) {
+                if (reminder.category?.matches(
+                        context.getString(R.string.prayer).toRegex()
+                    ) == true
+                )
                     binding.prayerTimesIcon.visibility = View.VISIBLE
-                }
+                else
+                    binding.prayerTimesIcon.visibility = View.INVISIBLE
 
                 binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
                     mListener?.onToggleButtonClick(
