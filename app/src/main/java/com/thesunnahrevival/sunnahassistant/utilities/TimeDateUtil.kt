@@ -52,7 +52,7 @@ fun getTimestampInSeconds(context: Context, timeString: String?): Long {
         val date = format.parse(timeString)
         date.time / 1000
     } catch (e: ParseException) {
-        Log.v("ParseException", e.message)
+        Log.v("ParseException", e.message.toString())
         172800
     }
 }
