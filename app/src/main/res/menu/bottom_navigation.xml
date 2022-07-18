@@ -5,12 +5,12 @@
       android:id="@+id/today"
       android:icon="@drawable/ic_today"
       app:labelVisibilityMode="unlabeled"
-      android:title="Today" />
+      android:title="@string/today" />
 
   <item
       android:id="@+id/calendar"
       android:icon="@drawable/ic_calendar"
       app:labelVisibilityMode="unlabeled"
-      android:title="Calendar" />
+      android:title="@string/calendar" />
 
 </menu>
