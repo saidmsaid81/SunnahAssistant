@@ -72,6 +72,18 @@ class SunnahAssistantRepository private constructor(private val application: App
             mReminderDao.setEnabled(reminder.id, reminder.isEnabled)
     }
 
+    fun thereRemindersOnDay(
+        excludeCategory: String,
+        dayOfWeek: String,
+        dayOfMonth: Int,
+        month: Int,
+        year: Int
+    ): Boolean {
+        return mReminderDao.thereRemindersOnDay(
+            excludeCategory, dayOfWeek, dayOfMonth, month, year
+        )
+    }
+
     fun getRemindersOnDay(date: Date): LiveData<List<Reminder>> {
         val calendar = Calendar.getInstance()
         calendar.time = date

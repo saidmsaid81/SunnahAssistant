@@ -80,10 +80,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                         return@Observer
                     }
 
-                    if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
-                        mViewModel.localeUpdate()
-                    }
-
                     if (settings.isDisplayHijriDate) {
                         mBinding.hijriDate.text = Html.fromHtml(
                             getString(R.string.hijri_date, hijriDate)
@@ -102,6 +98,10 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                         settings.showOnBoardingTutorial = false
                         mViewModel.updateSettings(settings)
                     }
+                }
+
+                if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
+                    mViewModel.localeUpdate()
                 }
 
                 mAppSettings = settings
@@ -240,7 +240,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
             Snackbar.LENGTH_LONG
         ).apply {
             view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-            setAction(getString(R.string.undo_delete)) { mViewModel.insert(mDeletedReminder) }
+            setAction(getString(R.string.undo_delete)) { mViewModel.addReminder(mDeletedReminder) }
             setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
             show()
         }

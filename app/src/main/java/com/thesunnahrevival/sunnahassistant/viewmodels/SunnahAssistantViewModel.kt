@@ -28,6 +28,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
     private val mutableDateOfReminders = MutableLiveData<Long>()
+    val triggerCalendarUpdate = MutableLiveData<Boolean>()
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,14 +39,20 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun delete(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.deleteReminder(reminder)
+            withContext(Dispatchers.Main) {
+                triggerCalendarUpdate.value = true
+            }
         }
     }
 
-    fun insert(reminder: Reminder) {
+    fun addReminder(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.addReminder(reminder)
             if (reminder.isEnabled)
                 startServiceFromCoroutine()
+            withContext(Dispatchers.Main) {
+                triggerCalendarUpdate.value = true
+            }
         }
     }
 
@@ -59,6 +66,11 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         return Transformations.switchMap(mutableDateOfReminders) { dateOfReminders ->
             mRepository.getRemindersOnDay(Date(dateOfReminders))
         }
+    }
+
+    fun thereRemindersOnDay(dayOfWeek: String, dayOfMonth: Int, month: Int, year: Int): Boolean {
+        val excludePrayer = getApplication<Application>().getString(R.string.prayer)
+        return mRepository.thereRemindersOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
     }
 
     fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {

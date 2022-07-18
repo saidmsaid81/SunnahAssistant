@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorAccent">#D81B60</color>
-    <color name="fabColor">#EC685B</color>
-    <color name="nextReminderCardColor">#EC685B</color>
-    <color name="bottomSheetColor">#FFFFFF</color>
-    <color name="separatorColor">#000000</color>
+  <color name="colorAccent">#D81B60</color>
+  <color name="fabColor">#EC685B</color>
+  <color name="nextReminderCardColor">#EC685B</color>
+  <color name="bottomSheetColor">#FFFFFF</color>
+  <color name="separatorColor">#000000</color>
+  <color name="calendar_day_selected_text">#FFFFFF</color>
+  <color name="calendar_day_unselected_text">#000000</color>
+  <color name="calendar_bg_color">#FFFFFF</color>
+  <color name="today_bg_color">#BFBDBD</color>
+  <color name="calendar_day_bg_color">#FBFBFB</color>
 </resources>
