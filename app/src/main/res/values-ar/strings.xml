@@ -206,6 +206,8 @@
   <string name="thursday_abbreviated">خ</string>
   <string name="friday_abbreviated">ج</string>
   <string name="saturday_abbreviated">س</string>
+  <string name="calendar">التقويم</string>
+  <string name="today">اليوم</string>
 
 
   <string-array name="categories">
