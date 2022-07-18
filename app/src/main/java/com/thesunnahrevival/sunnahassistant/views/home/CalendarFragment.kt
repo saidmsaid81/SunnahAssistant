@@ -11,7 +11,9 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
+import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
+import com.thesunnahrevival.sunnahassistant.utilities.getHijriMonthName
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.views.adapters.DayViewContainer
 import com.thesunnahrevival.sunnahassistant.views.adapters.MonthHeaderViewContainer
 import kotlinx.android.synthetic.main.calendar_view.*
@@ -20,7 +22,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
@@ -113,7 +114,7 @@ class CalendarFragment : TodayFragment() {
         val hijriYear = hijriCalendar.get(Calendar.YEAR)
 
         hijriMonthName.append(
-            hijriCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, getLocale())
+            hijriCalendar.getHijriMonthName()
         )
 
         //Set date to last day of month to see if its a different hijri month
@@ -121,14 +122,12 @@ class CalendarFragment : TodayFragment() {
         hijriCalendar.time = gregorianCalendar.time
 
         val nextHijriMonthName =
-            hijriCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, getLocale())
+            hijriCalendar.getHijriMonthName()
 
-        if (nextHijriMonthName != null) {
-            if (!nextHijriMonthName.matches(hijriMonthName.toString().toRegex())) {
-                if (hijriYear != hijriCalendar.get(Calendar.YEAR))
-                    hijriMonthName.append(" ${String.format(getLocale(), "%d", hijriYear)} ")
-                hijriMonthName.append("- $nextHijriMonthName ")
-            }
+        if (!nextHijriMonthName.matches(hijriMonthName.toString().toRegex())) {
+            if (hijriYear != hijriCalendar.get(Calendar.YEAR))
+                hijriMonthName.append(" ${String.format(getLocale(), "%d", hijriYear)} ")
+            hijriMonthName.append("- $nextHijriMonthName ")
         }
 
         hijriMonthName.append(
@@ -144,12 +143,6 @@ class CalendarFragment : TodayFragment() {
         return hijriMonthName.toString()
     }
 
-    private fun getLocale(): Locale {
-        return if (supportedLocales.contains(Locale.getDefault().language))
-            Locale.getDefault()
-        else
-            Locale.ENGLISH
-    }
 
     private fun bindDaysViewToCalendar() {
         calendar_view.dayBinder = object : DayBinder<DayViewContainer> {
@@ -210,7 +203,13 @@ class CalendarFragment : TodayFragment() {
         }
         if (day.date == selectedDate) {
             container.view.setBackgroundResource(R.drawable.selected_date_bg)
-            selected_date.text = generateSelectedDateText(day)
+
+            val gregorianCalendar = GregorianCalendar(
+                day.date.year,
+                day.date.month.ordinal,
+                day.date.dayOfMonth
+            )
+            selected_date.text = generateDateText(gregorianCalendar)
         } else {
             if (day.date != LocalDate.now())
                 container.view.setBackgroundResource(R.color.calendar_day_bg_color)
@@ -229,24 +228,6 @@ class CalendarFragment : TodayFragment() {
             }
         }
 
-    }
-
-    private fun generateSelectedDateText(day: CalendarDay): String {
-        val gregorianCalendar = GregorianCalendar(
-            day.date.year,
-            day.date.month.ordinal,
-            day.date.dayOfMonth
-        )
-        val simpleDateFormat = SimpleDateFormat("EEEE dd MMMM, yyyy", getLocale())
-        val dateFormatted = simpleDateFormat.format(gregorianCalendar.time)
-
-        val ummalquraCalendar = UmmalquraCalendar()
-        ummalquraCalendar.time = gregorianCalendar.time
-        val hijriDateFormat = SimpleDateFormat("", getLocale())
-        hijriDateFormat.calendar = ummalquraCalendar
-        hijriDateFormat.applyPattern("dd MMMM, yyyy")
-
-        return "$dateFormatted / ${hijriDateFormat.format(ummalquraCalendar.time)}"
     }
 
     private fun getHijriDay(day: CalendarDay): Int {
