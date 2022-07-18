@@ -201,26 +201,26 @@
   <string name="developers_messages">Developer Messages</string>
   <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
   <string name="share_message">Share Message</string>
+  <string name="go_to_today">Go to Today</string>
+  <string name="sunday_abbreviated">S</string>
+  <string name="monday_abbreviated">M</string>
+  <string name="tuesday_abbreviated">T</string>
+  <string name="wednesday_abbreviated">W</string>
+  <string name="thursday_abbreviated">T</string>
+  <string name="friday_abbreviated">F</string>
+  <string name="saturday_abbreviated">S</string>
+  <string name="today">Today</string>
+  <string name="calendar">Calendar</string>
 
-  <string-array name="reminder_filter">
-    <item>Upcoming</item>
-    <item>Past</item>
-    <item>Today</item>
-    <item>Tomorrow</item>
-    <item>Prayer Times</item>
-    <item>Weekly</item>
-    <item>Monthly</item>
+  <string-array name="categories">
+    <item>Uncategorized</item>
+    <item>Sunnah</item>
+    <item>Prayer</item>
+    <item>Other</item>
+  </string-array>
+
+  <string-array name="frequency">
     <item>One Time</item>
-    </string-array>
-    <string-array name="categories">
-        <item>Uncategorized</item>
-        <item>Sunnah</item>
-        <item>Prayer</item>
-        <item>Other</item>
-    </string-array>
-
-    <string-array name="frequency">
-        <item>One Time</item>
         <item>Daily</item>
         <item>Weekly</item>
         <item>Monthly</item>
@@ -290,17 +290,41 @@
         <item>Dhuhr Prayer</item>
         <item>Asr Prayer</item>
         <item>Maghrib Prayer</item>
-        <item>Isha Prayer</item>
+      <item>Isha Prayer</item>
     </string-array>
 
-    <string-array name="do_not_disturb_minutes">
-        <item>0</item>
-        <item>15</item>
-        <item>30</item>
-        <item>45</item>
-        <item>60</item>
-    </string-array>
+  <string-array name="do_not_disturb_minutes">
+    <item>0</item>
+    <item>15</item>
+    <item>30</item>
+    <item>45</item>
+    <item>60</item>
+  </string-array>
 
+  <string-array name="gregorian_month_names">
+    <item>January</item>
+    <item>February</item>
+    <item>Match</item>
+    <item>April</item>
+    <item>May</item>
+    <item>June</item>
+    <item>July</item>
+    <item>August</item>
+    <item>September</item>
+    <item>October</item>
+    <item>November</item>
+    <item>December</item>
+  </string-array>
+
+  <string-array name="day_name_abbr">
+    <item>S</item>
+    <item>M</item>
+    <item>T</item>
+    <item>W</item>
+    <item>T</item>
+    <item>F</item>
+    <item>S</item>
+  </string-array>
 
 
 </resources>

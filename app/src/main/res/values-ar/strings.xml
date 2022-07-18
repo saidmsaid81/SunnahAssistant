@@ -188,35 +188,35 @@
     <string name="share_app">شارك التطبيق</string>
     <string name="help_translate_app">ساعدنا على الوصول إلى المزيد من الناس من خلال ترجمة التطبيق إلى %s. شكراً لكم.</string>
     <string name="unavialable">الافتراضي</string>
-    <string name="dismiss">إلغاء</string>
-    <string name="help_translate_app_button">ساعد في ترجمة التطبيق</string>
-    <string name="light_theme">فاتح (ابيض)</string>
-    <string name="today_widget_label">التذكيرات اليوم (ضوء ، مظلم، شفافية)</string>
-    <string name="prayer_times_widget_label">أوقات الصلاة (ضوء ، داكن، شفافية)</string>
-    <string name="hijri_date_widget_label">أداة تاريخ الهجري</string>
-    <string name="reminders">التذكيرات</string>
-    <string name="developers_messages">رسائل مطوّر البرامج</string>
-    <string name="developer_messages_description">قد يقوم المطور في بعض الأحيان بإرسال رسائل هامة فيما يتعلق بالتطبيق.</string>
-    <string name="share_message">شارك الرسالة</string>
-    <string-array name="reminder_filter">
-        <item>القادم</item>
-        <item>الماضي</item>
-        <item>اليوم</item>
-        <item>غداً</item>
-        <item>أوقات الصلاة</item>
-        <item>أسبوعياً</item>
-        <item>شهرياً</item>
-        <item>مرة واحدة</item>
-    </string-array>
-    <string-array name="categories">
-        <item>غير مصنف</item>
-        <item>السنة</item>
-        <item>الصلاة</item>
-        <item>أخرى</item>
-    </string-array>
-    <string-array name="frequency">
-        <item>مرة واحدة</item>
-        <item>يومياً</item>
+  <string name="dismiss">إلغاء</string>
+  <string name="help_translate_app_button">ساعد في ترجمة التطبيق</string>
+  <string name="light_theme">فاتح (ابيض)</string>
+  <string name="today_widget_label">التذكيرات اليوم (ضوء ، مظلم، شفافية)</string>
+  <string name="prayer_times_widget_label">أوقات الصلاة (ضوء ، داكن، شفافية)</string>
+  <string name="hijri_date_widget_label">أداة تاريخ الهجري</string>
+  <string name="reminders">التذكيرات</string>
+  <string name="developers_messages">رسائل مطوّر البرامج</string>
+  <string name="developer_messages_description">قد يقوم المطور في بعض الأحيان بإرسال رسائل هامة فيما يتعلق بالتطبيق.</string>
+  <string name="share_message">شارك الرسالة</string>
+  <string name="go_to_today">اذهب إلى اليوم</string>
+  <string name="sunday_abbreviated">ح</string>
+  <string name="monday_abbreviated">ن</string>
+  <string name="tuesday_abbreviated">ث</string>
+  <string name="wednesday_abbreviated">ر</string>
+  <string name="thursday_abbreviated">خ</string>
+  <string name="friday_abbreviated">ج</string>
+  <string name="saturday_abbreviated">س</string>
+
+
+  <string-array name="categories">
+    <item>غير مصنف</item>
+    <item>السنة</item>
+    <item>الصلاة</item>
+    <item>أخرى</item>
+  </string-array>
+  <string-array name="frequency">
+    <item>مرة واحدة</item>
+    <item>يومياً</item>
         <item>أسبوعياً</item>
         <item>شهرياً</item>
     </string-array>
@@ -277,14 +277,29 @@
         <item>صلاة الفجر</item>
         <item>صلاة الظهر</item>
         <item>صلاة العصر</item>
-        <item>صلاة المغرب</item>
-        <item>صلاة العشاء</item>
+      <item>صلاة المغرب</item>
+      <item>صلاة العشاء</item>
     </string-array>
-    <string-array name="do_not_disturb_minutes">
-        <item>٠</item>
-        <item>١٥</item>
-        <item>٣٠</item>
-        <item>٤٥</item>
-        <item>٦٠</item>
-    </string-array>
+  <string-array name="do_not_disturb_minutes">
+    <item>٠</item>
+    <item>١٥</item>
+    <item>٣٠</item>
+    <item>٤٥</item>
+    <item>٦٠</item>
+  </string-array>
+
+  <string-array name="gregorian_month_names">
+    <item>يناير</item>
+    <item>فبراير</item>
+    <item>مارس</item>
+    <item>أبريل</item>
+    <item>مايو</item>
+    <item>يونيو</item>
+    <item>يوليو</item>
+    <item>أغسطس</item>
+    <item>سبتمبر</item>
+    <item>أكتوبر</item>
+    <item>نوفمبر</item>
+    <item>ديسمبر</item>
+  </string-array>
 </resources>

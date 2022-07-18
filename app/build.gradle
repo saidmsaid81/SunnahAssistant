@@ -41,6 +41,8 @@ android {
         viewBinding = true
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
@@ -103,6 +105,10 @@ dependencies {
 
     //Material Banner
     implementation "com.sergivonavi:materialbanner:1.2.0"
+
+    //CalendarView
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation 'com.github.kizitonwose:CalendarView:1.0.4'
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"

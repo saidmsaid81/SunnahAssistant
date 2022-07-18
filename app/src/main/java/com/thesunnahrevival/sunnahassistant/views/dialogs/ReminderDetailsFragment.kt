@@ -280,7 +280,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
     private fun saveReminder(reminder: Reminder) {
         val prayerCategory = resources.getStringArray(R.array.categories)[2]
         if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == false) {
-            mViewModel.insert(reminder)
+            mViewModel.addReminder(reminder)
             if (mBinding.isNew)
                 Toast.makeText(context, getString(R.string.successfuly_added_sunnah_reminders), Toast.LENGTH_LONG).show()
             else
@@ -297,7 +297,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         }
         else if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
                 mViewModel.settingsValue?.isAutomatic == false) {
-            mViewModel.insert(reminder)
+            mViewModel.addReminder(reminder)
         }
         else
             Toast.makeText(context, getString(R.string.no_changes), Toast.LENGTH_SHORT).show()
