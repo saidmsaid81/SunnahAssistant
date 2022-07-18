@@ -92,7 +92,7 @@ internal suspend fun fetchDateFromDatabase(
     val appSettings = reminderDao.getAppSettingsValue()
 
     val hijriText = if (appSettings?.isShowHijriDateWidget == true)
-        hijriDate else null
+        generateDateText(isOnlyHijriDate = true) else null
 
     val nextReminder = if (appSettings?.isShowNextReminderWidget == true)
         reminderDao.getNextScheduledReminderToday(

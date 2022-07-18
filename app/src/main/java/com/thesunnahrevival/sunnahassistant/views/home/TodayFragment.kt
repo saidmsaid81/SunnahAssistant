@@ -19,7 +19,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.databinding.TodayFragmentBinding
-import com.thesunnahrevival.sunnahassistant.utilities.hijriDate
+import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.utilities.updateHijriDateWidgets
 import com.thesunnahrevival.sunnahassistant.utilities.updateTodayRemindersWidgets
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -82,7 +82,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
                     if (settings.isDisplayHijriDate) {
                         mBinding.hijriDate.text = Html.fromHtml(
-                            getString(R.string.hijri_date, hijriDate)
+                            getString(R.string.hijri_date, generateDateText())
                         )
                         mBinding.hijriDate.visibility = View.VISIBLE
                     }

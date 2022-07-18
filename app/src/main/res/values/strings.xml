@@ -156,7 +156,7 @@
     <string name="off">Off</string>
     <string name="prayer">Prayer</string>
     <string name="add_new_category">Add New Category</string>
-    <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s A.H]]></string>
+    <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s]]></string>
     <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
     <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
     <string name="no_upcoming_reminder_today">No Upcoming Reminder Today</string>

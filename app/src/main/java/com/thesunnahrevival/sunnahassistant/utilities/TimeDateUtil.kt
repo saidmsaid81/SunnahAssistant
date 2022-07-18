@@ -6,10 +6,23 @@ import android.text.format.DateFormat
 import android.util.Log
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.thesunnahrevival.sunnahassistant.R
-import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+
+val lastDayOfMonth: Int
+    get() {
+        val calendar = Calendar.getInstance()
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+    }
+
+val dayOfTheWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+
+val tomorrowDayOfTheWeek =
+    if (dayOfTheWeek == 7)
+        1
+    else
+        Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 1
 
 fun getDayDate(timeInMilliseconds: Long): Int {
     return SimpleDateFormat("dd", Locale.ENGLISH).format(timeInMilliseconds).toInt()
@@ -35,9 +48,9 @@ fun formatTimeInMilliseconds(context: Context?, timeInMilliseconds: Long): Strin
 }
 
 fun calculateOffsetFromMidnight(): Long {
-    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     return try {
-        sdf.parse(sdf.format(Date())).time / 1000
+        (simpleDateFormat.parse(simpleDateFormat.format(Date()))?.time ?: 0) / 1000
     } catch (e: ParseException) {
         0
     }
@@ -49,8 +62,8 @@ fun getTimestampInSeconds(context: Context, timeString: String?): Long {
     else
         SimpleDateFormat("hh:mm a", getLocale())
     return try {
-        val date = format.parse(timeString)
-        date.time / 1000
+        val date = format.parse(timeString ?: "")
+        (date?.time ?: 0) / 1000
     } catch (e: ParseException) {
         Log.v("ParseException", e.message.toString())
         172800
@@ -64,62 +77,53 @@ fun getTimestampInSeconds(timeString: String?): Long {
         SimpleDateFormat("hh:mm a", Locale.ENGLISH)
     return try {
         val date = format.parse(timeString ?: "null")
-        date.time / 1000
+        (date?.time ?: 0) / 1000
     } catch (e: ParseException) {
         Log.v("ParseException", e.message ?: "error")
         172800
     }
 }
 
+fun generateDateText(
+    gregorianCalendar: GregorianCalendar = GregorianCalendar(),
+    isOnlyHijriDate: Boolean = false
+): String {
+    val stringBuilder = StringBuilder()
+    if (!isOnlyHijriDate) {
+        val simpleDateFormat = SimpleDateFormat("EEEE dd MMMM, yyyy", getLocale())
+        stringBuilder.append("${simpleDateFormat.format(gregorianCalendar.time)} / ")
+    }
 
-fun formatDaysFromCustomScheduledDays(customScheduleDays: ArrayList<Int?>?): String {
-    if (customScheduleDays != null)
-    {
-        val weekdays = DateFormatSymbols.getInstance(getLocale()).shortWeekdays
-        val days = StringBuilder()
-        for ((index, number) in customScheduleDays.withIndex()) {
-            if (number != null) {
-                days.append(weekdays[number])
-                if (index != customScheduleDays.size - 1)
-                    days.append(", ")
-                else
-                    days.append(" ")
-            }
+    val ummalquraCalendar = UmmalquraCalendar()
+    ummalquraCalendar.time = gregorianCalendar.time
+    val hijriDateFormat = SimpleDateFormat("", getLocale())
+    hijriDateFormat.calendar = ummalquraCalendar
+    if (isOnlyHijriDate)
+        hijriDateFormat.applyPattern("EEEE dd")
+    else
+        hijriDateFormat.applyPattern("dd")
+    val hijriDay = hijriDateFormat.format(ummalquraCalendar.time)
+    val month = ummalquraCalendar.getHijriMonthName()
+    val year = hijriDateFormat.apply {
+        applyPattern("y")
+    }.format(ummalquraCalendar.time)
+
+    stringBuilder.append("$hijriDay $month, $year")
+
+    return stringBuilder.toString()
+}
+
+fun UmmalquraCalendar.getHijriMonthName(): String {
+    val hijriMonthName = this.getDisplayName(Calendar.MONTH, Calendar.LONG, getLocale()) ?: ""
+    if (getLocale().language.contains("en")) {
+        if (hijriMonthName.contains("Thul-Qi'dah")) {
+            return "Dhul-Qa'dah"
+        } else if (hijriMonthName.contains("Thul-Hijjah")) {
+            return "Dhul-Hijjah"
         }
-        return days.toString()
     }
-    return ""
+    return hijriMonthName
 }
 
 
-fun getMonthName(month: Int): String {
-    return DateFormatSymbols().months[month]
-}
 
-val lastDayOfMonth: Int
-    get() {
-        val calendar = Calendar.getInstance()
-        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-    }
-
-
-val hijriDate: String
-    get() {
-        val uCal =  UmmalquraCalendar()
-        val dateFormat = SimpleDateFormat("", getLocale())
-        dateFormat.calendar = uCal
-        dateFormat.applyPattern("EEEE d")
-        val day = dateFormat.format(uCal.time)
-
-        dateFormat.applyPattern("y")
-        val year = dateFormat.format(uCal.time)
-        return "$day ${uCal.getDisplayName(Calendar.MONTH, Calendar.LONG, getLocale())}, $year"
-    }
-
-val dayOfTheWeek =  Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-
-val tomorrowDayOfTheWeek =
-        if (dayOfTheWeek == 7)
-            1
-        else
-        Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 1
