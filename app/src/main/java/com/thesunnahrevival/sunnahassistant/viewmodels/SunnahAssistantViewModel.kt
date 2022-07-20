@@ -39,6 +39,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun delete(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.deleteReminder(reminder)
+            startServiceFromCoroutine()
             withContext(Dispatchers.Main) {
                 triggerCalendarUpdate.value = true
             }
