@@ -31,31 +31,28 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
             inflater, R.layout.categories_settings, container, false
         )
 
-        val myActivity = activity
-        if (myActivity != null) {
-
-            mViewModel.getSettings().observe(viewLifecycleOwner) {
-                mViewModel.settingsValue = it
-                mBinding.settings = it
-                if (it != null) {
-                    mBinding.categoriesList.adapter = it.categories?.let { categories ->
-                        CategoriesSettingsAdapter(
-                            categories,
-                            this
-                        )
-                    }
+        mViewModel.getSettings().observe(viewLifecycleOwner) {
+            mViewModel.settingsValue = it
+            mBinding.settings = it
+            if (it != null) {
+                mBinding.categoriesList.adapter = it.categories?.let { categories ->
+                    CategoriesSettingsAdapter(
+                        categories,
+                        this
+                    )
                 }
-
             }
 
-
-            mBinding.fab.setOnClickListener {
-                val addCategoryDialogFragment = AddCategoryDialogFragment()
-                addCategoryDialogFragment.show(
-                    requireActivity().supportFragmentManager, "dialog"
-                )
-            }
         }
+
+
+        mBinding.fab.setOnClickListener {
+            val addCategoryDialogFragment = AddCategoryDialogFragment()
+            addCategoryDialogFragment.show(
+                requireActivity().supportFragmentManager, "dialog"
+            )
+        }
+
 
         return mBinding.root
     }
@@ -63,25 +60,27 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
     override fun deleteReminderCategory(categoriesList: TreeSet<String>, category: String) {
         val prayer = resources.getStringArray(R.array.categories)[2]
         val uncategorized = resources.getStringArray(R.array.categories)[0]
-        val deleteInfo :String
+        val deleteInfo: String
         if (!category.matches(uncategorized.toRegex()) &&
-                !category.matches(prayer.toRegex()) )
-        {
+            !category.matches(prayer.toRegex())
+        ) {
             deleteInfo = getString(R.string.confirm_delete_category, category)
             categoriesList.remove(category)
             deletedCategories.add(category)
             mViewModel.settingsValue?.categories = categoriesList
             mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-        }
-        else
+        } else
             deleteInfo = getString(R.string.category_cannot_be_deleted, category)
 
-        val snackBar = Snackbar.make(mBinding.root,
-                deleteInfo,
-                Snackbar.LENGTH_LONG)
+        val snackBar = Snackbar.make(
+            mBinding.root,
+            deleteInfo,
+            Snackbar.LENGTH_LONG
+        )
 
         if (!category.matches(uncategorized.toRegex()) &&
-                !category.matches(prayer.toRegex()))
+            !category.matches(prayer.toRegex())
+        )
             snackBar.setAction(R.string.undo_delete) {
                 categoriesList.add(category)
                 deletedCategories.remove(category)
@@ -103,6 +102,9 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
         bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
+        (activity as MainActivity).firebaseAnalytics.logEvent(
+            FirebaseAnalytics.Event.SCREEN_VIEW,
+            bundle
+        )
     }
 }

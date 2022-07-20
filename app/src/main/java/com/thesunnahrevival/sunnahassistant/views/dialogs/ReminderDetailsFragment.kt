@@ -31,13 +31,13 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import java.lang.Integer.parseInt
 import java.text.DateFormatSymbols
 
-class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener, OnItemSelectedListener {
+class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener,
+    OnItemSelectedListener {
     private lateinit var mBinding: ReminderDetailsBottomSheetBinding
     private lateinit var mViewModel: SunnahAssistantViewModel
     private lateinit var mReminder: Reminder
     private lateinit var mCategoryAdapter: ArrayAdapter<String>
     private var mCustomScheduleDays: java.util.ArrayList<Int?>? = arrayListOf()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,58 +49,59 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             R.layout.reminder_details_bottom_sheet, container, false
         )
 
-        val myActivity = activity
-        if (myActivity != null) {
-            mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
-            if (mViewModel.selectedReminder == null) {
-                mViewModel.selectedReminder = Reminder(
-                    reminderName = "", frequency = Frequency.OneTime,
-                    category = resources.getStringArray(R.array.categories)[0]
-                ) //Uncategorized
-            }
-
-            mReminder = mViewModel.selectedReminder!!
-            mBinding.reminder = mViewModel.selectedReminder
-            mBinding.isNew = mReminder.reminderName.isNullOrBlank()
-            mBinding.isAutomaticPrayerTime =
-                (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
-                        mViewModel.settingsValue?.isAutomatic == true)
-            mBinding.lifecycleOwner = this
-
-            observeReminderTimeChange()
-            setFrequencySpinnerData()
-            setCategorySpinnerData()
-
-            mBinding.reminderTime.text = formatTimeInMilliseconds(
-                context,
-                mReminder.timeInMilliseconds
-            )
-            mBinding.tip.text = HtmlCompat.fromHtml(
-                mReminder.reminderInfo ?: "",
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            ) //For in built reminders
-            mBinding.tip.movementMethod = LinkMovementMethod.getInstance()
-
-            DatePickerFragment.mDay = mReminder.day
-            DatePickerFragment.mMonth = mReminder.month
-            DatePickerFragment.mYear = mReminder.year
-
-            mBinding.timePicker.setOnClickListener(this)
-            mBinding.saveButton.setOnClickListener(this)
-            mBinding.moreDetailsTextView.setOnClickListener(this)
+        mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+        if (mViewModel.selectedReminder == null) {
+            mViewModel.selectedReminder = Reminder(
+                reminderName = "", frequency = Frequency.OneTime,
+                category = resources.getStringArray(R.array.categories)[0]
+            ) //Uncategorized
         }
+
+        mReminder = mViewModel.selectedReminder!!
+        mBinding.reminder = mViewModel.selectedReminder
+        mBinding.isNew = mReminder.reminderName.isNullOrBlank()
+        mBinding.isAutomaticPrayerTime =
+            (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
+                    mViewModel.settingsValue?.isAutomatic == true)
+        mBinding.lifecycleOwner = this
+
+        observeReminderTimeChange()
+        setFrequencySpinnerData()
+        setCategorySpinnerData()
+
+        mBinding.reminderTime.text = formatTimeInMilliseconds(
+            context,
+            mReminder.timeInMilliseconds
+        )
+        mBinding.tip.text = HtmlCompat.fromHtml(
+            mReminder.reminderInfo ?: "",
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        ) //For in built reminders
+        mBinding.tip.movementMethod = LinkMovementMethod.getInstance()
+
+        DatePickerFragment.mDay = mReminder.day
+        DatePickerFragment.mMonth = mReminder.month
+        DatePickerFragment.mYear = mReminder.year
+
+        mBinding.timePicker.setOnClickListener(this)
+        mBinding.saveButton.setOnClickListener(this)
+        mBinding.moreDetailsTextView.setOnClickListener(this)
+
         return mBinding.root
     }
 
     private fun observeReminderTimeChange() {
-        TimePickerFragment.timeSet.value = formatTimeInMilliseconds(context,
-                mReminder.timeInMilliseconds)
+        TimePickerFragment.timeSet.value = formatTimeInMilliseconds(
+            context,
+            mReminder.timeInMilliseconds
+        )
         TimePickerFragment.timeSet.observe(this) { s: String? -> mBinding.reminderTime.text = s }
     }
 
     private fun setFrequencySpinnerData() {
         val frequencyAdapter = ArrayAdapter.createFromResource(
-                mBinding.bottomSheet.context, R.array.frequency, android.R.layout.simple_spinner_item)
+            mBinding.bottomSheet.context, R.array.frequency, android.R.layout.simple_spinner_item
+        )
         frequencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mBinding.frequencySpinner.adapter = frequencyAdapter
         mBinding.frequencySpinner.onItemSelectedListener = this
@@ -111,7 +112,9 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         val settings = mViewModel.settingsValue
         if (settings?.categories != null) {
             mCategoryAdapter = ArrayAdapter(
-                    mBinding.bottomSheet.context, android.R.layout.simple_spinner_item, ArrayList(settings.categories!!)
+                mBinding.bottomSheet.context,
+                android.R.layout.simple_spinner_item,
+                ArrayList(settings.categories!!)
             )
             mCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -138,7 +141,8 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             if (v.id == R.id.time_picker) {
                 val selectedItem = mBinding.frequencySpinner.selectedItemPosition
                 if (selectedItem == Frequency.Daily.ordinal ||
-                        selectedItem == Frequency.Weekly.ordinal) { //Launch the Time picker
+                    selectedItem == Frequency.Weekly.ordinal
+                ) { //Launch the Time picker
                     val timePickerFragment: DialogFragment = TimePickerFragment()
                     val fm = myActivity.supportFragmentManager
                     timePickerFragment.show(fm, "timePicker")
@@ -152,13 +156,12 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
 
         if (v.id == R.id.save_button) {  //Toggle More details view
             validateAndSave()
-        }
-        else if (v.id == R.id.more_details_text_view) {
+        } else if (v.id == R.id.more_details_text_view) {
             //Toggle More details view
             mBinding.additionalDetails.visibility =
-                    if (mBinding.additionalDetails.visibility == View.GONE)
-                        View.VISIBLE
-                    else View.GONE
+                if (mBinding.additionalDetails.visibility == View.GONE)
+                    View.VISIBLE
+                else View.GONE
         }
     }
 
@@ -221,7 +224,8 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
 
     private fun validateAndSave() {
         if (TextUtils.isEmpty(mBinding.reminderEditText.text.toString().trim { it <= ' ' })) {
-            Toast.makeText(context, getString(R.string.name_cannot_be_empty), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.name_cannot_be_empty), Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
@@ -231,8 +235,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         var year = 0
         val offset = try {
             parseInt(mBinding.prayerOffsetValue.text.toString())
-        }
-        catch (error: NumberFormatException){
+        } catch (error: NumberFormatException) {
             0
         }
         val timeSet = TimePickerFragment.timeSet.value
@@ -242,23 +245,30 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
                 day = -1
                 if (mCustomScheduleDays.isNullOrEmpty()) {
                     //error
-                    Toast.makeText(context, getString(R.string.select_atleast_one_day), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.select_atleast_one_day),
+                        Toast.LENGTH_LONG
+                    ).show()
                     mBinding.selectDayError.visibility = View.VISIBLE
                     return
                 }
             }
             Frequency.Monthly.ordinal -> {
                 if (DatePickerFragment.mDay == 0) {
-                    Toast.makeText(context, R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, R.string.please_pick_date_and_time, Toast.LENGTH_LONG)
+                        .show()
                     return
                 }
                 day = DatePickerFragment.mDay
             }
             Frequency.OneTime.ordinal -> {
                 if (DatePickerFragment.mDay == 0 ||
-                        DatePickerFragment.mMonth == 12 || DatePickerFragment.mYear == 0 ||
-                        timeSet?.matches(getString(R.string.time_not_set).toRegex()) == true) {
-                    Toast.makeText(context, R.string.please_pick_date_and_time, Toast.LENGTH_LONG).show()
+                    DatePickerFragment.mMonth == 12 || DatePickerFragment.mYear == 0 ||
+                    timeSet?.matches(getString(R.string.time_not_set).toRegex()) == true
+                ) {
+                    Toast.makeText(context, R.string.please_pick_date_and_time, Toast.LENGTH_LONG)
+                        .show()
                     return
                 }
                 day = DatePickerFragment.mDay
@@ -266,31 +276,48 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
                 year = DatePickerFragment.mYear
             }
         }
-        val reminder = createNewReminder(timeSet, Frequency.values()[selection], day, month, year, offset, mCustomScheduleDays)
+        val reminder = createNewReminder(
+            timeSet,
+            Frequency.values()[selection],
+            day,
+            month,
+            year,
+            offset,
+            mCustomScheduleDays
+        )
         saveReminder(reminder)
     }
 
-    private fun createNewReminder(timeSet: String?, frequency: Frequency, day: Int, month: Int, year: Int, offset: Int, customScheduleDays: ArrayList<Int?>?): Reminder {
+    private fun createNewReminder(
+        timeSet: String?,
+        frequency: Frequency,
+        day: Int,
+        month: Int,
+        year: Int,
+        offset: Int,
+        customScheduleDays: ArrayList<Int?>?
+    ): Reminder {
         val category =
-                if((mBinding.categorySpinner.selectedItem as String)
-                                .matches(getString(R.string.create_new_categories).toRegex()))
-            resources.getStringArray(R.array.categories)[0]
-        else
-            mBinding.categorySpinner.selectedItem as String
+            if ((mBinding.categorySpinner.selectedItem as String)
+                    .matches(getString(R.string.create_new_categories).toRegex())
+            )
+                resources.getStringArray(R.array.categories)[0]
+            else
+                mBinding.categorySpinner.selectedItem as String
 
         return Reminder(
-                mBinding.reminderEditText.text.toString(),
-                mBinding.additionalDetails.text.toString(),
-                getTimestampInSeconds(requireContext(), timeSet),
-                category,
-                frequency,
-                timeSet?.matches(getString(R.string.time_not_set).toRegex()) == false,
-                day,
-                month,
-                year,
-                offset,
-                if (mBinding.isNew) 0 else mReminder.id,
-                if (frequency == Frequency.Weekly && customScheduleDays != null) customScheduleDays else arrayListOf()
+            mBinding.reminderEditText.text.toString(),
+            mBinding.additionalDetails.text.toString(),
+            getTimestampInSeconds(requireContext(), timeSet),
+            category,
+            frequency,
+            timeSet?.matches(getString(R.string.time_not_set).toRegex()) == false,
+            day,
+            month,
+            year,
+            offset,
+            if (mBinding.isNew) 0 else mReminder.id,
+            if (frequency == Frequency.Weekly && customScheduleDays != null) customScheduleDays else arrayListOf()
         )
     }
 
@@ -299,24 +326,36 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == false) {
             mViewModel.addReminder(reminder)
             if (mBinding.isNew)
-                Toast.makeText(context, getString(R.string.successfuly_added_sunnah_reminders), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    getString(R.string.successfuly_added_sunnah_reminders),
+                    Toast.LENGTH_LONG
+                ).show()
             else
-                Toast.makeText(context, getString(R.string.successfully_updated), Toast.LENGTH_LONG).show()
-        }
-        else if (mBinding.isNew && reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
-                mViewModel.settingsValue?.isAutomatic == true) {
-            Toast.makeText(context, getString(R.string.error_adding_prayer_reminders), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, getString(R.string.successfully_updated), Toast.LENGTH_LONG)
+                    .show()
+        } else if (mBinding.isNew && reminder != mReminder && reminder.category?.matches(
+                prayerCategory.toRegex()
+            ) == true &&
+            mViewModel.settingsValue?.isAutomatic == true
+        ) {
+            Toast.makeText(
+                context,
+                getString(R.string.error_adding_prayer_reminders),
+                Toast.LENGTH_LONG
+            ).show()
             return
-        }
-        else if (!mBinding.isNew && reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
-                mViewModel.settingsValue?.isAutomatic == true) {
+        } else if (!mBinding.isNew && reminder != mReminder && reminder.category?.matches(
+                prayerCategory.toRegex()
+            ) == true &&
+            mViewModel.settingsValue?.isAutomatic == true
+        ) {
             mViewModel.updatePrayerTimeDetails(mReminder, reminder)
-        }
-        else if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
-                mViewModel.settingsValue?.isAutomatic == false) {
+        } else if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
+            mViewModel.settingsValue?.isAutomatic == false
+        ) {
             mViewModel.addReminder(reminder)
-        }
-        else
+        } else
             Toast.makeText(context, getString(R.string.no_changes), Toast.LENGTH_SHORT).show()
         dismiss()
     }

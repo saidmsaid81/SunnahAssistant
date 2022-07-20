@@ -23,21 +23,20 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
         val binding: HijriDateSettingsBinding = DataBindingUtil.inflate(
             inflater, R.layout.hijri_date_settings, container, false
         )
-        val myActivity = activity
-        if (myActivity != null) {
 
-            mViewModel.getSettings().observe(viewLifecycleOwner) {
-                mViewModel.settingsValue = it
-                binding.settings = it
-            }
 
-            binding.displayHijriDateSwitch.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
-                if (buttonView.isPressed) {
-                    mViewModel.settingsValue?.isDisplayHijriDate = isChecked
-                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-                }
+        mViewModel.getSettings().observe(viewLifecycleOwner) {
+            mViewModel.settingsValue = it
+            binding.settings = it
+        }
+
+        binding.displayHijriDateSwitch.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+            if (buttonView.isPressed) {
+                mViewModel.settingsValue?.isDisplayHijriDate = isChecked
+                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
             }
         }
+
 
         return binding.root
     }
@@ -47,7 +46,10 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
         bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
+        (activity as MainActivity).firebaseAnalytics.logEvent(
+            FirebaseAnalytics.Event.SCREEN_VIEW,
+            bundle
+        )
     }
 
 }

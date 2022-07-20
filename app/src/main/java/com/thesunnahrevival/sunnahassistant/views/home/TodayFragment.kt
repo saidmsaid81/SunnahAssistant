@@ -53,13 +53,10 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         )
         setHasOptionsMenu(true)
 
-        val myActivity = activity
-        if (myActivity != null) {
-            mBinding.lifecycleOwner = this
-            mBinding.reminderInteractionListener = this
+        mBinding.lifecycleOwner = this
+        mBinding.reminderInteractionListener = this
+        getSettings()
 
-            getSettings()
-        }
         return mBinding.root
     }
 
@@ -146,16 +143,14 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
     private fun displayTheReminders(data: ArrayList<Reminder>?) {
 
-        val myActivity = activity
-        if (myActivity != null && data != null && data.isNotEmpty()) {
+        if (data != null && data.isNotEmpty()) {
             mViewModel.viewModelScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
                     mAllReminders = data
                     filterData()
                 }
             }
-        }
-        else {
+        } else {
             if (data != null) {
                 mReminderRecyclerAdapter.setData(data)
             }
