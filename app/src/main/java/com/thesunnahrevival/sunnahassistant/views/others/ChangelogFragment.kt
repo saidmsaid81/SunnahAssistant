@@ -24,7 +24,7 @@ class ChangelogFragment : SunnahAssistantFragment() {
         val view = inflater.inflate(R.layout.changelog_layout, container, false)
 
 
-        mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
         mViewModel.settingsValue?.isAfterUpdate = false
         mViewModel.settingsValue?.categories?.add("Prayer")
         mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }

@@ -16,7 +16,7 @@ open class SunnahAssistantFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 }

@@ -23,7 +23,8 @@ class AddCategoryDialogFragment : DialogFragment() {
         if (myActivity != null){
 
             val builder = AlertDialog.Builder(myActivity)
-            mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+            mViewModel =
+                ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
 
             // Get the layout inflater
             val inflater = requireActivity().layoutInflater

@@ -49,7 +49,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             R.layout.reminder_details_bottom_sheet, container, false
         )
 
-        mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
         if (mViewModel.selectedReminder == null) {
             mViewModel.selectedReminder = Reminder(
                 reminderName = "", frequency = Frequency.OneTime,
