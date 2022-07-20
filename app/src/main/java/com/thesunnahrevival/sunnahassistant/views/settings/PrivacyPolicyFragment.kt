@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.WebViewFragment
+import com.thesunnahrevival.sunnahassistant.views.others.WebViewFragment
 
 class PrivacyPolicyFragment : WebViewFragment() {
 

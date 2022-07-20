@@ -5,48 +5,55 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.CategoriesSettingsBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.CategoriesSettingsAdapter
 import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
 import java.util.*
 
-class CustomizeCategoriesFragment: Fragment(), CategoriesSettingsAdapter.DeleteCategoryListener {
+class CustomizeCategoriesFragment : SunnahAssistantFragment(),
+    CategoriesSettingsAdapter.DeleteCategoryListener {
 
-    private lateinit var mViewModel: SunnahAssistantViewModel
     private lateinit var mBinding: CategoriesSettingsBinding
     private val deletedCategories = arrayListOf<String>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         mBinding = DataBindingUtil.inflate(
-                inflater, R.layout.categories_settings, container, false)
+            inflater, R.layout.categories_settings, container, false
+        )
 
         val myActivity = activity
         if (myActivity != null) {
 
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            mViewModel.getSettings().observe(viewLifecycleOwner, Observer {
+            mViewModel.getSettings().observe(viewLifecycleOwner) {
                 mViewModel.settingsValue = it
                 mBinding.settings = it
                 if (it != null) {
-                    mBinding.categoriesList.adapter = it.categories?.let { categories -> CategoriesSettingsAdapter(categories, this) }
+                    mBinding.categoriesList.adapter = it.categories?.let { categories ->
+                        CategoriesSettingsAdapter(
+                            categories,
+                            this
+                        )
+                    }
                 }
 
-            })
+            }
 
 
-            mBinding.fab.setOnClickListener{
-                fragmentManager?.let {
-                    val addCategoryDialogFragment = AddCategoryDialogFragment()
-                    addCategoryDialogFragment.show(it, "dialog")
-                }
+            mBinding.fab.setOnClickListener {
+                val addCategoryDialogFragment = AddCategoryDialogFragment()
+                addCategoryDialogFragment.show(
+                    requireActivity().supportFragmentManager, "dialog"
+                )
             }
         }
 

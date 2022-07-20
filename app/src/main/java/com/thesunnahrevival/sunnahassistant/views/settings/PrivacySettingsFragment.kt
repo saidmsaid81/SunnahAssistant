@@ -1,41 +1,49 @@
 package com.thesunnahrevival.sunnahassistant.views.settings
 
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrivacySettingsBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
-class PrivacySettingsFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+class PrivacySettingsFragment : SunnahAssistantFragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         val binding: FragmentPrivacySettingsBinding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_privacy_settings, container, false)
-        binding.collectDataSwitch.text = Html.fromHtml(getString(R.string.share_anonymous_usage_data))
+            inflater, R.layout.fragment_privacy_settings, container, false
+        )
+        binding.collectDataSwitch.text = HtmlCompat.fromHtml(
+            getString(R.string.share_anonymous_usage_data),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
 
         val myActivity = activity
-        if (myActivity != null){
+        if (myActivity != null) {
 
-            val viewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            viewModel.getSettings().observe(viewLifecycleOwner, {
-                viewModel.settingsValue = it
+            mViewModel.getSettings().observe(viewLifecycleOwner) {
+                mViewModel.settingsValue = it
                 binding.settings = it
-            })
+            }
 
-            binding.collectDataSwitch.setOnCheckedChangeListener{ buttonView: CompoundButton, isChecked: Boolean ->
+            binding.collectDataSwitch.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
                 if (buttonView.isPressed) {
-                    (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(isChecked)
-                    viewModel.settingsValue?.shareAnonymousUsageData = isChecked
-                    viewModel.settingsValue?.let { viewModel.updateSettings(it) }
+                    (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
+                        isChecked
+                    )
+                    mViewModel.settingsValue?.shareAnonymousUsageData = isChecked
+                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
                 }
             }
 

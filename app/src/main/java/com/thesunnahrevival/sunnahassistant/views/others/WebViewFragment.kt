@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.views
+package com.thesunnahrevival.sunnahassistant.views.others
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,7 +14,7 @@ open class WebViewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.web_view_fragment, container, false)

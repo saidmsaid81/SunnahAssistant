@@ -12,31 +12,28 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.PrayerTimeSettingsBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
 import java.lang.Integer.parseInt
 
 class PrayerTimeSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener {
 
-    private lateinit var mViewModel: SunnahAssistantViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         val binding: PrayerTimeSettingsBinding = DataBindingUtil.inflate(
             inflater, R.layout.prayer_time_settings, container, false
         )
         val myActivity = activity
         if (myActivity != null) {
 
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
             mViewModel.isPrayerSettingsUpdated = false
             mViewModel.getSettings().observe(viewLifecycleOwner) {
                 if (it != null) {
@@ -74,7 +71,7 @@ class PrayerTimeSettingsFragment : SettingsFragmentWithPopups(), View.OnClickLis
         when (v?.id) {
             R.id.location_details -> {
                 val dialogFragment = EnterLocationDialogFragment()
-                fragmentManager?.let { dialogFragment.show(it, "dialog") }
+                dialogFragment.show(requireActivity().supportFragmentManager, "dialog")
             }
             R.id.calculation_details ->
                 showPopup(
@@ -156,13 +153,13 @@ class PrayerTimeSettingsFragment : SettingsFragmentWithPopups(), View.OnClickLis
         val confirmationDialogFragment = ConfirmationDialogFragment()
         confirmationDialogFragment.mListener = DialogInterface.OnClickListener { dialog, _ ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
                 startActivity(intent)
                 dialog.dismiss()
             }
         }
 
-        fragmentManager?.let { confirmationDialogFragment.show(it, "dialog") }
+        confirmationDialogFragment.show(requireActivity().supportFragmentManager, "dialog")
     }
 
     override fun onPause() {

@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.snackbar.Snackbar
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getSettings() {
-        val viewModel = ViewModelProviders.of(this).get(SunnahAssistantViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
 
         CoroutineScope(Dispatchers.IO).launch {
             val settings = viewModel.getAppSettingsValue()

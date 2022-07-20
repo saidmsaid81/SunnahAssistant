@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.views
+package com.thesunnahrevival.sunnahassistant.views.others
 
 import android.media.RingtoneManager
 import android.os.Bundle
@@ -6,20 +6,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import kotlinx.android.synthetic.main.fragment_welcome.*
 
-class WelcomeFragment : Fragment() {
+class WelcomeFragment : SunnahAssistantFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
 
@@ -27,9 +27,7 @@ class WelcomeFragment : Fragment() {
         val myActivity = activity
 
         if (myActivity != null) {
-            val viewModel =
-                ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            viewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
+            mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
                 if (settings?.isFirstLaunch == false) {
                     findNavController().navigate(R.id.todayFragment)
                 }
@@ -54,7 +52,7 @@ class WelcomeFragment : Fragment() {
                         (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
                             checkbox.isChecked
                         )
-                        viewModel.updateSettings(settings)
+                        mViewModel.updateSettings(settings)
                     }
                 }
             }
