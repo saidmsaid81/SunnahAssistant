@@ -38,7 +38,7 @@ class RemindersDiffCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldRemindersList[oldItemPosition] == newRemindersList[newItemPosition]
+        return oldRemindersList[oldItemPosition] === newRemindersList[newItemPosition]
     }
 
 }
