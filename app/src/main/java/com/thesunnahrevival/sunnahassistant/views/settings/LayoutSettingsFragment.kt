@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.DisplaySettingsBinding
 
-class LayoutSettingsFragment: SettingsFragmentWithPopups(), View.OnClickListener {
+class LayoutSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,26 +26,31 @@ class LayoutSettingsFragment: SettingsFragmentWithPopups(), View.OnClickListener
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
             binding.themeSettings.setOnClickListener(this)
 
-        val myActivity = activity
-        if (myActivity != null) {
-            mViewModel.getSettings().observe(viewLifecycleOwner) {
-                mViewModel.settingsValue = it
-                binding.settings = it
-            }
+
+        mViewModel.getSettings().observe(viewLifecycleOwner) {
+            mViewModel.settingsValue = it
+            binding.settings = it
         }
+
         return binding.root
     }
 
     override fun onClick(v: View?) {
-        when(v?.id) {
-            R.id.layout_settings -> showPopup(resources.getStringArray(R.array.layout_options),
-                    R.id.layout, R.id.layout_settings)
-            R.id.theme_settings -> showPopup(resources.getStringArray(R.array.theme_options), R.id.theme, R.id.theme_settings)
+        when (v?.id) {
+            R.id.layout_settings -> showPopup(
+                resources.getStringArray(R.array.layout_options),
+                R.id.layout, R.id.layout_settings
+            )
+            R.id.theme_settings -> showPopup(
+                resources.getStringArray(R.array.theme_options),
+                R.id.theme,
+                R.id.theme_settings
+            )
         }
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return when(item?.groupId) {
+        return when (item?.groupId) {
             R.id.theme_settings -> {
                 if (item.title.toString().matches("Light".toRegex())) {
                     mViewModel.settingsValue?.isLightMode = true
@@ -59,7 +64,8 @@ class LayoutSettingsFragment: SettingsFragmentWithPopups(), View.OnClickListener
                 true
             }
             R.id.layout_settings -> {
-                mViewModel.settingsValue?.isExpandedLayout = (item.title.toString().matches("Expanded View".toRegex()))
+                mViewModel.settingsValue?.isExpandedLayout =
+                    (item.title.toString().matches("Expanded View".toRegex()))
                 mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
                 true
             }

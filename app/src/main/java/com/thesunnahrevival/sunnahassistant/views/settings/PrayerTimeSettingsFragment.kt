@@ -31,39 +31,36 @@ class PrayerTimeSettingsFragment : SettingsFragmentWithPopups(), View.OnClickLis
         val binding: PrayerTimeSettingsBinding = DataBindingUtil.inflate(
             inflater, R.layout.prayer_time_settings, container, false
         )
-        val myActivity = activity
-        if (myActivity != null) {
 
-            mViewModel.isPrayerSettingsUpdated = false
-            mViewModel.getSettings().observe(viewLifecycleOwner) {
-                if (it != null) {
-                    mViewModel.settingsValue = it
-                    binding.settings = it
-                    binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.calculationMethod.ordinal])
-                    binding.setAsrCalculationMethod(
-                        resources.getStringArray(R.array.asr_juristic_method)[it.asrCalculationMethod.ordinal]
-                    )
-                    binding.latitudeAdjustmentMethod =
-                        resources.getStringArray(R.array.latitude_options)[it.latitudeAdjustmentMethod]
-                }
+        mViewModel.isPrayerSettingsUpdated = false
+        mViewModel.getSettings().observe(viewLifecycleOwner) {
+            if (it != null) {
+                mViewModel.settingsValue = it
+                binding.settings = it
+                binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.calculationMethod.ordinal])
+                binding.setAsrCalculationMethod(
+                    resources.getStringArray(R.array.asr_juristic_method)[it.asrCalculationMethod.ordinal]
+                )
+                binding.latitudeAdjustmentMethod =
+                    resources.getStringArray(R.array.latitude_options)[it.latitudeAdjustmentMethod]
             }
-
-            binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (buttonView.isPressed) {
-                    mViewModel.settingsValue?.isAutomatic = isChecked
-                    mViewModel.settingsValue?.let {
-                        mViewModel.updateSettings(it)
-                        mViewModel.isPrayerSettingsUpdated = true
-                    }
-                }
-            }
-
-            binding.locationDetails.setOnClickListener(this)
-            binding.calculationDetails.setOnClickListener(this)
-            binding.asrCalculationDetails.setOnClickListener(this)
-            binding.higherLatitudeDetails.setOnClickListener(this)
-            binding.doNotDisturb.setOnClickListener(this)
         }
+
+        binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (buttonView.isPressed) {
+                mViewModel.settingsValue?.isAutomatic = isChecked
+                mViewModel.settingsValue?.let {
+                    mViewModel.updateSettings(it)
+                    mViewModel.isPrayerSettingsUpdated = true
+                }
+            }
+        }
+
+        binding.locationDetails.setOnClickListener(this)
+        binding.calculationDetails.setOnClickListener(this)
+        binding.asrCalculationDetails.setOnClickListener(this)
+        binding.higherLatitudeDetails.setOnClickListener(this)
+        binding.doNotDisturb.setOnClickListener(this)
         return binding.root
     }
 
