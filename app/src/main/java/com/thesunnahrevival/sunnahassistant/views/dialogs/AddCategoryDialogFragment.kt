@@ -9,7 +9,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
@@ -23,7 +23,7 @@ class AddCategoryDialogFragment : DialogFragment() {
         if (myActivity != null){
 
             val builder = AlertDialog.Builder(myActivity)
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
+            mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
 
             // Get the layout inflater
             val inflater = requireActivity().layoutInflater

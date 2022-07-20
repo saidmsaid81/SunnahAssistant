@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.thesunnahrevival.sunnahassistant.R
@@ -20,17 +19,16 @@ import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openDeveloperPage
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
-import com.thesunnahrevival.sunnahassistant.views.AboutAppFragment
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.others.AboutAppFragment
 import com.thesunnahrevival.sunnahassistant.views.shareAppIntent
 import com.thesunnahrevival.sunnahassistant.views.translateLink
 
-abstract class MenuBarFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
+abstract class MenuBarFragment : SunnahAssistantFragment(), PopupMenu.OnMenuItemClickListener {
 
     var mAppSettings: AppSettings? = null
     var categoryToDisplay = ""
-    lateinit var mViewModel: SunnahAssistantViewModel
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)

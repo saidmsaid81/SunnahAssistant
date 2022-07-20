@@ -13,49 +13,52 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
 import com.thesunnahrevival.sunnahassistant.databinding.NotificationSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService
 import com.thesunnahrevival.sunnahassistant.utilities.createReminderNotificationChannel
 import com.thesunnahrevival.sunnahassistant.utilities.deleteReminderNotificationChannel
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
 class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private lateinit var mViewModel: SunnahAssistantViewModel
     private var isSettingsUpdated = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         val binding: NotificationSettingsBinding = DataBindingUtil.inflate(
-                inflater, R.layout.notification_settings, container, false)
+            inflater, R.layout.notification_settings, container, false
+        )
         val myActivity = activity
         if (myActivity != null) {
             val options = resources.getStringArray(R.array.priority_options)
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            mViewModel.getSettings().observe(viewLifecycleOwner, Observer {
-                if (it != null){
+            mViewModel.getSettings().observe(viewLifecycleOwner) {
+                if (it != null) {
                     mViewModel.settingsValue = it
                     binding.settings = it
                     val toneName =
-                            if (it.notificationToneUri.toString().isNotBlank())
-                                RingtoneManager.getRingtone(context, it.notificationToneUri).getTitle(context)
-                            else
-                                getString(R.string.unavialable)
+                        if (it.notificationToneUri.toString().isNotBlank())
+                            RingtoneManager.getRingtone(context, it.notificationToneUri)
+                                .getTitle(context)
+                        else
+                            getString(R.string.unavialable)
                     binding.notificationSettings = NotificationSettings(
-                            toneName,
-                            it.isVibrate,
-                            when (it.priority) {
-                                NotificationManager.IMPORTANCE_HIGH -> options[3]
-                                NotificationManager.IMPORTANCE_DEFAULT -> options[2]
-                                NotificationManager.IMPORTANCE_LOW -> options[1]
-                                NotificationManager.IMPORTANCE_MIN -> options[0]
-                                else -> options[2]
-                            })
+                        toneName,
+                        it.isVibrate,
+                        when (it.priority) {
+                            NotificationManager.IMPORTANCE_HIGH -> options[3]
+                            NotificationManager.IMPORTANCE_DEFAULT -> options[2]
+                            NotificationManager.IMPORTANCE_LOW -> options[1]
+                            NotificationManager.IMPORTANCE_MIN -> options[0]
+                            else -> options[2]
+                        }
+                    )
                 }
-            })
+            }
 
             binding.notificationToneSettings.setOnClickListener(this)
             binding.notificationPrioritySettings.setOnClickListener(this)

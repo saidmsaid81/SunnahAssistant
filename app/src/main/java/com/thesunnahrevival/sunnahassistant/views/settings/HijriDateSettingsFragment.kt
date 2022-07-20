@@ -6,33 +6,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.HijriDateSettingsBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
-class HijriDateSettingsFragment: Fragment() {
+class HijriDateSettingsFragment : SunnahAssistantFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         val binding: HijriDateSettingsBinding = DataBindingUtil.inflate(
-                inflater, R.layout.hijri_date_settings, container, false)
+            inflater, R.layout.hijri_date_settings, container, false
+        )
         val myActivity = activity
-        if (myActivity != null){
+        if (myActivity != null) {
 
-            val viewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            viewModel.getSettings().observe(viewLifecycleOwner, Observer {
-                viewModel.settingsValue = it
+            mViewModel.getSettings().observe(viewLifecycleOwner) {
+                mViewModel.settingsValue = it
                 binding.settings = it
-            })
+            }
 
-            binding.displayHijriDateSwitch.setOnCheckedChangeListener{ buttonView: CompoundButton, isChecked: Boolean ->
+            binding.displayHijriDateSwitch.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
                 if (buttonView.isPressed) {
-                    viewModel.settingsValue?.isDisplayHijriDate = isChecked
-                    viewModel.settingsValue?.let { viewModel.updateSettings(it) }
+                    mViewModel.settingsValue?.isDisplayHijriDate = isChecked
+                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
                 }
             }
         }

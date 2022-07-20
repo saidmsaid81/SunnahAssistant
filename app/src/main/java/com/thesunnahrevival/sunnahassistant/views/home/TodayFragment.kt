@@ -1,15 +1,14 @@
 package com.thesunnahrevival.sunnahassistant.views.home
 
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,7 +21,6 @@ import com.thesunnahrevival.sunnahassistant.databinding.TodayFragmentBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.utilities.updateHijriDateWidgets
 import com.thesunnahrevival.sunnahassistant.utilities.updateTodayRemindersWidgets
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeToDeleteCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ReminderListAdapter
@@ -49,7 +47,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
+        super.onCreateView(inflater, container, savedInstanceState)
         mBinding = DataBindingUtil.inflate(
             inflater, R.layout.today_fragment, container, false
         )
@@ -57,8 +55,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
         val myActivity = activity
         if (myActivity != null) {
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-
             mBinding.lifecycleOwner = this
             mBinding.reminderInteractionListener = this
 
@@ -81,8 +77,9 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                     }
 
                     if (settings.isDisplayHijriDate) {
-                        mBinding.hijriDate.text = Html.fromHtml(
-                            getString(R.string.hijri_date, generateDateText())
+                        mBinding.hijriDate.text = HtmlCompat.fromHtml(
+                            getString(R.string.hijri_date, generateDateText()),
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
                         )
                         mBinding.hijriDate.visibility = View.VISIBLE
                     }

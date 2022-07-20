@@ -8,30 +8,30 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.DisplaySettingsBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
 class LayoutSettingsFragment: SettingsFragmentWithPopups(), View.OnClickListener {
-    private lateinit var mViewModel: SunnahAssistantViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         val binding: DisplaySettingsBinding = DataBindingUtil.inflate(
-                inflater, R.layout.display_settings, container, false)
+            inflater, R.layout.display_settings, container, false
+        )
         binding.layoutSettings.setOnClickListener(this)
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P )
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
             binding.themeSettings.setOnClickListener(this)
 
         val myActivity = activity
         if (myActivity != null) {
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            mViewModel.getSettings().observe(viewLifecycleOwner, Observer {
-
+            mViewModel.getSettings().observe(viewLifecycleOwner) {
                 mViewModel.settingsValue = it
                 binding.settings = it
-            })
+            }
         }
         return binding.root
     }

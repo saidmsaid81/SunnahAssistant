@@ -1,7 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.dialogs
 
 import android.os.Bundle
-import android.text.Html
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -11,13 +10,14 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.text.HtmlCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nex3z.togglebuttongroup.button.CircularToggle
 import com.thesunnahrevival.sunnahassistant.R
@@ -39,34 +39,46 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
     private var mCustomScheduleDays: java.util.ArrayList<Int?>? = arrayListOf()
 
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = DataBindingUtil.inflate(inflater,
-                R.layout.reminder_details_bottom_sheet, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        mBinding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.reminder_details_bottom_sheet, container, false
+        )
 
         val myActivity = activity
         if (myActivity != null) {
-            mViewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
+            mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
             if (mViewModel.selectedReminder == null) {
-                mViewModel.selectedReminder = Reminder(reminderName = "", frequency = Frequency.OneTime,
-                        category = resources.getStringArray(R.array.categories)[0]) //Uncategorized
+                mViewModel.selectedReminder = Reminder(
+                    reminderName = "", frequency = Frequency.OneTime,
+                    category = resources.getStringArray(R.array.categories)[0]
+                ) //Uncategorized
             }
 
             mReminder = mViewModel.selectedReminder!!
             mBinding.reminder = mViewModel.selectedReminder
             mBinding.isNew = mReminder.reminderName.isNullOrBlank()
             mBinding.isAutomaticPrayerTime =
-                    (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
-                            mViewModel.settingsValue?.isAutomatic == true)
+                (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
+                        mViewModel.settingsValue?.isAutomatic == true)
             mBinding.lifecycleOwner = this
 
             observeReminderTimeChange()
             setFrequencySpinnerData()
             setCategorySpinnerData()
 
-            mBinding.reminderTime.text = formatTimeInMilliseconds(context,
-                    mReminder.timeInMilliseconds)
-            mBinding.tip.text = Html.fromHtml(mReminder.reminderInfo) //For in built reminders
+            mBinding.reminderTime.text = formatTimeInMilliseconds(
+                context,
+                mReminder.timeInMilliseconds
+            )
+            mBinding.tip.text = HtmlCompat.fromHtml(
+                mReminder.reminderInfo ?: "",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            ) //For in built reminders
             mBinding.tip.movementMethod = LinkMovementMethod.getInstance()
 
             DatePickerFragment.mDay = mReminder.day
@@ -83,7 +95,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
     private fun observeReminderTimeChange() {
         TimePickerFragment.timeSet.value = formatTimeInMilliseconds(context,
                 mReminder.timeInMilliseconds)
-        TimePickerFragment.timeSet.observe(this, Observer { s: String? -> mBinding.reminderTime.text = s })
+        TimePickerFragment.timeSet.observe(this) { s: String? -> mBinding.reminderTime.text = s }
     }
 
     private fun setFrequencySpinnerData() {
@@ -165,7 +177,12 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             R.id.category_spinner ->
                 if ((parent.selectedItem as String).matches(getString(R.string.create_new_categories).toRegex())) {
                     val dialogFragment = AddCategoryDialogFragment()
-                    fragmentManager?.let { dialogFragment.show(it, "dialog") }
+                    requireActivity().supportFragmentManager.let {
+                        dialogFragment.show(
+                            it,
+                            "dialog"
+                        )
+                    }
                     AddCategoryDialogFragment.category.value = ""
                     val observer = Observer { category: String? ->
                         if (category?.isNotBlank() == true) {

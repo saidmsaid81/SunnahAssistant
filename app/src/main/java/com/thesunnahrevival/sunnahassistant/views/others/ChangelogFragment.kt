@@ -1,30 +1,34 @@
-package com.thesunnahrevival.sunnahassistant.views
+package com.thesunnahrevival.sunnahassistant.views.others
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.translateLink
 import kotlinx.android.synthetic.main.changelog_layout.*
 
-class ChangelogFragment: Fragment() {
+class ChangelogFragment : SunnahAssistantFragment() {
 
-    private lateinit var viewModel: SunnahAssistantViewModel
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.changelog_layout, container, false)
         val myActivity = activity
 
-        if (myActivity != null){
-            viewModel = ViewModelProviders.of(myActivity).get(SunnahAssistantViewModel::class.java)
-            viewModel.settingsValue?.isAfterUpdate = false
-            viewModel.settingsValue?.categories?.add("Prayer")
-            viewModel.settingsValue?.let { viewModel.updateSettings(it) }
+        if (myActivity != null) {
+            mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+            mViewModel.settingsValue?.isAfterUpdate = false
+            mViewModel.settingsValue?.categories?.add("Prayer")
+            mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
             //viewModel.localeUpdate()
 
         }
