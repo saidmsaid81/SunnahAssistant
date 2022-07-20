@@ -39,7 +39,7 @@ import java.util.*
 open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
     ReminderItemInteractionListener {
 
-    lateinit var mBinding: TodayFragmentBinding
+    private lateinit var mBinding: TodayFragmentBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
     private var mAllReminders: ArrayList<Reminder> = arrayListOf()
     private var isRescheduleAtLaunch = true
@@ -147,7 +147,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         }
     }
 
-    fun displayTheReminders(data: ArrayList<Reminder>?) {
+    private fun displayTheReminders(data: ArrayList<Reminder>?) {
 
         val myActivity = activity
         if (myActivity != null && data != null && data.isNotEmpty()) {
@@ -228,11 +228,10 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                 view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
                 show()
             }
-            mReminderRecyclerAdapter.notifyItemChanged(position)
+            mReminderRecyclerAdapter.notifyItemRemoved(position)
+            mReminderRecyclerAdapter.notifyItemInserted(position)
             return
         }
-        if (mDeletedReminder.isEnabled)
-            mViewModel.cancelScheduledReminder(mDeletedReminder)
 
         mViewModel.delete(mDeletedReminder)
         Snackbar.make(
