@@ -18,7 +18,7 @@ class EnterLocationDialogFragment :DialogFragment() {
     private var mViewModel: SunnahAssistantViewModel? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        mViewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
+        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
 
         val builder = context?.let { AlertDialog.Builder(it) }
         val inflater = requireActivity().layoutInflater
