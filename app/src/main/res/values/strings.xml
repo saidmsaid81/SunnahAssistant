@@ -8,7 +8,7 @@
     <string name="edit_reminder">Edit Reminder</string>
     <string name="add_reminder">Add Reminder</string>
     <string name="reminder_category">Category:</string>
-    <string name="frequency">Frequency:</string>
+    <string name="frequency">Repeat:</string>
     <string name="pick_time">Pick Time</string>
     <string name="change_time">Change Time</string>
     <string name="save">Save</string>
@@ -127,47 +127,47 @@
     <string name="updated_details">
         ‣ Updated and optimized all widgets.
     </string>
-    <string name="fixes">Fixes</string>
-    <string name="fixes_details">
+  <string name="fixes">Fixes</string>
+  <string name="fixes_details">
         ‣ Fixed bug that persisted prayer time alerts even when automatic prayer time alerts are disabled\n
         ‣ Fixed crash on some devices when scheduling reminders \n
         ‣ Minor bug fixes and improvements
     </string>
-    <string name="add_or_delete_categories">Add or Delete Categories</string>
-    <string name="successfuly_added_sunnah_reminders">Successfully Added</string>
-    <string name="sticky_notification_description">Sticky Notification to display the next scheduled reminder</string>
-    <string name="dhuha_prayer">Praying Dhuha</string>
-    <string name="morning_adhkar">Morning Adhkar</string>
-    <string name="evening_adhkar">Evening Adhkar</string>
-    <string name="tahajjud">Tahajjud</string>
-    <string name="reading_the_quran">Reading the Quran</string>
-    <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
-    <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
-    <string name="demo_reminder">Demo Reminder</string>
-    <string name="tomorrow_at">Tomorrow at&#160;</string>
-    <string name="today_at">Today at&#160;</string>
-    <string name="daily">Daily&#160;</string>
-    <string name="monthly_frequency_display">On %d every month&#160;</string>
-    <string name="one_time_frequency_display">On %d %s %d&#160;</string>
-    <string name="at_time_example_at_9_pm">%s&#160;</string>
-    <string name="expanded_view">Expanded View</string>
-    <string name="condesed_view">Condensed View</string>
-    <string name="on">On</string>
-    <string name="off">Off</string>
-    <string name="prayer">Prayer</string>
-    <string name="add_new_category">Add New Category</string>
-    <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s]]></string>
-    <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
-    <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
-    <string name="no_upcoming_reminder_today">No Upcoming Reminder Today</string>
-    <string name="tomorrow_at_notification">. Tomorrow at </string>
-    <string name="at"> at </string>
-    <string name="next_reminder_dhuhr_prayer_at_12_45">Next Reminder: %s %s %s</string>
-    <string name="prayer_times_notification_settings">Prayer Times Notification Settings</string>
-    <string name="dnd_minutes">%d minutes</string>
-    <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
-    <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time reminder is triggered</string>
-    <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
+  <string name="add_or_delete_categories">Add or Delete Categories</string>
+  <string name="successfuly_added_sunnah_reminders">Successfully Added</string>
+  <string name="sticky_notification_description">Sticky Notification to display the next scheduled reminder</string>
+  <string name="dhuha_prayer">Praying Dhuha</string>
+  <string name="morning_adhkar">Morning Adhkar</string>
+  <string name="evening_adhkar">Evening Adhkar</string>
+  <string name="tahajjud">Tahajjud</string>
+  <string name="reading_the_quran">Reading the Quran</string>
+  <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
+  <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
+  <string name="demo_reminder">Demo Reminder</string>
+  <string name="tomorrow_at">Tomorrow at&#160;</string>
+  <string name="today_at">Today at&#160;</string>
+  <string name="daily">Daily&#160;</string>
+  <string name="monthly_frequency_display">On %s every month</string>
+  <string name="one_time_frequency_display">On %s</string>
+  <string name="at_time_example_at_9_pm">%s&#160;</string>
+  <string name="expanded_view">Expanded View</string>
+  <string name="condesed_view">Condensed View</string>
+  <string name="on">On</string>
+  <string name="off">Off</string>
+  <string name="prayer">Prayer</string>
+  <string name="add_new_category">Add New Category</string>
+  <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s]]></string>
+  <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
+  <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
+  <string name="no_upcoming_reminder_today">No Upcoming Reminder Today</string>
+  <string name="tomorrow_at_notification">. Tomorrow at </string>
+  <string name="at"> at </string>
+  <string name="next_reminder_dhuhr_prayer_at_12_45">Next Reminder: %s %s %s</string>
+  <string name="prayer_times_notification_settings">Prayer Times Notification Settings</string>
+  <string name="dnd_minutes">%d minutes</string>
+  <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
+  <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time reminder is triggered</string>
+  <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
   <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
   <string name="go_to_settings">Go to Settings</string>
   <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
@@ -211,6 +211,9 @@
   <string name="saturday_abbreviated">S</string>
   <string name="today">Today</string>
   <string name="calendar">Calendar</string>
+  <string name="time_label">Time:</string>
+  <string name="date">Date:</string>
+  <string name="date_not_set">Date not Set</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
@@ -220,7 +223,7 @@
   </string-array>
 
   <string-array name="frequency">
-    <item>One Time</item>
+    <item>No Repeat</item>
         <item>Daily</item>
         <item>Weekly</item>
         <item>Monthly</item>

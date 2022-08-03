@@ -69,6 +69,6 @@ class TimePickerFragment : DialogFragment(), OnTimeSetListener {
 
     companion object {
         const val TAG = "TimePickerFragment"
-        var timeSet = MutableLiveData<String?>()
+        var timeSet = MutableLiveData<String?>(null)
     }
 }

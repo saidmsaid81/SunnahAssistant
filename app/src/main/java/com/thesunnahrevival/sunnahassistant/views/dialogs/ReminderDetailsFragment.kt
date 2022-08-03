@@ -24,12 +24,14 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.databinding.ReminderDetailsBottomSheetBinding
+import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import java.lang.Integer.parseInt
 import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
 
 class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener,
     OnItemSelectedListener {
@@ -63,7 +65,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         mBinding.isAutomaticPrayerTime =
             (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
                     mViewModel.settingsValue?.isAutomatic == true)
-        mBinding.lifecycleOwner = this
+        mBinding.lifecycleOwner = viewLifecycleOwner
 
         observeReminderTimeChange()
         setFrequencySpinnerData()
@@ -82,7 +84,11 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         DatePickerFragment.mDay = mReminder.day
         DatePickerFragment.mMonth = mReminder.month
         DatePickerFragment.mYear = mReminder.year
-
+        if (!mReminder.reminderName.isNullOrBlank())
+            DatePickerFragment.dateSet.value =
+                "${mReminder.day}/${mReminder.month}/${mReminder.year}"
+        else
+            DatePickerFragment.dateSet.value = null
         mBinding.timePicker.setOnClickListener(this)
         mBinding.saveButton.setOnClickListener(this)
         mBinding.moreDetailsTextView.setOnClickListener(this)
@@ -156,12 +162,6 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
 
         if (v.id == R.id.save_button) {  //Toggle More details view
             validateAndSave()
-        } else if (v.id == R.id.more_details_text_view) {
-            //Toggle More details view
-            mBinding.additionalDetails.visibility =
-                if (mBinding.additionalDetails.visibility == View.GONE)
-                    View.VISIBLE
-                else View.GONE
         }
     }
 
@@ -171,11 +171,15 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
                 mBinding.selectDaysToggleGroup.visibility = View.GONE
                 mBinding.selectDayError.visibility = View.GONE
                 mBinding.timePicker.setText(R.string.pick_time)
+                observeReminderDateChange(position)
+
                 if (position == 2) {
                     showSelectDaysSpinner()
                 } else if (position == 3 || position == 0) {
                     mBinding.timePicker.setText(R.string.pick_date_and_time)
                 }
+
+
             }
             R.id.category_spinner ->
                 if ((parent.selectedItem as String).matches(getString(R.string.create_new_categories).toRegex())) {
@@ -194,8 +198,45 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
                             mCategoryAdapter.notifyDataSetChanged()
                         }
                     }
-                    AddCategoryDialogFragment.category.observe(viewLifecycleOwner, observer)
+                    AddCategoryDialogFragment.category.observe(this, observer)
                 }
+        }
+    }
+
+    private fun observeReminderDateChange(spinnerPosition: Int) {
+        DatePickerFragment.dateSet.observe(this) { dateString: String? ->
+            val simpleDateFormat = SimpleDateFormat("", getLocale())
+            simpleDateFormat.applyPattern("dd/MM/yyyy")
+            val date = if (dateString != null) simpleDateFormat.parse(dateString) else null
+            mBinding.reminderDateLabel.visibility = View.VISIBLE
+            mBinding.reminderDateValue.visibility = View.VISIBLE
+            when {
+                spinnerPosition == 1 || spinnerPosition == 2 -> {
+                    mBinding.reminderDateLabel.visibility = View.GONE
+                    mBinding.reminderDateValue.visibility = View.GONE
+                }
+                date == null -> mBinding.reminderDateValue.text =
+                    getString(R.string.date_not_set)
+                spinnerPosition == 0 -> { // No repeat
+                    simpleDateFormat.applyPattern("d")
+                    val dayDateFormatted = simpleDateFormat.format(date)
+                    simpleDateFormat.applyPattern("MMM, yyyy")
+                    mBinding.reminderDateValue.text =
+                        getString(
+                            R.string.one_time_frequency_display,
+                            "${daySuffixes[dayDateFormatted.toInt()]} ${simpleDateFormat.format(date)}"
+                        )
+                }
+                spinnerPosition == 3 -> { //Monthly
+                    simpleDateFormat.applyPattern("d")
+                    val dayDateFormatted = simpleDateFormat.format(date)
+                    mBinding.reminderDateValue.text =
+                        getString(
+                            R.string.monthly_frequency_display,
+                            daySuffixes[dayDateFormatted.toInt()]
+                        )
+                }
+            }
         }
     }
 
