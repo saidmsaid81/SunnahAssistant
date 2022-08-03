@@ -28,10 +28,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            debuggable true
             applicationIdSuffix ".debug"
         }
 
     }
+    flavorDimensions "build"
+    productFlavors {
+        dev {
+            // The following configuration limits the "dev" flavor to using
+            // English string resources and xxhdpi screen-density resources.
+            resConfigs "en", "xxhdpi"
+        }
+    }
+
 
     buildFeatures {
 
@@ -70,7 +80,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.nex3z:toggle-button-group:1.2.3'
 
-    implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version:'1.1.9'
+    implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version: '1.1.9'
     implementation 'com.batoulapps.adhan:adhan:1.2.1'
 
     //Coroutines
