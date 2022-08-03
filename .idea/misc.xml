@@ -3,11 +3,29 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.1962962962962963" />
+        <entry key="HorizontalDatePicker/horizontalPicker/src/main/res/layout/horizontal_picker.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/calendar_event_drawable.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.113" />
+        <entry key="app/src/main/res/drawable/ic_save.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/ic_star.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/ic_today.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/selected_date_bg.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/today_date_bg.xml" value="0.106" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/alt_reminder_card_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/calendar_day_layout.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/calendar_month_footer_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/calendar_month_header_layout.xml" value="0.1" />
         <entry key="app/src/main/res/layout/display_settings.xml" value="0.13051023950017354" />
         <entry key="app/src/main/res/layout/hijri_date_widget.xml" value="0.1" />
         <entry key="app/src/main/res/layout/hijri_date_widget_configure.xml" value="0.1" />
         <entry key="app/src/main/res/layout/prayer_time_settings.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/reminders_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/send_feedback_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/web_view_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.13055555555555556" />
       </map>
     </option>
   </component>

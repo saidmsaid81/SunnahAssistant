@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.MutableLiveData
 import java.util.*
 
 class DatePickerFragment : DialogFragment(), OnDateSetListener {
@@ -32,6 +33,7 @@ class DatePickerFragment : DialogFragment(), OnDateSetListener {
         mDay = day
         mMonth = month
         mYear = year
+        dateSet.value = "$mDay/${(mMonth + 1)}/$mYear"
         val timePickerFragment: DialogFragment = TimePickerFragment()
         val fm = requireActivity().supportFragmentManager
         timePickerFragment.show(fm, "timePicker")
@@ -41,5 +43,6 @@ class DatePickerFragment : DialogFragment(), OnDateSetListener {
         var mDay = 0
         var mMonth = 12
         var mYear = 0
+        var dateSet = MutableLiveData<String>(null)
     }
 }
