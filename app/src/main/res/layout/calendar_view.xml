@@ -6,7 +6,7 @@
     android:orientation="vertical"
     >
 
-  <com.kizitonwose.calendarview.CalendarView
+  <com.thesunnahrevival.sunnahassistant.views.customviews.CalendarView
       android:id="@+id/calendar_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
