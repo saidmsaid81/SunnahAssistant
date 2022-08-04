@@ -96,7 +96,7 @@
 
         <TextView
             android:id="@+id/reminder_frequency_label"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/reminder_edit_text"
             android:layout_alignParentStart="true"
@@ -105,18 +105,19 @@
             android:text="@string/frequency"
             android:textSize="16sp" />
 
-        <Spinner
-            android:id="@+id/frequency_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reminder_edit_text"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="16dp" />
+      <Spinner
+          android:id="@+id/frequency_spinner"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/reminder_edit_text"
+          android:layout_toEndOf="@id/reminder_frequency_label"
+          android:layout_marginStart="36dp"
+          android:layout_marginTop="16dp"
+          />
 
         <TextView
             android:id="@+id/reminder_category_label"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/reminder_frequency_label"
             android:layout_alignParentStart="true"
@@ -131,15 +132,15 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_below="@id/frequency_spinner"
-          android:layout_alignParentStart="true"
-          android:layout_marginStart="100dp"
+          android:layout_toEndOf="@id/reminder_category_label"
+          android:layout_marginStart="36dp"
           android:layout_marginTop="16dp"
           />
 
       <TextView
           android:id="@+id/reminder_date_label"
-          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_width="100dp"
           android:layout_below="@id/reminder_category_label"
           android:layout_alignParentStart="true"
           android:layout_marginTop="16dp"
@@ -153,14 +154,15 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_below="@id/category_spinner"
-          android:layout_marginStart="100dp"
+          android:layout_toEndOf="@id/reminder_date_label"
+          android:layout_marginStart="36dp"
           android:textSize="16sp"
           android:layout_marginTop="12dp"
           />
 
       <TextView
           android:id="@+id/reminder_time_label"
-          android:layout_width="wrap_content"
+          android:layout_width="100dp"
           android:layout_height="wrap_content"
           android:layout_below="@id/reminder_date_label"
           android:layout_alignParentStart="true"
@@ -175,7 +177,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_below="@id/reminder_date_value"
-          android:layout_marginStart="100dp"
+          android:layout_marginStart="36dp"
+          android:layout_toEndOf="@id/reminder_time_label"
           android:textSize="16sp"
           android:layout_marginTop="12dp"
           />
