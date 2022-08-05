@@ -23,6 +23,7 @@
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_arrow_left"
+        android:contentDescription="@string/scroll_to_previous_month"
         />
 
     <LinearLayout
@@ -40,6 +41,8 @@
           android:fontFamily="sans-serif-medium"
           android:layout_marginTop="@dimen/default_dimen"
           android:textSize="16sp"
+          android:ellipsize="marquee"
+          android:singleLine="true"
           tools:text="July 2022"
           />
       <TextView
@@ -49,6 +52,8 @@
           android:textSize="16sp"
           android:fontFamily="sans-serif-light"
           android:layout_marginBottom="@dimen/default_dimen"
+          android:ellipsize="marquee"
+          android:singleLine="true"
           tools:text="Thul-Hijjah 1443 - Muharram 1444"
           />
 
@@ -61,6 +66,7 @@
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_arrow_right"
+        android:contentDescription="@string/scroll_to_next_month_icon"
         />
   </LinearLayout>
 
@@ -84,7 +90,6 @@
       >
 
     <TextView
-        android:id="@+id/legendText1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -95,7 +100,6 @@
         />
 
     <TextView
-        android:id="@+id/legendText2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -106,7 +110,6 @@
         />
 
     <TextView
-        android:id="@+id/legendText3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -117,7 +120,6 @@
         />
 
     <TextView
-        android:id="@+id/legendText4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -128,7 +130,6 @@
         />
 
     <TextView
-        android:id="@+id/legendText5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -139,7 +140,6 @@
         />
 
     <TextView
-        android:id="@+id/legendText6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -150,7 +150,6 @@
         />
 
     <TextView
-        android:id="@+id/legendText7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
