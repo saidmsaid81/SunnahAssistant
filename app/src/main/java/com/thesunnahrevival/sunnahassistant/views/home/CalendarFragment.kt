@@ -42,9 +42,6 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         }
     }
 
-    override fun displaySelectedDateAsText(gregorianCalendar: GregorianCalendar) {
-        selected_date.text = generateDateText(gregorianCalendar)
-    }
 
     override fun getEvents(container: DayViewContainer, day: CalendarDay) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -67,7 +64,14 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         }
     }
 
-    override fun setDateOfReminders(timeInMilliseconds: Long) {
-        mViewModel.setDateOfReminders(timeInMilliseconds)
+    override fun onDateSelected(day: CalendarDay) {
+        mViewModel.setDateOfReminders(day.date.toEpochDay() * 86400000)
+
+        val gregorianCalendar = GregorianCalendar(
+            day.date.year,
+            day.date.month.ordinal,
+            day.date.dayOfMonth
+        )
+        selected_date.text = generateDateText(gregorianCalendar)
     }
 }

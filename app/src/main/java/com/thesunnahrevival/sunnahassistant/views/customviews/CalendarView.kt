@@ -130,13 +130,11 @@ class CalendarView : CalendarView {
         }
 
         hijriMonthName.append(
-            "(${
-                String.format(
-                    getLocale(),
-                    "%d",
-                    hijriCalendar.get(Calendar.YEAR)
-                )
-            })"
+            String.format(
+                getLocale(),
+                "%d",
+                hijriCalendar.get(Calendar.YEAR)
+            )
         )
 
         return hijriMonthName.toString()
@@ -166,7 +164,7 @@ class CalendarView : CalendarView {
                     container.hijriCalendarDay.visibility = View.VISIBLE
 
                     if (day.date == selectedDate)
-                        listeners?.setDateOfReminders(day.date.toEpochDay() * 86400000)
+                        listeners?.onDateSelected(day)
                     listeners?.getEvents(container, day)
 
                 } else {
@@ -182,16 +180,9 @@ class CalendarView : CalendarView {
         if (day.date == LocalDate.now()) {
             container.view.setBackgroundResource(R.drawable.today_date_bg)
         }
-        if (day.date == selectedDate) {
+        if (day.date == selectedDate)
             container.view.setBackgroundResource(R.drawable.selected_date_bg)
-
-            val gregorianCalendar = GregorianCalendar(
-                day.date.year,
-                day.date.month.ordinal,
-                day.date.dayOfMonth
-            )
-            listeners?.displaySelectedDateAsText(gregorianCalendar)
-        } else {
+        else {
             if (day.date != LocalDate.now())
                 container.view.setBackgroundResource(R.color.calendar_day_bg_color)
         }
@@ -223,8 +214,7 @@ class CalendarView : CalendarView {
     }
 
     interface Listeners {
-        fun displaySelectedDateAsText(gregorianCalendar: GregorianCalendar)
         fun getEvents(container: DayViewContainer, day: CalendarDay)
-        fun setDateOfReminders(timeInMilliseconds: Long)
+        fun onDateSelected(day: CalendarDay)
     }
 }
