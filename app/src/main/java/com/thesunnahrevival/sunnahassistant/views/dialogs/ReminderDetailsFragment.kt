@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views.dialogs
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import java.lang.Integer.parseInt
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
+import java.util.*
 
 class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener,
     OnItemSelectedListener {
@@ -40,6 +42,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
     private lateinit var mReminder: Reminder
     private lateinit var mCategoryAdapter: ArrayAdapter<String>
     private var mCustomScheduleDays: java.util.ArrayList<Int?>? = arrayListOf()
+    private var isUserChangingFrequency = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -177,6 +180,25 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
                     showSelectDaysSpinner()
                 } else if (position == 3 || position == 0) {
                     mBinding.timePicker.setText(R.string.pick_date_and_time)
+                    if (isUserChangingFrequency) {
+                        if (position == 0) {
+                            val simpleDateFormat = SimpleDateFormat("d/M/yyyy", Locale.US)
+                            val date = simpleDateFormat.format(Date()).split("/")
+                            DatePickerFragment.mDay = date[0].toInt()
+                            DatePickerFragment.mMonth = date[1].toInt() - 1
+                            DatePickerFragment.mYear = date[2].toInt()
+                            DatePickerFragment.dateSet.value =
+                                "${DatePickerFragment.mDay}/${(DatePickerFragment.mMonth + 1)}/${DatePickerFragment.mYear}"
+                        } else {
+                            DatePickerFragment.mDay = 1
+                            DatePickerFragment.mMonth = 12
+                            DatePickerFragment.mYear = 0
+                            DatePickerFragment.dateSet.value =
+                                "${DatePickerFragment.mDay}/${(DatePickerFragment.mMonth)}/${DatePickerFragment.mYear}"
+                        }
+
+                    }
+                    isUserChangingFrequency = true
                 }
 
 

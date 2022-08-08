@@ -29,6 +29,7 @@ class CalendarView : CalendarView {
     private val todayMonth: String
     private var listeners: Listeners? = null
     private var finishedUpdatingMonthRange = false
+    private var isOneMonth = false
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(
@@ -65,6 +66,15 @@ class CalendarView : CalendarView {
         this.listeners = listeners
     }
 
+    fun setupMonthWithListeners(
+        listeners: Listeners
+    ) {
+        val firstDayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek
+        setup(YearMonth.of(2017, 1), YearMonth.of(2017, 1), firstDayOfWeek)
+        this.isOneMonth = true
+        this.listeners = listeners
+    }
+
     fun scrollToSpecificDate(localDate: LocalDate) {
         scrollToDate(localDate)
         selectedDate = localDate
@@ -77,50 +87,57 @@ class CalendarView : CalendarView {
                 override fun create(view: View) = MonthHeaderViewContainer(view)
 
                 override fun bind(container: MonthHeaderViewContainer, month: CalendarMonth) {
-                    val gregorianMonthName = resources.getStringArray(
-                        R.array.gregorian_month_names
-                    )[month.yearMonth.month.ordinal]
-                    val gregorianYear = String.format(getLocale(), "%d", month.year)
+                    if (isOneMonth) {
+                        container.monthHeaderView.visibility = View.GONE
+                        container.oneMonthHeader.visibility = View.VISIBLE
+                    } else {
+                        container.oneMonthHeader.visibility = View.GONE
+                        container.monthHeaderView.visibility = View.VISIBLE
+                        val gregorianMonthName = resources.getStringArray(
+                            R.array.gregorian_month_names
+                        )[month.yearMonth.month.ordinal]
+                        val gregorianYear = String.format(getLocale(), "%d", month.year)
 
-                    val hijriMonthName = getHijriMonthName(month)
+                        val hijriMonthName = getHijriMonthName(month)
 
-                    container.gregorianMonthName.text =
-                        "$gregorianMonthName $gregorianYear"
-                    container.hijriMonthName.text = hijriMonthName
+                        container.gregorianMonthName.text =
+                            "$gregorianMonthName $gregorianYear"
+                        container.hijriMonthName.text = hijriMonthName
 
-                    container.prevMonth.setOnClickListener {
-                        findFirstVisibleMonth()?.let {
-                            smoothScrollToMonth(it.yearMonth.previous)
+                        container.prevMonth.setOnClickListener {
+                            findFirstVisibleMonth()?.let {
+                                smoothScrollToMonth(it.yearMonth.previous)
+                            }
                         }
-                    }
 
-                    container.nextMonth.setOnClickListener {
-                        findFirstVisibleMonth()?.let {
-                            smoothScrollToMonth(it.yearMonth.next)
+                        container.nextMonth.setOnClickListener {
+                            findFirstVisibleMonth()?.let {
+                                smoothScrollToMonth(it.yearMonth.next)
+                            }
                         }
-                    }
 
-                    if ("${month.month}/${month.year}".matches(todayMonth.toRegex()))
-                        container.goToToday.visibility = View.GONE
-                    else {
-                        container.goToToday.visibility = View.VISIBLE
-                        container.goToToday.setOnClickListener {
-                            selectedDate = LocalDate.now()
-                            scrollToDate(LocalDate.now())
+                        if ("${month.month}/${month.year}".matches(todayMonth.toRegex()))
+                            container.goToToday.visibility = View.GONE
+                        else {
+                            container.goToToday.visibility = View.VISIBLE
+                            container.goToToday.setOnClickListener {
+                                selectedDate = LocalDate.now()
+                                scrollToDate(LocalDate.now())
+                            }
                         }
-                    }
-                    if (!finishedUpdatingMonthRange)
-                        updateMonthRangeAsync(
-                            YearMonth.of(1970, 1),
-                            YearMonth.of(2069, 12)
-                        ) {
+                        if (!finishedUpdatingMonthRange)
+                            updateMonthRangeAsync(
+                                YearMonth.of(1970, 1),
+                                YearMonth.of(2069, 12)
+                            ) {
+                                container.nextMonth.visibility = View.VISIBLE
+                                container.prevMonth.visibility = View.VISIBLE
+                                finishedUpdatingMonthRange = true
+                            }
+                        else {
                             container.nextMonth.visibility = View.VISIBLE
                             container.prevMonth.visibility = View.VISIBLE
-                            finishedUpdatingMonthRange = true
                         }
-                    else {
-                        container.nextMonth.visibility = View.VISIBLE
-                        container.prevMonth.visibility = View.VISIBLE
                     }
                 }
             }
@@ -172,13 +189,15 @@ class CalendarView : CalendarView {
 
             // Called every time we need to reuse a container.
             override fun bind(container: DayViewContainer, day: CalendarDay) {
-                val hijriDay = getHijriDay(day)
-
                 if (day.owner == DayOwner.THIS_MONTH) {
                     container.gregorianCalendarDay.text =
                         String.format(getLocale(), "%d", day.date.dayOfMonth)
-                    container.hijriCalendarDay.text =
-                        String.format(getLocale(), "(%d)", hijriDay)
+
+                    if (!isOneMonth) {
+                        val hijriDay = getHijriDay(day)
+                        container.hijriCalendarDay.text =
+                            String.format(getLocale(), "(%d)", hijriDay)
+                    }
 
                     container.view.setOnClickListener {
                         onDateSelected(day)
