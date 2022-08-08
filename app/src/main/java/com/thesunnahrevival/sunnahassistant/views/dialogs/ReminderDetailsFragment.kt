@@ -86,7 +86,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         DatePickerFragment.mYear = mReminder.year
         if (!mReminder.reminderName.isNullOrBlank())
             DatePickerFragment.dateSet.value =
-                "${mReminder.day}/${mReminder.month}/${mReminder.year}"
+                "${mReminder.day}/${mReminder.month + 1}/${mReminder.year}"
         else
             DatePickerFragment.dateSet.value = null
         mBinding.timePicker.setOnClickListener(this)
