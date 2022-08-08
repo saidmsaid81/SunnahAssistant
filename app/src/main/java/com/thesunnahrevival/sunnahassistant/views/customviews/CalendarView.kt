@@ -20,6 +20,7 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.MonthHeaderViewContai
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.WeekFields
 import java.util.*
 
 class CalendarView : CalendarView {
@@ -27,6 +28,7 @@ class CalendarView : CalendarView {
     private var selectedDate: LocalDate? = LocalDate.now()
     private val todayMonth: String
     private var listeners: Listeners? = null
+    private var finishedUpdatingMonthRange = false
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(
@@ -49,12 +51,16 @@ class CalendarView : CalendarView {
     }
 
     fun setupWithListeners(
-        startMonth: YearMonth,
-        endMonth: YearMonth,
-        firstDayOfWeek: DayOfWeek,
+        startMonth: YearMonth? = null,
+        endMonth: YearMonth? = null,
+        firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek,
         listeners: Listeners
     ) {
-        setup(startMonth, endMonth, firstDayOfWeek)
+        if (startMonth != null && endMonth != null)
+            setup(startMonth, endMonth, firstDayOfWeek)
+        else
+            setup(YearMonth.now(), YearMonth.now(), firstDayOfWeek)
+
         this.listeners = listeners
     }
 
@@ -96,6 +102,19 @@ class CalendarView : CalendarView {
                             selectedDate = LocalDate.now()
                             scrollToDate(LocalDate.now())
                         }
+                    }
+                    if (!finishedUpdatingMonthRange)
+                        updateMonthRangeAsync(
+                            YearMonth.of(1970, 1),
+                            YearMonth.of(2069, 12)
+                        ) {
+                            container.nextMonth.visibility = View.VISIBLE
+                            container.prevMonth.visibility = View.VISIBLE
+                            finishedUpdatingMonthRange = true
+                        }
+                    else {
+                        container.nextMonth.visibility = View.VISIBLE
+                        container.prevMonth.visibility = View.VISIBLE
                     }
                 }
             }

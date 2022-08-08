@@ -15,8 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.YearMonth
-import java.time.temporal.WeekFields
 import java.util.*
 
 
@@ -25,13 +23,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view_stub.inflate()
 
-        val firstDayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek
-        calendar_view.setupWithListeners(
-            YearMonth.of(1970, 1),
-            YearMonth.of(2069, 12),
-            firstDayOfWeek,
-            this
-        )
+        calendar_view.setupWithListeners(listeners = this)
         calendar_view.scrollToDate(LocalDate.now())
 
         mViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
