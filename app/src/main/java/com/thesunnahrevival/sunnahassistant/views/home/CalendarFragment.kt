@@ -24,7 +24,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         view_stub.inflate()
 
         calendar_view.setupWithListeners(listeners = this)
-        calendar_view.scrollToDate(LocalDate.now())
+        calendar_view.scrollToSpecificDate(LocalDate.now())
 
         mViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
             val yearMonth = calendar_view.findFirstVisibleMonth()?.yearMonth

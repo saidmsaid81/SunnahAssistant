@@ -56,12 +56,18 @@ class CalendarView : CalendarView {
         firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek,
         listeners: Listeners
     ) {
+
         if (startMonth != null && endMonth != null)
             setup(startMonth, endMonth, firstDayOfWeek)
         else
             setup(YearMonth.now(), YearMonth.now(), firstDayOfWeek)
 
         this.listeners = listeners
+    }
+
+    fun scrollToSpecificDate(localDate: LocalDate) {
+        scrollToDate(localDate)
+        selectedDate = localDate
     }
 
     private fun bindHeaderToCalendar() {
