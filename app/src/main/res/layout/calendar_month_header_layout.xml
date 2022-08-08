@@ -23,6 +23,7 @@
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_arrow_left"
+        android:visibility="invisible"
         android:contentDescription="@string/scroll_to_previous_month"
         />
 
@@ -66,6 +67,7 @@
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_arrow_right"
+        android:visibility="invisible"
         android:contentDescription="@string/scroll_to_next_month_icon"
         />
   </LinearLayout>
