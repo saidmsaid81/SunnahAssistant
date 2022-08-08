@@ -216,6 +216,9 @@
   <string name="date_not_set">Date not Set</string>
   <string name="scroll_to_previous_month">Scroll to previous month icon</string>
   <string name="scroll_to_next_month_icon">Scroll to next month icon</string>
+  <string name="ok">OK</string>
+  <string name="pick_date">Pick Date</string>
+  <string name="gregorian_dates">Gregorian Dates</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>

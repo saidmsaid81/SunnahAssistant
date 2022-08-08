@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.adapters
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.thesunnahrevival.sunnahassistant.R
@@ -18,4 +19,6 @@ class MonthHeaderViewContainer(view: View) : ViewContainer(view) {
     val goToToday = view.findViewById<TextView>(R.id.go_to_today)
     val prevMonth = view.findViewById<ImageView>(R.id.prev_month)
     val nextMonth = view.findViewById<ImageView>(R.id.next_month)
+    val monthHeaderView = view.findViewById<LinearLayout>(R.id.month_view)
+    val oneMonthHeader = view.findViewById<LinearLayout>(R.id.one_month_header)
 }
