@@ -49,7 +49,7 @@
           android:layout_marginStart="@dimen/default_dimen"
           android:layout_marginTop="@dimen/default_dimen"
           android:visibility="gone"
-          android:textSize="14sp"
+          android:textSize="12sp"
           />
 
       <androidx.core.widget.NestedScrollView
