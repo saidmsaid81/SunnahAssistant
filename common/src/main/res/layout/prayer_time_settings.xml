@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+        <import type="android.os.Build"/>
+        <import type="android.os.Build.VERSION"/>
+        <import type="android.os.Build.VERSION_CODES"/>
+
+        <variable
+            name="settings"
+            type="com.thesunnahrevival.common.data.model.AppSettings"
+            />
+        <variable
+            name="calculationMethod"
+            type="java.lang.String" />
+        <variable
+            name="asrCalculationMethod"
+            type="java.lang.String" />
+        <variable
+            name="latitudeAdjustmentMethod"
+            type="java.lang.String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/default_dimen"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prayer_time_settings"
+            android:textColor="@color/colorAccent"
+            />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/activate_prayer_time_alerts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/default_dimen"
+            android:text="@string/add_prayer_time"
+            android:button="@null"
+            android:checked="@{settings.automatic}" />
+
+        <LinearLayout
+            android:id="@+id/location_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/enter_city_town_name" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{settings.formattedAddress.empty ? String.format(@string/location_cannot_be_empty) : settings.formattedAddress }"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/calculation_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/prayer_time_calculation_method" />
+
+            <TextView
+                android:id="@+id/calculation_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{calculationMethod}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/asr_calculation_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/asr_juristic_method" />
+
+            <TextView
+                android:id="@+id/asr_calculation_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{asrCalculationMethod}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/higher_latitude_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/higher_latitude_adjustment_method" />
+
+            <TextView
+                android:id="@+id/higher_latitude_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{latitudeAdjustmentMethod}"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prayer_times_notification_settings"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/do_not_disturb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/separatorColor"
+                android:text="@string/set_phone_to_do_not_disturb_mode_for" />
+
+            <TextView
+                android:id="@+id/do_not_disturb_minutes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(@string/dnd_minutes, settings.doNotDisturbMinutes)}"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_info"
+            android:paddingTop="@dimen/default_dimen"
+            android:textSize="12sp"
+            android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
+            android:drawablePadding="@dimen/default_dimen"
+            android:text="@string/use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered"/>
+
+
+    </LinearLayout>
+</layout>
