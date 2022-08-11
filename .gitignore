@@ -10,3 +10,7 @@
 /captures
 .externalNativeBuild
 /app/src/main/java/com/thesunnahrevival/sunnahassistant/ApiKey.java
+/app/google-services.json
+/.idea/
+/app/src/main/java/com/thesunnahrevival/sunnahassistant/ApiKey.kt
+/common/src/main/java/com/thesunnahrevival/common/ApiKey.kt

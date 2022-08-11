@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="settings"
+            type="com.thesunnahrevival.common.data.model.AppSettings"
+            />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/default_dimen"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hijri_date_settings"
+            android:textColor="@color/colorAccent"
+            />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/display_hijri_date_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/default_dimen"
+            android:text="@string/display_hijri_date_on_the_home_page"
+            android:button="@null"
+            android:checked="@{settings.displayHijriDate}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_info"
+                android:paddingTop="@dimen/default_dimen"
+                android:textSize="12sp"
+                android:drawablePadding="@dimen/default_dimen"
+                android:text="@string/hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx"/>
+
+    </LinearLayout>
+</layout>
