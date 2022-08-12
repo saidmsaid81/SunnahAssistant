@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/foss" />
+            <option value="$PROJECT_DIR$/proprietary" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
