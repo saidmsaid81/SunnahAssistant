@@ -219,6 +219,7 @@
   <string name="ok">OK</string>
   <string name="pick_date">Pick Date</string>
   <string name="gregorian_dates">Gregorian Dates</string>
+  <string name="mark_as_complete">Mark as Complete:</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
@@ -307,6 +308,11 @@
     <item>30</item>
     <item>45</item>
     <item>60</item>
+  </string-array>
+
+  <string-array name="mark_as_complete_options">
+    <item>No</item>
+    <item>Yes</item>
   </string-array>
 
   <string-array name="gregorian_month_names">

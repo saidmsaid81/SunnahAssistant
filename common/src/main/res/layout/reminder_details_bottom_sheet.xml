@@ -32,7 +32,6 @@
         android:paddingEnd="@dimen/default_dimen"
         android:paddingBottom="@dimen/default_dimen"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="90dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <TextView
@@ -43,7 +42,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginBottom="20dp"
             android:layout_toStartOf="@id/save_button"
-            android:paddingTop="16dp"
+            android:paddingTop="@dimen/default_dimen"
             android:text="@{isNew ? @string/add_reminder : @string/edit_reminder}"
             android:textAppearance="@android:style/TextAppearance.Material.Title"
             android:textSize="18sp" />
@@ -67,11 +66,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/reminder_action_label"
             android:layout_alignParentStart="true"
-            android:drawableStart="@drawable/ic_tip"
             android:layout_marginBottom="8dp"
             android:drawablePadding="8dp"
             android:visibility="@{reminder.reminderInfo.contains(&quot;href&quot;) ? View.VISIBLE : View.GONE}"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            app:drawableStartCompat="@drawable/ic_tip"
+            />
 
         <TextView
             android:id="@+id/reminder_name_label"
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/reminder_name_label"
             android:layout_alignParentStart="true"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/default_dimen"
             android:hint="@string/reminder_name_hint"
             android:importantForAutofill="no"
             android:inputType="text"
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/reminder_edit_text"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/default_dimen"
             android:textStyle="bold"
             android:text="@string/frequency"
             android:textSize="16sp" />
@@ -113,7 +113,7 @@
           android:layout_below="@id/reminder_edit_text"
           android:layout_toEndOf="@id/reminder_frequency_label"
           android:layout_marginStart="36dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/default_dimen"
           />
 
         <TextView
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/reminder_frequency_label"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/default_dimen"
             android:textStyle="bold"
             android:text="@string/reminder_category"
             android:textSize="16sp"
@@ -135,7 +135,7 @@
           android:layout_below="@id/frequency_spinner"
           android:layout_toEndOf="@id/reminder_category_label"
           android:layout_marginStart="36dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/default_dimen"
           />
 
       <TextView
@@ -144,7 +144,7 @@
           android:layout_width="100dp"
           android:layout_below="@id/reminder_category_label"
           android:layout_alignParentStart="true"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/default_dimen"
           android:textStyle="bold"
           android:text="@string/date"
           android:textSize="16sp"
@@ -167,7 +167,7 @@
           android:layout_height="wrap_content"
           android:layout_below="@id/reminder_date_label"
           android:layout_alignParentStart="true"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/default_dimen"
           android:textStyle="bold"
           android:text="@string/time_label"
           android:textSize="16sp"
@@ -257,11 +257,35 @@
 
         </com.nex3z.togglebuttongroup.MultiSelectToggleGroup>
 
+      <TextView
+          android:id="@+id/mark_as_complete_label"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/select_days_toggle_group"
+          android:layout_alignParentStart="true"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:textStyle="bold"
+          android:text="@string/mark_as_complete"
+          android:textSize="16sp"
+          />
+
+      <Spinner
+          android:id="@+id/mark_as_complete_picker"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/select_days_toggle_group"
+          android:layout_toEndOf="@id/mark_as_complete_label"
+          android:layout_marginStart="@dimen/default_dimen"
+          android:layout_marginTop="@dimen/default_dimen"
+          />
+
+
+
         <TextView
             android:id="@+id/change_prayer_time_offset_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/select_days_toggle_group"
+            android:layout_below="@id/mark_as_complete_label"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="@dimen/default_dimen"
             android:paddingTop="20dp"
@@ -273,7 +297,7 @@
             android:id="@+id/prayerOffsetValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/select_days_toggle_group"
+            android:layout_below="@id/mark_as_complete_label"
             android:layout_centerInParent="true"
             android:layout_toEndOf="@id/change_prayer_time_offset_label"
             android:hint="@string/value"
@@ -288,7 +312,7 @@
             android:id="@+id/minutes_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/select_days_toggle_group"
+            android:layout_below="@id/mark_as_complete_label"
             android:layout_centerInParent="true"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/prayerOffsetValue"
@@ -303,11 +327,11 @@
             android:id="@+id/time_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/select_days_toggle_group"
+            android:layout_below="@id/mark_as_complete_label"
             android:layout_centerInParent="true"
-            android:layout_marginTop="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+            android:layout_marginTop="24dp"
+            android:paddingStart="@dimen/default_dimen"
+            android:paddingEnd="@dimen/default_dimen"
             android:text="@string/change_time"
             android:textAllCaps="false"
             android:visibility="@{isAutomaticPrayerTime == true ? View.INVISIBLE : View.VISIBLE}"
@@ -318,8 +342,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_below="@id/time_picker"
-          android:layout_marginTop="16dp"
-          android:layout_marginBottom="16dp"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:layout_marginBottom="@dimen/default_dimen"
           android:textStyle="bold"
           android:text="@string/more_details"
           android:textSize="16sp"

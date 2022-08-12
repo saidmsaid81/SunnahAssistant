@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = [Reminder::class, AppSettings::class], version = 5)
+@Database(entities = [Reminder::class, AppSettings::class], version = 6)
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
@@ -87,6 +87,13 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+//                database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
+                database.execSQL("ALTER TABLE reminders_table ADD COLUMN isComplete INTEGER DEFAULT 0 NOT NULL")
+            }
+        }
+
 
         fun getInstance(context: Context): SunnahAssistantDatabase =
             INSTANCE ?: synchronized(this) {
@@ -117,7 +124,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
                         }
                 )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                 .build()
     }
 }
