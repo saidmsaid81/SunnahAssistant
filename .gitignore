@@ -14,3 +14,10 @@
 /.idea/
 /app/src/main/java/com/thesunnahrevival/sunnahassistant/ApiKey.kt
 /common/src/main/java/com/thesunnahrevival/common/ApiKey.kt
+/common/production/release/
+/foss/production/production/release/foss-production-release.apk
+/foss/production/production/release/output-metadata.json
+/foss/production/release/app-production-release.apk
+/foss/production/release/output-metadata.json
+/foss/.gitignore
+/foss/google-services.json
