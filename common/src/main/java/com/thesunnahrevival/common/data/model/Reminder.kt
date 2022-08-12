@@ -18,7 +18,8 @@ data class Reminder(
     var year: Int = 0,
     var offset: Int = 0,
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
-    var customScheduleDays: ArrayList<Int?>? = ArrayList()
+    var customScheduleDays: ArrayList<Int?>? = ArrayList(),
+    var isComplete: Boolean = false
 ) {
 
     @Ignore
