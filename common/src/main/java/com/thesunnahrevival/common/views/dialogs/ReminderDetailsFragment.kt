@@ -40,7 +40,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
     private lateinit var mViewModel: SunnahAssistantViewModel
     private lateinit var mReminder: Reminder
     private lateinit var mCategoryAdapter: ArrayAdapter<String>
-    private var mCustomScheduleDays: java.util.ArrayList<Int?>? = arrayListOf()
+    private var mCustomScheduleDays: ArrayList<Int?>? = arrayListOf()
     private var isUserChangingFrequency = false
 
     override fun onCreateView(
@@ -72,6 +72,7 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
         observeReminderTimeChange()
         setFrequencySpinnerData()
         setCategorySpinnerData()
+        setMarkAsCompleteData()
 
         mBinding.reminderTime.text = formatTimeInMilliseconds(
             context,
@@ -143,6 +144,16 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             }
         }
     }
+
+    private fun setMarkAsCompleteData() {
+        val markAsCompleteAdapter = ArrayAdapter.createFromResource(
+            mBinding.bottomSheet.context, R.array.mark_as_complete_options, android.R.layout.simple_spinner_item
+        )
+        markAsCompleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mBinding.markAsCompletePicker.adapter = markAsCompleteAdapter
+        mBinding.markAsCompletePicker.setSelection(if (mReminder.isComplete) 1 else 0)
+    }
+
 
     override fun onClick(v: View) {
         activity?.let { myActivity: FragmentActivity ->
@@ -379,7 +390,8 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
             year,
             offset,
             if (mBinding.isNew) 0 else mReminder.id,
-            if (frequency == Frequency.Weekly && customScheduleDays != null) customScheduleDays else arrayListOf()
+            if (frequency == Frequency.Weekly && customScheduleDays != null) customScheduleDays else arrayListOf(),
+            mBinding.markAsCompletePicker.selectedItemPosition != 0
         )
     }
 
