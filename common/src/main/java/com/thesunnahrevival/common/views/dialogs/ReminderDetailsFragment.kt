@@ -34,7 +34,7 @@ import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener,
+open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener,
     OnItemSelectedListener {
     private lateinit var mBinding: ReminderDetailsBottomSheetBinding
     private lateinit var mViewModel: SunnahAssistantViewModel
@@ -188,7 +188,8 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
 
                 if (position == 2) {
                     showSelectDaysSpinner()
-                } else if (position == 3 || position == 0) {
+                }
+                else if (position == 3 || position == 0) {
                     mBinding.timePicker.setText(R.string.pick_date_and_time)
                     if (isUserChangingFrequency) {
                         if (position == 0) {
@@ -208,10 +209,8 @@ class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListene
                         }
 
                     }
-                    isUserChangingFrequency = true
                 }
-
-
+                isUserChangingFrequency = true
             }
             R.id.category_spinner ->
                 if ((parent.selectedItem as String).matches(getString(R.string.create_new_categories).toRegex())) {
