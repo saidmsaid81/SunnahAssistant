@@ -3,6 +3,7 @@ package com.thesunnahrevival.common.views.dialogs
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -417,6 +418,7 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
             ) == true &&
             mViewModel.settingsValue?.isAutomatic == true
         ) {
+            Log.v("Reminder", reminder.toString())
             mViewModel.updatePrayerTimeDetails(mReminder, reminder)
         } else if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
             mViewModel.settingsValue?.isAutomatic == false

@@ -48,8 +48,14 @@ interface ReminderDao {
     @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE reminderName ==:prayerName")
     suspend fun setPrayerTimeEnabled(prayerName: String, isEnabled: Boolean)
 
-    @Query("UPDATE reminders_table SET `offset` =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo WHERE reminderName == :prayerName")
-    suspend fun updatePrayerTimeDetails(prayerName: String?, newPrayerName: String?, reminderInfo: String?, offsetValue: Int)
+    @Query("UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo, isEnabled = :isEnabled WHERE reminderName == :prayerName")
+    suspend fun updatePrayerTimeDetails(
+        prayerName: String?,
+        newPrayerName: String?,
+        reminderInfo: String?,
+        offsetValue: Int,
+        isEnabled: Boolean
+    )
 
     @Query("UPDATE reminders_table SET month =:month, year =:year, timeInSeconds =:timeInSeconds WHERE id == :id")
     suspend fun updateGeneratedPrayerTimes(id: Int, month: Int, year: Int, timeInSeconds: Long)
