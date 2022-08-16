@@ -90,7 +90,12 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
         private val MIGRATION_5_6: Migration = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
 //                database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
-                database.execSQL("ALTER TABLE reminders_table ADD COLUMN isComplete INTEGER DEFAULT 0 NOT NULL")
+                database.execSQL(
+                    "ALTER TABLE reminders_table ADD COLUMN isComplete INTEGER DEFAULT 0 NOT NULL"
+                )
+                database.execSQL(
+                    "ALTER TABLE reminders_table RENAME COLUMN offset TO offsetInMinutes"
+                )
             }
         }
 
