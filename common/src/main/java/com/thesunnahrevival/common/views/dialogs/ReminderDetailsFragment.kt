@@ -54,14 +54,8 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
         )
 
         mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
-        if (mViewModel.selectedReminder == null) {
-            mViewModel.selectedReminder = Reminder(
-                reminderName = "", frequency = Frequency.OneTime,
-                category = resources.getStringArray(R.array.categories)[0]
-            ) //Uncategorized
-        }
 
-        mReminder = mViewModel.selectedReminder!!
+        mReminder = mViewModel.selectedReminder
         mBinding.reminder = mViewModel.selectedReminder
         mBinding.isNew = mReminder.reminderName.isNullOrBlank()
         mBinding.isAutomaticPrayerTime =

@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/layout/send_feedback_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/web_view_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.13055555555555556" />
+        <entry key="common/src/main/res/layout/add_location_layout.xml" value="0.17119565217391305" />
       </map>
     </option>
   </component>
