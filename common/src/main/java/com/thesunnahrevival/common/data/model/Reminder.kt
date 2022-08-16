@@ -16,7 +16,7 @@ data class Reminder(
     var day: Int = if (frequency?.ordinal == 1) 0 else -1,
     var month: Int = 12,
     var year: Int = 0,
-    var offset: Int = 0,
+    var offsetInMinutes: Int = 0,
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var customScheduleDays: ArrayList<Int?>? = ArrayList(),
     var isComplete: Boolean = false
