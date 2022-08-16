@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.AppSettings
+import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.databinding.TodayFragmentBinding
 import com.thesunnahrevival.common.utilities.generateDateText
@@ -263,13 +264,15 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
     }
 
     override fun openBottomSheet(v: View, reminder: Reminder?) {
-        val bottomSheetFragment = ReminderDetailsFragment()
         mViewModel.selectedReminder = reminder
+            ?: Reminder(
+                reminderName = "", frequency = Frequency.OneTime,
+                category = resources.getStringArray(R.array.categories)[0]
+            ) //Uncategorized
+
         mViewModel.settingsValue = mAppSettings
-        val fm = activity?.supportFragmentManager
-        fm?.let { bottomSheetFragment.show(it, "bottomSheetFragment") }
 
-
+        findNavController().navigate(R.id.reminderDetailsFragment, null)
     }
 
     override fun onResume() {
