@@ -55,7 +55,7 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
 
         mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
 
-        mReminder = mViewModel.selectedReminder!!
+        mReminder = mViewModel.selectedReminder
         mBinding.reminder = mViewModel.selectedReminder
         mBinding.isNew = mReminder.reminderName.isNullOrBlank()
         mBinding.isAutomaticPrayerTime =
