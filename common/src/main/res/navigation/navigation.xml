@@ -105,13 +105,17 @@
         tools:layout="@layout/display_settings"
         android:label="@string/privacy_settings" />
 
-    <fragment
-        android:id="@+id/privacyPolicyFragment"
-        android:name="com.thesunnahrevival.common.views.settings.PrivacyPolicyFragment"
-        android:label="@string/read_privacy_policy" />
+  <fragment
+      android:id="@+id/privacyPolicyFragment"
+      android:name="com.thesunnahrevival.common.views.settings.PrivacyPolicyFragment"
+      android:label="@string/read_privacy_policy" />
 
-    <fragment
-        android:id="@+id/webviewFragment"
-        android:name="com.thesunnahrevival.common.views.others.WebViewFragment"
-        android:label="@string/developers_messages" />
+  <fragment
+      android:id="@+id/webviewFragment"
+      android:name="com.thesunnahrevival.common.views.others.WebViewFragment"
+      android:label="@string/developers_messages" />
+
+  <dialog
+      android:id="@+id/reminderDetailsFragment"
+      android:name="com.thesunnahrevival.common.views.dialogs.ReminderDetailsFragment" />
 </navigation>
