@@ -53,8 +53,11 @@ class SunnahAssistantRepository private constructor(private val application: App
 
     suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
         mReminderDao.updatePrayerTimeDetails(
-            oldPrayerDetails.reminderName, newPrayerDetails.reminderName,
-            newPrayerDetails.reminderInfo, newPrayerDetails.offset
+            oldPrayerDetails.reminderName,
+            newPrayerDetails.reminderName,
+            newPrayerDetails.reminderInfo,
+            newPrayerDetails.offsetInMinutes,
+            newPrayerDetails.isEnabled
         )
 
     }
