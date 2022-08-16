@@ -20,10 +20,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import com.thesunnahrevival.common.R
+import com.thesunnahrevival.common.data.model.Frequency
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
-    var selectedReminder: Reminder? = null
+
+    var selectedReminder: Reminder = Reminder(
+        reminderName = "", frequency = Frequency.OneTime,
+        category = application.resources.getStringArray(R.array.categories)[0] //Uncategorized
+    )
+
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
