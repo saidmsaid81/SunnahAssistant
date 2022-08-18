@@ -82,8 +82,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)
-            if (newPrayerDetails.isEnabled)
-                startServiceFromCoroutine()
+            startServiceFromCoroutine()
         }
     }
 
