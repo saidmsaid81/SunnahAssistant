@@ -59,6 +59,7 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
+    implementation "com.google.android.material:material:$material_version"
     implementation project(path: ':common')
 }
 apply plugin: 'com.google.gms.google-services'
