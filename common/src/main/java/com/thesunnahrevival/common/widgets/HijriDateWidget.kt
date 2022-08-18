@@ -94,14 +94,22 @@ internal suspend fun fetchDateFromDatabase(
     val hijriText = if (appSettings?.isShowHijriDateWidget == true)
         generateDateText(isOnlyHijriDate = true) else null
 
-    val nextReminder = if (appSettings?.isShowNextReminderWidget == true)
-        reminderDao.getNextScheduledReminderToday(
+    val nextReminder = if (appSettings?.isShowNextReminderWidget == true) {
+        val nextTimeForReminderToday = reminderDao.getNextTimeForReminderToday(
             calculateOffsetFromMidnight(),
             dayOfTheWeek.toString(),
             getDayDate(System.currentTimeMillis()),
             getMonthNumber(System.currentTimeMillis()),
+            Integer.parseInt(getYear(System.currentTimeMillis()))
+        )
+        reminderDao.getNextScheduledReminderToday(
+            nextTimeForReminderToday ?: -1,
+            dayOfTheWeek.toString(),
+            getDayDate(System.currentTimeMillis()),
+            getMonthNumber(System.currentTimeMillis()),
             getYear(System.currentTimeMillis()).toInt()
-        ) else null
+        ).firstOrNull()
+    } else null
     val reminderName = nextReminder?.reminderName
     val reminderTime =
         nextReminder?.timeInMilliseconds?.let { formatTimeInMilliseconds(context, it) }
