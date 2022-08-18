@@ -24,8 +24,7 @@ class NextReminderService : Service() {
     private lateinit var mReminderDAO: ReminderDao
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val context = this
-        mReminderDAO = getInstance(context).reminderDao()
+        mReminderDAO = getInstance(this).reminderDao()
 
         CoroutineScope(Dispatchers.IO).launch {
             val settings = mReminderDAO.getAppSettingsValue()
@@ -35,42 +34,174 @@ class NextReminderService : Service() {
                 updateGeneratedPrayerTimes(settings)
             }
 
-            var timeInMilliseconds = System.currentTimeMillis()
+            val timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
 
-            var nextScheduledReminder = mReminderDAO.getNextScheduledReminderToday(
-                    calculateOffsetFromMidnight(),
-                    dayOfTheWeek.toString(),
-                    getDayDate(timeInMilliseconds),
-                    getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds)))
-            if (nextScheduledReminder == null) {
-                timeInMilliseconds = System.currentTimeMillis() + 86400000
+            val nextTimeForReminderToday = mReminderDAO.getNextTimeForReminderToday(
+                calculateOffsetFromMidnight(),
+                dayOfTheWeek.toString(),
+                getDayDate(timeInMilliseconds),
+                getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds))
+            )
+
+            val nextTimeForReminderTomorrow = mReminderDAO.getNextTimeForReminderTomorrow(
+                calculateOffsetFromMidnight(),
+                tomorrowDayOfTheWeek.toString(),
+                getDayDate(timeInMilliseconds + 86400000),
+                getMonthNumber(timeInMilliseconds + 86400000),
+                Integer.parseInt(getYear(timeInMilliseconds + 86400000))
+            )
+
+            val nextScheduledReminders = arrayListOf<Reminder>()
+
+            //Check to see if tomorrows reminders trigger time is offset to earlier than today reminders
+            if (nextTimeForReminderTomorrow != null &&
+                nextTimeForReminderTomorrow < 0 &&
+                ((24 * 60 * 60) + nextTimeForReminderTomorrow) < nextTimeForReminderToday ?: (24 * 60 * 60)
+            ) {
+                nextScheduledReminders.addAll(
+                    getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
+                )
+            } else if (nextTimeForReminderToday != null) {
+                //Get Today Reminders
+                nextScheduledReminders.addAll(
+                    mReminderDAO.getNextScheduledReminderToday(
+                        nextTimeForReminderToday,
+                        dayOfTheWeek.toString(),
+                        getDayDate(timeInMilliseconds),
+                        getMonthNumber(timeInMilliseconds),
+                        Integer.parseInt(getYear(timeInMilliseconds))
+                    )
+                )
+
+                //Check to see if tomorrows reminders trigger time is offset to same as today reminders
+                if (nextTimeForReminderTomorrow != null &&
+                    ((24 * 60 * 60) + nextTimeForReminderTomorrow) == nextTimeForReminderToday
+                ) {
+                    nextScheduledReminders.addAll(
+                        getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
+                    )
+                }
+            }
+
+            if (nextTimeForReminderToday == null && nextTimeForReminderTomorrow != null) {
                 dayString = getString(R.string.tomorrow_at_notification)
-                nextScheduledReminder = mReminderDAO.getNextScheduledReminderTomorrow(
-                        tomorrowDayOfTheWeek.toString(), getDayDate(timeInMilliseconds),
-                        getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds)))
             }
 
             withContext(Dispatchers.Main) {
                 if (settings != null) {
-                    scheduleTheNextReminder(settings, nextScheduledReminder, context, isForegroundEnabled, dayString)
+                    scheduleTheNextReminder(
+                        settings,
+                        nextScheduledReminders,
+                        this@NextReminderService,
+                        isForegroundEnabled,
+                        dayString
+                    )
                 }
             }
         }
         return START_REDELIVER_INTENT
     }
 
+    private suspend fun getTomorrowsReminders(
+        nextTimeForReminderTomorrow: Long,
+        timeInMilliseconds: Long
+    ) = mReminderDAO.getNextScheduledReminderTomorrow(
+        nextTimeForReminderTomorrow,
+        tomorrowDayOfTheWeek.toString(),
+        getDayDate(timeInMilliseconds + 86400000),
+        getMonthNumber(timeInMilliseconds + 86400000),
+        Integer.parseInt(getYear(timeInMilliseconds + 86400000))
+    )
+
+    private fun scheduleTheNextReminder(
+        settings: AppSettings, nextScheduledReminders: List<Reminder>,
+        context: NextReminderService, isForegroundEnabled: Boolean, dayString: String
+    ) {
+        var title = ""
+        val text = getString(R.string.tap_to_disable_sticky_notification)
+        val notificationToneUri: Uri? = settings.notificationToneUri
+        val isVibrate: Boolean = settings.isVibrate
+
+        val names = Array(nextScheduledReminders.size) { "" }
+        val categories = Array(nextScheduledReminders.size) { "" }
+
+        nextScheduledReminders.forEachIndexed { index, nextScheduledReminder: Reminder ->
+            nextScheduledReminder.reminderName?.let { name ->
+                names[index] = name
+                categories[index] = nextScheduledReminder.category.toString()
+            }
+
+        }
+
+        if (nextScheduledReminders.isNotEmpty()) {
+            val nextScheduledReminder = nextScheduledReminders.first()
+            title = getString(
+                R.string.next_reminder_dhuhr_prayer_at_12_45,
+                nextScheduledReminder.reminderName,
+                dayString,
+                formatTimeInMilliseconds(context, nextScheduledReminder.timeInMilliseconds)
+            )
+
+            notificationToneUri?.let {
+                ReminderManager.getInstance().scheduleReminder(
+                    context = context,
+                    title = getString(R.string.reminder),
+                    texts = names,
+                    categories = categories,
+                    timeInMilliseconds = nextScheduledReminder.timeInMilliseconds + (nextScheduledReminder.offsetInMinutes * 60 * 1000),
+                    notificationUri = it,
+                    isVibrate = isVibrate,
+                    doNotDisturbMinutes = settings.doNotDisturbMinutes,
+                    useReliableAlarms = settings.useReliableAlarms
+                )
+
+            }
+        } else {
+            //A dummy notification which enables scheduling reminders for the next day
+
+            title = getString(R.string.no_upcoming_reminder_today)
+            notificationToneUri?.let {
+                ReminderManager.getInstance().scheduleReminder(
+                    context = context,
+                    title = "",
+                    texts = arrayOf(""),
+                    categories = arrayOf("null"),
+                    timeInMilliseconds = (-TimeZone.getDefault().rawOffset + 10).toLong(),
+                    notificationUri = it,
+                    isVibrate = isVibrate,
+                    doNotDisturbMinutes = settings.doNotDisturbMinutes,
+                    useReliableAlarms = settings.useReliableAlarms
+                )
+            }
+        }
+
+        val stickyNotification: Notification = createNotification(
+            context, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate
+        )
+        if (isForegroundEnabled)
+            startForeground(1, stickyNotification)
+        else
+            context.stopForeground(true)
+    }
+
     private suspend fun updateGeneratedPrayerTimes(settings: AppSettings) {
         val prayerTimesReminders = PrayerTimeCalculator(
-                settings.latitude.toDouble(), settings.longitude.toDouble(), settings.calculationMethod,
-                settings.asrCalculationMethod, settings.latitudeAdjustmentMethod,
-                application.resources.getStringArray(R.array.prayer_names),
-                application.resources.getStringArray(R.array.categories)[2]).getPrayerTimeReminders()
+            settings.latitude.toDouble(),
+            settings.longitude.toDouble(),
+            settings.calculationMethod,
+            settings.asrCalculationMethod,
+            settings.latitudeAdjustmentMethod,
+            application.resources.getStringArray(R.array.prayer_names),
+            application.resources.getStringArray(R.array.categories)[2]
+        ).getPrayerTimeReminders()
 
         for (prayerTimeReminder in prayerTimesReminders) {
-            mReminderDAO.updateGeneratedPrayerTimes(prayerTimeReminder.id,
-                    getMonthNumber(System.currentTimeMillis()),
-                    getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds)
+            mReminderDAO.updateGeneratedPrayerTimes(
+                prayerTimeReminder.id,
+                getMonthNumber(System.currentTimeMillis()),
+                getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds
+            )
         }
 
         settings.month = getMonthNumber(System.currentTimeMillis())
@@ -78,57 +209,7 @@ class NextReminderService : Service() {
 
     }
 
-    private fun scheduleTheNextReminder(settings: AppSettings, nextScheduledReminder: Reminder?,
-                                        context: NextReminderService, isForegroundEnabled: Boolean, dayString: String) {
-        val title: String
-        val text = getString(R.string.tap_to_disable_sticky_notification)
-        val notificationToneUri: Uri? = settings.notificationToneUri
-        val isVibrate: Boolean = settings.isVibrate
-
-        if (nextScheduledReminder != null && nextScheduledReminder.isEnabled) {
-            title = getString(R.string.next_reminder_dhuhr_prayer_at_12_45,
-                    nextScheduledReminder.reminderName,
-                    dayString,
-                    formatTimeInMilliseconds(context, nextScheduledReminder.timeInMilliseconds))
-            notificationToneUri?.let {
-                nextScheduledReminder.reminderName?.let { name ->
-                    ReminderManager.getInstance().scheduleReminder(
-                        context = context,
-                        title = getString(R.string.reminder),
-                        text = name,
-                        category = nextScheduledReminder.category,
-                        timeInMilliseconds = nextScheduledReminder.timeInMilliseconds + (nextScheduledReminder.offsetInMinutes * 60 * 1000),
-                        notificationUri = it,
-                        isVibrate = isVibrate,
-                        doNotDisturbMinutes = settings.doNotDisturbMinutes,
-                        useReliableAlarms = settings.useReliableAlarms
-                    )
-                }
-            }
-        } else {
-
-            //A dummy notification which enables scheduling reminders for the next day
-
-            title = getString(R.string.no_upcoming_reminder_today)
-            notificationToneUri?.let {
-                ReminderManager.getInstance().scheduleReminder(
-                        context = context, title = "", text = "", category = "null",
-                        timeInMilliseconds = (-TimeZone.getDefault().rawOffset + 10).toLong(), notificationUri = it, isVibrate = isVibrate, doNotDisturbMinutes = settings.doNotDisturbMinutes,
-                        useReliableAlarms = settings.useReliableAlarms
-                )
-            }
-        }
-
-
-        val stickyNotification: Notification = createNotification(
-                context, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate)
-        if (isForegroundEnabled)
-            startForeground(1, stickyNotification)
-        else
-            context.stopForeground(true)
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 }

@@ -66,11 +66,41 @@ interface ReminderDao {
     @Query("DELETE FROM reminders_table WHERE category ==:categoryName ")
     suspend fun deleteAllPrayerTimes(categoryName: String)
 
-    @Query("SELECT * FROM reminders_table WHERE timeInSeconds > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
-    suspend fun getNextScheduledReminderToday(offsetFromMidnight: Long, numberOfTheWeekDay: String, day: Int, month: Int, year: Int): Reminder?
+    @Query("SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE time > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY time")
+    suspend fun getNextTimeForReminderToday(
+        offsetFromMidnight: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ): Long?
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
-    suspend fun getNextScheduledReminderTomorrow(numberOfTheWeekDay: String, day: Int, month: Int, year: Int): Reminder?
+    @Query("SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE (time < 0) AND (time + 86400 ) > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY time")
+    suspend fun getNextTimeForReminderTomorrow(
+        offsetFromMidnight: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ): Long?
+
+    @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForReminder AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
+    suspend fun getNextScheduledReminderToday(
+        timeForReminder: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ): List<Reminder>
+
+    @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForReminder AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
+    suspend fun getNextScheduledReminderTomorrow(
+        timeForReminder: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ): List<Reminder>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSettings(settings: AppSettings)
