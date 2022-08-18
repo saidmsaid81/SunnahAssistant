@@ -3,7 +3,6 @@ package com.thesunnahrevival.common.views.dialogs
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,7 @@ import java.util.*
 
 open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickListener,
     OnItemSelectedListener {
-    private lateinit var mBinding: ReminderDetailsBottomSheetBinding
+    protected lateinit var mBinding: ReminderDetailsBottomSheetBinding
     private lateinit var mViewModel: SunnahAssistantViewModel
     private lateinit var mReminder: Reminder
     private lateinit var mCategoryAdapter: ArrayAdapter<String>
@@ -63,6 +62,11 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
             (mBinding.reminder?.category?.matches(getString(R.string.prayer).toRegex()) == true &&
                     mViewModel.settingsValue?.isAutomatic == true)
         mBinding.lifecycleOwner = viewLifecycleOwner
+
+        if (mBinding.isAutomaticPrayerTime)
+            mBinding.timePicker.visibility = View.INVISIBLE
+        else
+            mBinding.timePicker.visibility = View.VISIBLE
 
         observeReminderTimeChange()
         setFrequencySpinnerData()
@@ -142,11 +146,13 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
 
     private fun setMarkAsCompleteData() {
         val markAsCompleteAdapter = ArrayAdapter.createFromResource(
-            mBinding.bottomSheet.context, R.array.mark_as_complete_options, android.R.layout.simple_spinner_item
+            mBinding.bottomSheet.context,
+            R.array.mark_as_complete_options,
+            android.R.layout.simple_spinner_item
         )
         markAsCompleteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        mBinding.markAsCompletePicker.adapter = markAsCompleteAdapter
-        mBinding.markAsCompletePicker.setSelection(if (mReminder.isComplete) 1 else 0)
+        mBinding.markAsCompleteSpinner.adapter = markAsCompleteAdapter
+        mBinding.markAsCompleteSpinner.setSelection(if (mReminder.isComplete) 1 else 0)
     }
 
 
@@ -300,11 +306,6 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
         var day = 0
         var month = 12
         var year = 0
-        val offset = try {
-            parseInt(mBinding.prayerOffsetValue.text.toString())
-        } catch (error: NumberFormatException) {
-            0
-        }
         val timeSet = TimePickerFragment.timeSet.value
 
         when (selection) {
@@ -349,10 +350,18 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
             day,
             month,
             year,
-            offset,
+            calculateOffsetForReminder(),
             mCustomScheduleDays
         )
         saveReminder(reminder)
+    }
+
+    open fun calculateOffsetForReminder(): Int {
+        return try {
+            parseInt(mBinding.prayerOffsetValue.text.toString())
+        } catch (error: NumberFormatException) {
+            0
+        }
     }
 
     private fun createNewReminder(
@@ -378,16 +387,19 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
             getTimestampInSeconds(requireContext(), timeSet),
             category,
             frequency,
-            timeSet?.matches(getString(R.string.time_not_set).toRegex()) == false,
+            isReminderEnabled(timeSet),
             day,
             month,
             year,
             offset,
             if (mBinding.isNew) 0 else mReminder.id,
             if (frequency == Frequency.Weekly && customScheduleDays != null) customScheduleDays else arrayListOf(),
-            mBinding.markAsCompletePicker.selectedItemPosition != 0
+            mBinding.markAsCompleteSpinner.selectedItemPosition != 0
         )
     }
+
+    open fun isReminderEnabled(timeSet: String?) =
+        timeSet?.matches(getString(R.string.time_not_set).toRegex()) == false
 
     private fun saveReminder(reminder: Reminder) {
         val prayerCategory = resources.getStringArray(R.array.categories)[2]
@@ -418,7 +430,6 @@ open class ReminderDetailsFragment : BottomSheetDialogFragment(), View.OnClickLi
             ) == true &&
             mViewModel.settingsValue?.isAutomatic == true
         ) {
-            Log.v("Reminder", reminder.toString())
             mViewModel.updatePrayerTimeDetails(mReminder, reminder)
         } else if (reminder != mReminder && reminder.category?.matches(prayerCategory.toRegex()) == true &&
             mViewModel.settingsValue?.isAutomatic == false
