@@ -64,8 +64,8 @@ fun createNotification(
         .setStyle(
             NotificationCompat.BigTextStyle()
                 .bigText(text)
-                    .setBigContentTitle(title)
-                    .setSummaryText("Reminder"))
+                .setBigContentTitle(title)
+        )
             .setAutoCancel(true)
     if (priority != -1) {
         builder = builder.setLargeIcon(picture)
