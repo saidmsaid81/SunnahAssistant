@@ -220,6 +220,7 @@
   <string name="pick_date">Pick Date</string>
   <string name="gregorian_dates">Gregorian Dates</string>
   <string name="mark_as_complete">Mark as Complete:</string>
+  <string name="notify">Notify:</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
@@ -338,6 +339,15 @@
     <item>T</item>
     <item>F</item>
     <item>S</item>
+  </string-array>
+
+  <string-array name="notify_options">
+    <item>No Notification</item>
+    <item>On Time</item>
+    <item>5 Minutes Before</item>
+    <item>15 Minutes Before</item>
+    <item>30 Minutes Before</item>
+    <item>Custom</item>
   </string-array>
 
 
