@@ -55,8 +55,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun addReminder(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.addReminder(reminder)
-            if (reminder.isEnabled)
-                startServiceFromCoroutine()
+            startServiceFromCoroutine()
             withContext(Dispatchers.Main) {
                 triggerCalendarUpdate.value = true
             }
