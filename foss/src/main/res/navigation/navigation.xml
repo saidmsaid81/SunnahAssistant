@@ -115,7 +115,7 @@
       android:name="com.thesunnahrevival.common.views.others.WebViewFragment"
       android:label="@string/developers_messages" />
 
-  <dialog
+  <fragment
       android:id="@+id/reminderDetailsFragment"
-      android:name="com.thesunnahrevival.common.views.dialogs.ReminderDetailsFragment" />
+      android:name="com.thesunnahrevival.common.views.home.ReminderDetailsFragment" />
 </navigation>
