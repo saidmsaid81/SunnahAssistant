@@ -19,8 +19,9 @@ import com.thesunnahrevival.common.databinding.NotificationSettingsBinding
 import com.thesunnahrevival.common.utilities.NextReminderService
 import com.thesunnahrevival.common.utilities.createReminderNotificationChannel
 import com.thesunnahrevival.common.utilities.deleteReminderNotificationChannel
+import com.thesunnahrevival.common.views.FragmentWithPopups
 
-class NotificationSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener,
+class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener {
 
     private var isSettingsUpdated = false
