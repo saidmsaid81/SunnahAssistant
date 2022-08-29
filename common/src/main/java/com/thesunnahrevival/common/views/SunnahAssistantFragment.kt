@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.common.viewmodels.SunnahAssistantViewModel
 
 open class SunnahAssistantFragment : Fragment() {
-    lateinit var mViewModel: SunnahAssistantViewModel
+    protected lateinit var mViewModel: SunnahAssistantViewModel
 
+    @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
