@@ -25,7 +25,6 @@ import com.thesunnahrevival.common.utilities.updateTodayRemindersWidgets
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.SwipeToDeleteCallback
 import com.thesunnahrevival.common.views.adapters.ReminderListAdapter
-import com.thesunnahrevival.common.views.dialogs.ReminderDetailsFragment
 import com.thesunnahrevival.common.views.interfaces.OnDeleteReminderListener
 import com.thesunnahrevival.common.views.interfaces.ReminderItemInteractionListener
 import com.thesunnahrevival.common.views.showOnBoardingTutorial

@@ -46,7 +46,6 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.nex3z:toggle-button-group:1.2.3'
 
     implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version: '1.1.9'
     implementation 'com.batoulapps.adhan:adhan:1.2.1'

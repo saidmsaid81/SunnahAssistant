@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1962962962962963" />
+        <entry key="../../Sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.17119565217391305" />
         <entry key="HorizontalDatePicker/horizontalPicker/src/main/res/layout/horizontal_picker.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/calendar_event_drawable.xml" value="0.106" />
         <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.113" />
@@ -26,7 +27,11 @@
         <entry key="app/src/main/res/layout/send_feedback_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/web_view_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.13055555555555556" />
+        <entry key="common/src/main/res/drawable/ic_repeat.xml" value="0.1215" />
         <entry key="common/src/main/res/layout/add_location_layout.xml" value="0.17119565217391305" />
+        <entry key="common/src/main/res/layout/reminder_details.xml" value="0.22" />
+        <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
+        <entry key="common/src/main/res/layout/select_days_dialog_fragment.xml" value="0.15864978902953586" />
       </map>
     </option>
   </component>
