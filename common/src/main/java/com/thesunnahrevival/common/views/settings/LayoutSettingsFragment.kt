@@ -10,8 +10,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.databinding.DisplaySettingsBinding
+import com.thesunnahrevival.common.views.FragmentWithPopups
 
-class LayoutSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener {
+class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
 
     override fun onCreateView(
         inflater: LayoutInflater,

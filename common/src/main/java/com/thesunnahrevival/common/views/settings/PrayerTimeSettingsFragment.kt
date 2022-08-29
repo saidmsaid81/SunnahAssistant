@@ -16,11 +16,12 @@ import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.databinding.PrayerTimeSettingsBinding
+import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.common.views.dialogs.EnterLocationDialogFragment
 import java.lang.Integer.parseInt
 
-class PrayerTimeSettingsFragment : SettingsFragmentWithPopups(), View.OnClickListener {
+class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
 
     override fun onCreateView(
         inflater: LayoutInflater,
