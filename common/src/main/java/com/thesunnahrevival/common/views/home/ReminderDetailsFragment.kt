@@ -2,6 +2,7 @@ package com.thesunnahrevival.common.views.home
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.Toast
@@ -21,6 +22,7 @@ import com.thesunnahrevival.common.views.dialogs.DatePickerFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment.Companion.DAYS
 import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
+import java.lang.IllegalArgumentException
 import java.lang.Integer.parseInt
 import java.lang.StringBuilder
 import java.text.DateFormatSymbols
@@ -89,6 +91,16 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
 
     }
 
+    private fun setUpSelectDaysView() {
+        mCustomScheduleDays.clear()
+        mReminder.customScheduleDays?.let {
+            mCustomScheduleDays.addAll(it)
+        }
+        updateSelectedDaysView()
+
+        mBinding.selectDays.setOnClickListener(this)
+    }
+
     private fun setupReminderFrequencyView() {
         mBinding.reminderFrequencyValue.text =
             resources.getStringArray(R.array.frequency)[mReminder.frequency?.ordinal ?: 0]
@@ -149,15 +161,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
         observeReminderDateChange()
     }
 
-    private fun setUpSelectDaysView() {
-        mCustomScheduleDays.clear()
-        mReminder.customScheduleDays?.let {
-            mCustomScheduleDays.addAll(it)
-        }
-        updateSelectedDaysView()
 
-        mBinding.selectDays.setOnClickListener(this)
-    }
 
     private fun setupReminderTimeView() {
         mBinding.reminderTime.setOnClickListener(this)
@@ -187,6 +191,14 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
                 else -> {}
             }
         }
+    }
+
+    override fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>) {
+        if (checkedDays.isNotEmpty()) {
+            mCustomScheduleDays.clear()
+            mCustomScheduleDays.addAll(checkedDays)
+        }
+        updateSelectedDaysView()
     }
 
     private fun updateSelectedDaysView() {
@@ -250,14 +262,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
                     daySuffixes[dayDateFormatted.toInt()]
                 )
         }
-    }
-
-    override fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>) {
-        if (checkedDays.isNotEmpty()) {
-            mCustomScheduleDays.clear()
-            mCustomScheduleDays.addAll(checkedDays)
-        }
-        updateSelectedDaysView()
     }
 
     override fun onClick(v: View?) {
@@ -431,6 +435,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
             }
             .setNegativeButton(R.string.no) { _, _ -> }
             .show()
+
     }
 
     open fun isReminderEnabled(timeSet: String?) =
@@ -514,59 +519,31 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
     }
 
     private fun createNewReminder(): Reminder? {
-        val reminderName =
-            if (mBinding.reminderNameValue.text.isNotBlank())
-                mBinding.reminderNameValue.text.toString()
-            else
-                null
 
         val frequencyOptions = resources.getStringArray(R.array.frequency)
         val frequency = Frequency
             .values()[frequencyOptions.indexOf(mBinding.reminderFrequencyValue.text.toString())]
 
-        val category = mBinding.reminderCategoryValue.text.toString()
-
-        val day = when (frequency) {
-            Frequency.OneTime -> DatePickerFragment.mDay
-            Frequency.Weekly -> {
-                if (mCustomScheduleDays.isEmpty())
-                    return null
-                -1
-            }
-            Frequency.Monthly -> DatePickerFragment.mDay
-            Frequency.Daily -> 0
+        try {
+            return Reminder(
+                mBinding.reminderNameValue.text.toString(),
+                mBinding.additionalDetails.text.toString(),
+                getTimestampInSeconds(requireContext(), TimePickerFragment.timeSet.value),
+                mBinding.reminderCategoryValue.text.toString(),
+                frequency,
+                isReminderEnabled(TimePickerFragment.timeSet.value),
+                DatePickerFragment.mDay,
+                DatePickerFragment.mMonth - 1,
+                DatePickerFragment.mYear,
+                calculateOffsetForReminder(),
+                mReminder.id,
+                mCustomScheduleDays,
+                resources.getStringArray(R.array.mark_as_complete_options)
+                    .indexOf(mBinding.markAsCompleteValue.text) == 1
+            )
+        } catch (exception: IllegalArgumentException) {
+            Log.e("Exception", exception.toString())
+            return null
         }
-        val month = when (frequency) {
-            Frequency.OneTime -> DatePickerFragment.mMonth - 1
-            else -> 12
-        }
-
-        val year = when (frequency) {
-            Frequency.OneTime -> DatePickerFragment.mYear
-            else -> 0
-        }
-
-        val isEnabled = isReminderEnabled(TimePickerFragment.timeSet.value)
-        val offsetForReminder = calculateOffsetForReminder()
-        val isComplete =
-            resources.getStringArray(R.array.mark_as_complete_options)
-                .indexOf(mBinding.markAsCompleteValue.text) == 1
-        val additionalDetails = mBinding.additionalDetails.text.toString()
-
-        return Reminder(
-            reminderName,
-            additionalDetails,
-            getTimestampInSeconds(requireContext(), TimePickerFragment.timeSet.value),
-            category,
-            frequency,
-            isEnabled,
-            day,
-            month,
-            year,
-            offsetForReminder,
-            mReminder.id,
-            mCustomScheduleDays,
-            isComplete
-        )
     }
 }

@@ -32,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import java.util.*
 
 open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
@@ -266,8 +267,11 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         mViewModel.selectedReminder = reminder
             ?: Reminder(
                 reminderName = "", frequency = Frequency.OneTime,
-                category = resources.getStringArray(R.array.categories)[0]
-            ) //Uncategorized
+                category = resources.getStringArray(R.array.categories)[0], //Uncategorized
+                day = LocalDate.now().dayOfMonth,
+                month = LocalDate.now().month.ordinal,
+                year = LocalDate.now().year
+            )
 
         mViewModel.settingsValue = mAppSettings
 

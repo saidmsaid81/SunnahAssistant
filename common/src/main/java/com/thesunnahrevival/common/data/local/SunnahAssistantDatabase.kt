@@ -96,6 +96,64 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL(
                     "ALTER TABLE reminders_table RENAME COLUMN offset TO offsetInMinutes"
                 )
+
+                /**
+                 * This is just for precaution to prevent malformed reminders from triggering
+                 * IllegalArgumentException. Reset all malformed reminders to 1/1/1 then present
+                 * them to the user to fix them
+                 */
+                //For one time reminders
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
+                            " WHERE (month NOT BETWEEN 0 AND 11)" +
+                            " AND frequency = 0 "
+                )
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
+                            " WHERE (year < 1) AND frequency = 0 "
+                )
+
+                //January, March, May, July, August, October, December
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
+                            " WHERE (day NOT BETWEEN 1 AND 31)" +
+                            " AND month IN (0, 2, 4, 6, 7, 9, 11)" +
+                            " AND frequency = 0 "
+                )
+
+                //April, June, September, November
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
+                            " WHERE (day NOT BETWEEN 1 AND 30)" +
+                            " AND month IN (3, 5, 8, 10)" +
+                            " AND frequency = 0 "
+                )
+
+                //February (Non-leap year)
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
+                            " WHERE (day NOT BETWEEN 1 AND 28)" +
+                            " AND month = 1" +
+                            " AND MOD(year, 4) != 0" +
+                            " AND frequency = 0 "
+                )
+
+                //February (leap year)
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1 " +
+                            " WHERE (day NOT BETWEEN 1 AND 29)" +
+                            " AND month = 1" +
+                            " AND MOD(year, 4) = 0" +
+                            " AND frequency = 0 "
+                )
+
+                //Monthly Reminder
+                database.execSQL(
+                    "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
+                            " WHERE (day NOT BETWEEN 1 AND 31)" +
+                            " AND frequency = 3 "
+                )
+
             }
         }
 
@@ -110,26 +168,32 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             context.applicationContext,
             SunnahAssistantDatabase::class.java, "SunnahAssistant.db"
         )
-                .addCallback(
-                        object : Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                CoroutineScope(Dispatchers.IO).launch {
-                    INSTANCE?.reminderDao()?.insertReminder(
-                        demoReminder(
-                            context.getString(R.string.demo_reminder),
-                            context.resources.getStringArray(R.array.categories)[3]
-                        )
-                    )
+            .addCallback(
+                object : Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            INSTANCE?.reminderDao()?.insertReminder(
+                                demoReminder(
+                                    context.getString(R.string.demo_reminder),
+                                    context.resources.getStringArray(R.array.categories)[3]
+                                )
+                            )
 
-                    val categories = TreeSet<String>()
-                    categories.addAll(context.resources.getStringArray(R.array.categories))
-                    INSTANCE?.reminderDao()?.insertSettings(initialSettings(categories))
-                }
-            }
+                            val categories = TreeSet<String>()
+                            categories.addAll(context.resources.getStringArray(R.array.categories))
+                            INSTANCE?.reminderDao()?.insertSettings(initialSettings(categories))
                         }
-                )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
-                .build()
+                    }
+                }
+            )
+            .addMigrations(
+                MIGRATION_1_2,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_4_5,
+                MIGRATION_5_6
+            )
+            .build()
     }
 }

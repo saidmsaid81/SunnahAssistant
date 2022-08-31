@@ -21,13 +21,17 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
+import java.time.LocalDate
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
 
     var selectedReminder: Reminder = Reminder(
         reminderName = "", frequency = Frequency.OneTime,
-        category = application.resources.getStringArray(R.array.categories)[0] //Uncategorized
+        category = application.resources.getStringArray(R.array.categories)[0], //Uncategorized
+        day = LocalDate.now().dayOfMonth,
+        month = LocalDate.now().month.ordinal,
+        year = LocalDate.now().year
     )
 
     var settingsValue: AppSettings? = null
