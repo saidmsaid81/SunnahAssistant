@@ -232,6 +232,7 @@
   <string name="delete_reminder_confirmation">Do you really want to delete this Reminder?</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
+  <string name="category_cannot_be_blank">Error! Category cannot be blank</string>
 
 
   <string-array name="categories">
