@@ -7,11 +7,12 @@ import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.data.model.Frequency
 import java.lang.Integer.parseInt
 import java.util.*
-import kotlin.collections.ArrayList
 
 class RoomTypeConverter {
     @TypeConverter
-    fun fromArray(numbers: ArrayList<Int?>): String {
+    fun fromTreeSetOfNumbers(numbers: TreeSet<Int>?): String {
+        if (numbers == null)
+            return ""
         return try {
             val stringBuilder = StringBuilder()
             for (s in numbers) {
@@ -26,32 +27,32 @@ class RoomTypeConverter {
     }
 
     @TypeConverter
-    fun toArray(concatenatedStrings: String): ArrayList<Int> {
-        val list = ArrayList<Int>()
-        val array = concatenatedStrings.split(",").toTypedArray()
-        try{
+    fun toTreeSetOfNumbers(concatenatedStrings: String?): TreeSet<Int> {
+        val treeSet = TreeSet<Int>()
+
+        if (concatenatedStrings == null)
+            return treeSet
+
+        val array = concatenatedStrings.split(",")
+        try {
             for (index in 0..array.size)
-                list.add(parseInt(array[index]))
+                treeSet.add(parseInt(array[index]))
+        } catch (exception: NumberFormatException) {
+            return treeSet
         }
-        catch(exception: NumberFormatException){
-            return list
-        }
-        return list
+        return treeSet
     }
 
-    
     @TypeConverter
     fun fromUri(uri: Uri?): String {
         return uri?.toString() ?: ""
     }
 
-    
     @TypeConverter
     fun toUri(stringUri: String?): Uri {
         return Uri.parse(stringUri)
     }
 
-    
     @TypeConverter
     fun fromTreeSet(strings: TreeSet<String?>): String {
         return try {
@@ -66,7 +67,6 @@ class RoomTypeConverter {
         }
     }
 
-    
     @TypeConverter
     fun toTreeSet(concatenatedStrings: String): TreeSet<String> {
         val list = listOf(*concatenatedStrings.split(",").toTypedArray())
@@ -82,8 +82,7 @@ class RoomTypeConverter {
     fun toFrequency(number: String): Frequency {
         return try {
             Frequency.values()[parseInt(number)]
-        }
-        catch(exception: NumberFormatException) {
+        } catch (exception: NumberFormatException) {
             Frequency.Daily
         }
     }
@@ -92,8 +91,7 @@ class RoomTypeConverter {
     fun toCalculationMethod(number: Int): CalculationMethod {
         return try {
             CalculationMethod.values()[number]
-        }
-        catch (exception: ArrayIndexOutOfBoundsException){
+        } catch (exception: ArrayIndexOutOfBoundsException) {
             CalculationMethod.MUSLIM_WORLD_LEAGUE
         }
     }
@@ -107,8 +105,7 @@ class RoomTypeConverter {
     fun toMadhab(number: Int): Madhab {
         return try {
             Madhab.values()[number]
-        }
-        catch (exception: ArrayIndexOutOfBoundsException){
+        } catch (exception: ArrayIndexOutOfBoundsException) {
             return Madhab.SHAFI
         }
     }
