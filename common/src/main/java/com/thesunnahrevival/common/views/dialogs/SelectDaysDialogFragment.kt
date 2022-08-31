@@ -2,72 +2,95 @@ package com.thesunnahrevival.common.views.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
-import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.LinearLayout
+import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.utilities.getLocale
 import java.text.DateFormatSymbols
 import java.util.*
 
 
-class SelectDaysDialogFragment : DialogFragment() {
+class SelectDaysDialogFragment : DialogFragment(), View.OnClickListener {
+
+    private var listener: SelectDaysDialogListener? = null
+    private var checkedDaysSet = TreeSet<Int>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Get the layout inflater
-        val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.select_days_dialog_fragment, null)
-        val selectDaysLayout = view.findViewById<LinearLayout>(R.id.select_days_layout)
-        val weekdays = DateFormatSymbols.getInstance(getLocale()).weekdays
-        val checkedDays = selectedDays.value
+        if (listener == null)
+            dismiss()
 
-        for ((index, week) in weekdays.withIndex()) {
-            if (week.isNotBlank()) {
-                val checkbox = CheckBox(requireContext())
-                checkbox.text = week
-                checkbox.layoutParams =
-                    ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
+        initializeCheckedDays()
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    checkbox.setTextAppearance(
-                        android.R.style.TextAppearance_Material_Widget_TextView_PopupMenu
-                    )
-                } else
-                    checkbox.textSize = 14F
-
-                checkbox.isChecked = selectedDays.value?.contains(index) == true
-                checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked)
-                        checkedDays?.add(index)
-                    else
-                        checkedDays?.remove(index)
-                }
-
-                selectDaysLayout.addView(checkbox)
-            }
+        val booleanArrayOfCheckedDays = BooleanArray(7) {
+            false
         }
 
-        return AlertDialog.Builder(requireContext())
-            .setView(view)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                selectedDays.value = checkedDays
+        checkedDaysSet.forEach {
+            booleanArrayOfCheckedDays[it - 1] = true
+        }
+
+        val weekdays = DateFormatSymbols.getInstance(getLocale()).weekdays
+            .filter { it.isNotBlank() }
+            .toTypedArray()
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.select_atleast_one_day)
+            .setMultiChoiceItems(weekdays, booleanArrayOfCheckedDays) { _, which, isChecked ->
+                if (isChecked)
+                    checkedDaysSet.add(which + 1)
+                else if (checkedDaysSet.contains(which + 1))
+                    checkedDaysSet.remove(which + 1)
             }
+            .setPositiveButton(R.string.ok, null)
             .setNegativeButton(R.string.cancel) { _, _ ->
                 dismiss()
             }
             .create()
+
+        dialog.setOnShowListener {
+            val positiveButton =
+                dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+            positiveButton.setOnClickListener(this)
+        }
+
+        return dialog
+    }
+
+    private fun initializeCheckedDays() {
+        val daysArgument = arguments?.getSerializable(DAYS)
+
+        val checkedDaysList = if (daysArgument is TreeSet<*>)
+            daysArgument.filterIsInstance<Int>()
+        else
+            listOf()
+
+        checkedDaysSet = TreeSet<Int>().apply {
+            addAll(checkedDaysList)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        if (checkedDaysSet.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.select_atleast_one_day, Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+        listener?.onSelectDaysDialogPositiveClick(checkedDaysSet)
+        dismiss()
+    }
+
+    fun setListener(listener: SelectDaysDialogListener) {
+        this.listener = listener
+    }
+
+    interface SelectDaysDialogListener {
+        fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>)
     }
 
     companion object {
-        val selectedDays = MutableLiveData(TreeSet<Int>())
+        const val DAYS = "days"
     }
+
 }

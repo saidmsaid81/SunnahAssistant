@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(tableName = "reminders_table")
 data class Reminder(
@@ -18,7 +19,7 @@ data class Reminder(
     var year: Int = 0,
     var offsetInMinutes: Int = 0,
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
-    var customScheduleDays: ArrayList<Int?>? = ArrayList(),
+    var customScheduleDays: TreeSet<Int>? = TreeSet(),
     var isComplete: Boolean = false
 ) {
 

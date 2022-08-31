@@ -19,20 +19,24 @@ import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.dialogs.AddCategoryDialogFragment
 import com.thesunnahrevival.common.views.dialogs.DatePickerFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment
+import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment.Companion.DAYS
 import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
 import java.lang.Integer.parseInt
 import java.lang.StringBuilder
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
+open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
+    SelectDaysDialogFragment.SelectDaysDialogListener {
 
     protected lateinit var mBinding: com.thesunnahrevival.common.databinding.ReminderDetailsFragmentBinding
     private lateinit var mReminder: Reminder
     private var mReminderCategories: ArrayList<String> = arrayListOf()
-    private var mCustomScheduleDays: ArrayList<Int> = arrayListOf()
+    private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
     private var isReminderDeleted = false
 
     override fun onCreateView(
@@ -79,7 +83,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
         setupReminderFrequencyView()
         setupReminderCategoryView()
         setupReminderDateView()
-        setupSelectDaysView()
+        setUpSelectDaysView()
         setupReminderTimeView()
         setupMarkAsCompleteView()
 
@@ -145,9 +149,14 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
         observeReminderDateChange()
     }
 
-    private fun setupSelectDaysView() {
+    private fun setUpSelectDaysView() {
+        mCustomScheduleDays.clear()
+        mReminder.customScheduleDays?.let {
+            mCustomScheduleDays.addAll(it)
+        }
+        updateSelectedDaysView()
+
         mBinding.selectDays.setOnClickListener(this)
-        observeReminderDaysChange()
     }
 
     private fun setupReminderTimeView() {
@@ -180,32 +189,17 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
         }
     }
 
-    private fun observeReminderDaysChange() {
-        for (day in mReminder.customScheduleDays!!) {
-            if (day != null) {
-                mCustomScheduleDays.add(day)
-            }
+    private fun updateSelectedDaysView() {
+        val stringBuilder = StringBuilder()
+        for (day in mCustomScheduleDays) {
+            stringBuilder.append(DateFormatSymbols.getInstance(getLocale()).shortWeekdays[day])
+            if (day != mCustomScheduleDays.last())
+                stringBuilder.append(", ")
         }
-        SelectDaysDialogFragment.selectedDays.value?.clear()
-        SelectDaysDialogFragment.selectedDays.value?.addAll(mCustomScheduleDays)
-        SelectDaysDialogFragment.selectedDays.observe(viewLifecycleOwner) {
-            if (it == null) {
-                mBinding.selectDaysValue.text = getString(R.string.select_atleast_one_day)
-                return@observe
-            }
-            mCustomScheduleDays.clear()
-            mCustomScheduleDays.addAll(it)
-            val stringBuilder = StringBuilder()
-            for (day in it) {
-                stringBuilder.append(DateFormatSymbols.getInstance(getLocale()).shortWeekdays[day])
-                if (day != it.last())
-                    stringBuilder.append(", ")
-            }
-            if (stringBuilder.isBlank())
-                mBinding.selectDaysValue.text = getString(R.string.select_atleast_one_day)
-            else
-                mBinding.selectDaysValue.text = stringBuilder.toString()
-        }
+        if (stringBuilder.isBlank())
+            mBinding.selectDaysValue.text = getString(R.string.select_atleast_one_day)
+        else
+            mBinding.selectDaysValue.text = stringBuilder.toString()
     }
 
     private fun observeReminderTimeChange() {
@@ -258,6 +252,14 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
         }
     }
 
+    override fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>) {
+        if (checkedDays.isNotEmpty()) {
+            mCustomScheduleDays.clear()
+            mCustomScheduleDays.addAll(checkedDays)
+        }
+        updateSelectedDaysView()
+    }
+
     override fun onClick(v: View?) {
         val category = mBinding.reminderCategoryValue.text.toString()
         val prayerCategory = resources.getStringArray(R.array.categories)[2]
@@ -274,6 +276,10 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
             }
             R.id.select_days -> {
                 val dialogFragment = SelectDaysDialogFragment()
+                val bundle = Bundle()
+                bundle.putSerializable(DAYS, mCustomScheduleDays)
+                dialogFragment.arguments = bundle
+                dialogFragment.setListener(this)
                 dialogFragment.show(requireActivity().supportFragmentManager, "selectDays")
             }
             R.id.reminder_time -> {
@@ -425,7 +431,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
             }
             .setNegativeButton(R.string.no) { _, _ -> }
             .show()
-
     }
 
     open fun isReminderEnabled(timeSet: String?) =
@@ -560,12 +565,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener {
             year,
             offsetForReminder,
             mReminder.id,
-            if (frequency == Frequency.Weekly) arrayListOf<Int?>().apply {
-                addAll(
-                    mCustomScheduleDays
-                )
-            }
-            else arrayListOf(),
+            mCustomScheduleDays,
             isComplete
         )
     }
