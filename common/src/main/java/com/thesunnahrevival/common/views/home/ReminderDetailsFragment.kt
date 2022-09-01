@@ -26,6 +26,7 @@ import com.thesunnahrevival.common.views.dialogs.DatePickerFragment.Companion.YE
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment.Companion.DAYS
 import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
+import com.thesunnahrevival.common.views.dialogs.TimePickerFragment.Companion.TIMESET
 import java.lang.IllegalArgumentException
 import java.lang.Integer.parseInt
 import java.lang.StringBuilder
@@ -38,13 +39,15 @@ import kotlin.collections.ArrayList
 
 
 open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
-    SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener {
+    SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
+    TimePickerFragment.OnTimeSetListener {
 
     protected lateinit var mBinding: com.thesunnahrevival.common.databinding.ReminderDetailsFragmentBinding
     private lateinit var mReminder: Reminder
     private var mReminderCategories: ArrayList<String> = arrayListOf()
     private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
     private var isReminderDeleted = false
+    private var mTimeString: String? = null
     private var mDay: Int = LocalDate.now().dayOfMonth
     private var mMonth: Int = LocalDate.now().month.ordinal
     private var mYear: Int = LocalDate.now().year
@@ -94,7 +97,12 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
         setupReminderCategoryView()
         setupReminderDateView(mReminder.day, mReminder.month, mReminder.year)
         setUpSelectDaysView()
-        setupReminderTimeView()
+        setupReminderTimeView(
+            formatTimeInMilliseconds(
+                context,
+                mReminder.timeInMilliseconds
+            )
+        )
         setupMarkAsCompleteView()
 
     }
@@ -165,9 +173,10 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
     }
 
 
-    private fun setupReminderTimeView() {
+    private fun setupReminderTimeView(timeString: String) {
+        this.mTimeString = timeString
+        mBinding.reminderTimeValue.text = timeString
         mBinding.reminderTime.setOnClickListener(this)
-        observeReminderTimeChange()
     }
 
     private fun setupMarkAsCompleteView() {
@@ -198,16 +207,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
             mBinding.selectDaysValue.text = getString(R.string.select_atleast_one_day)
         else
             mBinding.selectDaysValue.text = stringBuilder.toString()
-    }
-
-    private fun observeReminderTimeChange() {
-        TimePickerFragment.timeSet.value = formatTimeInMilliseconds(
-            context,
-            mReminder.timeInMilliseconds
-        )
-        TimePickerFragment.timeSet.observe(viewLifecycleOwner) { s: String? ->
-            mBinding.reminderTimeValue.text = s
-        }
     }
 
     private fun updateNoRepeatDate() {
@@ -339,9 +338,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
 
         val datePickerFragment = DatePickerFragment()
         val bundle = Bundle()
-        bundle.putInt(DAY, mDay ?: 0)
-        bundle.putInt(MONTH, mMonth ?: 12)
-        bundle.putInt(YEAR, mYear ?: 0)
+        bundle.putInt(DAY, mDay)
+        bundle.putInt(MONTH, mMonth)
+        bundle.putInt(YEAR, mYear)
         bundle.putBoolean(SHOWALLMONTHS, frequencyValue != Frequency.Monthly)
         datePickerFragment.arguments = bundle
         datePickerFragment.setListener(this)
@@ -362,8 +361,10 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
             return
         }
         val timePickerFragment = TimePickerFragment()
-        val fm = requireActivity().supportFragmentManager
-        timePickerFragment.show(fm, "timePicker")
+        timePickerFragment.arguments = Bundle().apply { putString(TIMESET, mTimeString) }
+        timePickerFragment.setListener(this)
+        val fragmentManager = requireActivity().supportFragmentManager
+        timePickerFragment.show(fragmentManager, "timePicker")
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -519,10 +520,10 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
             return Reminder(
                 mBinding.reminderNameValue.text.toString(),
                 mBinding.additionalDetails.text.toString(),
-                getTimestampInSeconds(requireContext(), TimePickerFragment.timeSet.value),
+                getTimestampInSeconds(requireContext(), mTimeString),
                 mBinding.reminderCategoryValue.text.toString(),
                 frequency,
-                isReminderEnabled(TimePickerFragment.timeSet.value),
+                isReminderEnabled(mTimeString),
                 mDay,
                 mMonth,
                 mYear,
@@ -540,5 +541,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
 
     override fun onDateSelected(day: Int, month: Int, year: Int) {
         setupReminderDateView(day, month, year)
+    }
+
+    override fun onTimeSet(timeString: String) {
+        setupReminderTimeView(timeString)
     }
 }

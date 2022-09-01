@@ -8,38 +8,50 @@ import android.text.format.DateFormat
 import android.util.Log
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
 import com.thesunnahrevival.common.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.common.utilities.getTimestampInSeconds
 import java.util.*
 
 class TimePickerFragment : DialogFragment(), OnTimeSetListener {
+
+    private var mListener: OnTimeSetListener? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        if (mListener == null) {
+            Log.e("Date Picker Error", "Please implement TimePickerFragment.OnTimeSetListener ")
+            dismiss()
+        }
+
         // Use the current time as the default values for the picker
-        val c = Calendar.getInstance()
-        var hour = c[Calendar.HOUR_OF_DAY]
-        var minute = c[Calendar.MINUTE]
-        if (timeSet.value != null) {
+        val calendar = Calendar.getInstance()
+        var hour = calendar[Calendar.HOUR_OF_DAY]
+        var minute = calendar[Calendar.MINUTE]
+
+        val timeSet = arguments?.getString(TIMESET)
+        if (timeSet != null) {
             try {
-                timeSet.value?.let {
-                    val strings =  it.split(":").toTypedArray()
-                    hour = strings[0].toInt()
-                    minute = strings[1].toInt()
-                }
+                val strings = timeSet.split(":").toTypedArray()
+                hour = strings[0].toInt()
+                minute = strings[1].toInt()
+
             } catch (e: NumberFormatException) {
-                Log.v(TAG, "String cannot be converted to  valid time")
+                Log.e("TimePickerFragment", "String cannot be converted to  valid time")
             }
         }
 
 
         // Create a new instance of TimePickerDialog and return it
-        return TimePickerDialog(activity, this, hour, minute,
-                DateFormat.is24HourFormat(activity))
+        return TimePickerDialog(
+            activity, this, hour, minute,
+            DateFormat.is24HourFormat(activity)
+        )
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
         val hour: String
         val amOrPm: String
+
         if (view.is24HourView) {
             hour = hourOfDay.toString()
             amOrPm = ""
@@ -64,11 +76,18 @@ class TimePickerFragment : DialogFragment(), OnTimeSetListener {
         time.append(minute)
         time.append(amOrPm)
         val timeInMilliseconds = getTimestampInSeconds(time.toString()) * 1000
-        timeSet.value = formatTimeInMilliseconds(requireContext(), timeInMilliseconds)
+        mListener?.onTimeSet(formatTimeInMilliseconds(requireContext(), timeInMilliseconds))
+    }
+
+    fun setListener(listener: OnTimeSetListener) {
+        mListener = listener
+    }
+
+    interface OnTimeSetListener {
+        fun onTimeSet(timeString: String)
     }
 
     companion object {
-        const val TAG = "TimePickerFragment"
-        var timeSet = MutableLiveData<String?>(null)
+        const val TIMESET = "TIMESET"
     }
 }
