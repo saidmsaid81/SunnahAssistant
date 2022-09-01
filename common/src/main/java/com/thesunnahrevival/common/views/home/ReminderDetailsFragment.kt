@@ -19,6 +19,10 @@ import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.dialogs.AddCategoryDialogFragment
 import com.thesunnahrevival.common.views.dialogs.DatePickerFragment
+import com.thesunnahrevival.common.views.dialogs.DatePickerFragment.Companion.DAY
+import com.thesunnahrevival.common.views.dialogs.DatePickerFragment.Companion.MONTH
+import com.thesunnahrevival.common.views.dialogs.DatePickerFragment.Companion.SHOWALLMONTHS
+import com.thesunnahrevival.common.views.dialogs.DatePickerFragment.Companion.YEAR
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment.Companion.DAYS
 import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
@@ -26,6 +30,7 @@ import java.lang.IllegalArgumentException
 import java.lang.Integer.parseInt
 import java.lang.StringBuilder
 import java.text.DateFormatSymbols
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -33,13 +38,16 @@ import kotlin.collections.ArrayList
 
 
 open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
-    SelectDaysDialogFragment.SelectDaysDialogListener {
+    SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener {
 
     protected lateinit var mBinding: com.thesunnahrevival.common.databinding.ReminderDetailsFragmentBinding
     private lateinit var mReminder: Reminder
     private var mReminderCategories: ArrayList<String> = arrayListOf()
     private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
     private var isReminderDeleted = false
+    private var mDay: Int = LocalDate.now().dayOfMonth
+    private var mMonth: Int = LocalDate.now().month.ordinal
+    private var mYear: Int = LocalDate.now().year
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -84,7 +92,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
 
         setupReminderFrequencyView()
         setupReminderCategoryView()
-        setupReminderDateView()
+        setupReminderDateView(mReminder.day, mReminder.month, mReminder.year)
         setUpSelectDaysView()
         setupReminderTimeView()
         setupMarkAsCompleteView()
@@ -133,34 +141,28 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
         }
     }
 
-    private fun setupReminderDateView() {
-        mBinding.reminderDate.setOnClickListener(this)
+    private fun setupReminderDateView(day: Int, month: Int, year: Int) {
+        val reminderFrequency = mBinding.reminderFrequencyValue.text
+        val frequencyOptions = resources.getStringArray(R.array.frequency)
 
-        if (mReminder.month in 0..11)
-            DatePickerFragment.mMonth = mReminder.month + 1
-        else
-            DatePickerFragment.mMonth = LocalDate.now().monthValue
+        when (Frequency.values()[frequencyOptions.indexOf(reminderFrequency)]) {
+            Frequency.OneTime -> {//No repeat
+                mMonth = if (month in 0..11) month else LocalDate.now().month.ordinal
+                mYear = if (year > 0) year else LocalDate.now().year
 
-        if (mReminder.year > 0)
-            DatePickerFragment.mYear = mReminder.year
-        else
-            DatePickerFragment.mYear = LocalDate.now().year
-
-        val lengthOfMonth =
-            LocalDate.of(DatePickerFragment.mYear, DatePickerFragment.mMonth, 1).lengthOfMonth()
-
-        if (mReminder.day in 1..lengthOfMonth)
-            DatePickerFragment.mDay = mReminder.day
-        else {
-            if (LocalDate.now().dayOfMonth in 1..lengthOfMonth)
-                DatePickerFragment.mDay = LocalDate.now().dayOfMonth
-            else
-                DatePickerFragment.mDay = lengthOfMonth
+                val lengthOfMonth = LocalDate.of(mYear, mMonth, 1).lengthOfMonth()
+                mDay = if (day in 1..lengthOfMonth) day else 1
+                updateNoRepeatDate()
+            }
+            Frequency.Monthly -> { //Monthly
+                mDay = if (day in 1..31) day else LocalDate.now().dayOfMonth
+                updateMonthlyDate()
+            }
+            else -> {}
         }
 
-        observeReminderDateChange()
+        mBinding.reminderDate.setOnClickListener(this)
     }
-
 
 
     private fun setupReminderTimeView() {
@@ -175,23 +177,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
             resources.getStringArray(R.array.mark_as_complete_options)[markAsCompleteOption]
     }
 
-    private fun observeReminderDateChange() {
-        DatePickerFragment.dateSet.value = null
-        DatePickerFragment.dateSet.observe(viewLifecycleOwner) { dateString: String? ->
-            val reminderFrequency = mBinding.reminderFrequencyValue.text
-            val frequencyOptions = resources.getStringArray(R.array.frequency)
 
-            when (Frequency.values()[frequencyOptions.indexOf(reminderFrequency)]) {
-                Frequency.OneTime -> {//No repeat
-                    updateNoRepeatDate(dateString)
-                }
-                Frequency.Monthly -> { //Monthly
-                    updateMonthlyDate(dateString)
-                }
-                else -> {}
-            }
-        }
-    }
 
     override fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>) {
         if (checkedDays.isNotEmpty()) {
@@ -224,44 +210,44 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
         }
     }
 
-    private fun updateNoRepeatDate(
-        dateString: String? = null
-    ) {
-        val dateSet = dateString
-            ?: "${DatePickerFragment.mDay}/${DatePickerFragment.mMonth}/${DatePickerFragment.mYear}"
-
+    private fun updateNoRepeatDate() {
+        val dateString = "$mDay/${mMonth + 1}/$mYear"
         val simpleDateFormat = SimpleDateFormat("", getLocale())
         simpleDateFormat.applyPattern("dd/MM/yyyy")
-        val date = simpleDateFormat.parse(dateSet)
-
-        if (date != null) {
-            simpleDateFormat.applyPattern("d")
-            val dayDateFormatted = simpleDateFormat.format(date)
-            simpleDateFormat.applyPattern("MMM, yyyy")
-            mBinding.reminderDateValue.text =
-                getString(
-                    R.string.one_time_frequency_display,
-                    "${daySuffixes[dayDateFormatted.toInt()]} ${simpleDateFormat.format(date)}"
-                )
+        val date = try {
+            simpleDateFormat.parse(dateString) ?: Date()
+        } catch (exception: ParseException) {
+            Date()
         }
+
+        simpleDateFormat.applyPattern("d")
+        val dayDateFormatted = simpleDateFormat.format(date)
+        simpleDateFormat.applyPattern("MMM, yyyy")
+        mBinding.reminderDateValue.text =
+            getString(
+                R.string.one_time_frequency_display,
+                "${daySuffixes[dayDateFormatted.toInt()]} ${simpleDateFormat.format(date)}"
+            )
     }
 
-    private fun updateMonthlyDate(dateString: String? = null) {
-        val dateSet = dateString ?: "${DatePickerFragment.mDay}/01/2017"
+    private fun updateMonthlyDate() {
+        val dateString = "$mDay/01/2017"
 
         val simpleDateFormat = SimpleDateFormat("", getLocale())
         simpleDateFormat.applyPattern("dd/MM/yyyy")
-        val date = simpleDateFormat.parse(dateSet)
-
-        if (date != null) {
-            simpleDateFormat.applyPattern("d")
-            val dayDateFormatted = simpleDateFormat.format(date)
-            mBinding.reminderDateValue.text =
-                getString(
-                    R.string.monthly_frequency_display,
-                    daySuffixes[dayDateFormatted.toInt()]
-                )
+        val date = try {
+            simpleDateFormat.parse(dateString) ?: Date()
+        } catch (exception: ParseException) {
+            Date()
         }
+
+        simpleDateFormat.applyPattern("d")
+        val dayDateFormatted = simpleDateFormat.format(date)
+        mBinding.reminderDateValue.text =
+            getString(
+                R.string.monthly_frequency_display,
+                daySuffixes[dayDateFormatted.toInt()]
+            )
     }
 
     override fun onClick(v: View?) {
@@ -351,11 +337,16 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
         val frequencyOptions = resources.getStringArray(R.array.frequency)
         val frequencyValue = Frequency.values()[frequencyOptions.indexOf(selectedFrequency)]
 
-        DatePickerFragment.showAllMonths = frequencyValue != Frequency.Monthly
-
         val datePickerFragment = DatePickerFragment()
-        val fm = requireActivity().supportFragmentManager
-        datePickerFragment.show(fm, "datePicker")
+        val bundle = Bundle()
+        bundle.putInt(DAY, mDay ?: 0)
+        bundle.putInt(MONTH, mMonth ?: 12)
+        bundle.putInt(YEAR, mYear ?: 0)
+        bundle.putBoolean(SHOWALLMONTHS, frequencyValue != Frequency.Monthly)
+        datePickerFragment.arguments = bundle
+        datePickerFragment.setListener(this)
+        val fragmentManager = requireActivity().supportFragmentManager
+        datePickerFragment.show(fragmentManager, "datePicker")
     }
 
     private fun onReminderTimeClick(category: String, prayerCategory: String) {
@@ -532,9 +523,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
                 mBinding.reminderCategoryValue.text.toString(),
                 frequency,
                 isReminderEnabled(TimePickerFragment.timeSet.value),
-                DatePickerFragment.mDay,
-                DatePickerFragment.mMonth - 1,
-                DatePickerFragment.mYear,
+                mDay,
+                mMonth,
+                mYear,
                 calculateOffsetForReminder(),
                 mReminder.id,
                 mCustomScheduleDays,
@@ -545,5 +536,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), OnClickListener,
             Log.e("Exception", exception.toString())
             return null
         }
+    }
+
+    override fun onDateSelected(day: Int, month: Int, year: Int) {
+        setupReminderDateView(day, month, year)
     }
 }

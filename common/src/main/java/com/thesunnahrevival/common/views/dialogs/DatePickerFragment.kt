@@ -2,25 +2,23 @@ package com.thesunnahrevival.common.views.dialogs
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.views.adapters.DayViewContainer
 import com.thesunnahrevival.common.views.customviews.CalendarView
 import kotlinx.android.synthetic.main.date_picker_fragment.*
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
-import java.util.*
 
 class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
 
     private lateinit var mCalendarDay: CalendarDay
+    private var mListener: OnDateSelectedListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,37 +29,62 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (showAllMonths) { //No repeat reminder
-            if (mDay in 1..31 && mMonth in 1..12 && mYear > 0) { //No repeat existing reminder
-                val startMonth = YearMonth.of(mYear, mMonth)
-                calendar_view.setupWithListeners(
-                    startMonth,
-                    startMonth,
-                    listeners = this
-                )
-                calendar_view.scrollToSpecificDate(LocalDate.of(mYear, mMonth, mDay))
-            } else { //New reminder
-                calendar_view.setupWithListeners(
-                    listeners = this
-                )
-                calendar_view.scrollToSpecificDate(LocalDate.now())
-            }
-        } else { //Monthly reminder
-            calendar_view.setupMonthWithListeners(this)
-            if (mDay in 1..31)
-                calendar_view.scrollToSpecificDate(LocalDate.of(2017, 1, mDay))
-            else
-                calendar_view.scrollToSpecificDate(
-                    LocalDate.of(2017, 1, LocalDate.now().dayOfMonth)
-                )
+        if (mListener == null) {
+            Log.e("Date Picker Error", "Please implement OnDateSelectedListener ")
+            dismiss()
+        }
+        val now = LocalDate.now()
+        val dayArgument = arguments?.getInt(DAY) ?: now.dayOfMonth
 
+        //Plus One for month argument because previous date pickers were based on the default Android Picker
+        val monthArgument = arguments?.getInt(MONTH)?.plus(1) ?: now.monthValue
+
+        val yearArgument = arguments?.getInt(YEAR) ?: now.year
+        val showAllMonths = arguments?.getBoolean(SHOWALLMONTHS) ?: true
+
+        val month = if (monthArgument in 1..12)
+            monthArgument
+        else {
+            Log.e("Date Picker Error", "Please provide a valid month (From 0..11)")
+            now.monthValue
+        }
+
+        val year = if (yearArgument > 0)
+            yearArgument
+        else {
+            Log.e("Date Picker Error", "Please provide a valid year (Should be more than 0)")
+            now.year
+        }
+
+        val lengthOfMonth = LocalDate.of(year, month, 1).lengthOfMonth()
+        val day = if ((showAllMonths && dayArgument in 1..lengthOfMonth) ||
+            (!showAllMonths && dayArgument in 1..31)
+        )
+            dayArgument
+        else {
+            Log.e("Date Picker Error", "Please provide a valid day of month between 1 and 28/31")
+            1
+        }
+
+        if (showAllMonths) {
+            val startMonth = YearMonth.of(year, month)
+            calendar_view.setupWithListeners(
+                startMonth,
+                startMonth,
+                listeners = this
+            )
+            calendar_view.scrollToSpecificDate(LocalDate.of(year, month, day))
+        } else {
+            calendar_view.setupMonthWithListeners(this)
+            calendar_view.scrollToSpecificDate(LocalDate.of(2017, 1, day))
         }
 
         ok.setOnClickListener {
-            mDay = mCalendarDay.day
-            mMonth = if (showAllMonths) mCalendarDay.date.monthValue else 13
-            mYear = if (showAllMonths) mCalendarDay.date.year else 0
-            dateSet.value = "$mDay/${(mMonth)}/$mYear"
+            mListener?.onDateSelected(
+                mCalendarDay.day,
+                if (showAllMonths) mCalendarDay.date.month.ordinal else 12,
+                if (showAllMonths) mCalendarDay.date.year else 0
+            )
             dismiss()
         }
         cancel.setOnClickListener {
@@ -77,11 +100,18 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
 
     }
 
+    fun setListener(listener: OnDateSelectedListener) {
+        mListener = listener
+    }
+
+    interface OnDateSelectedListener {
+        fun onDateSelected(day: Int, month: Int, year: Int)
+    }
+
     companion object {
-        var mDay = 0
-        var mMonth = 13
-        var mYear = 0
-        var dateSet = MutableLiveData<String>(null)
-        var showAllMonths = true
+        const val DAY = "DAY"
+        const val MONTH = "MONTH"
+        const val YEAR = "YEAR"
+        const val SHOWALLMONTHS = "SHOWALLMONTHSS"
     }
 }
