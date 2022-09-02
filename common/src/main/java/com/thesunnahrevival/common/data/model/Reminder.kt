@@ -66,12 +66,14 @@ data class Reminder(
             Frequency.Weekly -> {
                 day = -1 // day = 0 is reserved for non automatic prayer time daily reminders
             }
-            else -> {
-                day = 0
+            Frequency.Daily -> {
+                if (!isAutomaticPrayerTime())
+                    day = 0
             }
+            else -> {}
         }
 
-        if (frequency != Frequency.OneTime) {
+        if (frequency != Frequency.OneTime && !isAutomaticPrayerTime()) {
             month = 12
             year = 0
         }
