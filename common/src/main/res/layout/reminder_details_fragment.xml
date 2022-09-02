@@ -9,8 +9,23 @@
     <import type="android.view.View" />
 
     <variable
-        name="reminder"
-        type="com.thesunnahrevival.common.data.model.Reminder"
+        name="remindersName"
+        type="String"
+        />
+
+    <variable
+        name="reminderInfo"
+        type="String"
+        />
+
+    <variable
+        name="selectedFrequency"
+        type="int"
+        />
+
+    <variable
+        name="offsetInMinutes"
+        type="int"
         />
 
     <variable
@@ -83,7 +98,7 @@
               android:inputType="text"
               android:background="@android:color/transparent"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-              android:text="@{reminder.reminderName}"
+              android:text="@{remindersName}"
               />
 
 
@@ -194,7 +209,7 @@
           android:clickable="true"
           android:focusable="true"
           android:orientation="horizontal"
-          android:visibility="gone"
+          android:visibility="@{selectedFrequency == 0 || selectedFrequency == 3 ? View.VISIBLE : View.GONE}"
           tools:visibility="visible"
           >
 
@@ -239,7 +254,7 @@
           android:id="@+id/select_days"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:visibility="gone"
+          android:visibility="@{selectedFrequency == 2 ? View.VISIBLE : View.GONE}"
           tools:visibility="visible"
           android:orientation="horizontal"
           android:layout_marginTop="@dimen/default_dimen"
@@ -459,7 +474,7 @@
               android:id="@+id/change_prayer_time_offset_label"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{String.format(@string/change_prayer_time_offset_by, reminder.reminderName)}"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, reminderName)}"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
               android:textStyle="bold"
               tools:text="Change Asr Prayer Time By"
@@ -473,7 +488,7 @@
               android:importantForAutofill="no"
               android:inputType="numberSigned"
               android:background="@android:color/transparent"
-              android:text="@{String.valueOf(reminder.offsetInMinutes)}"
+              android:text="@{String.valueOf(offsetInMinutes)}"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
               />
         </LinearLayout>
@@ -520,7 +535,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/enter_additional_details"
-              android:text="@{reminder.reminderInfo}"
+              android:text="@{reminderInfo}"
               android:gravity="top|start"
               android:importantForAutofill="no"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
@@ -539,7 +554,7 @@
           android:layout_height="wrap_content"
           android:drawablePadding="8dp"
           android:paddingTop="@dimen/default_dimen"
-          android:visibility="@{reminder.reminderInfo.contains(&quot;href&quot;) || isAutomaticPrayerTime ? View.VISIBLE : View.GONE}"
+          android:visibility="@{reminderInfo.contains(&quot;href&quot;) || isAutomaticPrayerTime ? View.VISIBLE : View.GONE}"
           app:drawableStartCompat="@drawable/ic_info"
           tools:text="Some Information"
           />
