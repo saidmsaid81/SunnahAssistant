@@ -133,7 +133,7 @@
   <string name="add_or_delete_categories">إضافة أو حذف الفئة</string>
   <string name="successfuly_added_sunnah_reminders">تمت الإضافة بنجاح</string>
   <string name="sticky_notification_description">إشعار مثبت لعرض التذكير التالي</string>
-  <string name="dhuha_prayer">صلاة ظهر</string>
+  <string name="dhuha_prayer">صلاة الضحى</string>
   <string name="morning_adhkar">اذكار الصباح</string>
   <string name="evening_adhkar">أذكار المساء</string>
   <string name="tahajjud">صلاة التهجد</string>
