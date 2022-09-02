@@ -82,7 +82,6 @@
               android:layout_width="wrap_content"
               android:textStyle="bold"
               android:text="@string/reminder_name_label"
-              android:layout_marginTop="@dimen/default_dimen"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
 
               />
@@ -97,6 +96,7 @@
               android:background="@android:color/transparent"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
               android:text="@{remindersName}"
+              android:enabled="@{isAutomaticPrayerTime == true ? false : true}"
               />
 
 
@@ -146,6 +146,7 @@
               android:layout_width="match_parent"
               android:textSize="14sp"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.DropDownHint"
+              android:enabled="@{isAutomaticPrayerTime == true ? false : true}"
               tools:text="Weekly"
               />
         </LinearLayout>
@@ -194,6 +195,7 @@
               android:layout_width="match_parent"
               android:textSize="14sp"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.DropDownHint"
+              android:enabled="@{isAutomaticPrayerTime == true ? false : true}"
               tools:text="Uncategorized"
               />
         </LinearLayout>
@@ -219,7 +221,7 @@
             android:layout_gravity="center"
             android:paddingStart="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen"
-            android:src="@drawable/ic_today"
+            android:src="@drawable/ic_select_day"
             android:contentDescription="@string/date"
             />
 
@@ -267,7 +269,7 @@
             android:layout_gravity="center"
             android:paddingStart="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen"
-            android:src="@drawable/ic_today"
+            android:src="@drawable/ic_select_day"
             android:contentDescription="@string/select_days"
             />
 
@@ -340,6 +342,7 @@
               android:layout_height="wrap_content"
               android:textSize="14sp"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.DropDownHint"
+              android:enabled="@{isAutomaticPrayerTime == true ? false : true}"
               tools:text="09:45"
               />
         </LinearLayout>
@@ -365,7 +368,7 @@
             android:layout_gravity="center"
             android:paddingStart="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen"
-            android:src="@drawable/ic_notifications_on_alt"
+            android:src="@drawable/ic_notifications_on"
             android:contentDescription="@string/notify"
             />
 
@@ -452,9 +455,6 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}"
-          android:background="?android:attr/selectableItemBackground"
-          android:clickable="true"
-          android:focusable="true"
           android:layout_marginTop="@dimen/default_dimen"
           android:orientation="horizontal"
           >
@@ -480,7 +480,7 @@
               android:id="@+id/change_prayer_time_offset_label"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{String.format(@string/change_prayer_time_offset_by, reminderName)}"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, remindersName)}"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
               android:textStyle="bold"
               tools:text="Change Asr Prayer Time By"
@@ -529,7 +529,6 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:textStyle="bold"
-              android:layout_marginTop="@dimen/default_dimen"
               android:text="@string/more_details"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
               />
@@ -552,17 +551,32 @@
 
       </LinearLayout>
 
-      <TextView
-          android:id="@+id/tip"
-          android:layout_width="wrap_content"
+      <LinearLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:drawablePadding="8dp"
-          android:paddingTop="@dimen/default_dimen"
+          android:layout_marginTop="24dp"
           android:visibility="@{reminderInfo.contains(&quot;href&quot;) || isAutomaticPrayerTime ? View.VISIBLE : View.GONE}"
-          app:drawableStartCompat="@drawable/ic_info"
-          tools:text="Some Information"
-          />
+          android:orientation="horizontal"
+          >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_info"
+            android:paddingStart="@dimen/default_dimen"
+            android:paddingEnd="@dimen/default_dimen"
+            android:layout_gravity="center"
+            android:contentDescription="@string/info"
+            />
 
+
+        <TextView
+            android:id="@+id/tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            tools:text="Some Information"
+            />
+      </LinearLayout>
     </LinearLayout>
 
   </ScrollView>
