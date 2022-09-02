@@ -85,8 +85,9 @@ data class Reminder(
                 )
 
         }
-
     }
+
+    fun isAutomaticPrayerTime() = this.id in -1 downTo -999
 }
 
 class RemindersDiffCallback(
