@@ -226,13 +226,14 @@
   <string name="category_cannot_be_changed">Category for automatic prayer time cannot be changed</string>
   <string name="time_cannot_be_changed">Time for automatic prayer time cannot be changed</string>
   <string name="minutes">+/- minutes</string>
-  <string name="automatic_prayer_time_reminder">Automatic Prayer Time Reminder</string>
+  <string name="automatic_prayer_time_reminder">Automatic %s time reminder for %s</string>
   <string name="delete">Delete</string>
   <string name="delete_reminder_title">Delete Reminder</string>
   <string name="delete_reminder_confirmation">Do you really want to delete this Reminder?</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
   <string name="category_cannot_be_blank">Error! Category cannot be blank</string>
+  <string name="info">Info</string>
 
 
   <string-array name="categories">

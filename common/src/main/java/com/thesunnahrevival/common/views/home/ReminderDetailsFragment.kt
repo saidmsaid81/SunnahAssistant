@@ -73,7 +73,19 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
         if (mReminder.isAutomaticPrayerTime()) {
             mBinding.isAutomaticPrayerTime = true
-            mBinding.tip.text = getString(R.string.automatic_prayer_time_reminder)
+
+            val timeInMillis = GregorianCalendar.getInstance()
+                .apply { set(mReminder.year, mReminder.month, mReminder.day) }
+                .timeInMillis
+
+            val formattedDate = SimpleDateFormat("EEEE d MMMM, yyyy", getLocale())
+                .format(Date(timeInMillis))
+
+            mBinding.tip.text = getString(
+                R.string.automatic_prayer_time_reminder,
+                mReminder.reminderName,
+                formattedDate
+            )
         } else
             mBinding.isAutomaticPrayerTime = false
 
