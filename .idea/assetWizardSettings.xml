@@ -159,7 +159,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$PROJECT_DIR$/../../Sdk/icons/material/materialicons/wrap_text/baseline_wrap_text_24.xml" />
+                                      <entry key="url" value="file:$PROJECT_DIR$/../../Sdk/icons/material/materialicons/today/baseline_today_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -171,7 +171,7 @@
                           <map>
                             <entry key="autoMirrored" value="true" />
                             <entry key="color" value="aaaaaa" />
-                            <entry key="outputName" value="ic_additional_details" />
+                            <entry key="outputName" value="ic_select_day" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/ic_toggle_theme.svg" />
                           </map>
                         </option>
