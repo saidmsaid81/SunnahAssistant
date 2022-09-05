@@ -110,10 +110,12 @@
   <string name="today_s_reminder">تذكيرات اليوم</string>
   <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">التاريخ الهجري المستخدم في هذا التطبيق مبني على تقويم أم القرى. اقرأ المزيد على تقويم أم القرى هنا http://www.ummulqura.org.sa/default.aspx</string>
   <string name="read_more">اقرأ المزيد</string>
-  <string name="read_more_on_dhuha_prayer">اقرأ المزيد على صلاة الضحى وأفضل وقت للصلاة</string>
-  <string name="read_more_on_tahajjud_prayer">اقرأ المزيد على صلاة التهجد وأفضل وقت للصلاة</string>
-  <string name="read_more_on_suratul_kahf">اقرأ المزيد عن أهمية قراءة سورة الكهف كل يوم جمعة</string>
-  <string name="read_more_on_fasting_mondays_and_thursdays">اقرأ المزيد عن أهمية صيام يوم الإثنين والخميس</string>
+  <string name="read_more_on_dhuha_prayer">اضغط لتقرأ المزيد عن صلاة الضحى ووقتها وعدد ركعاتها</string>
+  <string name="read_more_on_tahajjud_prayer">اضغط لتقرأ المزيد عن صلاة التهجد ووقتها وعدد ركعاتها</string>
+  <string name="read_more_on_suratul_kahf">اضغط لقراءة المزيد عن أهمية قراءة سورة الكهف كل يوم جمعة</string>
+  <string name="read_more_on_fasting_mondays_and_thursdays">
+اضغط لقراءة المزيد عن أهمية صيام يومي الاثنين والخميس
+  </string>
   <string name="what_s_new">ما الجديد</string>
   <string name="create_new_categories">إنشاء فئة جديدة</string>
   <string name="important">هام</string>
@@ -197,7 +199,7 @@
   <string name="reminders">التذكيرات</string>
   <string name="developers_messages">رسائل مطوّر البرامج</string>
   <string name="developer_messages_description">قد يقوم المطور في بعض الأحيان بإرسال رسائل هامة فيما يتعلق بالتطبيق.</string>
-  <string name="share_message">شارك الرسالة</string>
+  <string name="share_message">شارك الصفحة</string>
   <string name="go_to_today">اذهب إلى اليوم</string>
   <string name="sunday_abbreviated">ح</string>
   <string name="monday_abbreviated">ن</string>

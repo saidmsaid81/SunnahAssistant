@@ -17,6 +17,10 @@
         name="reminderInfo"
         type="String"
         />
+    <variable
+        name="predefinedReminderInfo"
+        type="String"
+        />
 
     <variable
         name="selectedFrequency"
@@ -552,10 +556,14 @@
       </LinearLayout>
 
       <LinearLayout
+          android:id="@+id/tip_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="24dp"
-          android:visibility="@{reminderInfo.contains(&quot;href&quot;) || isAutomaticPrayerTime ? View.VISIBLE : View.GONE}"
+          android:visibility="@{predefinedReminderInfo != null || isAutomaticPrayerTime ? View.VISIBLE : View.GONE}"
+          android:background="?android:attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
           android:orientation="horizontal"
           >
         <ImageView

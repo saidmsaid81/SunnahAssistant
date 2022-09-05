@@ -88,17 +88,15 @@ fun openDeveloperPage(context: Context) {
 fun sunnahReminders(context: Context): ArrayList<Reminder> {
     val sunnah = context.resources.getStringArray(R.array.categories)[1]
     val listOfReminders = ArrayList<Reminder>()
+
     listOfReminders.add(
         createReminder(
             name = context.getString(R.string.dhuha_prayer),
             frequency = Frequency.Daily,
             category = sunnah,
             id = -1001,
-            info = "<a href=\"https://thesunnahrevival.wordpress.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips\"> ${
-                context.getString(
-                    R.string.read_more
-                )
-            }</a> ${context.getString(R.string.read_more_on_dhuha_prayer)}"
+            predefinedReminderInfo = context.getString(R.string.read_more_on_dhuha_prayer),
+            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips"
         )
     )
 
@@ -126,11 +124,8 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
             name = context.getString(R.string.tahajjud),
             category = sunnah,
             frequency = Frequency.Daily,
-            info = "<a href=\"https://thesunnahrevival.wordpress.com/2014/04/09/tahajjud/\">${
-                context.getString(
-                    R.string.read_more
-                )
-            }</a> ${context.getString(R.string.read_more_on_tahajjud_prayer)}"
+            predefinedReminderInfo = context.getString(R.string.read_more_on_tahajjud_prayer),
+            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2014/04/09/tahajjud"
         )
     )
 
@@ -149,11 +144,8 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         createReminder(
             id = -1006, name = context.getString(R.string.reading_suratul_kahf), category = sunnah,
             frequency = Frequency.Weekly, customScheduleList = listOfDays,
-            info = "<a href=\"https://thesunnahrevival.wordpress.com/2020/03/06/2769/\"> ${
-                context.getString(
-                    R.string.read_more
-                )
-            }</a> ${context.getString(R.string.read_more_on_suratul_kahf)}"
+            predefinedReminderInfo = context.getString(R.string.read_more_on_suratul_kahf),
+            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2020/03/06/2769"
         )
     )
 
@@ -167,13 +159,11 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
             category = sunnah,
             frequency = Frequency.Weekly,
             customScheduleList = listOfDays,
-            info = "<a href=\"https://thesunnahrevival.wordpress.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday/\">${
-                context.getString(
-                    R.string.read_more
-                )
-            }</a> ${context.getString(R.string.read_more_on_fasting_mondays_and_thursdays)}"
+            predefinedReminderInfo = context.getString(R.string.read_more_on_fasting_mondays_and_thursdays),
+            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday"
         )
     )
+
     return listOfReminders
 }
 
@@ -183,11 +173,13 @@ fun createReminder(
     category: String,
     customScheduleList: TreeSet<Int> = TreeSet(),
     id: Int = 0,
-    info: String = ""
+    predefinedReminderInfo: String = "",
+    predefinedReminderLink: String = ""
 ): Reminder {
     val day = if (frequency == Frequency.Daily) 0 else -1
     return Reminder(
-        reminderName = name, reminderInfo = info,
+        reminderName = name, predefinedReminderInfo = predefinedReminderInfo,
+        predefinedReminderLink = predefinedReminderLink,
         category = category, frequency = frequency, isEnabled = false,
         id = id, customScheduleDays = customScheduleList, day = day, month = 12, year = 0
     )

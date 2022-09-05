@@ -24,6 +24,7 @@ class ChangelogFragment : SunnahAssistantFragment() {
         val view = inflater.inflate(R.layout.changelog_layout, container, false)
 
 
+        //TODO update predefined reminders info
         mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
         mViewModel.settingsValue?.isAfterUpdate = false
         mViewModel.settingsValue?.categories?.add("Prayer")

@@ -21,7 +21,9 @@ data class Reminder(
     var offsetInMinutes: Int = 0,
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var customScheduleDays: TreeSet<Int>? = TreeSet(),
-    var isComplete: Boolean = false
+    var isComplete: Boolean = false,
+    var predefinedReminderInfo: String = "",
+    var predefinedReminderLink: String = ""
 ) {
 
     @Ignore
@@ -36,6 +38,10 @@ data class Reminder(
             category = null
         if (frequency == null) {
             frequency = Frequency.OneTime
+        }
+        if (id > 0) { //User defined reminder
+            predefinedReminderInfo = ""
+            predefinedReminderLink = ""
         }
 
         when (frequency) {
