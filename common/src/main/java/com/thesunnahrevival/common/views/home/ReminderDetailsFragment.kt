@@ -1,25 +1,33 @@
 package com.thesunnahrevival.common.views.home
 
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.*
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsClient
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
-import com.thesunnahrevival.common.utilities.daySuffixes
-import com.thesunnahrevival.common.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.common.utilities.getLocale
-import com.thesunnahrevival.common.utilities.getTimestampInSeconds
+import com.thesunnahrevival.common.utilities.*
 import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.dialogs.AddCategoryDialogFragment
 import com.thesunnahrevival.common.views.dialogs.DatePickerFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment
 import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
 import java.text.DateFormatSymbols
@@ -41,6 +49,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     private var mDay: Int = LocalDate.now().dayOfMonth
     private var mMonth: Int = LocalDate.now().month.ordinal
     private var mYear: Int = LocalDate.now().year
+    private var mShareIcon: Bitmap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +69,15 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     override fun onResume() {
         super.onResume()
 
+        CustomTabsClient.bindCustomTabsService(
+            requireContext(),
+            requireContext().packageName,
+            InAppBrowserConnection()
+        )
+        CoroutineScope(Dispatchers.Default).launch {
+            mShareIcon = BitmapFactory.decodeResource(resources, android.R.drawable.ic_menu_share)
+        }
+
         mReminder = mViewModel.selectedReminder
         (requireActivity() as MainActivity).supportActionBar?.setTitle(
             if (mReminder.id == 0)
@@ -70,6 +88,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.remindersName = mReminder.reminderName
         mBinding.reminderInfo = mReminder.reminderInfo
         mBinding.offsetInMinutes = mReminder.offsetInMinutes
+        mBinding.predefinedReminderInfo = mReminder.predefinedReminderInfo.ifBlank { null }
 
         if (mReminder.isAutomaticPrayerTime()) {
             mBinding.isAutomaticPrayerTime = true
@@ -104,7 +123,11 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateReminderCategoryView(mReminder.category)
         updateReminderTimeView(formatTimeInMilliseconds(context, mReminder.timeInMilliseconds))
         updateMarkAsCompleteView(if (mReminder.isComplete) 1 else 0)
+        if (mReminder.predefinedReminderInfo.isNotBlank())
+            mBinding.tip.text = mReminder.predefinedReminderInfo
 
+        if (Patterns.WEB_URL.matcher(mReminder.predefinedReminderLink).matches())
+            mBinding.tipView.setOnClickListener(this)
     }
 
     private fun updateReminderFrequencyView(frequencyOrdinal: Int) {
@@ -295,7 +318,40 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     R.id.mark_as_complete_value, R.id.mark_as_complete
                 )
             }
+            R.id.tip_view -> launchInAppBrowser()
         }
+    }
+
+    private fun launchInAppBrowser() {
+        val builder = CustomTabsIntent.Builder()
+
+        val actionIntent = Intent(
+            requireContext(), InAppBrowserBroadcastReceiver::class.java
+        )
+        actionIntent.putExtra(
+            Intent.EXTRA_REFERRER,
+            Uri.parse("android-app://" + requireContext().packageName)
+        );
+        actionIntent.putExtra(MESSAGE, mReminder.predefinedReminderInfo)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(), 0, actionIntent, 0
+        )
+        builder.addMenuItem(
+            getString(R.string.share_message),
+            pendingIntent
+        )
+
+        val shareIcon = mShareIcon
+        if (shareIcon != null)
+            builder.setActionButton(
+                shareIcon,
+                getString(R.string.share_message),
+                pendingIntent,
+                true
+            )
+        val customTabsIntent = builder.build()
+        customTabsIntent.launchUrl(requireContext(), Uri.parse(mReminder.predefinedReminderLink))
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -444,7 +500,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mReminder.id,
                 mCustomScheduleDays,
                 resources.getStringArray(R.array.mark_as_complete_options)
-                    .indexOf(mBinding.markAsCompleteValue.text) == 1
+                    .indexOf(mBinding.markAsCompleteValue.text) == 1,
+                mReminder.predefinedReminderInfo,
+                mReminder.predefinedReminderLink
             )
         } catch (exception: IllegalArgumentException) {
             Log.e("Exception", exception.toString())

@@ -96,6 +96,17 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL(
                     "ALTER TABLE reminders_table RENAME COLUMN offset TO offsetInMinutes"
                 )
+                database.execSQL(
+                    "ALTER TABLE reminders_table ADD COLUMN predefinedReminderInfo TEXT DEFAULT '' NOT NULL"
+                )
+                database.execSQL(
+                    "ALTER TABLE reminders_table ADD COLUMN predefinedReminderLink TEXT DEFAULT '' NOT NULL"
+                )
+
+                database.execSQL(
+                    "UPDATE reminders_table SET reminderInfo = ''" +
+                            " WHERE reminderInfo LIKE '%href%'"
+                )
 
                 /**
                  * This is just for precaution to prevent malformed reminders from triggering
@@ -153,10 +164,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                             " WHERE (day NOT BETWEEN 1 AND 31)" +
                             " AND frequency = 3 "
                 )
-
             }
         }
-
 
         fun getInstance(context: Context): SunnahAssistantDatabase =
             INSTANCE ?: synchronized(this) {
