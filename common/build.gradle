@@ -87,6 +87,9 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'
 
+    //In-app browser
+    implementation "androidx.browser:browser:1.4.0"
+
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
