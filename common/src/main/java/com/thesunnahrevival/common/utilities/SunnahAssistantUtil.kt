@@ -143,7 +143,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    val listOfDays = TreeSet<Int>()
+    var listOfDays = TreeSet<Int>()
     listOfDays.add(Calendar.FRIDAY)
     listOfReminders.add(
         createReminder(
@@ -157,7 +157,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    listOfDays.clear()
+    listOfDays = TreeSet<Int>()
     listOfDays.add(Calendar.SUNDAY)
     listOfDays.add(Calendar.WEDNESDAY)
     listOfReminders.add(
