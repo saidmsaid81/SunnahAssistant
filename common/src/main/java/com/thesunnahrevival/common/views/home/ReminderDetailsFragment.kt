@@ -13,8 +13,11 @@ import android.view.*
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
+import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
@@ -64,13 +67,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding = DataBindingUtil.inflate(
             inflater, R.layout.reminder_details_fragment, container, false
         )
-        setHasOptionsMenu(true)
-
-        return mBinding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         mReminder = mViewModel.selectedReminder
         (requireActivity() as MainActivity).supportActionBar?.setTitle(
@@ -79,10 +75,24 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             else
                 R.string.edit_reminder
         )
+
+        mCustomScheduleDays.clear()
+        mReminder.customScheduleDays?.let {
+            mCustomScheduleDays.addAll(it)
+        }
+
+        setHasOptionsMenu(true)
+
+        return mBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         mBinding.remindersName = mReminder.reminderName
         mBinding.reminderInfo = mReminder.reminderInfo
         mBinding.offsetInMinutes = mReminder.offsetInMinutes
-
+        mBinding.lifecycleOwner = viewLifecycleOwner
 
         if (mReminder.isAutomaticPrayerTime()) {
             mBinding.isAutomaticPrayerTime = true
@@ -102,15 +112,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         } else
             mBinding.isAutomaticPrayerTime = false
 
-        mBinding.lifecycleOwner = viewLifecycleOwner
-
-        mCustomScheduleDays.clear()
-        mReminder.customScheduleDays?.let {
-            mCustomScheduleDays.addAll(it)
-        }
-
         updateView()
     }
+
 
     private fun updateView() {
         updateReminderFrequencyView(mReminder.frequency?.ordinal ?: 0)
@@ -120,28 +124,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateTipView()
     }
 
-    private fun updateTipView() {
-        if (mReminder.predefinedReminderInfo.isNotBlank()) {
-            mViewModel.browserWithCustomTabs()
-            if (mViewModel.getBrowserPackageName() != null) {
-                CustomTabsClient.bindCustomTabsService(
-                    requireContext(),
-                    requireContext().packageName,
-                    InAppBrowserConnection()
-                )
-                CoroutineScope(Dispatchers.Default).launch {
-                    mShareIcon =
-                        BitmapFactory.decodeResource(resources, android.R.drawable.ic_menu_share)
-                }
-            }
-
-            mBinding.tip.text = mReminder.predefinedReminderInfo
-            if (Patterns.WEB_URL.matcher(mReminder.predefinedReminderLink).matches())
-                mBinding.tipView.setOnClickListener(this)
-
-        } else if (!mReminder.isAutomaticPrayerTime())
-            mBinding.tipView.visibility = View.GONE
-    }
 
     private fun updateReminderFrequencyView(frequencyOrdinal: Int) {
         mBinding.reminderFrequencyValue.text =
@@ -263,6 +245,29 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         val markAsCompleteString =
             resources.getStringArray(R.array.mark_as_complete_options)[markAsCompleteOption]
         updateMarkAsCompleteView(markAsCompleteString)
+    }
+
+    private fun updateTipView() {
+        if (mReminder.predefinedReminderInfo.isNotBlank()) {
+            mViewModel.browserWithCustomTabs()
+            if (mViewModel.getBrowserPackageName() != null) {
+                CustomTabsClient.bindCustomTabsService(
+                    requireContext(),
+                    requireContext().packageName,
+                    InAppBrowserConnection()
+                )
+                CoroutineScope(Dispatchers.Default).launch {
+                    mShareIcon =
+                        BitmapFactory.decodeResource(resources, android.R.drawable.ic_menu_share)
+                }
+            }
+
+            mBinding.tip.text = mReminder.predefinedReminderInfo
+            if (Patterns.WEB_URL.matcher(mReminder.predefinedReminderLink).matches())
+                mBinding.tipView.setOnClickListener(this)
+
+        } else if (!mReminder.isAutomaticPrayerTime())
+            mBinding.tipView.visibility = View.GONE
     }
 
     override fun onClick(v: View?) {
@@ -444,12 +449,16 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         return when (item.itemId) {
             R.id.delete_reminder -> {
                 if (mReminder.isAutomaticPrayerTime() || mReminder.id == 0) {
-                    isReminderDeleted = true
                     findNavController().navigateUp()
                 } else
                     deleteReminder()
                 true
             }
+            R.id.save_reminder -> {
+                saveReminder()
+                true
+            }
+
             else -> false
         }
     }
@@ -459,7 +468,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             .setTitle(R.string.delete_reminder_title)
             .setMessage(R.string.delete_reminder_confirmation)
             .setPositiveButton(R.string.yes) { _, _ ->
-                isReminderDeleted = true
                 mViewModel.delete(mReminder)
                 Toast.makeText(requireContext(), R.string.delete_reminder, Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
@@ -469,11 +477,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (isReminderDeleted)
-            return
-
+    private fun saveReminder() {
         val newReminder = createNewReminder() ?: return
 
         if (mReminder.isAutomaticPrayerTime()) { //Automatic prayer time
@@ -488,7 +492,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 )
                     .show()
             }
-            return
         }
 
         if (mReminder != newReminder) {
@@ -502,14 +505,25 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     requireContext(), R.string.successfully_updated, Toast.LENGTH_LONG
                 ).show()
         }
+        findNavController().navigateUp()
     }
 
     private fun createNewReminder(): Reminder? {
         val frequency = Frequency.values()[mBinding.selectedFrequency]
+        if (frequency == Frequency.Weekly && mCustomScheduleDays.isEmpty()) {
+            showSnackbar(R.string.select_atleast_one_day)
+            return null
+        }
+
+        val reminderName = mBinding.reminderNameValue.text.toString()
+        if (reminderName.isBlank()) {
+            showSnackbar(R.string.name_cannot_be_empty)
+            return null
+        }
 
         try {
             return Reminder(
-                mBinding.reminderNameValue.text.toString(),
+                reminderName,
                 mBinding.additionalDetails.text.toString(),
                 getTimestampInSeconds(requireContext(), mTimeString),
                 mBinding.reminderCategoryValue.text.toString(),
@@ -528,7 +542,25 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             )
         } catch (exception: IllegalArgumentException) {
             Log.e("Exception", exception.toString())
+            Toast.makeText(
+                requireContext(),
+                "An error occurred. Please try again. Error",
+                Toast.LENGTH_LONG
+            )
+                .show()
             return null
+        }
+    }
+
+    private fun showSnackbar(stringId: Int) {
+        Snackbar.make(
+            requireContext(),
+            mBinding.root,
+            getString(stringId),
+            LENGTH_SHORT
+        ).apply {
+            view.setBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.fabColor))
+            show()
         }
     }
 
