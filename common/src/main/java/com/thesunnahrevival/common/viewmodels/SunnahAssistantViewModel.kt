@@ -11,7 +11,7 @@ import com.thesunnahrevival.common.data.SunnahAssistantRepository.Companion.getI
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.GeocodingData
 import com.thesunnahrevival.common.data.model.Reminder
-import com.thesunnahrevival.common.utilities.NextReminderService
+import com.thesunnahrevival.common.services.NextReminderService
 import com.thesunnahrevival.common.utilities.getMonthNumber
 import com.thesunnahrevival.common.utilities.sunnahReminders
 import com.thesunnahrevival.common.utilities.supportedLocales

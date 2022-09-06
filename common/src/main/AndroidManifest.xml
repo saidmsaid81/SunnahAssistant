@@ -91,7 +91,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/hijri_date_widget_info" />
         </receiver>
-        <receiver android:name="com.thesunnahrevival.common.utilities.ReminderBroadcastReceiver">
+        <receiver android:name="com.thesunnahrevival.common.receivers.ReminderBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -99,10 +99,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.thesunnahrevival.common.utilities.InAppBrowserBroadcastReceiver" />
+        <receiver android:name="com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver" />
 
         <service
-            android:name="com.thesunnahrevival.common.utilities.NextReminderService"
+            android:name="com.thesunnahrevival.common.services.NextReminderService"
             android:exported="false" />
         <service
             android:name="com.thesunnahrevival.common.widgets.TodaysRemindersRemoteViewsService"

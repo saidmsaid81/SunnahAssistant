@@ -1,4 +1,4 @@
-package com.thesunnahrevival.common.utilities
+package com.thesunnahrevival.common.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context

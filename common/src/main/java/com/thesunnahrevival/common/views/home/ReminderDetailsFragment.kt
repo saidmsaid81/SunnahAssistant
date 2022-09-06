@@ -18,6 +18,9 @@ import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver
+import com.thesunnahrevival.common.receivers.MESSAGE
+import com.thesunnahrevival.common.services.InAppBrowserConnection
 import com.thesunnahrevival.common.utilities.*
 import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.MainActivity

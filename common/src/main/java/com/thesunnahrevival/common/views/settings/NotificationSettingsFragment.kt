@@ -16,7 +16,7 @@ import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.NotificationSettings
 import com.thesunnahrevival.common.databinding.NotificationSettingsBinding
-import com.thesunnahrevival.common.utilities.NextReminderService
+import com.thesunnahrevival.common.services.NextReminderService
 import com.thesunnahrevival.common.utilities.createReminderNotificationChannel
 import com.thesunnahrevival.common.utilities.deleteReminderNotificationChannel
 import com.thesunnahrevival.common.views.FragmentWithPopups
