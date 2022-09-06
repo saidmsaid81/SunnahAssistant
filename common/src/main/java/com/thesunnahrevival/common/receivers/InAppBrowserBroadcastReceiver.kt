@@ -19,7 +19,7 @@ class InAppBrowserBroadcastReceiver : BroadcastReceiver() {
                 Intent.EXTRA_TEXT,
                 "$message\n\n" +
                         "$url\n\n" +
-                        "Get Sunnah Assistant App at\n" +
+                        "${context.getString(R.string.get_sunnah_assistant)}\n" +
                         "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
             )
             val chooserIntent = Intent.createChooser(

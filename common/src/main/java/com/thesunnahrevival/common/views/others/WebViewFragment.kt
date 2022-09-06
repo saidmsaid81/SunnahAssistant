@@ -46,7 +46,11 @@ open class WebViewFragment : Fragment() {
                 intent.type = "text/plain"
                 intent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "${getLink()} \n\nSent from Sunnah Assistant App.\n\nGet Sunnah Assistant App at https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+                    "${getLink()} \n\n${getString(R.string.sent_from_sunnah_assistant_app)}\n\n${
+                        getString(
+                            R.string.get_sunnah_assistant
+                        )
+                    } https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
                 )
                 startActivity(
                     Intent.createChooser(
