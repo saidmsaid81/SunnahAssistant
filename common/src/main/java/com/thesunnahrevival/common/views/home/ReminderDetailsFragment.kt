@@ -19,7 +19,7 @@ import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver
-import com.thesunnahrevival.common.receivers.MESSAGE
+import com.thesunnahrevival.common.receivers.TEXTSUMMARY
 import com.thesunnahrevival.common.services.InAppBrowserConnection
 import com.thesunnahrevival.common.utilities.*
 import com.thesunnahrevival.common.views.FragmentWithPopups
@@ -334,11 +334,11 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         actionIntent.putExtra(
             Intent.EXTRA_REFERRER,
             Uri.parse("android-app://" + requireContext().packageName)
-        );
-        actionIntent.putExtra(MESSAGE, mReminder.predefinedReminderInfo)
+        )
+        actionIntent.putExtra(TEXTSUMMARY, mReminder.predefinedReminderInfo)
 
         val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(), 0, actionIntent, 0
+            requireContext(), 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT
         )
         builder.addMenuItem(
             getString(R.string.share_message),
