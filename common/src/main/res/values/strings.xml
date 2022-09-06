@@ -240,6 +240,7 @@
   <string name="completed">Completed</string>
   <string name="powered_by_sunnah_assistant">Powered by Sunnah Assistant App</string>
   <string name="get_sunnah_assistant">Get Sunnah Assistant App at</string>
+  <string name="sent_from_sunnah_assistant_app">Sent from Sunnah Assistant App.</string>
 
 
   <string-array name="categories">
