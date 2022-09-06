@@ -458,9 +458,55 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 saveReminder()
                 true
             }
+            R.id.share_reminder -> {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(
+                    Intent.EXTRA_TEXT, shareReminderText()
+                )
+                val chooserIntent = Intent.createChooser(
+                    shareIntent,
+                    getString(R.string.share_reminder)
+                )
+                requireContext().startActivity(chooserIntent)
+                true
+            }
 
             else -> false
         }
+    }
+
+    private fun shareReminderText(): String {
+
+        val reminderName = mBinding.reminderNameValue.text.toString()
+        val frequencies = resources.getStringArray(R.array.frequency)
+        val frequencyValue = mBinding.reminderFrequencyValue.text
+
+        val date = if (frequencies.indexOf(frequencyValue) == Frequency.OneTime.ordinal)
+            mBinding.reminderDateValue.text
+        else if (frequencies.indexOf(frequencyValue) == Frequency.Daily.ordinal)
+            frequencyValue
+        else if (frequencies.indexOf(frequencyValue) == Frequency.Weekly.ordinal)
+            mBinding.selectDaysValue.text
+        else if (frequencies.indexOf(frequencyValue) == Frequency.Monthly.ordinal)
+            mBinding.reminderDateValue.text
+        else
+            ""
+
+        val time = mBinding.reminderTimeValue.text
+        val category = mBinding.reminderCategoryValue.text
+        val completed = mBinding.markAsCompleteValue.text
+
+
+        return "${getString(R.string.reminder)}: $reminderName\n" +
+                "${getString(R.string.reminder_category)}: $category\n" +
+                "${getString(R.string.date)}: $date\n" +
+                "${getString(R.string.time_label)}: $time\n" +
+                "${getString(R.string.completed)}: $completed\n\n" +
+                "${getString(R.string.powered_by_sunnah_assistant)}\n" +
+                "Get Sunnah Assistant App at\n" +
+                "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+
     }
 
     private fun deleteReminder() {
