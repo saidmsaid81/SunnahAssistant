@@ -1,4 +1,4 @@
-package com.thesunnahrevival.common.utilities
+package com.thesunnahrevival.common.services
 
 import android.content.ComponentName
 import androidx.browser.customtabs.CustomTabsClient

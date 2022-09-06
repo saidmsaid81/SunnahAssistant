@@ -1,4 +1,4 @@
-package com.thesunnahrevival.common.utilities
+package com.thesunnahrevival.common.services
 
 import android.app.Notification
 import android.app.Service
@@ -12,6 +12,7 @@ import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase.Companion.
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.utilities.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

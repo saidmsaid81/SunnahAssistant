@@ -1,4 +1,4 @@
-package com.thesunnahrevival.common.utilities
+package com.thesunnahrevival.common.receivers
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -9,6 +9,10 @@ import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
 import com.thesunnahrevival.common.R
+import com.thesunnahrevival.common.services.NextReminderService
+import com.thesunnahrevival.common.utilities.ReminderManager
+import com.thesunnahrevival.common.utilities.createNotification
+import com.thesunnahrevival.common.utilities.updateHijriDateWidgets
 
 class ReminderBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
