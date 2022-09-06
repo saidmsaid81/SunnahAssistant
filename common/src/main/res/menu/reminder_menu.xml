@@ -2,8 +2,13 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
   <item
+      android:id="@+id/save_reminder"
+      android:title="@string/save"
+      app:showAsAction="ifRoom" />
+  <item
       android:id="@+id/delete_reminder"
       android:title="@string/delete"
-      app:showAsAction="always" />
+      app:showAsAction="never" />
+
 
 </menu>
