@@ -96,7 +96,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
             category = sunnah,
             id = -1001,
             predefinedReminderInfo = context.getString(R.string.read_more_on_dhuha_prayer),
-            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips"
+            predefinedReminderLink = "https://thesunnahrevival.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips"
         )
     )
 
@@ -125,7 +125,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
             category = sunnah,
             frequency = Frequency.Daily,
             predefinedReminderInfo = context.getString(R.string.read_more_on_tahajjud_prayer),
-            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2014/04/09/tahajjud"
+            predefinedReminderLink = "https://thesunnahrevival.com/2014/04/09/tahajjud"
         )
     )
 
@@ -145,7 +145,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
             id = -1006, name = context.getString(R.string.reading_suratul_kahf), category = sunnah,
             frequency = Frequency.Weekly, customScheduleList = listOfDays,
             predefinedReminderInfo = context.getString(R.string.read_more_on_suratul_kahf),
-            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2020/03/06/2769"
+            predefinedReminderLink = "https://thesunnahrevival.com/2020/03/06/2769"
         )
     )
 
@@ -160,7 +160,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
             frequency = Frequency.Weekly,
             customScheduleList = listOfDays,
             predefinedReminderInfo = context.getString(R.string.read_more_on_fasting_mondays_and_thursdays),
-            predefinedReminderLink = "https://thesunnahrevival.wordpress.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday"
+            predefinedReminderLink = "https://thesunnahrevival.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday"
         )
     )
 
