@@ -72,15 +72,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     override fun onResume() {
         super.onResume()
 
-        CustomTabsClient.bindCustomTabsService(
-            requireContext(),
-            requireContext().packageName,
-            InAppBrowserConnection()
-        )
-        CoroutineScope(Dispatchers.Default).launch {
-            mShareIcon = BitmapFactory.decodeResource(resources, android.R.drawable.ic_menu_share)
-        }
-
         mReminder = mViewModel.selectedReminder
         (requireActivity() as MainActivity).supportActionBar?.setTitle(
             if (mReminder.id == 0)
@@ -91,7 +82,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.remindersName = mReminder.reminderName
         mBinding.reminderInfo = mReminder.reminderInfo
         mBinding.offsetInMinutes = mReminder.offsetInMinutes
-        mBinding.predefinedReminderInfo = mReminder.predefinedReminderInfo.ifBlank { null }
+
 
         if (mReminder.isAutomaticPrayerTime()) {
             mBinding.isAutomaticPrayerTime = true
@@ -126,11 +117,30 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateReminderCategoryView(mReminder.category)
         updateReminderTimeView(formatTimeInMilliseconds(context, mReminder.timeInMilliseconds))
         updateMarkAsCompleteView(if (mReminder.isComplete) 1 else 0)
-        if (mReminder.predefinedReminderInfo.isNotBlank())
-            mBinding.tip.text = mReminder.predefinedReminderInfo
+        updateTipView()
+    }
 
-        if (Patterns.WEB_URL.matcher(mReminder.predefinedReminderLink).matches())
-            mBinding.tipView.setOnClickListener(this)
+    private fun updateTipView() {
+        if (mReminder.predefinedReminderInfo.isNotBlank()) {
+            mViewModel.browserWithCustomTabs()
+            if (mViewModel.getBrowserPackageName() != null) {
+                CustomTabsClient.bindCustomTabsService(
+                    requireContext(),
+                    requireContext().packageName,
+                    InAppBrowserConnection()
+                )
+                CoroutineScope(Dispatchers.Default).launch {
+                    mShareIcon =
+                        BitmapFactory.decodeResource(resources, android.R.drawable.ic_menu_share)
+                }
+            }
+
+            mBinding.tip.text = mReminder.predefinedReminderInfo
+            if (Patterns.WEB_URL.matcher(mReminder.predefinedReminderLink).matches())
+                mBinding.tipView.setOnClickListener(this)
+
+        } else if (!mReminder.isAutomaticPrayerTime())
+            mBinding.tipView.visibility = View.GONE
     }
 
     private fun updateReminderFrequencyView(frequencyOrdinal: Int) {
@@ -326,15 +336,19 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun launchInAppBrowser() {
-        val builder = CustomTabsIntent.Builder()
+        if (mViewModel.getBrowserPackageName() == null) {//No supported browser
+            val bundle = Bundle().apply {
+                putString("link", mReminder.predefinedReminderLink)
+            }
+            findNavController().navigate(R.id.webviewFragment, bundle)
+            return
+        }
 
+        val builder = CustomTabsIntent.Builder()
         val actionIntent = Intent(
             requireContext(), InAppBrowserBroadcastReceiver::class.java
         )
-        actionIntent.putExtra(
-            Intent.EXTRA_REFERRER,
-            Uri.parse("android-app://" + requireContext().packageName)
-        )
+
         actionIntent.putExtra(TEXTSUMMARY, mReminder.predefinedReminderInfo)
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -354,6 +368,11 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 true
             )
         val customTabsIntent = builder.build()
+        customTabsIntent.intent.setPackage(mViewModel.getBrowserPackageName())
+        customTabsIntent.intent.putExtra(
+            Intent.EXTRA_REFERRER,
+            Uri.parse("android-app://" + requireContext().packageName)
+        )
         customTabsIntent.launchUrl(requireContext(), Uri.parse(mReminder.predefinedReminderLink))
     }
 

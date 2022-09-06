@@ -6,22 +6,24 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import androidx.lifecycle.*
+import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.data.SunnahAssistantRepository.Companion.getInstance
 import com.thesunnahrevival.common.data.model.AppSettings
+import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.GeocodingData
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.services.NextReminderService
 import com.thesunnahrevival.common.utilities.getMonthNumber
+import com.thesunnahrevival.common.utilities.getPackageNameToUse
 import com.thesunnahrevival.common.utilities.sunnahReminders
 import com.thesunnahrevival.common.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
-import com.thesunnahrevival.common.R
-import com.thesunnahrevival.common.data.model.Frequency
 import java.time.LocalDate
+import java.util.*
+
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
@@ -39,6 +41,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var isPrayerSettingsUpdated = false
     private val mutableDateOfReminders = MutableLiveData<Long>()
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
+    private var browserPackageNameToUse: String? = null
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -257,5 +260,12 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             }
         }
     }
+
+    fun browserWithCustomTabs() {
+        if (browserPackageNameToUse == null)
+            browserPackageNameToUse = getPackageNameToUse(getApplication())
+    }
+
+    fun getBrowserPackageName() = browserPackageNameToUse
 
 }
