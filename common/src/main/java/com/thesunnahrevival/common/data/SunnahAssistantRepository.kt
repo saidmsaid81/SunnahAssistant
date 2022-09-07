@@ -67,14 +67,6 @@ class SunnahAssistantRepository private constructor(private val application: App
     suspend fun deletePrayerTimesData() =
         mReminderDao.deleteAllPrayerTimes(application.resources.getStringArray(R.array.categories)[2])
 
-    suspend fun setReminderIsEnabled(reminder: Reminder) {
-        val prayer = application.resources.getStringArray(R.array.categories)[2]
-        if (reminder.category?.matches(prayer.toRegex()) == true)
-            reminder.reminderName?.let { mReminderDao.setPrayerTimeEnabled(it, reminder.isEnabled) }
-        else
-            mReminderDao.setEnabled(reminder.id, reminder.isEnabled)
-    }
-
     fun thereRemindersOnDay(
         excludeCategory: String,
         dayOfWeek: String,
