@@ -57,10 +57,16 @@ class CalendarView : CalendarView {
         firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek,
         listeners: Listeners
     ) {
-
-        if (startMonth != null && endMonth != null)
-            setup(startMonth, endMonth, firstDayOfWeek)
-        else
+        if (startMonth != null && endMonth != null) {
+            if (startMonth.isBefore(YearMonth.of(1970, 1)) ||
+                startMonth.isAfter(YearMonth.of(2069, 12)) ||
+                endMonth.isBefore(YearMonth.of(1970, 1)) ||
+                endMonth.isAfter(YearMonth.of(2069, 12))
+            ) {
+                setup(YearMonth.now(), YearMonth.now(), firstDayOfWeek)
+            } else
+                setup(startMonth, endMonth, firstDayOfWeek)
+        } else
             setup(YearMonth.now(), YearMonth.now(), firstDayOfWeek)
 
         this.listeners = listeners
@@ -76,8 +82,15 @@ class CalendarView : CalendarView {
     }
 
     fun scrollToSpecificDate(localDate: LocalDate) {
-        scrollToDate(localDate)
-        selectedDate = localDate
+        val scrollToDate =
+            if (localDate.isBefore(LocalDate.of(1970, 1, 1)) ||
+                localDate.isAfter(LocalDate.of(2069, 12, 31))
+            )
+                LocalDate.now()
+            else
+                localDate
+        scrollToDate(scrollToDate)
+        selectedDate = scrollToDate
     }
 
     private fun bindHeaderToCalendar() {
