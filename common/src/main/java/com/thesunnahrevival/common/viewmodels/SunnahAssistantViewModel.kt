@@ -205,22 +205,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun scheduleReminder(reminder: Reminder) {
-        viewModelScope.launch(Dispatchers.IO) {
-            reminder.isEnabled = true
-            mRepository.setReminderIsEnabled(reminder)
-            startServiceFromCoroutine()
-        }
-    }
-
-    fun cancelScheduledReminder(reminder: Reminder) {
-        viewModelScope.launch(Dispatchers.IO) {
-            reminder.isEnabled = false
-            mRepository.setReminderIsEnabled(reminder)
-            startServiceFromCoroutine()
-        }
-
-    }
 
     private suspend fun startServiceFromCoroutine() {
         withContext(Dispatchers.Main) {
