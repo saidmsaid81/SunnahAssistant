@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.content.Context" />
+
         <import type="android.view.View" />
+
         <import type="com.thesunnahrevival.common.utilities.TimeDateUtil" />
 
-      <variable
-          name="reminder"
-          type="com.thesunnahrevival.common.data.model.Reminder"
-          />
         <variable
-            name="frequency"
-            type="int" />
+            name="reminder"
+            type="com.thesunnahrevival.common.data.model.Reminder" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -24,44 +21,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/margin_dimen"
         android:layout_marginEnd="@dimen/default_dimen"
-        app:cardCornerRadius="4dp"
+        app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/default_dimen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/next">
+        app:contentPadding="8dp">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/prayer_times_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="@dimen/margin_dimen"
-                android:layout_marginTop="2dp"
-                android:gravity="center"
-                android:src="@drawable/mosque"
-                android:visibility="invisible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+            <CheckBox
+                android:id="@+id/mark_as_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_dimen"
+                android:checked="@{reminder.complete}"
+                android:layout_gravity="center" />
 
             <LinearLayout
-                android:id="@+id/reminder_details"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/margin_dimen"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toStartOf="@+id/toggleButton"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/prayer_times_icon"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/reminder_title"
@@ -70,57 +52,76 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@{reminder.reminderName}"
+                    android:enabled="@{!reminder.complete}"
                     android:textAppearance="@android:style/TextAppearance.Material.Title"
-                    android:textSize="@dimen/title_text_size"
+                    android:textSize="@dimen/default_text_size"
                     tools:text="Fasting Ayyamul Beidh" />
 
-                <TextView
-                    android:id="@+id/reminder_upcoming_view"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="18sp"
-                    android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds) }"
-                    tools:text="Date" />
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/reminder_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="@{reminder.category + &quot;,&quot;}"
+                        android:enabled="@{!reminder.complete}"
+                        tools:text="Sunnah," />
 
-                <TextView
-                    android:id="@+id/reminder_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                    android:textSize="@dimen/default_text_size"
-                    android:text="@{reminder.category}"
-                    tools:text="Category" />
+                    <TextView
+                        android:id="@+id/reminder_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds) }"
+                        android:enabled="@{!reminder.complete}"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        tools:text="14:25" />
+
+                    <ImageView
+                        android:id="@+id/reminders_on"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="@{reminder.enabled ? View.VISIBLE : View.GONE}"
+                        android:layout_marginEnd="@dimen/margin_dimen"
+                        tools:visibility="visible"
+                        android:src="@drawable/ic_notifications_on"
+                        android:contentDescription="@string/reminder_on" />
+
+                    <ImageView
+                        android:id="@+id/reminders_off"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="@{TimeDateUtil.isReminderDisabled(context, reminder) ? View.VISIBLE : View.GONE}"
+                        tools:visibility="visible"
+                        android:src="@drawable/ic_notifications_off"
+                        android:layout_marginEnd="@dimen/margin_dimen"
+                        android:contentDescription="@string/reminder_off" />
+
+                    <ImageView
+                        android:id="@+id/repeat"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="@{reminder.frequency.ordinal() > 0 ? View.VISIBLE : View.GONE}"
+                        tools:visibility="visible"
+                        android:src="@drawable/ic_repeat"
+                        android:contentDescription="@string/repeating_reminder" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
-
-            <ToggleButton
-                android:id="@+id/toggleButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="@dimen/margin_dimen"
-                android:layout_marginEnd="@dimen/margin_dimen"
-                android:layout_marginBottom="@dimen/margin_dimen"
-                android:background="@drawable/toggle_selector"
-                android:textOff=""
-                android:textOn=""
-                android:checked="@{reminder.enabled}"
-                android:visibility="@{reminder.timeInMilliseconds == 172800000 ? View.INVISIBLE : View.VISIBLE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
-
 </layout>
+
 

@@ -1,4 +1,5 @@
 @file:JvmName("TimeDateUtil")
+
 package com.thesunnahrevival.common.utilities
 
 import android.content.Context
@@ -6,6 +7,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.thesunnahrevival.common.R
+import com.thesunnahrevival.common.data.model.Reminder
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -54,6 +56,12 @@ fun formatTimeInMilliseconds(context: Context?, timeInMilliseconds: Long): Strin
     return context?.getString(R.string.time_not_set) ?: "Time Not Set"
 }
 
+fun isReminderDisabled(context: Context?, reminder: Reminder): Boolean {
+    val timeInMilliseconds = formatTimeInMilliseconds(context, reminder.timeInMilliseconds)
+    return if (timeInMilliseconds == context?.getString(R.string.time_not_set)) false
+    else !reminder.isEnabled
+}
+
 fun calculateOffsetFromMidnight(): Long {
     val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     return try {
@@ -78,10 +86,11 @@ fun getTimestampInSeconds(context: Context, timeString: String?): Long {
 }
 
 fun getTimestampInSeconds(timeString: String?): Long {
-    val format = if (timeString?.contains("am".toRegex()) == false && !timeString.contains("pm".toRegex()))
-        SimpleDateFormat("HH:mm", Locale.ENGLISH)
-    else
-        SimpleDateFormat("hh:mm a", Locale.ENGLISH)
+    val format =
+        if (timeString?.contains("am".toRegex()) == false && !timeString.contains("pm".toRegex()))
+            SimpleDateFormat("HH:mm", Locale.ENGLISH)
+        else
+            SimpleDateFormat("hh:mm a", Locale.ENGLISH)
     return try {
         val date = format.parse(timeString ?: "null")
         (date?.time ?: 0) / 1000

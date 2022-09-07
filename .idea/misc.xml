@@ -32,7 +32,9 @@
         <entry key="common/src/main/res/drawable-night/ic_filter_list.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable-night/ic_info.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable-night/ic_notifications_off.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_notifications_on.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable-night/ic_web.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/toggle_selector.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/calendar_event_drawable.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/edit_text_background.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_add_reminder.xml" value="0.1215" />
@@ -54,6 +56,8 @@
         <entry key="common/src/main/res/drawable/ic_instagram.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_name.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_notifications_off.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_notifications_on.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_notifications_on_alt.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_repeat.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_select_day.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_telegram.xml" value="0.1215" />
@@ -64,8 +68,10 @@
         <entry key="common/src/main/res/drawable/selected_date_bg.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/today_date_bg.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/toggle_selector.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/toggle_selector_alt.xml" value="0.1215" />
         <entry key="common/src/main/res/layout/add_category_dialog_layout.xml" value="0.15864978902953586" />
         <entry key="common/src/main/res/layout/add_location_layout.xml" value="0.17119565217391305" />
+        <entry key="common/src/main/res/layout/reminder_card_view.xml" value="0.25" />
         <entry key="common/src/main/res/layout/reminder_details.xml" value="0.22" />
         <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
         <entry key="common/src/main/res/layout/reminder_details_fragment.xml" value="0.40040241448692154" />
