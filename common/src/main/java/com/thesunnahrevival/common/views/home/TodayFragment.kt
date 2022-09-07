@@ -20,8 +20,6 @@ import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.databinding.TodayFragmentBinding
 import com.thesunnahrevival.common.utilities.generateDateText
-import com.thesunnahrevival.common.utilities.updateHijriDateWidgets
-import com.thesunnahrevival.common.utilities.updateTodayRemindersWidgets
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.SwipeToDeleteCallback
 import com.thesunnahrevival.common.views.adapters.ReminderListAdapter
@@ -41,7 +39,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
     private lateinit var mBinding: TodayFragmentBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
     private var mAllReminders: ArrayList<Reminder> = arrayListOf()
-    private var isRescheduleAtLaunch = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,10 +112,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
     private fun setupTheRecyclerView() {
         //Setup the RecyclerView Adapter
         context?.let {
-            mReminderRecyclerAdapter = ReminderListAdapter(
-                it, mAppSettings?.isExpandedLayout
-                    ?: true
-            )
+            mReminderRecyclerAdapter = ReminderListAdapter(it)
             mReminderRecyclerAdapter.setOnItemClickListener(this)
 
             val reminderRecyclerView = mBinding.reminderList
@@ -246,21 +240,18 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         }
     }
 
-    override fun onToggleButtonClick(
+    override fun onMarkAsComplete(
         buttonView: CompoundButton,
         isChecked: Boolean,
         reminder: Reminder?
     ) {
-        if (reminder != null && (buttonView.isPressed || isRescheduleAtLaunch)) {
-            if (isChecked) {
-                mViewModel.scheduleReminder(reminder)
-            } else {
-                mViewModel.cancelScheduledReminder(reminder)
-            }
+        if (reminder != null && buttonView.isPressed) {
+            reminder.isComplete = isChecked
+            mViewModel.addReminder(reminder)
         }
-        isRescheduleAtLaunch = false
-        updateHijriDateWidgets(context)
-        updateTodayRemindersWidgets(context)
+
+//        updateHijriDateWidgets(context)
+//        updateTodayRemindersWidgets(context)
     }
 
     override fun openBottomSheet(v: View, reminder: Reminder?) {

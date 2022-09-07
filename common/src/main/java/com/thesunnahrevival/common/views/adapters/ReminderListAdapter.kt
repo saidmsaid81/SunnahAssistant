@@ -1,19 +1,16 @@
 package com.thesunnahrevival.common.views.adapters
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.data.model.RemindersDiffCallback
-import com.thesunnahrevival.common.databinding.AltReminderCardViewBinding
 import com.thesunnahrevival.common.databinding.ReminderCardViewBinding
 import com.thesunnahrevival.common.views.interfaces.OnDeleteReminderListener
 import com.thesunnahrevival.common.views.interfaces.ReminderItemInteractionListener
@@ -22,7 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: Boolean) :
+class ReminderListAdapter(val context: Context) :
     RecyclerView.Adapter<ReminderListAdapter.ViewHolder>() {
     private var mAllReminders: List<Reminder> = ArrayList()
     private var mListener: ReminderItemInteractionListener? = null
@@ -31,13 +28,9 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         mLayoutInflater = LayoutInflater.from(context)
-        val layoutId: Int = if (mIsExpandedLayout)
-            R.layout.reminder_card_view
-        else
-            R.layout.alt_reminder_card_view
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+        val binding = DataBindingUtil.inflate<ReminderCardViewBinding>(
             mLayoutInflater,
-            layoutId, viewGroup, false
+            R.layout.reminder_card_view, viewGroup, false
         )
         return ViewHolder(binding)
     }
@@ -59,7 +52,6 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
                 diffResult.dispatchUpdatesTo(this@ReminderListAdapter)
             }
         }
-
     }
 
     /**
@@ -80,49 +72,23 @@ class ReminderListAdapter(val context: Context, private val mIsExpandedLayout: B
     /**
      * Inner Class
      */
-    inner class ViewHolder(private val binding: ViewDataBinding) :
+    inner class ViewHolder(private val binding: ReminderCardViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(reminder: Reminder) {
-            binding.setVariable(BR.reminder, reminder)
-            if (binding is ReminderCardViewBinding) {
-                if (reminder.category?.matches(
-                        context.getString(R.string.prayer).toRegex()
-                    ) == true
+            binding.reminder = reminder
+            if (reminder.isComplete)
+                binding.reminderTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            else
+                binding.reminderTitle.paintFlags = 0
+            binding.cardView.setOnClickListener { view: View ->
+                mListener?.openBottomSheet(
+                    view,
+                    reminder
                 )
-                    binding.prayerTimesIcon.visibility = View.VISIBLE
-                else
-                    binding.prayerTimesIcon.visibility = View.INVISIBLE
-
-                binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
-                    mListener?.onToggleButtonClick(
-                        buttonView,
-                        isChecked,
-                        reminder
-                    )
-                }
-                binding.cardView.setOnClickListener { view: View ->
-                    mListener?.openBottomSheet(
-                        view,
-                        reminder
-                    )
-                }
-            } else if (binding is AltReminderCardViewBinding) {
-                binding.toggleButton.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
-                    mListener?.onToggleButtonClick(
-                        buttonView,
-                        isChecked,
-                        reminder
-                    )
-                }
-                binding.cardView.setOnClickListener { view: View ->
-                    mListener?.openBottomSheet(
-                        view,
-                        reminder
-                    )
-                }
+            }
+            binding.markAsComplete.setOnCheckedChangeListener { buttonView, isChecked ->
+                mListener?.onMarkAsComplete(buttonView, isChecked, reminder)
             }
         }
-
     }
-
 }
