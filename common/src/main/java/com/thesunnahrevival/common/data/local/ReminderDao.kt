@@ -14,7 +14,7 @@ interface ReminderDao {
     @Delete
     suspend fun deleteReminder(reminder: Reminder)
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY timeInSeconds")
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')  ORDER BY isComplete, timeInSeconds")
     fun getRemindersOnDay(
         numberOfTheWeekDay: String,
         day: Int,
@@ -41,9 +41,6 @@ interface ReminderDao {
 
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder>
-
-    @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE id ==:id")
-    suspend fun setEnabled(id: Int, isEnabled: Boolean)
 
     @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE reminderName ==:prayerName")
     suspend fun setPrayerTimeEnabled(prayerName: String, isEnabled: Boolean)
