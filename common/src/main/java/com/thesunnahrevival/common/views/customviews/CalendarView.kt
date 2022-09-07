@@ -89,8 +89,9 @@ class CalendarView : CalendarView {
                 LocalDate.now()
             else
                 localDate
-        scrollToDate(scrollToDate)
         selectedDate = scrollToDate
+        scrollToDate(scrollToDate)
+
     }
 
     private fun bindHeaderToCalendar() {
@@ -134,8 +135,11 @@ class CalendarView : CalendarView {
                         else {
                             container.goToToday.visibility = View.VISIBLE
                             container.goToToday.setOnClickListener {
-                                selectedDate = LocalDate.now()
-                                scrollToDate(LocalDate.now())
+                                val currentSelection = selectedDate
+                                scrollToSpecificDate(LocalDate.now())
+                                if (currentSelection != null) {
+                                    notifyDateChanged(currentSelection)
+                                }
                             }
                         }
                         if (!finishedUpdatingMonthRange)
