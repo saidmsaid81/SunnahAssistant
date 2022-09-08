@@ -120,13 +120,13 @@ class CalendarView : CalendarView {
 
                         container.prevMonth.setOnClickListener {
                             findFirstVisibleMonth()?.let {
-                                smoothScrollToMonth(it.yearMonth.previous)
+                                scrollToMonth(it.yearMonth.previous)
                             }
                         }
 
                         container.nextMonth.setOnClickListener {
                             findFirstVisibleMonth()?.let {
-                                smoothScrollToMonth(it.yearMonth.next)
+                                scrollToMonth(it.yearMonth.next)
                             }
                         }
 
