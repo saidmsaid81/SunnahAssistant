@@ -8,7 +8,6 @@ import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -58,7 +57,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
     }
 
     private fun getSettings() {
-        mViewModel.getSettings().observe(viewLifecycleOwner, Observer { settings: AppSettings? ->
+        mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings != null) {
                 mAppSettings = settings
 
@@ -85,7 +84,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
                 setupTheRecyclerView()
             }
-        })
+        }
     }
 
     private fun setupTheRecyclerView() {
@@ -95,7 +94,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
         val reminderRecyclerView = mBinding.reminderList
         reminderRecyclerView.adapter = mReminderRecyclerAdapter
-        reminderRecyclerView.itemAnimator = null
 
         mReminderRecyclerAdapter.setDeleteReminderListener(this)
 
