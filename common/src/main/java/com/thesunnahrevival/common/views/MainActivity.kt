@@ -25,6 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import kotlin.random.Random
 
 
@@ -83,7 +84,13 @@ open class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 if (settings != null) {
+                    if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
+                        viewModel.localeUpdate()
+                    }
                     applySettings(settings)
+                    //Safe to call every time the app launches
+                    // prayer times will only be generated once a month
+                    viewModel.updateGeneratedPrayerTimes(settings)
                 }
             }
         }
@@ -97,9 +104,13 @@ open class MainActivity : AppCompatActivity() {
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
 
-        if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0) {
+        if (settings.isFirstLaunch)
+            findNavController(R.id.myNavHostFragment).navigate(R.id.welcomeFragment)
+        else if (settings.isAfterUpdate)
+            findNavController(R.id.myNavHostFragment).navigate(R.id.changelogFragment)
+        else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0)
             checkForUpdates(activity)
-        } else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
+        else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
             val random = Random.nextInt(1, 5)
             //Work-around to get the active fragment
             val navHostFragment: Fragment? = supportFragmentManager
@@ -122,7 +133,6 @@ open class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-
         }
     }
 
