@@ -60,29 +60,34 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings != null) {
                 mAppSettings = settings
+                setupTheRecyclerView()
 
                 if (this !is CalendarFragment) {
                     mViewModel.settingsValue = settings
 
-                    if (settings.isDisplayHijriDate) {
-                        mBinding.hijriDate.text = HtmlCompat.fromHtml(
-                            getString(R.string.hijri_date, generateDateText()),
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                        mBinding.hijriDate.visibility = View.VISIBLE
-                    }
+                    when {
+                        settings.isFirstLaunch -> findNavController().navigate(R.id.welcomeFragment)
+                        settings.isAfterUpdate -> findNavController().navigate(R.id.changelogFragment)
+                        else -> {
+                            if (settings.isDisplayHijriDate) {
+                                mBinding.hijriDate.text = HtmlCompat.fromHtml(
+                                    getString(R.string.hijri_date, generateDateText()),
+                                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                                )
+                                mBinding.hijriDate.visibility = View.VISIBLE
+                            }
 
-                    if (!settings.isFirstLaunch && settings.showOnBoardingTutorial) {
-                        showOnBoardingTutorial(
-                            (activity as MainActivity), mReminderRecyclerAdapter,
-                            mBinding.reminderList
-                        )
-                        settings.showOnBoardingTutorial = false
-                        mViewModel.updateSettings(settings)
+                            if (!settings.isFirstLaunch && settings.showOnBoardingTutorial) {
+                                showOnBoardingTutorial(
+                                    (activity as MainActivity), mReminderRecyclerAdapter,
+                                    mBinding.reminderList
+                                )
+                                settings.showOnBoardingTutorial = false
+                                mViewModel.updateSettings(settings)
+                            }
+                        }
                     }
                 }
-
-                setupTheRecyclerView()
             }
         }
     }
