@@ -11,4 +11,5 @@
   <color name="calendar_bg_color">#FFFFFF</color>
   <color name="today_bg_color">#BFBDBD</color>
   <color name="calendar_day_bg_color">#FBFBFB</color>
+  <color name="bottomNavigationColor">#F5F5F5</color>
 </resources>
