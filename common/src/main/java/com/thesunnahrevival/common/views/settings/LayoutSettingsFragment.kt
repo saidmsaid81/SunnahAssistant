@@ -23,7 +23,6 @@ class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         val binding: DisplaySettingsBinding = DataBindingUtil.inflate(
             inflater, R.layout.display_settings, container, false
         )
-        binding.layoutSettings.setOnClickListener(this)
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
             binding.themeSettings.setOnClickListener(this)
 
@@ -38,10 +37,6 @@ class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.layout_settings -> showPopup(
-                resources.getStringArray(R.array.layout_options),
-                R.id.layout, R.id.layout_settings
-            )
             R.id.theme_settings -> showPopup(
                 resources.getStringArray(R.array.theme_options),
                 R.id.theme,
@@ -62,12 +57,6 @@ class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
                     mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
-                true
-            }
-            R.id.layout_settings -> {
-                mViewModel.settingsValue?.isExpandedLayout =
-                    (item.title.toString().matches("Expanded View".toRegex()))
-                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
                 true
             }
             else -> false

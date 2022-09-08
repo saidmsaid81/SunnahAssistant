@@ -38,8 +38,6 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), PopupMenu.OnMenuItem
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             menu.findItem(R.id.dark_mode_switch).isVisible = false
         }
-        if (mAppSettings?.isExpandedLayout == false)
-            menu.findItem(R.id.layout).title = requireContext().getString(R.string.default_display_of_data)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -56,12 +54,6 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), PopupMenu.OnMenuItem
                     mAppSettings?.isLightMode = !status
                     mAppSettings?.let { mViewModel.updateSettings(it) }
                     return true
-                }
-                R.id.layout -> {
-                    val status = mAppSettings?.isExpandedLayout ?: true
-                    mAppSettings?.isExpandedLayout = !status
-                    mAppSettings?.let { mViewModel.updateSettings(it) }
-                    startActivity(Intent(context, MainActivity::class.java))
                 }
                 R.id.settings -> {
                     findNavController().navigate(R.id.settingsListFragment, null)
