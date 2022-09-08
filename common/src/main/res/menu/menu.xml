@@ -23,12 +23,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/layout"
-        android:icon="@drawable/ic_filter_list"
-        android:title="@string/alternate_display_of_data"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/share_app"
         android:icon="@drawable/ic_share"
         android:title="@string/share_app"

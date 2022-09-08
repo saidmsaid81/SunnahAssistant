@@ -72,6 +72,7 @@
         <entry key="common/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="common/src/main/res/layout/add_category_dialog_layout.xml" value="0.15864978902953586" />
         <entry key="common/src/main/res/layout/add_location_layout.xml" value="0.17119565217391305" />
+        <entry key="common/src/main/res/layout/display_settings.xml" value="0.15864978902953586" />
         <entry key="common/src/main/res/layout/reminder_card_view.xml" value="0.25" />
         <entry key="common/src/main/res/layout/reminder_details.xml" value="0.22" />
         <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
