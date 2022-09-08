@@ -14,10 +14,7 @@ import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.GeocodingData
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.services.NextReminderService
-import com.thesunnahrevival.common.utilities.getMonthNumber
-import com.thesunnahrevival.common.utilities.getPackageNameToUse
-import com.thesunnahrevival.common.utilities.sunnahReminders
-import com.thesunnahrevival.common.utilities.supportedLocales
+import com.thesunnahrevival.common.utilities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -52,8 +49,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun delete(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.deleteReminder(reminder)
-            startServiceFromCoroutine()
             withContext(Dispatchers.Main) {
+                startService()
+                updateWidgets()
                 triggerCalendarUpdate.value = true
             }
         }
@@ -64,8 +62,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             val id = mRepository.addReminder(reminder)
             reminder.id = id.toInt()
             selectedReminder = reminder
-            startServiceFromCoroutine()
             withContext(Dispatchers.Main) {
+                startService()
+                updateWidgets()
                 triggerCalendarUpdate.value = true
             }
         }
@@ -91,7 +90,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)
-            startServiceFromCoroutine()
+            withContext(Dispatchers.Main) {
+                startService()
+                updateWidgets()
+            }
         }
     }
 
@@ -106,9 +108,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             if (isLoadFreshData(settings.month)) {
                 if (settings.isAutomatic) {
                     mRepository.updateGeneratedPrayerTimes(
-                            settings.latitude, settings.longitude,
-                            settings.calculationMethod, settings.asrCalculationMethod,
-                            settings.latitudeAdjustmentMethod)
+                        settings.latitude, settings.longitude,
+                        settings.calculationMethod, settings.asrCalculationMethod,
+                        settings.latitudeAdjustmentMethod
+                    )
                     //Save the Month in User Settings to prevent re-fetching the data the current month
                     settings.month = getMonthNumber(System.currentTimeMillis())
                     updateSettings(settings)
@@ -128,15 +131,18 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     val isDeviceOffline: Boolean
         get() {
             val connectivityManager = getApplication<Application>().applicationContext
-                    .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             return connectivityManager.activeNetworkInfo == null ||
                     !connectivityManager.activeNetworkInfo!!.isConnected
         }
 
     fun getGeocodingData(address: String) {
-        val unavailableLocationString = getApplication<Application>().getString(R.string.unavailable_location)
-        val serverError: String = getApplication<Application>().getString(R.string.server_error_occured)
-        val noNetworkString = getApplication<Application>().getString(R.string.error_updating_location)
+        val unavailableLocationString =
+            getApplication<Application>().getString(R.string.unavailable_location)
+        val serverError: String =
+            getApplication<Application>().getString(R.string.server_error_occured)
+        val noNetworkString =
+            getApplication<Application>().getString(R.string.error_updating_location)
 
         viewModelScope.launch(Dispatchers.IO) {
             val data = mRepository.getGeocodingData(address, settingsValue?.language ?: "en")
@@ -162,7 +168,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             }
 
             withContext(Dispatchers.Main) {
-               messages.value = message
+                messages.value = message
             }
         }
 
@@ -188,8 +194,11 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 mRepository.deletePrayerTimesData()
                 if (settings.isAutomatic) {
                     mRepository.generatePrayerTimes(
-                            settings.latitude, settings.longitude, settings.calculationMethod, settings.asrCalculationMethod,
-                            settings.latitudeAdjustmentMethod
+                        settings.latitude,
+                        settings.longitude,
+                        settings.calculationMethod,
+                        settings.asrCalculationMethod,
+                        settings.latitudeAdjustmentMethod
                     )
                 }
                 updateSettings(settings)
@@ -205,33 +214,46 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    private fun startService() {
+        getApplication<Application>().startService(
+            Intent(
+                getApplication(),
+                NextReminderService::class.java
+            )
+        )
+    }
 
-    private suspend fun startServiceFromCoroutine() {
-        withContext(Dispatchers.Main) {
-            getApplication<Application>().startService(Intent(getApplication(), NextReminderService::class.java))
-        }
+    private fun updateWidgets() {
+        updateHijriDateWidgets(getApplication())
+        updateTodayRemindersWidgets(getApplication())
     }
 
     fun localeUpdate() {
         if (supportedLocales.contains(Locale.getDefault().language)) {
-            val  configuration = Configuration(getApplication<Application>().applicationContext.resources.configuration)
+            val configuration =
+                Configuration(getApplication<Application>().applicationContext.resources.configuration)
             configuration.setLocale(Locale(settingsValue?.language ?: "en"))
 
             val oldCategoryNames = getApplication<Application>().applicationContext
-                    .createConfigurationContext(configuration)
-                    .resources
-                    .getStringArray(R.array.categories)
+                .createConfigurationContext(configuration)
+                .resources
+                .getStringArray(R.array.categories)
 
             val newCategoryNames = mutableListOf<String>()
-            newCategoryNames.addAll(( getApplication<Application>().resources.getStringArray(R.array.categories)))
+            newCategoryNames.addAll((getApplication<Application>().resources.getStringArray(R.array.categories)))
             val reminders = sunnahReminders(getApplication())
 
-            viewModelScope.launch(Dispatchers.IO){
-                for ((index, oldCategoryName) in oldCategoryNames.withIndex()){
+            viewModelScope.launch(Dispatchers.IO) {
+                for ((index, oldCategoryName) in oldCategoryNames.withIndex()) {
                     mRepository.updateCategory(oldCategoryName, newCategoryNames[index])
                 }
-                for (reminder in reminders){
-                    mRepository.updateReminder(reminder.id, reminder.reminderName, reminder.reminderInfo, reminder.category)
+                for (reminder in reminders) {
+                    mRepository.updateReminder(
+                        reminder.id,
+                        reminder.reminderName,
+                        reminder.reminderInfo,
+                        reminder.category
+                    )
                 }
                 updatePrayerTimesData()
                 settingsValue?.language = Locale.getDefault().language
