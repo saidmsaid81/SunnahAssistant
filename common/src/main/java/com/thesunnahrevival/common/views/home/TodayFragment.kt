@@ -31,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.util.*
 
 open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
     ReminderItemInteractionListener {
@@ -51,7 +50,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         )
         setHasOptionsMenu(true)
 
-        mBinding.lifecycleOwner = this
+        mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.reminderInteractionListener = this
         getSettings()
 
@@ -61,17 +60,10 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
     private fun getSettings() {
         mViewModel.getSettings().observe(viewLifecycleOwner, Observer { settings: AppSettings? ->
             if (settings != null) {
-                setupTheRecyclerView()
+                mAppSettings = settings
 
                 if (this !is CalendarFragment) {
                     mViewModel.settingsValue = settings
-                    if (settings.isFirstLaunch) {
-                        findNavController().navigate(R.id.welcomeFragment)
-                        return@Observer
-                    } else if (settings.isAfterUpdate) {
-                        findNavController().navigate(R.id.changelogFragment)
-                        return@Observer
-                    }
 
                     if (settings.isDisplayHijriDate) {
                         mBinding.hijriDate.text = HtmlCompat.fromHtml(
@@ -81,10 +73,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                         mBinding.hijriDate.visibility = View.VISIBLE
                     }
 
-                    //Safe to call every time the app launches prayer times will only be generated once a month
-                    mViewModel.updateGeneratedPrayerTimes(settings)
-
-                    if (settings.showOnBoardingTutorial) {
+                    if (!settings.isFirstLaunch && settings.showOnBoardingTutorial) {
                         showOnBoardingTutorial(
                             (activity as MainActivity), mReminderRecyclerAdapter,
                             mBinding.reminderList
@@ -94,37 +83,25 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                     }
                 }
 
-                if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
-                    mViewModel.localeUpdate()
-                }
-
-                mAppSettings = settings
-
-                mViewModel.setDateOfReminders(System.currentTimeMillis())
-                mViewModel.getReminders()
-                    .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
-                        displayTheReminders(reminders as ArrayList<Reminder>)
-                    }
+                setupTheRecyclerView()
             }
         })
     }
 
     private fun setupTheRecyclerView() {
         //Setup the RecyclerView Adapter
-        context?.let {
-            mReminderRecyclerAdapter = ReminderListAdapter(it)
-            mReminderRecyclerAdapter.setOnItemClickListener(this)
+        mReminderRecyclerAdapter = ReminderListAdapter(requireContext())
+        mReminderRecyclerAdapter.setOnItemClickListener(this)
 
-            val reminderRecyclerView = mBinding.reminderList
-            reminderRecyclerView.adapter = mReminderRecyclerAdapter
-            reminderRecyclerView.itemAnimator = null
+        val reminderRecyclerView = mBinding.reminderList
+        reminderRecyclerView.adapter = mReminderRecyclerAdapter
+        reminderRecyclerView.itemAnimator = null
 
-            mReminderRecyclerAdapter.setDeleteReminderListener(this)
+        mReminderRecyclerAdapter.setDeleteReminderListener(this)
 
-            //Set the swipe to delete action
-            val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
-            itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
-        }
+        //Set the swipe to delete action
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
+        itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
 
         mViewModel.getStatusOfAddingListOfReminders().observe(viewLifecycleOwner) {
             if (!it) {
@@ -135,6 +112,12 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                 mBinding.progressBar.visibility = View.GONE
             }
         }
+
+        mViewModel.setDateOfReminders(System.currentTimeMillis())
+        mViewModel.getReminders()
+            .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
+                displayTheReminders(reminders as ArrayList<Reminder>)
+            }
     }
 
     private fun displayTheReminders(data: ArrayList<Reminder>?) {
@@ -198,12 +181,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        //Save the spinner position which will be used when the app is launched again
-        mAppSettings?.let { mViewModel.updateSettings(it) }
-    }
-
     override fun deleteReminder(position: Int) {
         val mDeletedReminder = mAllReminders[position]
         val prayer = resources.getStringArray(R.array.categories)[2]
@@ -249,9 +226,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
             reminder.isComplete = isChecked
             mViewModel.addReminder(reminder)
         }
-
-//        updateHijriDateWidgets(context)
-//        updateTodayRemindersWidgets(context)
     }
 
     override fun openBottomSheet(v: View, reminder: Reminder?) {
