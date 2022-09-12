@@ -12,8 +12,7 @@ import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.data.model.RemindersDiffCallback
 import com.thesunnahrevival.common.databinding.ReminderCardViewBinding
-import com.thesunnahrevival.common.views.interfaces.OnDeleteReminderListener
-import com.thesunnahrevival.common.views.interfaces.ReminderItemInteractionListener
+import com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +23,6 @@ class ReminderListAdapter(val context: Context) :
     private var mAllReminders: List<Reminder> = ArrayList()
     private var mListener: ReminderItemInteractionListener? = null
     private lateinit var mLayoutInflater: LayoutInflater
-    private var mDeleteReminderListener: OnDeleteReminderListener? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         mLayoutInflater = LayoutInflater.from(context)
@@ -61,12 +59,8 @@ class ReminderListAdapter(val context: Context) :
         mListener = listener
     }
 
-    fun setDeleteReminderListener(deleteReminderListener: OnDeleteReminderListener) {
-        mDeleteReminderListener = deleteReminderListener
-    }
-
     fun deleteReminder(position: Int) {
-        mDeleteReminderListener?.deleteReminder(position)
+        mListener?.onSwipeToDelete(position)
     }
 
     /**

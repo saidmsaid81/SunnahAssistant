@@ -22,8 +22,7 @@ import com.thesunnahrevival.common.utilities.generateDateText
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.SwipeToDeleteCallback
 import com.thesunnahrevival.common.views.adapters.ReminderListAdapter
-import com.thesunnahrevival.common.views.interfaces.OnDeleteReminderListener
-import com.thesunnahrevival.common.views.interfaces.ReminderItemInteractionListener
+import com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener
 import com.thesunnahrevival.common.views.showOnBoardingTutorial
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
-open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnClickListener,
+open class TodayFragment : MenuBarFragment(), View.OnClickListener,
     ReminderItemInteractionListener {
 
     private lateinit var mBinding: TodayFragmentBinding
@@ -77,7 +76,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
                                 mBinding.hijriDate.visibility = View.VISIBLE
                             }
 
-                            if (!settings.isFirstLaunch && settings.showOnBoardingTutorial) {
+                            if (settings.showOnBoardingTutorial) {
                                 showOnBoardingTutorial(
                                     (activity as MainActivity), mReminderRecyclerAdapter,
                                     mBinding.reminderList
@@ -99,8 +98,6 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
 
         val reminderRecyclerView = mBinding.reminderList
         reminderRecyclerView.adapter = mReminderRecyclerAdapter
-
-        mReminderRecyclerAdapter.setDeleteReminderListener(this)
 
         //Set the swipe to delete action
         val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
@@ -184,7 +181,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         }
     }
 
-    override fun deleteReminder(position: Int) {
+    override fun onSwipeToDelete(position: Int) {
         val mDeletedReminder = mAllReminders[position]
         val prayer = resources.getStringArray(R.array.categories)[2]
 
