@@ -81,7 +81,7 @@ class ReminderListAdapter(val context: Context) :
             else
                 binding.reminderTitle.paintFlags = 0
             binding.cardView.setOnClickListener { view: View ->
-                mListener?.openBottomSheet(
+                mListener?.launchReminderDetailsFragment(
                     view,
                     reminder
                 )

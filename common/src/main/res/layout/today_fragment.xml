@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/default_dimen"
-        android:onClick="@{(view)-> reminderInteractionListener.openBottomSheet(view,(Reminder) null)}"
+        android:onClick="@{(view)-> reminderInteractionListener.launchReminderDetailsFragment(view,(Reminder) null)}"
         app:backgroundTint="@color/fabColor"
         app:srcCompat="@drawable/ic_add_reminder"
         />
