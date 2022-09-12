@@ -55,7 +55,7 @@ class ReminderListAdapter(val context: Context) :
     /**
      * @param listener the listener that will handle when a RecyclerView item is clicked
      */
-    fun setOnItemClickListener(listener: ReminderItemInteractionListener?) {
+    fun setOnItemInteractionListener(listener: ReminderItemInteractionListener?) {
         mListener = listener
     }
 
