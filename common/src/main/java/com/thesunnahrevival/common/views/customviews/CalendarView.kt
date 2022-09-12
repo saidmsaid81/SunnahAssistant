@@ -137,6 +137,7 @@ class CalendarView : CalendarView {
                             container.goToToday.setOnClickListener {
                                 val currentSelection = selectedDate
                                 scrollToSpecificDate(LocalDate.now())
+                                notifyDateChanged(LocalDate.now())
                                 if (currentSelection != null) {
                                     notifyDateChanged(currentSelection)
                                 }
