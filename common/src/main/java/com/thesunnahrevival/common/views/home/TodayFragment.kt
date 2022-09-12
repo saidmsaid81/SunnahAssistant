@@ -231,7 +231,7 @@ open class TodayFragment : MenuBarFragment(), OnDeleteReminderListener, View.OnC
         }
     }
 
-    override fun openBottomSheet(v: View, reminder: Reminder?) {
+    override fun launchReminderDetailsFragment(v: View, reminder: Reminder?) {
         mViewModel.selectedReminder = reminder
             ?: Reminder(
                 reminderName = "", frequency = Frequency.OneTime,
