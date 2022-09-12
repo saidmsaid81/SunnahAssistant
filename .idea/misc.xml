@@ -66,18 +66,22 @@
         <entry key="common/src/main/res/drawable/ic_twitter.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_web.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/selected_date_bg.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/shake.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/test.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/today_date_bg.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/toggle_selector.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/toggle_selector_alt.xml" value="0.1215" />
         <entry key="common/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="common/src/main/res/layout/add_category_dialog_layout.xml" value="0.15864978902953586" />
         <entry key="common/src/main/res/layout/add_location_layout.xml" value="0.17119565217391305" />
+        <entry key="common/src/main/res/layout/all_done_view.xml" value="0.25" />
         <entry key="common/src/main/res/layout/display_settings.xml" value="0.15864978902953586" />
         <entry key="common/src/main/res/layout/reminder_card_view.xml" value="0.25" />
         <entry key="common/src/main/res/layout/reminder_details.xml" value="0.22" />
         <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
         <entry key="common/src/main/res/layout/reminder_details_fragment.xml" value="0.40040241448692154" />
         <entry key="common/src/main/res/layout/select_days_dialog_fragment.xml" value="0.15864978902953586" />
+        <entry key="common/src/main/res/layout/today_fragment.xml" value="0.1" />
       </map>
     </option>
   </component>

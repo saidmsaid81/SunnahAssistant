@@ -1,7 +1,7 @@
 <resources>
   <string name="app_name">Sunnah Assistant</string>
   <string name="next_string">Next:</string>
-  <string name="done_for_the_day">No Scheduled Reminder For This Category</string>
+  <string name="done_for_the_day">It\'s Empty Here</string>
   <string name="switch_to_dark_mode">Switch To Dark Mode</string>
   <string name="reminder_name_label">Name</string>
   <string name="reminder_name_hint">Enter The Name of The Reminder</string>
