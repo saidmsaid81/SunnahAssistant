@@ -12,7 +12,7 @@
 
     <variable
         name="reminderInteractionListener"
-        type="com.thesunnahrevival.common.views.interfaces.ReminderItemInteractionListener"
+        type="com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener"
         />
 
   </data>
