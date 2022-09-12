@@ -1,5 +1,7 @@
 package com.thesunnahrevival.common.views.home
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
@@ -30,12 +32,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
-open class TodayFragment : MenuBarFragment(), View.OnClickListener,
-    ReminderItemInteractionListener {
+open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
 
     private lateinit var mBinding: TodayFragmentBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
     private var mAllReminders: ArrayList<Reminder> = arrayListOf()
+    private var fabAnimator: ObjectAnimator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,7 +96,7 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
     private fun setupTheRecyclerView() {
         //Setup the RecyclerView Adapter
         mReminderRecyclerAdapter = ReminderListAdapter(requireContext())
-        mReminderRecyclerAdapter.setOnItemClickListener(this)
+        mReminderRecyclerAdapter.setOnItemInteractionListener(this)
 
         val reminderRecyclerView = mBinding.reminderList
         reminderRecyclerView.adapter = mReminderRecyclerAdapter
@@ -102,16 +104,6 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
         //Set the swipe to delete action
         val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
         itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
-
-        mViewModel.getStatusOfAddingListOfReminders().observe(viewLifecycleOwner) {
-            if (!it) {
-                mBinding.reminderList.visibility = View.GONE
-                mBinding.progressBar.visibility = View.VISIBLE
-            } else {
-                mBinding.reminderList.visibility = View.VISIBLE
-                mBinding.progressBar.visibility = View.GONE
-            }
-        }
 
         mViewModel.setDateOfReminders(System.currentTimeMillis())
         mViewModel.getReminders()
@@ -123,34 +115,19 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
     private fun displayTheReminders(data: ArrayList<Reminder>?) {
 
         if (data != null && data.isNotEmpty()) {
-            mViewModel.viewModelScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    mAllReminders = data
-                    filterData()
-                }
-            }
+            mAllReminders = data
+            filterData()
         } else {
-            if (data != null) {
-                mReminderRecyclerAdapter.setData(data)
-            }
-            mBinding.allDoneView.root.visibility = View.VISIBLE
+            mReminderRecyclerAdapter.setData(data ?: listOf())
+            mBinding.noTasksView.root.visibility = View.VISIBLE
+            animateAddReminderButton()
             mBinding.progressBar.visibility = View.GONE
         }
-        attachListenersToRecommendedReminders()
     }
 
-    private fun attachListenersToRecommendedReminders() {
-        mBinding.allDoneView
-            .sunnahRemindersLink
-            .setOnClickListener(this)
-
-        mBinding.allDoneView
-            .addPrayerTimeAlerts
-            .setOnClickListener(this)
-    }
 
     override fun filterData() {
-        mBinding.allDoneView.root.visibility = View.GONE
+        mBinding.noTasksView.root.visibility = View.GONE
         mBinding.progressBar.visibility = View.VISIBLE
 
         //Refresh the RecyclerView
@@ -166,11 +143,11 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
                     when {
                         filteredData.isNotEmpty() -> {
                             mReminderRecyclerAdapter.setData(filteredData)
-                            mBinding.allDoneView.root.visibility = View.GONE
+                            mBinding.noTasksView.root.visibility = View.GONE
                         }
                         else -> {
                             mReminderRecyclerAdapter.setData(listOf())
-                            mBinding.allDoneView.root.visibility = View.VISIBLE
+                            mBinding.noTasksView.root.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -179,6 +156,26 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
             mBinding.progressBar.visibility = View.GONE
             mReminderRecyclerAdapter.setData(mAllReminders)
         }
+        animateAddReminderButton()
+    }
+
+    private fun animateAddReminderButton() {
+        if (fabAnimator == null) {
+            fabAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                mBinding.fab,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f)
+            )
+
+            fabAnimator?.duration = 310
+            fabAnimator?.repeatCount = ObjectAnimator.INFINITE
+            fabAnimator?.repeatMode = ObjectAnimator.REVERSE
+        }
+
+        if (mBinding.noTasksView.root.isVisible)
+            fabAnimator?.start()
+        else
+            fabAnimator?.cancel()
     }
 
     override fun onSwipeToDelete(position: Int) {
@@ -187,7 +184,7 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
 
         if (mDeletedReminder.category?.matches(prayer.toRegex()) == true && mAppSettings?.isAutomatic == true) {
             Snackbar.make(
-                mBinding.mainLayout, getString(R.string.cannot_delete_prayer_time),
+                mBinding.root, getString(R.string.cannot_delete_prayer_time),
                 Snackbar.LENGTH_LONG
             ).apply {
                 view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
@@ -200,20 +197,13 @@ open class TodayFragment : MenuBarFragment(), View.OnClickListener,
 
         mViewModel.delete(mDeletedReminder)
         Snackbar.make(
-            mBinding.mainLayout, getString(R.string.delete_reminder),
+            mBinding.root, getString(R.string.delete_reminder),
             Snackbar.LENGTH_LONG
         ).apply {
             view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
             setAction(getString(R.string.undo_delete)) { mViewModel.addReminder(mDeletedReminder) }
             setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
             show()
-        }
-    }
-
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.sunnah_reminders_link -> mViewModel.addInitialReminders()
-            R.id.add_prayer_time_alerts -> findNavController().navigate(R.id.prayerTimeSettingsFragment)
         }
     }
 
