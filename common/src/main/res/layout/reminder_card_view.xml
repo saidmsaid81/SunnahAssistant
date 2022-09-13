@@ -24,8 +24,7 @@
         android:layout_marginEnd="@dimen/default_dimen"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="16dp">
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,12 +36,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/default_dimen"
+                android:layout_marginStart="@dimen/default_dimen"
                 android:checked="@{reminder.complete}"
                 android:layout_gravity="center" />
 
             <LinearLayout
+                android:id="@+id/card_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/default_dimen"
+                android:paddingBottom="@dimen/default_dimen"
                 android:orientation="vertical">
 
                 <TextView
