@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
-import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -67,7 +66,7 @@ fun showOnBoardingTutorial(
         )
         .listener(object : TapTargetSequence.Listener {
             override fun onSequenceFinish() {
-                showFilterReminderOnBoarding(activity, reminderRecyclerAdapter)
+                reminderRecyclerAdapter.deleteReminder(0)
             }
 
             override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
@@ -75,29 +74,6 @@ fun showOnBoardingTutorial(
         })
         .start()
 
-}
-
-private fun showFilterReminderOnBoarding(
-    activity: MainActivity,
-    reminderRecyclerAdapter: ReminderListAdapter
-) {
-    TapTargetView.showFor(
-        activity,
-        TapTarget.forToolbarMenuItem(
-            activity.findViewById<View>(R.id.toolbar) as Toolbar,
-            R.id.filter,
-            activity.getString(R.string.filter_displayed_reminders),
-            activity.getString(R.string.filter_displayed_reminders_description)
-        )
-            .cancelable(false)
-            .outerCircleColor(android.R.color.holo_blue_dark)
-            .textColor(R.color.bottomSheetColor)
-            .tintTarget(true), object : TapTargetView.Listener() {
-            override fun onTargetClick(view: TapTargetView) {
-                reminderRecyclerAdapter.deleteReminder(0)
-                view.dismiss(true)
-            }
-        })
 }
 
 fun showInAppReviewPrompt(activity: MainActivity) {

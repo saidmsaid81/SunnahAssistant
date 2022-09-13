@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.common.R
@@ -37,6 +39,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
     private var mAllReminders: ArrayList<Reminder> = arrayListOf()
     private var fabAnimator: ObjectAnimator? = null
+    private var categoryToDisplay = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +64,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
             if (settings != null) {
                 mAppSettings = settings
                 setupTheRecyclerView()
+                setupCategoryChips()
 
                 if (this !is CalendarFragment) {
                     mViewModel.settingsValue = settings
@@ -90,6 +94,51 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                 }
             }
         }
+    }
+
+    private fun setupCategoryChips() {
+        mBinding.categoryChips.removeAllViews()
+        val categories = mAppSettings?.categories
+        if (categories != null) {
+            val displayAllCategoriesChip = createCategoryChip(getString(R.string.display_all))
+            displayAllCategoriesChip.isChecked = true
+            mBinding.categoryChips.addView(displayAllCategoriesChip)
+
+            for (category in categories) {
+                val categoryChip = createCategoryChip(category)
+                mBinding.categoryChips.addView(categoryChip)
+            }
+
+        }
+
+    }
+
+    private fun createCategoryChip(category: String): Chip {
+        val categoryChip = Chip(requireContext())
+        categoryChip.isCheckable = true
+        categoryChip.text = category
+        categoryChip.checkedIcon = null
+        categoryChip.chipBackgroundColor =
+            ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.background_color_chip_state_list
+            )
+        categoryChip.setTextColor(
+            ContextCompat.getColorStateList(
+                requireContext(),
+                R.color.text_color_chip_state_list
+            )
+        )
+        categoryChip.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
+            if (isChecked) {
+                if (category.matches(getString(R.string.display_all).toRegex()))
+                    this.categoryToDisplay = ""
+                else
+                    this.categoryToDisplay = category
+                filterData()
+            }
+        }
+        return categoryChip
     }
 
     private fun setupTheRecyclerView() {
@@ -125,7 +174,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     }
 
 
-    override fun filterData() {
+    private fun filterData() {
         mBinding.noTasksView.root.visibility = View.GONE
         mBinding.progressBar.visibility = View.VISIBLE
 
