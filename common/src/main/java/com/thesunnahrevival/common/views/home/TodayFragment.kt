@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
@@ -208,13 +207,14 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     }
 
     override fun onMarkAsComplete(
-        buttonView: CompoundButton,
-        isChecked: Boolean,
-        reminder: Reminder?
+        isPressed: Boolean,
+        isChecked: Boolean?,
+        position: Int
     ) {
-        if (reminder != null && buttonView.isPressed) {
-            reminder.isComplete = isChecked
-            mViewModel.addReminder(reminder)
+        if (isPressed) {
+            val reminder = mAllReminders[position]
+            reminder.isComplete = isChecked ?: !reminder.isComplete
+            mViewModel.addReminder(reminder, false)
         }
     }
 
