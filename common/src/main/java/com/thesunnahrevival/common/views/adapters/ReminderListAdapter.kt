@@ -74,7 +74,7 @@ class ReminderListAdapter(val context: Context) :
                 binding.reminderTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else
                 binding.reminderTitle.paintFlags = 0
-            binding.cardView.setOnClickListener { view: View ->
+            binding.cardContent.setOnClickListener { view: View ->
                 mListener?.launchReminderDetailsFragment(
                     view,
                     reminder
