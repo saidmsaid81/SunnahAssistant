@@ -57,7 +57,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun addReminder(reminder: Reminder) {
+    fun addReminder(reminder: Reminder, updateCalendar: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
             val id = mRepository.addReminder(reminder)
             reminder.id = id.toInt()
@@ -65,7 +65,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             withContext(Dispatchers.Main) {
                 startService()
                 updateWidgets()
-                triggerCalendarUpdate.value = true
+                if (updateCalendar)
+                    triggerCalendarUpdate.value = true
             }
         }
     }

@@ -33,9 +33,9 @@ class ReminderListAdapter(val context: Context) :
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
-        val currentReminder = mAllReminders[i]
-        viewHolder.bind(currentReminder)
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val currentReminder = mAllReminders[position]
+        viewHolder.bind(position, currentReminder)
     }
 
     override fun getItemCount(): Int {
@@ -63,12 +63,16 @@ class ReminderListAdapter(val context: Context) :
         mListener?.onSwipeToDelete(position)
     }
 
+    fun markAsComplete(position: Int) {
+        mListener?.onSwipeToMarkAsComplete(position)
+    }
+
     /**
      * Inner Class
      */
     inner class ViewHolder(private val binding: ReminderCardViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(reminder: Reminder) {
+        fun bind(position: Int, reminder: Reminder) {
             binding.reminder = reminder
             if (reminder.isComplete)
                 binding.reminderTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -81,7 +85,7 @@ class ReminderListAdapter(val context: Context) :
                 )
             }
             binding.markAsComplete.setOnCheckedChangeListener { buttonView, isChecked ->
-                mListener?.onMarkAsComplete(buttonView, isChecked, reminder)
+                mListener?.onMarkAsComplete(buttonView.isPressed, isChecked, position)
             }
         }
     }
