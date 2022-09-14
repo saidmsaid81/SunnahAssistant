@@ -42,7 +42,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.addInitialReminders()
+            mRepository.addInitialReminders(getContext())
         }
     }
 
@@ -111,7 +111,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     mRepository.updateGeneratedPrayerTimes(
                         settings.latitude, settings.longitude,
                         settings.calculationMethod, settings.asrCalculationMethod,
-                        settings.latitudeAdjustmentMethod
+                        settings.latitudeAdjustmentMethod,
+                        getContext().resources.getStringArray(R.array.prayer_names),
+                        getContext().resources.getStringArray(R.array.categories)[2]
                     )
                     //Save the Month in User Settings to prevent re-fetching the data the current month
                     settings.month = getMonthNumber(System.currentTimeMillis())
@@ -129,9 +131,11 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     private fun isLoadFreshData(month: Int) = month != getMonthNumber(System.currentTimeMillis())
 
+    private fun getContext() = getApplication<Application>().applicationContext
+
     val isDeviceOffline: Boolean
         get() {
-            val connectivityManager = getApplication<Application>().applicationContext
+            val connectivityManager = getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             return connectivityManager.activeNetworkInfo == null ||
                     !connectivityManager.activeNetworkInfo!!.isConnected
@@ -192,14 +196,16 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             val settings = settingsValue
             if (settings?.formattedAddress?.isNotBlank() == true) {
-                mRepository.deletePrayerTimesData()
+                mRepository.deletePrayerTimesData(getContext().resources.getStringArray(R.array.categories)[2])
                 if (settings.isAutomatic) {
                     mRepository.generatePrayerTimes(
                         settings.latitude,
                         settings.longitude,
                         settings.calculationMethod,
                         settings.asrCalculationMethod,
-                        settings.latitudeAdjustmentMethod
+                        settings.latitudeAdjustmentMethod,
+                        getContext().resources.getStringArray(R.array.prayer_names),
+                        getContext().resources.getStringArray(R.array.categories)[2]
                     )
                 }
                 updateSettings(settings)
@@ -210,7 +216,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun updatedDeletedCategories(deletedCategories: ArrayList<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             if (deletedCategories.isNotEmpty()) {
-                mRepository.updateDeletedCategories(deletedCategories)
+                mRepository.updateDeletedCategories(
+                    deletedCategories,
+                    getContext().resources.getStringArray(R.array.categories)[0]
+                )
             }
         }
     }
@@ -232,10 +241,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun localeUpdate() {
         if (supportedLocales.contains(Locale.getDefault().language)) {
             val configuration =
-                Configuration(getApplication<Application>().applicationContext.resources.configuration)
+                Configuration(getContext().resources.configuration)
             configuration.setLocale(Locale(settingsValue?.language ?: "en"))
 
-            val oldCategoryNames = getApplication<Application>().applicationContext
+            val oldCategoryNames = getContext()
                 .createConfigurationContext(configuration)
                 .resources
                 .getStringArray(R.array.categories)
