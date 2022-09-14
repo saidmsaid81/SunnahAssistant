@@ -1,6 +1,6 @@
 package com.thesunnahrevival.common.data
 
-import android.app.Application
+import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,9 +25,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
-class SunnahAssistantRepository private constructor(private val application: Application) {
+class SunnahAssistantRepository private constructor(context: Context) {
     private val mReminderDao: ReminderDao =
-        SunnahAssistantDatabase.getInstance(application).reminderDao()
+        SunnahAssistantDatabase.getInstance(context).reminderDao()
     private val mGeocodingRestApi: GeocodingInterface
     private val mSunnahAssistantApi: SunnahAssistantApiInterface
     val statusOfAddingListOfReminders = MutableLiveData<Boolean>()
@@ -64,8 +64,8 @@ class SunnahAssistantRepository private constructor(private val application: App
 
     suspend fun deleteReminder(reminder: Reminder) = mReminderDao.deleteReminder(reminder)
 
-    suspend fun deletePrayerTimesData() =
-        mReminderDao.deleteAllPrayerTimes(application.resources.getStringArray(R.array.categories)[2])
+    suspend fun deletePrayerTimesData(prayerCategory: String) =
+        mReminderDao.deleteAllPrayerTimes(prayerCategory)
 
     fun thereRemindersOnDay(
         excludeCategory: String,
@@ -79,6 +79,74 @@ class SunnahAssistantRepository private constructor(private val application: App
         )
     }
 
+    fun getRemindersOnDayValue(numberOfTheWeekDay: String, day: Int, month: Int, year: Int) =
+        mReminderDao.getRemindersOnDayValue(numberOfTheWeekDay, day, month, year)
+
+    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String) =
+        mReminderDao.getPrayerTimesValue(day, month, year, categoryName)
+
+    suspend fun getNextTimeForReminderToday(
+        offsetFromMidnight: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ) = mReminderDao.getNextTimeForReminderToday(
+        offsetFromMidnight,
+        numberOfTheWeekDay,
+        day,
+        month,
+        year
+    )
+
+    suspend fun getNextTimeForReminderTomorrow(
+        offsetFromMidnight: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ) = mReminderDao.getNextTimeForReminderTomorrow(
+        offsetFromMidnight,
+        numberOfTheWeekDay,
+        day,
+        month,
+        year
+    )
+
+    suspend fun getNextScheduledReminderToday(
+        timeForReminder: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ) = mReminderDao.getNextScheduledReminderToday(
+        timeForReminder,
+        numberOfTheWeekDay,
+        day,
+        month,
+        year
+    )
+
+    suspend fun getNextScheduledReminderTomorrow(
+        timeForReminder: Long,
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ) = mReminderDao.getNextScheduledReminderTomorrow(
+        timeForReminder,
+        numberOfTheWeekDay,
+        day,
+        month,
+        year
+    )
+
+    suspend fun updateWidgetSettings(
+        isShowHijriDateWidget: Boolean,
+        isDisplayNextReminder: Boolean
+    ) =
+        mReminderDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextReminder)
+
     fun getRemindersOnDay(date: Date): LiveData<List<Reminder>> {
         val calendar = Calendar.getInstance()
         calendar.time = date
@@ -91,13 +159,13 @@ class SunnahAssistantRepository private constructor(private val application: App
         )
     }
 
-    suspend fun addInitialReminders() {
+    suspend fun addInitialReminders(context: Context) {
         updateStatusOfAddingLists(false)
-        mReminderDao.addRemindersList(sunnahReminders(application))
+        mReminderDao.addRemindersList(sunnahReminders(context))
         withContext(Dispatchers.Main) {
             Toast.makeText(
-                application,
-                application.getString(R.string.successfuly_added_sunnah_reminders),
+                context,
+                context.getString(R.string.successfuly_added_sunnah_reminders),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -106,11 +174,14 @@ class SunnahAssistantRepository private constructor(private val application: App
 
     suspend fun updateAppSettings(settings: AppSettings) = mReminderDao.updateAppSettings(settings)
 
-    suspend fun updateDeletedCategories(deletedCategories: ArrayList<String>) {
+    suspend fun updateDeletedCategories(
+        deletedCategories: ArrayList<String>,
+        uncategorized: String
+    ) {
         for (deletedCategory in deletedCategories) {
             mReminderDao.updateCategory(
                 deletedCategory,
-                application.resources.getStringArray(R.array.categories)[0]
+                uncategorized
             )
         }
     }
@@ -129,7 +200,9 @@ class SunnahAssistantRepository private constructor(private val application: App
         longitude: Float,
         method: CalculationMethod,
         asrCalculationMethod: Madhab,
-        latitudeAdjustmentMethod: Int
+        latitudeAdjustmentMethod: Int,
+        prayerNames: Array<String>,
+        prayerCategory: String
     ) {
         updateStatusOfAddingLists(false)
         val prayerTimesReminders = PrayerTimeCalculator(
@@ -138,8 +211,8 @@ class SunnahAssistantRepository private constructor(private val application: App
             method,
             asrCalculationMethod,
             latitudeAdjustmentMethod,
-            application.resources.getStringArray(R.array.prayer_names),
-            application.resources.getStringArray(R.array.categories)[2]
+            prayerNames,
+            prayerCategory
         )
             .getPrayerTimeReminders()
         mReminderDao.addRemindersList(prayerTimesReminders)
@@ -157,14 +230,16 @@ class SunnahAssistantRepository private constructor(private val application: App
         longitude: Float,
         method: CalculationMethod,
         asrCalculationMethod: Madhab,
-        latitudeAdjustmentMethod: Int
+        latitudeAdjustmentMethod: Int,
+        prayerNames: Array<String>,
+        prayerCategory: String
     ) {
         updateStatusOfAddingLists(false)
         val prayerTimesReminders = PrayerTimeCalculator(
             latitude.toDouble(), longitude.toDouble(),
             method, asrCalculationMethod, latitudeAdjustmentMethod,
-            application.resources.getStringArray(R.array.prayer_names),
-            application.resources.getStringArray(R.array.categories)[2]
+            prayerNames,
+            prayerCategory
         )
             .getPrayerTimeReminders()
         for (prayerTimeReminder in prayerTimesReminders) {
@@ -196,13 +271,13 @@ class SunnahAssistantRepository private constructor(private val application: App
         private var INSTANCE: SunnahAssistantRepository? = null
 
         @JvmStatic
-        fun getInstance(application: Application): SunnahAssistantRepository =
+        fun getInstance(context: Context): SunnahAssistantRepository =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildRepository(application).also { INSTANCE = it }
+                INSTANCE ?: buildRepository(context).also { INSTANCE = it }
             }
 
-        private fun buildRepository(application: Application) =
-            SunnahAssistantRepository(application)
+        private fun buildRepository(context: Context) =
+            SunnahAssistantRepository(context)
     }
 
 }

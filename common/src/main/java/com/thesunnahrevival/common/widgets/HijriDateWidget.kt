@@ -8,7 +8,7 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import com.thesunnahrevival.common.R
-import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase
+import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.utilities.*
 import com.thesunnahrevival.common.views.MainActivity
 import kotlinx.coroutines.CoroutineScope
@@ -79,8 +79,8 @@ internal suspend fun updateWidgetSettings(
     isDisplayHijriDate: Boolean,
     isDisplayNextReminder: Boolean
 ) {
-    val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
-    reminderDao.updateWidgetSettings(isDisplayHijriDate, isDisplayNextReminder)
+    val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
+    repository.updateWidgetSettings(isDisplayHijriDate, isDisplayNextReminder)
 }
 
 internal suspend fun fetchDateFromDatabase(
@@ -88,21 +88,21 @@ internal suspend fun fetchDateFromDatabase(
     appWidgetManager: AppWidgetManager,
     appWidgetIds: Array<Int>
 ) {
-    val reminderDao = SunnahAssistantDatabase.getInstance(context).reminderDao()
-    val appSettings = reminderDao.getAppSettingsValue()
+    val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
+    val appSettings = repository.getAppSettingsValue()
 
     val hijriText = if (appSettings?.isShowHijriDateWidget == true)
         generateDateText(isOnlyHijriDate = true) else null
 
     val nextReminder = if (appSettings?.isShowNextReminderWidget == true) {
-        val nextTimeForReminderToday = reminderDao.getNextTimeForReminderToday(
+        val nextTimeForReminderToday = repository.getNextTimeForReminderToday(
             calculateOffsetFromMidnight(),
             dayOfTheWeek.toString(),
             getDayDate(System.currentTimeMillis()),
             getMonthNumber(System.currentTimeMillis()),
             Integer.parseInt(getYear(System.currentTimeMillis()))
         )
-        reminderDao.getNextScheduledReminderToday(
+        repository.getNextScheduledReminderToday(
             nextTimeForReminderToday ?: -1,
             dayOfTheWeek.toString(),
             getDayDate(System.currentTimeMillis()),

@@ -46,6 +46,7 @@
         <entry key="common/src/main/res/drawable/ic_calendar.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_category.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_check.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_check_box.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_clock.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_delete.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_delete_item.xml" value="0.1215" />
@@ -54,6 +55,7 @@
         <entry key="common/src/main/res/drawable/ic_filter_list.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_info.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_instagram.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_mark_as_complete.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_name.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_notifications_off.xml" value="0.1215" />
         <entry key="common/src/main/res/drawable/ic_notifications_on.xml" value="0.1215" />
@@ -81,7 +83,7 @@
         <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
         <entry key="common/src/main/res/layout/reminder_details_fragment.xml" value="0.40040241448692154" />
         <entry key="common/src/main/res/layout/select_days_dialog_fragment.xml" value="0.15864978902953586" />
-        <entry key="common/src/main/res/layout/today_fragment.xml" value="0.1" />
+        <entry key="common/src/main/res/layout/today_fragment.xml" value="0.22" />
       </map>
     </option>
   </component>

@@ -7,10 +7,8 @@ import android.net.Uri
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.thesunnahrevival.common.R
-import com.thesunnahrevival.common.data.local.ReminderDao
-import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase.Companion.getInstance
+import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.data.model.AppSettings
-import com.thesunnahrevival.common.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.utilities.*
 import kotlinx.coroutines.CoroutineScope
@@ -22,13 +20,13 @@ import java.util.*
 
 class NextReminderService : Service() {
 
-    private lateinit var mReminderDAO: ReminderDao
+    private lateinit var mRepository: SunnahAssistantRepository
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        mReminderDAO = getInstance(this).reminderDao()
+        mRepository = SunnahAssistantRepository.getInstance(this.application)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val settings = mReminderDAO.getAppSettingsValue()
+            val settings = mRepository.getAppSettingsValue()
             val isForegroundEnabled = settings?.showNextReminderNotification ?: false
 
             if (settings != null && settings.month != getMonthNumber(System.currentTimeMillis())) {
@@ -38,14 +36,14 @@ class NextReminderService : Service() {
             val timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
 
-            val nextTimeForReminderToday = mReminderDAO.getNextTimeForReminderToday(
+            val nextTimeForReminderToday = mRepository.getNextTimeForReminderToday(
                 calculateOffsetFromMidnight(),
                 dayOfTheWeek.toString(),
                 getDayDate(timeInMilliseconds),
                 getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds))
             )
 
-            val nextTimeForReminderTomorrow = mReminderDAO.getNextTimeForReminderTomorrow(
+            val nextTimeForReminderTomorrow = mRepository.getNextTimeForReminderTomorrow(
                 calculateOffsetFromMidnight(),
                 tomorrowDayOfTheWeek.toString(),
                 getDayDate(timeInMilliseconds + 86400000),
@@ -66,7 +64,7 @@ class NextReminderService : Service() {
             } else if (nextTimeForReminderToday != null) {
                 //Get Today Reminders
                 nextScheduledReminders.addAll(
-                    mReminderDAO.getNextScheduledReminderToday(
+                    mRepository.getNextScheduledReminderToday(
                         nextTimeForReminderToday,
                         dayOfTheWeek.toString(),
                         getDayDate(timeInMilliseconds),
@@ -107,7 +105,7 @@ class NextReminderService : Service() {
     private suspend fun getTomorrowsReminders(
         nextTimeForReminderTomorrow: Long,
         timeInMilliseconds: Long
-    ) = mReminderDAO.getNextScheduledReminderTomorrow(
+    ) = mRepository.getNextScheduledReminderTomorrow(
         nextTimeForReminderTomorrow,
         tomorrowDayOfTheWeek.toString(),
         getDayDate(timeInMilliseconds + 86400000),
@@ -119,7 +117,7 @@ class NextReminderService : Service() {
         settings: AppSettings, nextScheduledReminders: List<Reminder>,
         context: NextReminderService, isForegroundEnabled: Boolean, dayString: String
     ) {
-        var title = ""
+        val title: String
         val text = getString(R.string.tap_to_disable_sticky_notification)
         val notificationToneUri: Uri? = settings.notificationToneUri
         val isVibrate: Boolean = settings.isVibrate
@@ -187,26 +185,17 @@ class NextReminderService : Service() {
     }
 
     private suspend fun updateGeneratedPrayerTimes(settings: AppSettings) {
-        val prayerTimesReminders = PrayerTimeCalculator(
-            settings.latitude.toDouble(),
-            settings.longitude.toDouble(),
+        mRepository.updateGeneratedPrayerTimes(
+            settings.latitude,
+            settings.longitude,
             settings.calculationMethod,
             settings.asrCalculationMethod,
             settings.latitudeAdjustmentMethod,
-            application.resources.getStringArray(R.array.prayer_names),
-            application.resources.getStringArray(R.array.categories)[2]
-        ).getPrayerTimeReminders()
-
-        for (prayerTimeReminder in prayerTimesReminders) {
-            mReminderDAO.updateGeneratedPrayerTimes(
-                prayerTimeReminder.id,
-                getMonthNumber(System.currentTimeMillis()),
-                getYear(System.currentTimeMillis()).toInt(), prayerTimeReminder.timeInSeconds
-            )
-        }
-
+            resources.getStringArray(R.array.prayer_names),
+            resources.getStringArray(R.array.categories)[2]
+        )
         settings.month = getMonthNumber(System.currentTimeMillis())
-        mReminderDAO.updateAppSettings(settings)
+        mRepository.updateAppSettings(settings)
 
     }
 

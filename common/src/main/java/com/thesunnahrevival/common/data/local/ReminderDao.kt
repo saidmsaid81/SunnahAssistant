@@ -1,6 +1,5 @@
 package com.thesunnahrevival.common.data.local
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.thesunnahrevival.common.data.model.AppSettings
@@ -41,9 +40,6 @@ interface ReminderDao {
 
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder>
-
-    @Query("UPDATE reminders_table SET isEnabled =:isEnabled WHERE reminderName ==:prayerName")
-    suspend fun setPrayerTimeEnabled(prayerName: String, isEnabled: Boolean)
 
     @Query("UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo, isEnabled = :isEnabled WHERE reminderName == :prayerName")
     suspend fun updatePrayerTimeDetails(
@@ -111,17 +107,12 @@ interface ReminderDao {
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)
 
-    @Query("SELECT showNextReminderNotification FROM app_settings")
-    suspend fun  isForegroundEnabled(): Boolean
 
     @Query("UPDATE reminders_table SET category =:newCategory WHERE category == :deletedCategory")
     suspend fun updateCategory(deletedCategory: String, newCategory: String)
 
     @Query("UPDATE reminders_table SET reminderName =:name, reminderInfo =:info, category =:category WHERE id =:id")
     suspend fun updateReminder(id: Int, name: String, info: String, category: String)
-
-    @Query("UPDATE app_settings SET notificationToneUri =:notificationToneUri, isVibrate =:isVibrate, priority =:priority")
-    suspend fun updateNotificationSettings(notificationToneUri: Uri?, isVibrate: Boolean, priority: Int)
 
     @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextReminder")
     suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextReminder: Boolean)
