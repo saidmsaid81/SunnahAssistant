@@ -6,21 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Reminder
-import com.thesunnahrevival.common.data.model.RemindersDiffCallback
 import com.thesunnahrevival.common.databinding.ReminderCardViewBinding
 import com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ReminderListAdapter(val context: Context) :
-    RecyclerView.Adapter<ReminderListAdapter.ViewHolder>() {
-    private var mAllReminders: List<Reminder> = ArrayList()
+    PagingDataAdapter<Reminder, ReminderListAdapter.ViewHolder>(REMINDER_COMPARATOR) {
     private var mListener: ReminderItemInteractionListener? = null
     private lateinit var mLayoutInflater: LayoutInflater
 
@@ -34,37 +29,20 @@ class ReminderListAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val currentReminder = mAllReminders[position]
-        viewHolder.bind(position, currentReminder)
+        val currentReminder = getItem(position)
+        currentReminder?.let { viewHolder.bind(it) }
     }
 
-    override fun getItemCount(): Int {
-        return mAllReminders.size
-    }
-
-    fun setData(data: List<Reminder>) {
-        CoroutineScope(Dispatchers.Default).launch {
-            val diffResult = DiffUtil.calculateDiff(RemindersDiffCallback(mAllReminders, data))
-            withContext(Dispatchers.Main) {
-                mAllReminders = data
-                diffResult.dispatchUpdatesTo(this@ReminderListAdapter)
-            }
-        }
-    }
-
-    /**
-     * @param listener the listener that will handle when a RecyclerView item is clicked
-     */
     fun setOnItemInteractionListener(listener: ReminderItemInteractionListener?) {
         mListener = listener
     }
 
     fun deleteReminder(position: Int) {
-        mListener?.onSwipeToDelete(position)
+        getItem(position)?.let { mListener?.onSwipeToDelete(position, it) }
     }
 
     fun markAsComplete(position: Int) {
-        mListener?.onSwipeToMarkAsComplete(position)
+        getItem(position)?.let { mListener?.onSwipeToMarkAsComplete(it) }
     }
 
     /**
@@ -72,7 +50,7 @@ class ReminderListAdapter(val context: Context) :
      */
     inner class ViewHolder(private val binding: ReminderCardViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(position: Int, reminder: Reminder) {
+        fun bind(reminder: Reminder) {
             binding.reminder = reminder
             if (reminder.isComplete)
                 binding.reminderTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -85,7 +63,18 @@ class ReminderListAdapter(val context: Context) :
                 )
             }
             binding.markAsComplete.setOnCheckedChangeListener { buttonView, isChecked ->
-                mListener?.onMarkAsComplete(buttonView.isPressed, isChecked, position)
+                mListener?.onMarkAsComplete(buttonView.isPressed, isChecked, reminder)
+            }
+        }
+    }
+
+    companion object {
+        private val REMINDER_COMPARATOR = object : DiffUtil.ItemCallback<Reminder>() {
+            override fun areItemsTheSame(oldItem: Reminder, newItem: Reminder): Boolean =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Reminder, newItem: Reminder): Boolean {
+                return oldItem == newItem
             }
         }
     }

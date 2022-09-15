@@ -54,6 +54,5 @@ ext {
     espresso_version = "3.3.0"
     coroutines_version = "1.4.2"
     nav_version = "2.3.5"
-
-
+    paging_version = "3.1.1"
 }

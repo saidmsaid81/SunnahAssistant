@@ -43,10 +43,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    //Adhan and Hijri Calendar
     implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version: '1.1.9'
     implementation 'com.batoulapps.adhan:adhan:1.2.1'
 
@@ -58,9 +58,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
+    //Paging
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
     //Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-paging:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
     //Retrofit
