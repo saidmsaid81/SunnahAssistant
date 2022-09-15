@@ -56,10 +56,13 @@ fun formatTimeInMilliseconds(context: Context?, timeInMilliseconds: Long): Strin
     return context?.getString(R.string.time_not_set) ?: "Time Not Set"
 }
 
-fun isReminderDisabled(context: Context?, reminder: Reminder): Boolean {
-    val timeInMilliseconds = formatTimeInMilliseconds(context, reminder.timeInMilliseconds)
-    return if (timeInMilliseconds == context?.getString(R.string.time_not_set)) false
-    else !reminder.isEnabled
+fun isReminderDisabled(context: Context?, reminder: Reminder?): Boolean {
+    return if (reminder != null) {
+        val timeInMilliseconds = formatTimeInMilliseconds(context, reminder.timeInMilliseconds)
+        return if (timeInMilliseconds == context?.getString(R.string.time_not_set)) false
+        else !reminder.isEnabled
+    } else
+        true
 }
 
 fun calculateOffsetFromMidnight(): Long {
