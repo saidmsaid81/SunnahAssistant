@@ -83,7 +83,7 @@
         <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
         <entry key="common/src/main/res/layout/reminder_details_fragment.xml" value="0.40040241448692154" />
         <entry key="common/src/main/res/layout/select_days_dialog_fragment.xml" value="0.15864978902953586" />
-        <entry key="common/src/main/res/layout/today_fragment.xml" value="0.22" />
+        <entry key="common/src/main/res/layout/today_fragment.xml" value="0.1" />
       </map>
     </option>
   </component>

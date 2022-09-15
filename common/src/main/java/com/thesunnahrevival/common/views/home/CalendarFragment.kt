@@ -57,7 +57,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     }
 
     override fun onDateSelected(day: CalendarDay) {
-        mViewModel.setDateOfReminders(day.date.toEpochDay() * 86400000)
+        mViewModel.setReminderParameters(date = day.date.toEpochDay() * 86400000)
 
         val gregorianCalendar = GregorianCalendar(
             day.date.year,

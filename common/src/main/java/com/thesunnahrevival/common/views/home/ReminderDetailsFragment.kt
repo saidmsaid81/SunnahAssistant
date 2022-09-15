@@ -24,7 +24,10 @@ import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver
 import com.thesunnahrevival.common.receivers.TEXTSUMMARY
 import com.thesunnahrevival.common.services.InAppBrowserConnection
-import com.thesunnahrevival.common.utilities.*
+import com.thesunnahrevival.common.utilities.daySuffixes
+import com.thesunnahrevival.common.utilities.formatTimeInMilliseconds
+import com.thesunnahrevival.common.utilities.getLocale
+import com.thesunnahrevival.common.utilities.getTimestampInSeconds
 import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.dialogs.AddCategoryDialogFragment
@@ -34,8 +37,6 @@ import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
-import java.lang.StringBuilder
 import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -514,7 +515,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             .setTitle(R.string.delete_reminder_title)
             .setMessage(R.string.delete_reminder_confirmation)
             .setPositiveButton(R.string.yes) { _, _ ->
-                mViewModel.delete(mReminder)
+                mViewModel.deleteReminder(mReminder)
                 Toast.makeText(requireContext(), R.string.delete_reminder, Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
             }
@@ -541,7 +542,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         }
 
         if (mReminder != newReminder) {
-            mViewModel.addReminder(newReminder)
+            mViewModel.insertReminder(newReminder)
             if (newReminder.id == 0)
                 Toast.makeText(
                     requireContext(), R.string.successfuly_added_sunnah_reminders, Toast.LENGTH_LONG

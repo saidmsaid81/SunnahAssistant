@@ -1,6 +1,5 @@
 package com.thesunnahrevival.common.data.model
 
-import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -96,24 +95,6 @@ data class Reminder(
     }
 
     fun isAutomaticPrayerTime() = this.id in -1 downTo -999
-}
-
-class RemindersDiffCallback(
-    private val oldRemindersList: List<Reminder>,
-    private val newRemindersList: List<Reminder>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldRemindersList.size
-
-    override fun getNewListSize(): Int = newRemindersList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldRemindersList[oldItemPosition].id == newRemindersList[newItemPosition].id
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldRemindersList[oldItemPosition] === newRemindersList[newItemPosition]
-    }
-
 }
 
 enum class Frequency {

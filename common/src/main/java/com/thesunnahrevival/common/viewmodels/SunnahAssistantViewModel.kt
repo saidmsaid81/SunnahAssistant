@@ -6,6 +6,10 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.data.SunnahAssistantRepository.Companion.getInstance
@@ -36,30 +40,22 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
-    private val mutableDateOfReminders = MutableLiveData<Long>()
+    private val mutableReminderParameters =
+        MutableLiveData(Pair(System.currentTimeMillis(), ""))
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
     private var browserPackageNameToUse: String? = null
 
-    fun addInitialReminders() {
-        viewModelScope.launch(Dispatchers.IO) {
-            mRepository.addInitialReminders(getContext())
-        }
+    fun setReminderParameters(date: Long? = null, category: String? = null) {
+        val currentDateParameter =
+            mutableReminderParameters.value?.first ?: System.currentTimeMillis()
+        val currentCategoryParameter = mutableReminderParameters.value?.second ?: ""
+        mutableReminderParameters.value =
+            Pair(date ?: currentDateParameter, category ?: currentCategoryParameter)
     }
 
-    fun delete(reminder: Reminder) {
+    fun insertReminder(reminder: Reminder, updateCalendar: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.deleteReminder(reminder)
-            withContext(Dispatchers.Main) {
-                startService()
-                updateWidgets()
-                triggerCalendarUpdate.value = true
-            }
-        }
-    }
-
-    fun addReminder(reminder: Reminder, updateCalendar: Boolean = true) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val id = mRepository.addReminder(reminder)
+            val id = mRepository.insertReminder(reminder)
             reminder.id = id.toInt()
             selectedReminder = reminder
             withContext(Dispatchers.Main) {
@@ -71,21 +67,31 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun getStatusOfAddingListOfReminders() = mRepository.statusOfAddingListOfReminders
-
-    fun setDateOfReminders(date: Long) {
-        mutableDateOfReminders.value = date
-    }
-
-    fun getReminders(): LiveData<List<Reminder>> {
-        return Transformations.switchMap(mutableDateOfReminders) { dateOfReminders ->
-            mRepository.getRemindersOnDay(Date(dateOfReminders))
+    fun deleteReminder(reminder: Reminder) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mRepository.deleteReminder(reminder)
+            withContext(Dispatchers.Main) {
+                startService()
+                updateWidgets()
+                triggerCalendarUpdate.value = true
+            }
         }
     }
 
     fun thereRemindersOnDay(dayOfWeek: String, dayOfMonth: Int, month: Int, year: Int): Boolean {
         val excludePrayer = getApplication<Application>().getString(R.string.prayer)
         return mRepository.thereRemindersOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
+    }
+
+    fun getReminders(): LiveData<PagingData<Reminder>> {
+        return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
+            Pager(
+                PagingConfig(15),
+                pagingSourceFactory = {
+                    mRepository.getRemindersOnDay(Date(dateOfReminders), category)
+                }
+            ).liveData
+        }
     }
 
     fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
@@ -96,12 +102,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 updateWidgets()
             }
         }
-    }
-
-    fun getSettings() = mRepository.appSettings
-
-    suspend fun getAppSettingsValue(): AppSettings? {
-        return mRepository.getAppSettingsValue()
     }
 
     fun updateGeneratedPrayerTimes(settings: AppSettings) {
@@ -123,23 +123,49 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    fun updatePrayerTimesData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val settings = settingsValue
+            if (settings?.formattedAddress?.isNotBlank() == true) {
+                mRepository.deletePrayerTimesData(getContext().resources.getStringArray(R.array.categories)[2])
+                if (settings.isAutomatic) {
+                    mRepository.generatePrayerTimes(
+                        settings.latitude,
+                        settings.longitude,
+                        settings.calculationMethod,
+                        settings.asrCalculationMethod,
+                        settings.latitudeAdjustmentMethod,
+                        getContext().resources.getStringArray(R.array.prayer_names),
+                        getContext().resources.getStringArray(R.array.categories)[2]
+                    )
+                }
+                updateSettings(settings)
+            }
+        }
+    }
+
+    fun updatedDeletedCategories(deletedCategories: ArrayList<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (deletedCategories.isNotEmpty()) {
+                mRepository.updateDeletedCategories(
+                    deletedCategories,
+                    getContext().resources.getStringArray(R.array.categories)[0]
+                )
+            }
+        }
+    }
+
+    fun getSettings() = mRepository.getAppSettings().asLiveData()
+
+    suspend fun getAppSettingsValue(): AppSettings? {
+        return mRepository.getAppSettingsValue()
+    }
+
     fun updateSettings(settings: AppSettings) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updateAppSettings(settings)
         }
     }
-
-    private fun isLoadFreshData(month: Int) = month != getMonthNumber(System.currentTimeMillis())
-
-    private fun getContext() = getApplication<Application>().applicationContext
-
-    val isDeviceOffline: Boolean
-        get() {
-            val connectivityManager = getContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return connectivityManager.activeNetworkInfo == null ||
-                    !connectivityManager.activeNetworkInfo!!.isConnected
-        }
 
     fun getGeocodingData(address: String) {
         val unavailableLocationString =
@@ -176,7 +202,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 messages.value = message
             }
         }
-
     }
 
     private fun updateLocationDetails(data: GeocodingData) {
@@ -192,38 +217,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun updatePrayerTimesData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val settings = settingsValue
-            if (settings?.formattedAddress?.isNotBlank() == true) {
-                mRepository.deletePrayerTimesData(getContext().resources.getStringArray(R.array.categories)[2])
-                if (settings.isAutomatic) {
-                    mRepository.generatePrayerTimes(
-                        settings.latitude,
-                        settings.longitude,
-                        settings.calculationMethod,
-                        settings.asrCalculationMethod,
-                        settings.latitudeAdjustmentMethod,
-                        getContext().resources.getStringArray(R.array.prayer_names),
-                        getContext().resources.getStringArray(R.array.categories)[2]
-                    )
-                }
-                updateSettings(settings)
-            }
-        }
-    }
-
-    fun updatedDeletedCategories(deletedCategories: ArrayList<String>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (deletedCategories.isNotEmpty()) {
-                mRepository.updateDeletedCategories(
-                    deletedCategories,
-                    getContext().resources.getStringArray(R.array.categories)[0]
-                )
-            }
-        }
-    }
-
     private fun startService() {
         getApplication<Application>().startService(
             Intent(
@@ -232,6 +225,18 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             )
         )
     }
+
+    private fun isLoadFreshData(month: Int) = month != getMonthNumber(System.currentTimeMillis())
+
+    private fun getContext() = getApplication<Application>().applicationContext
+
+    val isDeviceOffline: Boolean
+        get() {
+            val connectivityManager = getContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            return connectivityManager.activeNetworkInfo == null ||
+                    !connectivityManager.activeNetworkInfo!!.isConnected
+        }
 
     private fun updateWidgets() {
         updateHijriDateWidgets(getApplication())

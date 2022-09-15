@@ -12,6 +12,8 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -27,17 +29,12 @@ import com.thesunnahrevival.common.views.SwipeToDeleteCallback
 import com.thesunnahrevival.common.views.adapters.ReminderListAdapter
 import com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener
 import com.thesunnahrevival.common.views.showOnBoardingTutorial
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
 
     private lateinit var mBinding: TodayFragmentBinding
     private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
-    private var mAllReminders: ArrayList<Reminder> = arrayListOf()
     private var fabAnimator: ObjectAnimator? = null
     private var categoryToDisplay = ""
 
@@ -54,6 +51,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
 
         mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.reminderInteractionListener = this
+        setupTheRecyclerView()
         getSettings()
 
         return mBinding.root
@@ -63,12 +61,11 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
         mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings != null) {
                 mAppSettings = settings
-                setupTheRecyclerView()
+                mViewModel.settingsValue = settings
                 setupCategoryChips()
+                mBinding.reminderList.visibility = View.VISIBLE
 
                 if (this !is CalendarFragment) {
-                    mViewModel.settingsValue = settings
-
                     when {
                         settings.isFirstLaunch -> findNavController().navigate(R.id.welcomeFragment)
                         settings.isAfterUpdate -> findNavController().navigate(R.id.changelogFragment)
@@ -104,13 +101,17 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
             displayAllCategoriesChip.isChecked = true
             mBinding.categoryChips.addView(displayAllCategoriesChip)
 
+            val prayerCategory = resources.getStringArray(R.array.categories)[2]
+            val prayerCategoryChip = createCategoryChip(prayerCategory)
+            mBinding.categoryChips.addView(prayerCategoryChip)
+
             for (category in categories) {
-                val categoryChip = createCategoryChip(category)
-                mBinding.categoryChips.addView(categoryChip)
+                if (!category.matches(prayerCategory.toRegex())) {
+                    val categoryChip = createCategoryChip(category)
+                    mBinding.categoryChips.addView(categoryChip)
+                }
             }
-
         }
-
     }
 
     private fun createCategoryChip(category: String): Chip {
@@ -135,7 +136,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                     this.categoryToDisplay = ""
                 else
                     this.categoryToDisplay = category
-                filterData()
+                mViewModel.setReminderParameters(category = categoryToDisplay)
             }
         }
         return categoryChip
@@ -149,62 +150,28 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
         val reminderRecyclerView = mBinding.reminderList
         reminderRecyclerView.adapter = mReminderRecyclerAdapter
 
-        //Set the swipe to delete action
+        //Set the swipe getsures
         val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
+        itemTouchHelper.attachToRecyclerView(null)
         itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
 
-        mViewModel.setDateOfReminders(System.currentTimeMillis())
+        mReminderRecyclerAdapter.addLoadStateListener { loadState: CombinedLoadStates ->
+            if (loadState.append.endOfPaginationReached) {
+                if (mReminderRecyclerAdapter.itemCount < 1)
+                    mBinding.noTasksView.root.visibility = View.VISIBLE
+                else
+                    mBinding.noTasksView.root.visibility = View.GONE
+
+                animateAddReminderButton()
+                mBinding.progressBar.visibility = View.GONE
+            }
+        }
+
         mViewModel.getReminders()
-            .observe(viewLifecycleOwner) { reminders: List<Reminder> ->
-                displayTheReminders(reminders as ArrayList<Reminder>)
+            .observe(viewLifecycleOwner) { reminders: PagingData<Reminder> ->
+                mReminderRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, reminders)
             }
-    }
 
-    private fun displayTheReminders(data: ArrayList<Reminder>?) {
-
-        if (data != null && data.isNotEmpty()) {
-            mAllReminders = data
-            filterData()
-        } else {
-            mReminderRecyclerAdapter.setData(data ?: listOf())
-            mBinding.noTasksView.root.visibility = View.VISIBLE
-            animateAddReminderButton()
-            mBinding.progressBar.visibility = View.GONE
-        }
-    }
-
-
-    private fun filterData() {
-        mBinding.noTasksView.root.visibility = View.GONE
-        mBinding.progressBar.visibility = View.VISIBLE
-
-        //Refresh the RecyclerView
-        if (!categoryToDisplay.matches("".toRegex())) {
-            //Filter data in background thread because if the list is very large
-            // it may slow down the main thread
-            CoroutineScope(Dispatchers.Default).launch {
-                val filteredData = mAllReminders.filter {
-                    it.category?.matches(categoryToDisplay.toRegex()) == true
-                }
-                withContext(Dispatchers.Main) {
-                    mBinding.progressBar.visibility = View.GONE
-                    when {
-                        filteredData.isNotEmpty() -> {
-                            mReminderRecyclerAdapter.setData(filteredData)
-                            mBinding.noTasksView.root.visibility = View.GONE
-                        }
-                        else -> {
-                            mReminderRecyclerAdapter.setData(listOf())
-                            mBinding.noTasksView.root.visibility = View.VISIBLE
-                        }
-                    }
-                }
-            }
-        } else {
-            mBinding.progressBar.visibility = View.GONE
-            mReminderRecyclerAdapter.setData(mAllReminders)
-        }
-        animateAddReminderButton()
     }
 
     private fun animateAddReminderButton() {
@@ -226,11 +193,10 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
             fabAnimator?.cancel()
     }
 
-    override fun onSwipeToDelete(position: Int) {
-        val mDeletedReminder = mAllReminders[position]
+    override fun onSwipeToDelete(position: Int, reminder: Reminder) {
         val prayer = resources.getStringArray(R.array.categories)[2]
 
-        if (mDeletedReminder.category?.matches(prayer.toRegex()) == true && mAppSettings?.isAutomatic == true) {
+        if (reminder.category?.matches(prayer.toRegex()) == true && mAppSettings?.isAutomatic == true) {
             Snackbar.make(
                 mBinding.root, getString(R.string.cannot_delete_prayer_time),
                 Snackbar.LENGTH_LONG
@@ -243,13 +209,13 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
             return
         }
 
-        mViewModel.delete(mDeletedReminder)
+        mViewModel.deleteReminder(reminder)
         Snackbar.make(
             mBinding.root, getString(R.string.delete_reminder),
             Snackbar.LENGTH_LONG
         ).apply {
             view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-            setAction(getString(R.string.undo_delete)) { mViewModel.addReminder(mDeletedReminder) }
+            setAction(getString(R.string.undo_delete)) { mViewModel.insertReminder(reminder) }
             setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
             show()
         }
@@ -258,12 +224,11 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     override fun onMarkAsComplete(
         isPressed: Boolean,
         isChecked: Boolean?,
-        position: Int
+        reminder: Reminder
     ) {
         if (isPressed) {
-            val reminder = mAllReminders[position]
-            reminder.isComplete = isChecked ?: !reminder.isComplete
-            mViewModel.addReminder(reminder, false)
+            val newReminder = reminder.copy(isComplete = isChecked ?: !reminder.isComplete)
+            mViewModel.insertReminder(newReminder, false)
         }
     }
 
@@ -277,9 +242,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                 year = LocalDate.now().year
             )
 
-        mViewModel.settingsValue = mAppSettings
-
-        findNavController().navigate(R.id.reminderDetailsFragment, null)
+        findNavController().navigate(R.id.reminderDetailsFragment)
     }
 
     override fun onResume() {

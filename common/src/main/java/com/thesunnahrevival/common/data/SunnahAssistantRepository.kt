@@ -1,13 +1,10 @@
 package com.thesunnahrevival.common.data
 
 import android.content.Context
-import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.ApiKey
-import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.local.ReminderDao
 import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.common.data.model.AppSettings
@@ -18,9 +15,6 @@ import com.thesunnahrevival.common.data.remote.GeocodingInterface
 import com.thesunnahrevival.common.data.remote.SunnahAssistantApiInterface
 import com.thesunnahrevival.common.utilities.getMonthNumber
 import com.thesunnahrevival.common.utilities.getYear
-import com.thesunnahrevival.common.utilities.sunnahReminders
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
@@ -30,10 +24,6 @@ class SunnahAssistantRepository private constructor(context: Context) {
         SunnahAssistantDatabase.getInstance(context).reminderDao()
     private val mGeocodingRestApi: GeocodingInterface
     private val mSunnahAssistantApi: SunnahAssistantApiInterface
-    val statusOfAddingListOfReminders = MutableLiveData<Boolean>()
-
-    val appSettings: LiveData<AppSettings?>
-        get() = mReminderDao.getAppSettings()
 
     init {
         val retrofit = Retrofit.Builder()
@@ -49,23 +39,15 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     }
 
-    suspend fun addReminder(reminder: Reminder) = mReminderDao.insertReminder(reminder)
+    suspend fun insertReminder(reminder: Reminder) = mReminderDao.insertReminder(reminder)
 
-    suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
-        mReminderDao.updatePrayerTimeDetails(
-            oldPrayerDetails.reminderName,
-            newPrayerDetails.reminderName,
-            newPrayerDetails.reminderInfo,
-            newPrayerDetails.offsetInMinutes,
-            newPrayerDetails.isEnabled
-        )
-
+    //TODO use insert reminder
+    suspend fun updateReminder(id: Int, name: String?, info: String?, category: String?) {
+        if (name != null && info != null && category != null)
+            mReminderDao.updateReminder(id, name, info, category)
     }
 
     suspend fun deleteReminder(reminder: Reminder) = mReminderDao.deleteReminder(reminder)
-
-    suspend fun deletePrayerTimesData(prayerCategory: String) =
-        mReminderDao.deleteAllPrayerTimes(prayerCategory)
 
     fun thereRemindersOnDay(
         excludeCategory: String,
@@ -79,11 +61,20 @@ class SunnahAssistantRepository private constructor(context: Context) {
         )
     }
 
+    fun getRemindersOnDay(date: Date, category: String): PagingSource<Int, Reminder> {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return mReminderDao.getRemindersOnDay(
+            calendar.get(Calendar.DAY_OF_WEEK).toString(),
+            calendar.get(Calendar.DAY_OF_MONTH),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.YEAR),
+            category
+        )
+    }
+
     fun getRemindersOnDayValue(numberOfTheWeekDay: String, day: Int, month: Int, year: Int) =
         mReminderDao.getRemindersOnDayValue(numberOfTheWeekDay, day, month, year)
-
-    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String) =
-        mReminderDao.getPrayerTimesValue(day, month, year, categoryName)
 
     suspend fun getNextTimeForReminderToday(
         offsetFromMidnight: Long,
@@ -141,59 +132,21 @@ class SunnahAssistantRepository private constructor(context: Context) {
         year
     )
 
-    suspend fun updateWidgetSettings(
-        isShowHijriDateWidget: Boolean,
-        isDisplayNextReminder: Boolean
-    ) =
-        mReminderDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextReminder)
-
-    fun getRemindersOnDay(date: Date): LiveData<List<Reminder>> {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-
-        return mReminderDao.getRemindersOnDay(
-            calendar.get(Calendar.DAY_OF_WEEK).toString(),
-            calendar.get(Calendar.DAY_OF_MONTH),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.YEAR)
+    suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
+        mReminderDao.updatePrayerTimeDetails(
+            oldPrayerDetails.reminderName,
+            newPrayerDetails.reminderName,
+            newPrayerDetails.reminderInfo,
+            newPrayerDetails.offsetInMinutes,
+            newPrayerDetails.isEnabled
         )
     }
 
-    suspend fun addInitialReminders(context: Context) {
-        updateStatusOfAddingLists(false)
-        mReminderDao.addRemindersList(sunnahReminders(context))
-        withContext(Dispatchers.Main) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.successfuly_added_sunnah_reminders),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-        updateStatusOfAddingLists(true)
-    }
+    suspend fun deletePrayerTimesData(prayerCategory: String) =
+        mReminderDao.deleteAllPrayerTimes(prayerCategory)
 
-    suspend fun updateAppSettings(settings: AppSettings) = mReminderDao.updateAppSettings(settings)
-
-    suspend fun updateDeletedCategories(
-        deletedCategories: ArrayList<String>,
-        uncategorized: String
-    ) {
-        for (deletedCategory in deletedCategories) {
-            mReminderDao.updateCategory(
-                deletedCategory,
-                uncategorized
-            )
-        }
-    }
-
-    suspend fun updateReminder(id: Int, name: String?, info: String?, category: String?) {
-        if (name != null && info != null && category != null)
-            mReminderDao.updateReminder(id, name, info, category)
-    }
-
-    suspend fun updateCategory(deletedCategory: String, newCategory: String) {
-        mReminderDao.updateCategory(deletedCategory, newCategory)
-    }
+    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String) =
+        mReminderDao.getPrayerTimesValue(day, month, year, categoryName)
 
     suspend fun generatePrayerTimes(
         latitude: Float,
@@ -204,7 +157,6 @@ class SunnahAssistantRepository private constructor(context: Context) {
         prayerNames: Array<String>,
         prayerCategory: String
     ) {
-        updateStatusOfAddingLists(false)
         val prayerTimesReminders = PrayerTimeCalculator(
             latitude.toDouble(),
             longitude.toDouble(),
@@ -215,14 +167,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
             prayerCategory
         )
             .getPrayerTimeReminders()
-        mReminderDao.addRemindersList(prayerTimesReminders)
-        updateStatusOfAddingLists(true)
-    }
-
-    private suspend fun updateStatusOfAddingLists(status: Boolean) {
-        withContext(Dispatchers.Main) {
-            statusOfAddingListOfReminders.value = status
-        }
+        mReminderDao.insertRemindersList(prayerTimesReminders)
     }
 
     suspend fun updateGeneratedPrayerTimes(
@@ -234,7 +179,6 @@ class SunnahAssistantRepository private constructor(context: Context) {
         prayerNames: Array<String>,
         prayerCategory: String
     ) {
-        updateStatusOfAddingLists(false)
         val prayerTimesReminders = PrayerTimeCalculator(
             latitude.toDouble(), longitude.toDouble(),
             method, asrCalculationMethod, latitudeAdjustmentMethod,
@@ -250,16 +194,42 @@ class SunnahAssistantRepository private constructor(context: Context) {
                 prayerTimeReminder.timeInSeconds
             )
         }
-        updateStatusOfAddingLists(true)
 
     }
 
-    suspend fun getGeocodingData(address: String, locale: String): GeocodingData? {
-        return mGeocodingRestApi.getGeocodingData(address, ApiKey.API_KEY, locale)
+    suspend fun updateCategory(deletedCategory: String, newCategory: String) {
+        mReminderDao.updateCategory(deletedCategory, newCategory)
     }
+
+    suspend fun updateDeletedCategories(
+        deletedCategories: ArrayList<String>,
+        uncategorized: String
+    ) {
+        for (deletedCategory in deletedCategories) {
+            mReminderDao.updateCategory(
+                deletedCategory,
+                uncategorized
+            )
+        }
+    }
+
+
+    suspend fun updateAppSettings(settings: AppSettings) = mReminderDao.updateAppSettings(settings)
+
+    fun getAppSettings() = mReminderDao.getAppSettings()
 
     suspend fun getAppSettingsValue(): AppSettings? {
         return mReminderDao.getAppSettingsValue()
+    }
+
+    suspend fun updateWidgetSettings(
+        isShowHijriDateWidget: Boolean,
+        isDisplayNextReminder: Boolean
+    ) =
+        mReminderDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextReminder)
+
+    suspend fun getGeocodingData(address: String, locale: String): GeocodingData? {
+        return mGeocodingRestApi.getGeocodingData(address, ApiKey.API_KEY, locale)
     }
 
     suspend fun reportGeocodingServerError(status: String) {
@@ -279,5 +249,4 @@ class SunnahAssistantRepository private constructor(context: Context) {
         private fun buildRepository(context: Context) =
             SunnahAssistantRepository(context)
     }
-
 }
