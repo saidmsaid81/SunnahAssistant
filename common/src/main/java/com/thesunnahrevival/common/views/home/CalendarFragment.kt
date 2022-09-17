@@ -1,14 +1,17 @@
 package com.thesunnahrevival.common.views.home
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
+import com.google.android.material.appbar.AppBarLayout
 import com.kizitonwose.calendarview.model.CalendarDay
+import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.utilities.generateDateText
 import com.thesunnahrevival.common.views.adapters.DayViewContainer
 import com.thesunnahrevival.common.views.customviews.CalendarView
-import kotlinx.android.synthetic.main.calendar_view.*
 import kotlinx.android.synthetic.main.today_fragment.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,9 +23,17 @@ import java.util.*
 
 class CalendarFragment : TodayFragment(), CalendarView.Listeners {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view_stub.inflate()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        view.findViewById<AppBarLayout>(R.id.app_bar).visibility = VISIBLE
+        return view
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         calendar_view.setupWithListeners(listeners = this)
         calendar_view.scrollToSpecificDate(LocalDate.now())
 
@@ -64,6 +75,8 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             day.date.month.ordinal,
             day.date.dayOfMonth
         )
+
+        selected_date.visibility = VISIBLE
         selected_date.text = generateDateText(gregorianCalendar)
     }
 }

@@ -21,9 +21,40 @@
         android:layout_height="match_parent"
         tools:context=".views.MainActivity">
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            android:fitsSystemWindows="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+
+                <com.thesunnahrevival.common.views.customviews.CalendarView
+                    android:id="@+id/calendar_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cv_orientation="horizontal"
+                    app:cv_scrollMode="paged"
+                    android:layout_margin="@dimen/default_dimen"
+                    android:background="@color/calendar_bg_color"
+                    android:elevation="4dp"
+                    app:cv_monthHeaderResource="@layout/calendar_month_header_layout"
+                    app:cv_dayViewResource="@layout/calendar_day_layout"
+                    app:layout_collapseMode="pin"
+                    android:fitsSystemWindows="true" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:orientation="vertical">
 
             <com.sergivonavi.materialbanner.Banner
@@ -41,61 +72,48 @@
                 android:id="@+id/hijri_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_dimen"
-                android:layout_marginTop="@dimen/default_dimen"
+                android:padding="@dimen/default_dimen"
                 android:visibility="gone"
                 tools:visibility="visible"
                 tools:text="Today's Date: Monday 12 September 2022/ 16 Safar, 1444"
                 android:textSize="12sp" />
 
-
-            <androidx.core.widget.NestedScrollView
+            <TextView
+                android:id="@+id/selected_date"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/default_dimen">
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:padding="@dimen/default_dimen"
+                android:layout_height="wrap_content" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/default_dimen"
+                android:paddingEnd="@dimen/default_dimen"
+                android:paddingBottom="8dp"
+                android:scrollbars="none">
 
-                    <ViewStub
-                        android:id="@+id/view_stub"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inflatedId="@+id/calendar"
-                        android:layout="@layout/calendar_view" />
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/category_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:singleLine="true">
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/default_dimen"
-                        android:paddingEnd="@dimen/default_dimen"
-                        android:scrollbars="none">
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
 
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/category_chips"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:singleSelection="true"
-                            app:selectionRequired="true"
-                            app:singleLine="true">
-
-                        </com.google.android.material.chip.ChipGroup>
-                    </HorizontalScrollView>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/reminder_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:visibility="visible"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/reminder_card_view"
-                        android:nestedScrollingEnabled="false" />
-
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reminder_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/reminder_card_view" />
 
             <ProgressBar
                 android:id="@+id/progress_bar"
