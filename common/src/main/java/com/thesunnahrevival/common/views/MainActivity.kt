@@ -19,6 +19,7 @@ import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.utilities.createNotificationChannels
 import com.thesunnahrevival.common.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.common.views.home.CalendarFragment
 import com.thesunnahrevival.common.views.home.TodayFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
@@ -113,7 +114,7 @@ open class MainActivity : AppCompatActivity() {
                 .findFragmentById(R.id.myNavHostFragment)
             val fragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
 
-            if (fragment is TodayFragment) {
+            if (fragment is TodayFragment && fragment !is CalendarFragment) {
                 when (random) {
                     1 -> {
                         showHelpTranslateSnackBar(fragment)
