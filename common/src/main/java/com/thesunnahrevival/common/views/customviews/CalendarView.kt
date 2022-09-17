@@ -3,6 +3,7 @@ package com.thesunnahrevival.common.views.customviews
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -241,12 +242,31 @@ class CalendarView : CalendarView {
     private fun setCalendarDayBackground(container: DayViewContainer, day: CalendarDay) {
         if (day.date == LocalDate.now()) {
             container.view.setBackgroundResource(R.drawable.today_date_bg)
+            container.gregorianCalendarDay.setTextColor(
+                ContextCompat.getColor(context, R.color.calendar_day_unselected_text)
+            )
+            container.hijriCalendarDay.setTextColor(
+                ContextCompat.getColor(context, R.color.calendar_day_unselected_text)
+            )
         }
-        if (day.date == selectedDate)
+        if (day.date == selectedDate) {
             container.view.setBackgroundResource(R.drawable.selected_date_bg)
-        else {
-            if (day.date != LocalDate.now())
+            container.gregorianCalendarDay.setTextColor(
+                ContextCompat.getColor(context, R.color.calendar_day_selected_text)
+            )
+            container.hijriCalendarDay.setTextColor(
+                ContextCompat.getColor(context, R.color.calendar_day_selected_text)
+            )
+        } else {
+            if (day.date != LocalDate.now()) {
                 container.view.setBackgroundResource(R.color.calendar_day_bg_color)
+                container.gregorianCalendarDay.setTextColor(
+                    ContextCompat.getColor(context, R.color.calendar_day_unselected_text)
+                )
+                container.hijriCalendarDay.setTextColor(
+                    ContextCompat.getColor(context, R.color.calendar_day_unselected_text)
+                )
+            }
         }
     }
 
