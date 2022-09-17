@@ -143,29 +143,29 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     }
 
     private fun setupTheRecyclerView() {
+        val reminderRecyclerView = mBinding.reminderList
+
         //Setup the RecyclerView Adapter
         mReminderRecyclerAdapter = ReminderListAdapter(requireContext())
         mReminderRecyclerAdapter.setOnItemInteractionListener(this)
-
-        val reminderRecyclerView = mBinding.reminderList
-        reminderRecyclerView.adapter = mReminderRecyclerAdapter
-
-        //Set the swipe getsures
-        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
-        itemTouchHelper.attachToRecyclerView(null)
-        itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
-
         mReminderRecyclerAdapter.addLoadStateListener { loadState: CombinedLoadStates ->
             if (loadState.append.endOfPaginationReached) {
-                if (mReminderRecyclerAdapter.itemCount < 1)
+                if (mReminderRecyclerAdapter.itemCount < 1) {
                     mBinding.noTasksView.root.visibility = View.VISIBLE
-                else
+                    mBinding.appBar.setExpanded(true)
+                } else
                     mBinding.noTasksView.root.visibility = View.GONE
 
                 animateAddReminderButton()
                 mBinding.progressBar.visibility = View.GONE
             }
         }
+        reminderRecyclerView.adapter = mReminderRecyclerAdapter
+
+        //Set the swipe getsures
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
+        itemTouchHelper.attachToRecyclerView(null)
+        itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
 
         mViewModel.getReminders()
             .observe(viewLifecycleOwner) { reminders: PagingData<Reminder> ->
