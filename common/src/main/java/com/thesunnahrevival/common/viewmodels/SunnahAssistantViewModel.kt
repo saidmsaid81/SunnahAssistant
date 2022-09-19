@@ -79,7 +79,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     fun thereRemindersOnDay(dayOfWeek: String, dayOfMonth: Int, month: Int, year: Int): Boolean {
-        val excludePrayer = getApplication<Application>().getString(R.string.prayer)
+        val excludePrayer = getContext().getString(R.string.prayer)
         return mRepository.thereRemindersOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
     }
 
@@ -115,14 +115,13 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             val settings = settingsValue
             if (settings?.formattedAddress?.isNotBlank() == true) {
-                mRepository.deletePrayerTimesData()
                 if (settings.isAutomatic) {
-                    mRepository.generatePrayerTimes(
-                        Date(System.currentTimeMillis()),
+                    mRepository.updatePrayerReminders(
                         getContext().resources.getStringArray(R.array.prayer_names),
                         getContext().resources.getStringArray(R.array.categories)[2]
                     )
-                }
+                } else
+                    mRepository.deletePrayerTimesData()
                 updateSettings(settings)
             }
         }
@@ -153,11 +152,11 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun getGeocodingData(address: String) {
         val unavailableLocationString =
-            getApplication<Application>().getString(R.string.unavailable_location)
+            getContext().getString(R.string.unavailable_location)
         val serverError: String =
-            getApplication<Application>().getString(R.string.server_error_occured)
+            getContext().getString(R.string.server_error_occured)
         val noNetworkString =
-            getApplication<Application>().getString(R.string.error_updating_location)
+            getContext().getString(R.string.error_updating_location)
 
         viewModelScope.launch(Dispatchers.IO) {
             val data = mRepository.getGeocodingData(address, settingsValue?.language ?: "en")
@@ -239,7 +238,14 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 .getStringArray(R.array.categories)
 
             val newCategoryNames = mutableListOf<String>()
-            newCategoryNames.addAll((getApplication<Application>().resources.getStringArray(R.array.categories)))
+            newCategoryNames.addAll((getContext().resources.getStringArray(R.array.categories)))
+
+            val oldPrayerNames = getContext()
+                .createConfigurationContext(configuration)
+                .resources
+                .getStringArray(R.array.prayer_names)
+            val newPrayerNames = getContext().resources.getStringArray(R.array.prayer_names)
+
             val reminders = sunnahReminders(getApplication())
 
             viewModelScope.launch(Dispatchers.IO) {
@@ -254,7 +260,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                         reminder.category
                     )
                 }
-                updatePrayerTimesData()
+
+                mRepository.updatePrayerNames(oldPrayerNames, newPrayerNames)
+
                 settingsValue?.language = Locale.getDefault().language
                 settingsValue?.categories?.removeAll(oldCategoryNames)
                 settingsValue?.categories?.addAll(newCategoryNames)

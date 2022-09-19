@@ -2,17 +2,17 @@ package com.thesunnahrevival.common.data
 
 import android.content.Context
 import androidx.paging.PagingSource
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.ApiKey
 import com.thesunnahrevival.common.data.local.ReminderDao
 import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.common.data.model.AppSettings
-import com.thesunnahrevival.common.data.model.GeocodingData
-import com.thesunnahrevival.common.data.model.PrayerTimeCalculator
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.*
 import com.thesunnahrevival.common.data.remote.GeocodingInterface
 import com.thesunnahrevival.common.data.remote.SunnahAssistantApiInterface
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDate
 import java.util.*
 
 class SunnahAssistantRepository private constructor(context: Context) {
@@ -58,13 +58,9 @@ class SunnahAssistantRepository private constructor(context: Context) {
     }
 
     fun getRemindersOnDay(date: Date, category: String): PagingSource<Int, Reminder> {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH)
-        val year = calendar.get(Calendar.YEAR)
+        val (day, month, year, dayOfWeek) = getReminderDate(date)
         return mReminderDao.getRemindersOnDay(
-            calendar.get(Calendar.DAY_OF_WEEK).toString(),
+            dayOfWeek.toString(),
             day,
             month,
             year,
@@ -152,34 +148,102 @@ class SunnahAssistantRepository private constructor(context: Context) {
         prayerNames: Array<String>,
         prayerCategory: String
     ) {
-
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val month = calendar.get(Calendar.MONTH)
-        val year = calendar.get(Calendar.YEAR)
         val settings = mReminderDao.getAppSettingsValue()
-
         if (settings != null && settings.isAutomatic) {
+            val (day, month, year) = getReminderDate(date)
             val therePrayerRemindersOnDay =
                 mReminderDao.therePrayerRemindersOnDay(prayerCategory, "$day$month$year")
-            if (!therePrayerRemindersOnDay) {
-                val prayerTimeCalculator = PrayerTimeCalculator(
-                    settings.latitude.toDouble(),
-                    settings.longitude.toDouble(),
+            if (!therePrayerRemindersOnDay && date.after(settings.generatePrayerRemindersAfter)) {
+                val prayerTimeReminders =
+                    getPrayerRemindersList(
+                        day,
+                        month,
+                        year,
+                        settings.latitude,
+                        settings.longitude,
+                        settings.calculationMethod,
+                        settings.asrCalculationMethod,
+                        settings.latitudeAdjustmentMethod,
+                        prayerNames,
+                        prayerCategory
+                    )
+                mReminderDao.insertRemindersList(prayerTimeReminders)
+            }
+        }
+    }
+
+    suspend fun updatePrayerReminders(prayerNames: Array<String>, prayerCategory: String) {
+        val settings = mReminderDao.getAppSettingsValue()
+        if (settings != null && settings.isAutomatic) {
+            val todayDate = LocalDate.now()
+            val upcomingPrayerDatesList = mReminderDao.getUpcomingPrayerDates(
+                todayDate.dayOfMonth, todayDate.month.ordinal, todayDate.year
+            )
+
+            for (upcomingPrayerDate in upcomingPrayerDatesList) {
+                val prayerRemindersList = getPrayerRemindersList(
+                    upcomingPrayerDate.day,
+                    upcomingPrayerDate.month,
+                    upcomingPrayerDate.year,
+                    settings.latitude,
+                    settings.longitude,
                     settings.calculationMethod,
                     settings.asrCalculationMethod,
                     settings.latitudeAdjustmentMethod,
                     prayerNames,
                     prayerCategory
                 )
-
-                val prayerTimeReminders =
-                    prayerTimeCalculator.getPrayerTimeReminders(day, month, year)
-
-                mReminderDao.insertRemindersList(prayerTimeReminders)
+                for (prayerReminder in prayerRemindersList) {
+                    mReminderDao.updateGeneratedPrayerTime(
+                        prayerReminder.id,
+                        prayerReminder.timeInSeconds
+                    )
+                }
             }
         }
+    }
+
+    suspend fun updatePrayerNames(oldPrayerNames: Array<String>, newPrayerNames: Array<String>) {
+        if (oldPrayerNames.size == newPrayerNames.size) {
+            oldPrayerNames.forEachIndexed { index, oldPrayerName ->
+                mReminderDao.updatePrayerNames(oldPrayerName, newPrayerNames[index])
+            }
+        }
+    }
+
+    private fun getPrayerRemindersList(
+        day: Int,
+        month: Int,
+        year: Int,
+        latitude: Float,
+        longitude: Float,
+        calculationMethod: CalculationMethod,
+        asrCalculationMethod: Madhab,
+        latitudeAdjustmentMethod: Int,
+        prayerNames: Array<String>,
+        prayerCategory: String
+    ): ArrayList<Reminder> {
+
+        val prayerTimeCalculator = PrayerTimeCalculator(
+            latitude.toDouble(),
+            longitude.toDouble(),
+            calculationMethod,
+            asrCalculationMethod,
+            latitudeAdjustmentMethod,
+            prayerNames,
+            prayerCategory
+        )
+        return prayerTimeCalculator.getPrayerTimeReminders(day, month, year)
+    }
+
+    private fun getReminderDate(date: Date): ReminderDate {
+        val calendar = GregorianCalendar()
+        calendar.time = date
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK).toString()
+        return ReminderDate(day, month, year, dayOfWeek)
     }
 
     suspend fun updateCategory(deletedCategory: String, newCategory: String) {

@@ -114,4 +114,11 @@ class RoomTypeConverter {
     fun fromMadhab(madhab: Madhab): Int {
         return madhab.ordinal
     }
+
+    @TypeConverter
+    fun fromDate(date: Date) = date.time
+
+    @TypeConverter
+    fun toDate(dateInMilliseconds: Long) = Date(dateInMilliseconds)
+
 }

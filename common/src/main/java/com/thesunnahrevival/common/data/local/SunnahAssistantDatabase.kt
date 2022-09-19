@@ -91,6 +91,10 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
 //                database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
                 database.execSQL(
+                    "ALTER TABLE app_settings ADD COLUMN generatePrayerRemindersAfter INTEGER DEFAULT 0 NOT NULL"
+                )
+
+                database.execSQL(
                     "ALTER TABLE reminders_table ADD COLUMN isComplete INTEGER DEFAULT 0 NOT NULL"
                 )
                 database.execSQL(

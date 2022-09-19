@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ReminderDate
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -96,6 +97,15 @@ interface ReminderDao {
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder>
 
+    @Query(
+        "SELECT day, month, year FROM reminders_table WHERE " +
+                "((day >= :day AND month == :month AND year == :year) OR " +
+                "(day >= 1 AND month > :month AND year == :year) OR " +
+                "(day >= 1 AND month >= 1 AND year > :year)) " +
+                "AND id <= -1019700 "
+    )
+    fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ReminderDate>
+
     @Query("UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo, isEnabled = :isEnabled WHERE reminderName == :prayerName")
     suspend fun updatePrayerTimeDetails(
         prayerName: String?,
@@ -105,8 +115,14 @@ interface ReminderDao {
         isEnabled: Boolean
     )
 
-    @Query("UPDATE reminders_table SET month =:month, year =:year, timeInSeconds =:timeInSeconds WHERE id == :id")
-    suspend fun updateGeneratedPrayerTimes(id: Int, month: Int, year: Int, timeInSeconds: Long)
+    @Query(
+        "UPDATE reminders_table SET reminderName = :newPrayerName WHERE " +
+                "reminderName == :oldPrayerName"
+    )
+    suspend fun updatePrayerNames(oldPrayerName: String, newPrayerName: String)
+
+    @Query("UPDATE reminders_table SET timeInSeconds = :timeInSeconds WHERE id == :id")
+    suspend fun updateGeneratedPrayerTime(id: Int, timeInSeconds: Long)
 
     @Query("DELETE FROM reminders_table WHERE id < -1019700")
     suspend fun deleteAllPrayerTimes()

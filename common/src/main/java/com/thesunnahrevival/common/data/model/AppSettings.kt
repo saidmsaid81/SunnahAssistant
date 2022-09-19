@@ -42,4 +42,5 @@ class AppSettings {
     var useReliableAlarms: Boolean = true
     var numberOfLaunches: Int = 0
     var shareAnonymousUsageData: Boolean = true
+    var generatePrayerRemindersAfter: Date = Date()
 }

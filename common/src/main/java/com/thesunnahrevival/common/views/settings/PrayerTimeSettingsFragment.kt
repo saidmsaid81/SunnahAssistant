@@ -20,6 +20,7 @@ import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.common.views.dialogs.EnterLocationDialogFragment
 import java.lang.Integer.parseInt
+import java.util.*
 
 class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
 
@@ -50,6 +51,8 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 mViewModel.settingsValue?.isAutomatic = isChecked
+                mViewModel.settingsValue?.generatePrayerRemindersAfter =
+                    Date(System.currentTimeMillis() - 86400000)
                 mViewModel.settingsValue?.let {
                     mViewModel.updateSettings(it)
                     mViewModel.isPrayerSettingsUpdated = true
