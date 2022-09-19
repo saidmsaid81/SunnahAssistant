@@ -94,7 +94,7 @@ data class Reminder(
         }
     }
 
-    fun isAutomaticPrayerTime() = this.id in -1 downTo -999
+    fun isAutomaticPrayerTime() = this.id <= -1019700
 }
 
 enum class Frequency {

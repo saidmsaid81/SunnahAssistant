@@ -12,7 +12,7 @@ interface ReminderDao {
     suspend fun insertReminder(reminder: Reminder): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertRemindersList(remindersList: List<Reminder>)
+    fun insertRemindersList(remindersList: List<Reminder>)
 
     @Query("UPDATE reminders_table SET reminderName =:name, reminderInfo =:info, category =:category WHERE id =:id")
     suspend fun updateReminder(id: Int, name: String, info: String, category: String)
@@ -86,6 +86,13 @@ interface ReminderDao {
         year: Int
     ): List<Reminder>
 
+    @Query(
+        "SELECT EXISTS " +
+                "(SELECT * FROM reminders_table WHERE category == :prayerCategory AND " +
+                "id LIKE '-' || :id || '%')"
+    )
+    fun therePrayerRemindersOnDay(prayerCategory: String, id: String): Boolean
+
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder>
 
@@ -101,8 +108,8 @@ interface ReminderDao {
     @Query("UPDATE reminders_table SET month =:month, year =:year, timeInSeconds =:timeInSeconds WHERE id == :id")
     suspend fun updateGeneratedPrayerTimes(id: Int, month: Int, year: Int, timeInSeconds: Long)
 
-    @Query("DELETE FROM reminders_table WHERE category ==:categoryName ")
-    suspend fun deleteAllPrayerTimes(categoryName: String)
+    @Query("DELETE FROM reminders_table WHERE id < -1019700")
+    suspend fun deleteAllPrayerTimes()
 
     @Query("UPDATE reminders_table SET category =:newCategory WHERE category == :deletedCategory")
     suspend fun updateCategory(deletedCategory: String, newCategory: String)
@@ -114,7 +121,7 @@ interface ReminderDao {
     fun getAppSettings(): Flow<AppSettings?>
 
     @Query("SELECT * FROM app_settings")
-    suspend fun getAppSettingsValue(): AppSettings?
+    fun getAppSettingsValue(): AppSettings?
 
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)

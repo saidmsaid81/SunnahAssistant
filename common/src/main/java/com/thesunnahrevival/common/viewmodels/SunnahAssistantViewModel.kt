@@ -85,6 +85,13 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun getReminders(): LiveData<PagingData<Reminder>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
+            viewModelScope.launch(Dispatchers.IO) {
+                mRepository.generatePrayerTimes(
+                    Date(dateOfReminders),
+                    getContext().resources.getStringArray(R.array.prayer_names),
+                    getContext().resources.getStringArray(R.array.categories)[2]
+                )
+            }
             Pager(
                 PagingConfig(15),
                 pagingSourceFactory = {
@@ -104,37 +111,14 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun updateGeneratedPrayerTimes(settings: AppSettings) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (isLoadFreshData(settings.month)) {
-                if (settings.isAutomatic) {
-                    mRepository.updateGeneratedPrayerTimes(
-                        settings.latitude, settings.longitude,
-                        settings.calculationMethod, settings.asrCalculationMethod,
-                        settings.latitudeAdjustmentMethod,
-                        getContext().resources.getStringArray(R.array.prayer_names),
-                        getContext().resources.getStringArray(R.array.categories)[2]
-                    )
-                    //Save the Month in User Settings to prevent re-fetching the data the current month
-                    settings.month = getMonthNumber(System.currentTimeMillis())
-                    updateSettings(settings)
-                }
-            }
-        }
-    }
-
     fun updatePrayerTimesData() {
         viewModelScope.launch(Dispatchers.IO) {
             val settings = settingsValue
             if (settings?.formattedAddress?.isNotBlank() == true) {
-                mRepository.deletePrayerTimesData(getContext().resources.getStringArray(R.array.categories)[2])
+                mRepository.deletePrayerTimesData()
                 if (settings.isAutomatic) {
                     mRepository.generatePrayerTimes(
-                        settings.latitude,
-                        settings.longitude,
-                        settings.calculationMethod,
-                        settings.asrCalculationMethod,
-                        settings.latitudeAdjustmentMethod,
+                        Date(System.currentTimeMillis()),
                         getContext().resources.getStringArray(R.array.prayer_names),
                         getContext().resources.getStringArray(R.array.categories)[2]
                     )

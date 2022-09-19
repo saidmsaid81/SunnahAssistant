@@ -89,9 +89,6 @@ open class MainActivity : AppCompatActivity() {
                         viewModel.localeUpdate()
                     }
                     applySettings(settings)
-                    //Safe to call every time the app launches
-                    // prayer times will only be generated once a month
-                    viewModel.updateGeneratedPrayerTimes(settings)
                 }
             }
         }
