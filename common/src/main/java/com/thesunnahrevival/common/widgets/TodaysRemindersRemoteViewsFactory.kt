@@ -10,6 +10,7 @@ import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.utilities.*
 import java.lang.Integer.parseInt
+import java.util.*
 
 
 class TodaysRemindersRemoteViewsFactory(
@@ -33,6 +34,13 @@ class TodaysRemindersRemoteViewsFactory(
 
     override fun onDataSetChanged() {
         val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
+
+        repository.generatePrayerTimes(
+            Date(System.currentTimeMillis()),
+            context.resources.getStringArray(R.array.prayer_names),
+            context.resources.getStringArray(R.array.categories)[2]
+        )
+
         mTodayReminders = repository.getRemindersOnDayValue(
             dayOfTheWeek.toString(),
             getDayDate(System.currentTimeMillis()),

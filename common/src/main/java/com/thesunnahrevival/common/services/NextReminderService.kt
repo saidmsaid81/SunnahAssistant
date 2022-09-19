@@ -29,12 +29,20 @@ class NextReminderService : Service() {
             val settings = mRepository.getAppSettingsValue()
             val isForegroundEnabled = settings?.showNextReminderNotification ?: false
 
-            if (settings != null && settings.month != getMonthNumber(System.currentTimeMillis())) {
-                updateGeneratedPrayerTimes(settings)
-            }
-
             val timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
+
+
+            mRepository.generatePrayerTimes(
+                Date(timeInMilliseconds),
+                applicationContext.resources.getStringArray(R.array.prayer_names),
+                applicationContext.resources.getStringArray(R.array.categories)[2]
+            )
+            mRepository.generatePrayerTimes(
+                Date(timeInMilliseconds + 86400000),
+                applicationContext.resources.getStringArray(R.array.prayer_names),
+                applicationContext.resources.getStringArray(R.array.categories)[2]
+            )
 
             val nextTimeForReminderToday = mRepository.getNextTimeForReminderToday(
                 calculateOffsetFromMidnight(),
@@ -182,21 +190,6 @@ class NextReminderService : Service() {
             startForeground(1, stickyNotification)
         else
             context.stopForeground(true)
-    }
-
-    private suspend fun updateGeneratedPrayerTimes(settings: AppSettings) {
-        mRepository.updateGeneratedPrayerTimes(
-            settings.latitude,
-            settings.longitude,
-            settings.calculationMethod,
-            settings.asrCalculationMethod,
-            settings.latitudeAdjustmentMethod,
-            resources.getStringArray(R.array.prayer_names),
-            resources.getStringArray(R.array.categories)[2]
-        )
-        settings.month = getMonthNumber(System.currentTimeMillis())
-        mRepository.updateAppSettings(settings)
-
     }
 
     override fun onBind(intent: Intent?): IBinder? {

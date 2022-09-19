@@ -2,12 +2,10 @@ package com.thesunnahrevival.common.data.model
 
 import com.batoulapps.adhan.*
 import com.batoulapps.adhan.data.DateComponents
-import com.thesunnahrevival.common.utilities.getMonthNumber
 import com.thesunnahrevival.common.utilities.getTimestampInSeconds
-import com.thesunnahrevival.common.utilities.getYear
-import com.thesunnahrevival.common.utilities.lastDayOfMonth
 import java.lang.Integer.parseInt
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 
@@ -21,31 +19,54 @@ class PrayerTimeCalculator(
     private val categoryName: String
 ) {
 
-    fun getPrayerTimeReminders(): ArrayList<Reminder> {
-        val reminders = arrayListOf<Reminder>()
-        for (day in 1..lastDayOfMonth) {
-            val prayerTimesStrings = prayerTimeStrings(day)
-
-            for ((index, prayerTimeString) in prayerTimesStrings.withIndex()) {
-                val reminder = createReminder(index, day, prayerTimeString)
-                reminders.add(reminder)
+    /**
+     * @return [ArrayList] of prayer time [Reminder] for the given date based on [day], [month] and [year]
+     * @param day is the day of the month
+     * @param month should be 0 based. That is January is 0 and December is 11
+     * @param year should be between 1970 and 2069
+     * @throws IllegalArgumentException
+     */
+    fun getPrayerTimeReminders(day: Int, month: Int, year: Int): ArrayList<Reminder> {
+        when {
+            year !in 1970..2069 ->
+                throw IllegalArgumentException("Year should be between 1970 and 2069")
+            month !in 0..11 ->
+                throw IllegalArgumentException(
+                    "Month should be from 0 to 11. 0 being January and 11 being December "
+                )
+            else -> {
+                val lengthOfMonth = LocalDate.of(year, month + 1, 1).lengthOfMonth()
+                if (day !in 1..lengthOfMonth) {
+                    throw IllegalArgumentException(
+                        "Invalid day. Day of Month for Month $month cannot be $day. " +
+                                "Valid days are from 1 to $lengthOfMonth "
+                    )
+                }
             }
+        }
+
+        val reminders = arrayListOf<Reminder>()
+        val prayerTimesStrings = prayerTimeStrings(day, month, year)
+
+        for ((index, prayerTimeString) in prayerTimesStrings.withIndex()) {
+            val reminder = createReminder(index, day, month, year, prayerTimeString)
+            reminders.add(reminder)
         }
 
         return reminders
     }
 
-    private fun prayerTimeStrings(day: Int): Array<String> {
-        val dateObject = GregorianCalendar(
-            getYear(System.currentTimeMillis()).toInt(),
-            getMonthNumber(System.currentTimeMillis()), day
-        ).time
+    private fun prayerTimeStrings(day: Int, month: Int, year: Int): Array<String> {
+        val dateObject = GregorianCalendar(year, month, day).time
         val coordinates = Coordinates(latitude, longitude)
-        val date: DateComponents = DateComponents.from(dateObject)
-        val params: CalculationParameters = calculationMethod.parameters
+        val date = DateComponents.from(dateObject)
+
+        val params = calculationMethod.parameters
         params.madhab = asrCalculationMethod
         params.highLatitudeRule = HighLatitudeRule.values()[latitudeAdjustmentMethod]
+
         val prayerTimes = PrayerTimes(coordinates, date, params)
+
         val formatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
         return arrayOf(
             formatter.format(prayerTimes.fajr),
@@ -54,7 +75,13 @@ class PrayerTimeCalculator(
         )
     }
 
-    private fun createReminder(index: Int, day: Int, prayerTimeString: String): Reminder {
+    private fun createReminder(
+        index: Int,
+        day: Int,
+        month: Int,
+        year: Int,
+        prayerTimeString: String
+    ): Reminder {
 
         return Reminder(
             prayerNames[index],
@@ -64,9 +91,9 @@ class PrayerTimeCalculator(
             Frequency.Daily,
             false,
             day,
-            getMonthNumber(System.currentTimeMillis()),
-            getYear(System.currentTimeMillis()).toInt(),
-            id = parseInt("-$day$index")
+            month,
+            year,
+            id = parseInt("-$day$month$year$index")
         )
     }
 }
