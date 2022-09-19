@@ -70,14 +70,6 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                         settings.isFirstLaunch -> findNavController().navigate(R.id.welcomeFragment)
                         settings.isAfterUpdate -> findNavController().navigate(R.id.changelogFragment)
                         else -> {
-                            if (settings.isDisplayHijriDate) {
-                                mBinding.hijriDate.text = HtmlCompat.fromHtml(
-                                    getString(R.string.hijri_date, generateDateText()),
-                                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                                )
-                                mBinding.hijriDate.visibility = View.VISIBLE
-                            }
-
                             if (settings.showOnBoardingTutorial) {
                                 showOnBoardingTutorial(
                                     (activity as MainActivity), mReminderRecyclerAdapter,
@@ -170,8 +162,20 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
         mViewModel.getReminders()
             .observe(viewLifecycleOwner) { reminders: PagingData<Reminder> ->
                 mReminderRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, reminders)
+                if (this !is CalendarFragment)
+                    displayHijriDate()
             }
 
+    }
+
+    private fun displayHijriDate() {
+        if (mAppSettings?.isDisplayHijriDate == true) {
+            mBinding.hijriDate.text = HtmlCompat.fromHtml(
+                getString(R.string.hijri_date, generateDateText()),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            mBinding.hijriDate.visibility = View.VISIBLE
+        }
     }
 
     private fun animateAddReminderButton() {
@@ -247,6 +251,10 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
 
     override fun onResume() {
         super.onResume()
+        if (this !is CalendarFragment) {
+            mViewModel.setReminderParameters(System.currentTimeMillis())
+        }
+
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
         bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
