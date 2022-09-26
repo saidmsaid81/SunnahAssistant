@@ -32,15 +32,15 @@ class NextReminderService : Service() {
             val timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
 
-            val nextTimeForReminderToday = mRepository.getNextTimeForReminderToday(
+            val nextTimeForReminderToday = mRepository.getNextTimeForReminderForDay(
                 calculateOffsetFromMidnight(),
                 dayOfTheWeek.toString(),
                 getDayDate(timeInMilliseconds),
                 getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds))
             )
 
-            val nextTimeForReminderTomorrow = mRepository.getNextTimeForReminderTomorrow(
-                calculateOffsetFromMidnight(),
+            val nextTimeForReminderTomorrow = mRepository.getNextTimeForReminderForDay(
+                -(86400 - calculateOffsetFromMidnight()),
                 tomorrowDayOfTheWeek.toString(),
                 getDayDate(timeInMilliseconds + 86400000),
                 getMonthNumber(timeInMilliseconds + 86400000),
@@ -49,31 +49,38 @@ class NextReminderService : Service() {
 
             val nextScheduledReminders = arrayListOf<Reminder>()
 
-            //Check to see if tomorrows reminders trigger time is offset to earlier than today reminders
-            if (nextTimeForReminderTomorrow != null &&
-                nextTimeForReminderTomorrow < 0 &&
-                ((24 * 60 * 60) + nextTimeForReminderTomorrow) < (nextTimeForReminderToday
-                    ?: (24 * 60 * 60))
-            ) {
-                nextScheduledReminders.addAll(
-                    getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
-                )
-            } else if (nextTimeForReminderToday != null) {
-                //Get Today Reminders
-                nextScheduledReminders.addAll(
-                    mRepository.getNextScheduledReminderToday(
-                        nextTimeForReminderToday,
-                        dayOfTheWeek.toString(),
-                        getDayDate(timeInMilliseconds),
-                        getMonthNumber(timeInMilliseconds),
-                        Integer.parseInt(getYear(timeInMilliseconds))
+            when {
+                //Check to see if tomorrows reminders trigger time is offset to earlier than today reminders
+                nextTimeForReminderTomorrow != null &&
+                        nextTimeForReminderTomorrow < 0 &&
+                        ((24 * 60 * 60) + nextTimeForReminderTomorrow) < (nextTimeForReminderToday
+                    ?: (24 * 60 * 60)) -> {
+                    nextScheduledReminders.addAll(
+                        getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
                     )
-                )
+                }
+                nextTimeForReminderToday != null -> {
+                    //Get Today Reminders
+                    nextScheduledReminders.addAll(
+                        mRepository.getNextScheduledRemindersForDay(
+                            nextTimeForReminderToday,
+                            dayOfTheWeek.toString(),
+                            getDayDate(timeInMilliseconds),
+                            getMonthNumber(timeInMilliseconds),
+                            Integer.parseInt(getYear(timeInMilliseconds))
+                        )
+                    )
 
-                //Check to see if tomorrows reminders trigger time is offset to same as today reminders
-                if (nextTimeForReminderTomorrow != null &&
-                    ((24 * 60 * 60) + nextTimeForReminderTomorrow) == nextTimeForReminderToday
-                ) {
+                    //Check to see if tomorrows reminders trigger time is offset to same as today reminders
+                    if (nextTimeForReminderTomorrow != null &&
+                        ((24 * 60 * 60) + nextTimeForReminderTomorrow) == nextTimeForReminderToday
+                    ) {
+                        nextScheduledReminders.addAll(
+                            getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
+                        )
+                    }
+                }
+                nextTimeForReminderTomorrow != null -> {
                     nextScheduledReminders.addAll(
                         getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
                     )
@@ -102,7 +109,7 @@ class NextReminderService : Service() {
     private suspend fun getTomorrowsReminders(
         nextTimeForReminderTomorrow: Long,
         timeInMilliseconds: Long
-    ) = mRepository.getNextScheduledReminderTomorrow(
+    ) = mRepository.getNextScheduledRemindersForDay(
         nextTimeForReminderTomorrow,
         tomorrowDayOfTheWeek.toString(),
         getDayDate(timeInMilliseconds + 86400000),

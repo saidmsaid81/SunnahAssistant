@@ -52,7 +52,7 @@ interface ReminderDao {
     ): List<Reminder>
 
     @Query("SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE time > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY time")
-    suspend fun getNextTimeForReminderToday(
+    suspend fun getNextTimeForReminderForDay(
         offsetFromMidnight: Long,
         numberOfTheWeekDay: String,
         day: Int,
@@ -60,26 +60,9 @@ interface ReminderDao {
         year: Int
     ): Long?
 
-    @Query("SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE (time < 0) AND (time + 86400 ) > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY time")
-    suspend fun getNextTimeForReminderTomorrow(
-        offsetFromMidnight: Long,
-        numberOfTheWeekDay: String,
-        day: Int,
-        month: Int,
-        year: Int
-    ): Long?
 
     @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForReminder AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
-    suspend fun getNextScheduledReminderToday(
-        timeForReminder: Long,
-        numberOfTheWeekDay: String,
-        day: Int,
-        month: Int,
-        year: Int
-    ): List<Reminder>
-
-    @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForReminder AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
-    suspend fun getNextScheduledReminderTomorrow(
+    suspend fun getNextScheduledRemindersForDay(
         timeForReminder: Long,
         numberOfTheWeekDay: String,
         day: Int,

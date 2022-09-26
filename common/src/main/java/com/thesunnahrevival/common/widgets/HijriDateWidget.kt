@@ -97,14 +97,14 @@ internal suspend fun fetchDateFromDatabase(
     val nextReminder = if (appSettings?.isShowNextReminderWidget == true) {
         val timeInMilliseconds = System.currentTimeMillis()
 
-        val nextTimeForReminderToday = repository.getNextTimeForReminderToday(
+        val nextTimeForReminderToday = repository.getNextTimeForReminderForDay(
             calculateOffsetFromMidnight(),
             dayOfTheWeek.toString(),
             getDayDate(timeInMilliseconds),
             getMonthNumber(timeInMilliseconds),
             Integer.parseInt(getYear(timeInMilliseconds))
         )
-        repository.getNextScheduledReminderToday(
+        repository.getNextScheduledRemindersForDay(
             nextTimeForReminderToday ?: -1,
             dayOfTheWeek.toString(),
             getDayDate(timeInMilliseconds),
