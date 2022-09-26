@@ -528,10 +528,10 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         val newReminder = createNewReminder() ?: return
 
         if (mReminder.isAutomaticPrayerTime()) { //Automatic prayer time
-            if (newReminder.reminderName != mReminder.reminderName ||
-                newReminder.reminderInfo != mReminder.reminderInfo ||
+            if (newReminder.reminderInfo != mReminder.reminderInfo ||
                 mReminder.isEnabled != newReminder.isEnabled ||
-                mReminder.offsetInMinutes != newReminder.offsetInMinutes
+                mReminder.offsetInMinutes != newReminder.offsetInMinutes ||
+                mReminder.isComplete != newReminder.isComplete
             ) {
                 mViewModel.updatePrayerTimeDetails(mReminder, newReminder)
                 Toast.makeText(
@@ -539,9 +539,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 )
                     .show()
             }
-        }
-
-        if (mReminder != newReminder) {
+        } else if (mReminder != newReminder) {
             mViewModel.insertReminder(newReminder)
             if (newReminder.id == 0)
                 Toast.makeText(
