@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 
 /**
  * Implementation of App Widget functionality.
@@ -97,12 +96,6 @@ internal suspend fun fetchDateFromDatabase(
 
     val nextReminder = if (appSettings?.isShowNextReminderWidget == true) {
         val timeInMilliseconds = System.currentTimeMillis()
-
-        repository.generatePrayerTimes(
-            Date(timeInMilliseconds),
-            context.resources.getStringArray(R.array.prayer_names),
-            context.resources.getStringArray(R.array.categories)[2]
-        )
 
         val nextTimeForReminderToday = repository.getNextTimeForReminderToday(
             calculateOffsetFromMidnight(),

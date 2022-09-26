@@ -5,11 +5,15 @@ import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.ApiKey
+import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.local.ReminderDao
 import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.common.data.model.*
 import com.thesunnahrevival.common.data.remote.GeocodingInterface
 import com.thesunnahrevival.common.data.remote.SunnahAssistantApiInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
@@ -20,6 +24,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
         SunnahAssistantDatabase.getInstance(context).reminderDao()
     private val mGeocodingRestApi: GeocodingInterface
     private val mSunnahAssistantApi: SunnahAssistantApiInterface
+    private val prayerNames: Array<String>
+    private val prayerCategory: String
 
     init {
         val retrofit = Retrofit.Builder()
@@ -32,6 +38,9 @@ class SunnahAssistantRepository private constructor(context: Context) {
             .baseUrl("https://us-central1-sunnah-assistant.cloudfunctions.net/")
             .build()
             .create(SunnahAssistantApiInterface::class.java)
+
+        prayerNames = context.resources.getStringArray(R.array.prayer_names)
+        prayerCategory = context.resources.getStringArray(R.array.categories)[2]
 
     }
 
@@ -58,6 +67,10 @@ class SunnahAssistantRepository private constructor(context: Context) {
     }
 
     fun getRemindersOnDay(date: Date, category: String): PagingSource<Int, Reminder> {
+        CoroutineScope(Dispatchers.IO).launch {
+            generatePrayerTimes(date)
+        }
+
         val (day, month, year, dayOfWeek) = getReminderDate(date)
         return mReminderDao.getRemindersOnDay(
             dayOfWeek.toString(),
@@ -68,8 +81,15 @@ class SunnahAssistantRepository private constructor(context: Context) {
         )
     }
 
-    fun getRemindersOnDayValue(numberOfTheWeekDay: String, day: Int, month: Int, year: Int) =
-        mReminderDao.getRemindersOnDayValue(numberOfTheWeekDay, day, month, year)
+    fun getRemindersOnDayValue(
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int
+    ): List<Reminder> {
+        generatePrayerTimes(GregorianCalendar(year, month, day).time)
+        return mReminderDao.getRemindersOnDayValue(numberOfTheWeekDay, day, month, year)
+    }
 
     suspend fun getNextTimeForReminderToday(
         offsetFromMidnight: Long,
@@ -77,13 +97,16 @@ class SunnahAssistantRepository private constructor(context: Context) {
         day: Int,
         month: Int,
         year: Int
-    ) = mReminderDao.getNextTimeForReminderToday(
-        offsetFromMidnight,
-        numberOfTheWeekDay,
-        day,
-        month,
-        year
-    )
+    ): Long? {
+        generatePrayerTimes(GregorianCalendar(year, month, day).time)
+        return mReminderDao.getNextTimeForReminderToday(
+            offsetFromMidnight,
+            numberOfTheWeekDay,
+            day,
+            month,
+            year
+        )
+    }
 
     suspend fun getNextTimeForReminderTomorrow(
         offsetFromMidnight: Long,
@@ -91,13 +114,16 @@ class SunnahAssistantRepository private constructor(context: Context) {
         day: Int,
         month: Int,
         year: Int
-    ) = mReminderDao.getNextTimeForReminderTomorrow(
-        offsetFromMidnight,
-        numberOfTheWeekDay,
-        day,
-        month,
-        year
-    )
+    ): Long? {
+        generatePrayerTimes(GregorianCalendar(year, month, day).time)
+        return mReminderDao.getNextTimeForReminderTomorrow(
+            offsetFromMidnight,
+            numberOfTheWeekDay,
+            day,
+            month,
+            year
+        )
+    }
 
     suspend fun getNextScheduledReminderToday(
         timeForReminder: Long,
@@ -140,14 +166,12 @@ class SunnahAssistantRepository private constructor(context: Context) {
     suspend fun deletePrayerTimesData() =
         mReminderDao.deleteAllPrayerTimes()
 
-    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String) =
-        mReminderDao.getPrayerTimesValue(day, month, year, categoryName)
+    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder> {
+        generatePrayerTimes(GregorianCalendar(year, month, day).time)
+        return mReminderDao.getPrayerTimesValue(day, month, year, categoryName)
+    }
 
-    fun generatePrayerTimes(
-        date: Date,
-        prayerNames: Array<String>,
-        prayerCategory: String
-    ) {
+    private fun generatePrayerTimes(date: Date) {
         val settings = mReminderDao.getAppSettingsValue()
         if (settings != null && settings.isAutomatic) {
             val (day, month, year) = getReminderDate(date)

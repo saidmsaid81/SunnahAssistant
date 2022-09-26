@@ -85,13 +85,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun getReminders(): LiveData<PagingData<Reminder>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
-            viewModelScope.launch(Dispatchers.IO) {
-                mRepository.generatePrayerTimes(
-                    Date(dateOfReminders),
-                    getContext().resources.getStringArray(R.array.prayer_names),
-                    getContext().resources.getStringArray(R.array.categories)[2]
-                )
-            }
             Pager(
                 PagingConfig(15),
                 pagingSourceFactory = {
@@ -167,7 +160,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     updateLocationDetails(data)
                     message = "Successful"
                 }
-                data != null && data.results.isEmpty() -> {
+                data != null -> {
                     if (data.status == "ZERO_RESULTS")
                         message = unavailableLocationString
                     else {
@@ -208,8 +201,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             )
         )
     }
-
-    private fun isLoadFreshData(month: Int) = month != getMonthNumber(System.currentTimeMillis())
 
     private fun getContext() = getApplication<Application>().applicationContext
 
@@ -264,7 +255,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 mRepository.updatePrayerNames(oldPrayerNames, newPrayerNames)
 
                 settingsValue?.language = Locale.getDefault().language
-                settingsValue?.categories?.removeAll(oldCategoryNames)
+                settingsValue?.categories?.removeAll(oldCategoryNames.toSet())
                 settingsValue?.categories?.addAll(newCategoryNames)
                 settingsValue?.let {
                     updateSettings(it)
