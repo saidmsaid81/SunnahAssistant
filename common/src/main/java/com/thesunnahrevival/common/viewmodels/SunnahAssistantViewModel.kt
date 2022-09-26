@@ -18,7 +18,9 @@ import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.GeocodingData
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.services.NextReminderService
-import com.thesunnahrevival.common.utilities.*
+import com.thesunnahrevival.common.utilities.getPackageNameToUse
+import com.thesunnahrevival.common.utilities.sunnahReminders
+import com.thesunnahrevival.common.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,7 +62,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             selectedReminder = reminder
             withContext(Dispatchers.Main) {
                 startService()
-                updateWidgets()
                 if (updateCalendar)
                     triggerCalendarUpdate.value = true
             }
@@ -72,7 +73,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             mRepository.deleteReminder(reminder)
             withContext(Dispatchers.Main) {
                 startService()
-                updateWidgets()
                 triggerCalendarUpdate.value = true
             }
         }
@@ -99,7 +99,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)
             withContext(Dispatchers.Main) {
                 startService()
-                updateWidgets()
             }
         }
     }
@@ -212,11 +211,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     !connectivityManager.activeNetworkInfo!!.isConnected
         }
 
-    private fun updateWidgets() {
-        updateHijriDateWidgets(getApplication())
-        updateTodayRemindersWidgets(getApplication())
-    }
-
     fun localeUpdate() {
         if (supportedLocales.contains(Locale.getDefault().language)) {
             val configuration =
@@ -261,6 +255,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     updateSettings(it)
                 }
 
+                withContext(Dispatchers.Main) {
+                    startService()
+                }
             }
         }
     }
