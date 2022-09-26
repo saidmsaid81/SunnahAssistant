@@ -171,7 +171,8 @@ class NextReminderService : Service() {
                     title = "",
                     texts = arrayOf(""),
                     categories = arrayOf("null"),
-                    timeInMilliseconds = (-TimeZone.getDefault().rawOffset + 10).toLong(),
+                    timeInMilliseconds =
+                    (-TimeZone.getDefault().rawOffset + 10).toLong() + (9 * 60 * 60 * 1000), //9AM local time
                     notificationUri = it,
                     isVibrate = isVibrate,
                     doNotDisturbMinutes = settings.doNotDisturbMinutes,
