@@ -91,7 +91,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
         return mReminderDao.getRemindersOnDayValue(numberOfTheWeekDay, day, month, year)
     }
 
-    suspend fun getNextTimeForReminderToday(
+    suspend fun getNextTimeForReminderForDay(
         offsetFromMidnight: Long,
         numberOfTheWeekDay: String,
         day: Int,
@@ -99,7 +99,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
         year: Int
     ): Long? {
         generatePrayerTimes(GregorianCalendar(year, month, day).time)
-        return mReminderDao.getNextTimeForReminderToday(
+        return mReminderDao.getNextTimeForReminderForDay(
             offsetFromMidnight,
             numberOfTheWeekDay,
             day,
@@ -108,30 +108,13 @@ class SunnahAssistantRepository private constructor(context: Context) {
         )
     }
 
-    suspend fun getNextTimeForReminderTomorrow(
-        offsetFromMidnight: Long,
-        numberOfTheWeekDay: String,
-        day: Int,
-        month: Int,
-        year: Int
-    ): Long? {
-        generatePrayerTimes(GregorianCalendar(year, month, day).time)
-        return mReminderDao.getNextTimeForReminderTomorrow(
-            offsetFromMidnight,
-            numberOfTheWeekDay,
-            day,
-            month,
-            year
-        )
-    }
-
-    suspend fun getNextScheduledReminderToday(
+    suspend fun getNextScheduledRemindersForDay(
         timeForReminder: Long,
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int
-    ) = mReminderDao.getNextScheduledReminderToday(
+    ) = mReminderDao.getNextScheduledRemindersForDay(
         timeForReminder,
         numberOfTheWeekDay,
         day,
@@ -139,19 +122,6 @@ class SunnahAssistantRepository private constructor(context: Context) {
         year
     )
 
-    suspend fun getNextScheduledReminderTomorrow(
-        timeForReminder: Long,
-        numberOfTheWeekDay: String,
-        day: Int,
-        month: Int,
-        year: Int
-    ) = mReminderDao.getNextScheduledReminderTomorrow(
-        timeForReminder,
-        numberOfTheWeekDay,
-        day,
-        month,
-        year
-    )
 
     suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
         mReminderDao.updatePrayerTimeDetails(
