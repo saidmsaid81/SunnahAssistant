@@ -32,18 +32,6 @@ class NextReminderService : Service() {
             val timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
 
-
-            mRepository.generatePrayerTimes(
-                Date(timeInMilliseconds),
-                applicationContext.resources.getStringArray(R.array.prayer_names),
-                applicationContext.resources.getStringArray(R.array.categories)[2]
-            )
-            mRepository.generatePrayerTimes(
-                Date(timeInMilliseconds + 86400000),
-                applicationContext.resources.getStringArray(R.array.prayer_names),
-                applicationContext.resources.getStringArray(R.array.categories)[2]
-            )
-
             val nextTimeForReminderToday = mRepository.getNextTimeForReminderToday(
                 calculateOffsetFromMidnight(),
                 dayOfTheWeek.toString(),
@@ -64,7 +52,8 @@ class NextReminderService : Service() {
             //Check to see if tomorrows reminders trigger time is offset to earlier than today reminders
             if (nextTimeForReminderTomorrow != null &&
                 nextTimeForReminderTomorrow < 0 &&
-                ((24 * 60 * 60) + nextTimeForReminderTomorrow) < nextTimeForReminderToday ?: (24 * 60 * 60)
+                ((24 * 60 * 60) + nextTimeForReminderTomorrow) < (nextTimeForReminderToday
+                    ?: (24 * 60 * 60))
             ) {
                 nextScheduledReminders.addAll(
                     getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)

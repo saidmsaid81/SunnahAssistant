@@ -12,7 +12,6 @@ import com.thesunnahrevival.common.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.common.utilities.getDayDate
 import com.thesunnahrevival.common.utilities.getMonthNumber
 import com.thesunnahrevival.common.utilities.getYear
-import java.util.*
 
 class PrayerTimesRemoteViewsFactory(
     private val context: Context,
@@ -36,11 +35,6 @@ class PrayerTimesRemoteViewsFactory(
     override fun onDataSetChanged() {
         val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
 
-        repository.generatePrayerTimes(
-            Date(System.currentTimeMillis()),
-            context.resources.getStringArray(R.array.prayer_names),
-            context.resources.getStringArray(R.array.categories)[2]
-        )
         mPrayerReminders = repository.getPrayerTimesValue(
             getDayDate(System.currentTimeMillis()),
             getMonthNumber(System.currentTimeMillis()),
