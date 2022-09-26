@@ -12,7 +12,6 @@ import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.services.NextReminderService
 import com.thesunnahrevival.common.utilities.ReminderManager
 import com.thesunnahrevival.common.utilities.createNotification
-import com.thesunnahrevival.common.utilities.updateHijriDateWidgets
 
 class ReminderBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -55,7 +54,6 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
             context.startForegroundService(service)
         else
             context.startService(service)
-        updateHijriDateWidgets(context)
     }
 
     /**

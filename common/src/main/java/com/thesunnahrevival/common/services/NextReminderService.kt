@@ -100,6 +100,7 @@ class NextReminderService : Service() {
                         isForegroundEnabled,
                         dayString
                     )
+                    updateWidgets(this@NextReminderService)
                 }
             }
         }

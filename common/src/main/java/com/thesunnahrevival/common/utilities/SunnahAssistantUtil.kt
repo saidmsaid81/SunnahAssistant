@@ -14,6 +14,7 @@ import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.Reminder
 import com.thesunnahrevival.common.widgets.HijriDateWidget
+import com.thesunnahrevival.common.widgets.PrayerTimesWidget
 import com.thesunnahrevival.common.widgets.TodayRemindersWidget
 import java.util.*
 
@@ -195,33 +196,46 @@ fun initialSettings(categories: TreeSet<String>): AppSettings {
     return appSettings
 }
 
-
-fun updateHijriDateWidgets(context: Context?) {
-    if (context != null) {
-        //Update Widgets
-        val widgetIntent = Intent(context, HijriDateWidget::class.java)
-        widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
-        // since it seems the onUpdate() is only fired on that:
-        val ids = AppWidgetManager.getInstance(context)
-            .getAppWidgetIds(ComponentName(context, HijriDateWidget::class.java))
-        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        context.sendBroadcast(widgetIntent)
-    }
+fun updateWidgets(context: Context) {
+    updateHijriDateWidgets(context)
+    updateTodayRemindersWidgets(context)
+    updatePrayerTimesWidgets(context)
 }
 
-fun updateTodayRemindersWidgets(context: Context?) {
-    if (context != null) {
-        //Update Widgets
-        val appWidgetManager = AppWidgetManager.getInstance(context)
+private fun updateHijriDateWidgets(context: Context) {
+    //Update Widgets
+    val widgetIntent = Intent(context, HijriDateWidget::class.java)
+    widgetIntent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
-        // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
-        // since it seems the onUpdate() is only fired on that:
-        val ids = AppWidgetManager.getInstance(context)
-            .getAppWidgetIds(ComponentName(context, TodayRemindersWidget::class.java))
-        appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
-    }
+    // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+    // since it seems the onUpdate() is only fired on that:
+    val ids = AppWidgetManager.getInstance(context)
+        .getAppWidgetIds(ComponentName(context, HijriDateWidget::class.java))
+    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    context.sendBroadcast(widgetIntent)
+
+}
+
+private fun updateTodayRemindersWidgets(context: Context) {
+    //Update Widgets
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+
+    // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+    // since it seems the onUpdate() is only fired on that:
+    val ids = AppWidgetManager.getInstance(context)
+        .getAppWidgetIds(ComponentName(context, TodayRemindersWidget::class.java))
+    appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
+}
+
+private fun updatePrayerTimesWidgets(context: Context) {
+    //Update Widgets
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+
+    // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+    // since it seems the onUpdate() is only fired on that:
+    val ids = AppWidgetManager.getInstance(context)
+        .getAppWidgetIds(ComponentName(context, PrayerTimesWidget::class.java))
+    appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
 
 }
 
