@@ -1,6 +1,7 @@
 package com.thesunnahrevival.common.data
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
@@ -124,12 +125,14 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
 
     suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
+        Log.v("Old", oldPrayerDetails.toString())
+        Log.v("New", newPrayerDetails.toString())
         mReminderDao.updatePrayerTimeDetails(
-            oldPrayerDetails.reminderName,
-            newPrayerDetails.reminderName,
             newPrayerDetails.reminderInfo,
             newPrayerDetails.offsetInMinutes,
-            newPrayerDetails.isEnabled
+            newPrayerDetails.isEnabled,
+            newPrayerDetails.isComplete,
+            oldPrayerDetails.id
         )
     }
 

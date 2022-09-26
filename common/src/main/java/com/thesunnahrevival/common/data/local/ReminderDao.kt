@@ -89,13 +89,17 @@ interface ReminderDao {
     )
     fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ReminderDate>
 
-    @Query("UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderName =:newPrayerName, reminderInfo =:reminderInfo, isEnabled = :isEnabled WHERE reminderName == :prayerName")
+    @Query(
+        "UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderInfo =:reminderInfo," +
+                " isEnabled = :isEnabled, isComplete = :isComplete" +
+                " WHERE id == :reminderId"
+    )
     suspend fun updatePrayerTimeDetails(
-        prayerName: String?,
-        newPrayerName: String?,
         reminderInfo: String?,
         offsetValue: Int,
-        isEnabled: Boolean
+        isEnabled: Boolean,
+        isComplete: Boolean,
+        reminderId: Int
     )
 
     @Query(
