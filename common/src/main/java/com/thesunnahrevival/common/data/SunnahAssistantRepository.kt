@@ -173,7 +173,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     private fun generatePrayerTimes(date: Date) {
         val settings = mReminderDao.getAppSettingsValue()
-        if (settings != null && settings.isAutomatic) {
+        if (settings != null && settings.isAutomatic && settings.formattedAddress?.isNotBlank() == true) {
             val (day, month, year) = getReminderDate(date)
             val therePrayerRemindersOnDay =
                 mReminderDao.therePrayerRemindersOnDay(prayerCategory, "$day$month$year")
