@@ -121,4 +121,27 @@ class RoomTypeConverter {
     @TypeConverter
     fun toDate(dateInMilliseconds: Long) = Date(dateInMilliseconds)
 
+    @TypeConverter
+    fun fromBooleanArray(array: BooleanArray): String {
+        val stringBuilder = StringBuilder()
+        array.forEach {
+            stringBuilder.append("${if (it) 1 else 0},")
+        }
+        return stringBuilder.toString()
+    }
+
+    @TypeConverter
+    fun toBooleanArray(string: String): BooleanArray {
+        val booleanArray = BooleanArray(5) { false }
+        if (string.isNotBlank()) {
+            val array = string.split(",")
+            array.forEachIndexed { index, it ->
+                if (it == "1") {
+                    booleanArray[index] = true
+                }
+            }
+        }
+
+        return booleanArray
+    }
 }

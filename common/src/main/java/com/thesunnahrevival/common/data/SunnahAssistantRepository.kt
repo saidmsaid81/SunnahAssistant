@@ -146,7 +146,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     private fun generatePrayerTimes(date: Date) {
         val settings = mReminderDao.getAppSettingsValue()
-        if (settings != null && settings.isAutomatic && settings.formattedAddress?.isNotBlank() == true) {
+        if (settings != null && settings.isAutomaticPrayerAlertsEnabled && settings.formattedAddress?.isNotBlank() == true) {
             val (day, month, year) = getReminderDate(date)
             val therePrayerRemindersOnDay =
                 mReminderDao.therePrayerRemindersOnDay(prayerCategory, "$day$month$year")
@@ -162,7 +162,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
                         settings.asrCalculationMethod,
                         settings.latitudeAdjustmentMethod,
                         prayerNames,
-                        prayerCategory
+                        prayerCategory,
+                        settings.generatePrayerTimeForPrayer
                     )
                 mReminderDao.insertRemindersList(prayerTimeReminders)
             }
@@ -171,7 +172,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     suspend fun updatePrayerReminders(prayerNames: Array<String>, prayerCategory: String) {
         val settings = mReminderDao.getAppSettingsValue()
-        if (settings != null && settings.isAutomatic) {
+        if (settings != null && settings.isAutomaticPrayerAlertsEnabled) {
             val todayDate = LocalDate.now()
             val upcomingPrayerDatesList = mReminderDao.getUpcomingPrayerDates(
                 todayDate.dayOfMonth, todayDate.month.ordinal, todayDate.year
@@ -188,12 +189,14 @@ class SunnahAssistantRepository private constructor(context: Context) {
                     settings.asrCalculationMethod,
                     settings.latitudeAdjustmentMethod,
                     prayerNames,
-                    prayerCategory
+                    prayerCategory,
+                    settings.generatePrayerTimeForPrayer
                 )
                 for (prayerReminder in prayerRemindersList) {
                     mReminderDao.updateGeneratedPrayerTime(
                         prayerReminder.id,
-                        prayerReminder.timeInSeconds
+                        prayerReminder.timeInSeconds,
+                        prayerReminder.isEnabled
                     )
                 }
             }
@@ -218,7 +221,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
         asrCalculationMethod: Madhab,
         latitudeAdjustmentMethod: Int,
         prayerNames: Array<String>,
-        prayerCategory: String
+        prayerCategory: String,
+        generatePrayerTimeForPrayer: BooleanArray
     ): ArrayList<Reminder> {
 
         val prayerTimeCalculator = PrayerTimeCalculator(
@@ -230,7 +234,12 @@ class SunnahAssistantRepository private constructor(context: Context) {
             prayerNames,
             prayerCategory
         )
-        return prayerTimeCalculator.getPrayerTimeReminders(day, month, year)
+        return prayerTimeCalculator.getPrayerTimeReminders(
+            day,
+            month,
+            year,
+            generatePrayerTimeForPrayer
+        )
     }
 
     private fun getReminderDate(date: Date): ReminderDate {

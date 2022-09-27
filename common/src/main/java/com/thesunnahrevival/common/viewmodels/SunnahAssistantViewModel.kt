@@ -107,7 +107,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             val settings = settingsValue
             if (settings?.formattedAddress?.isNotBlank() == true) {
-                if (settings.isAutomatic) {
+                if (settings.isAutomaticPrayerAlertsEnabled) {
                     mRepository.updatePrayerReminders(
                         getContext().resources.getStringArray(R.array.prayer_names),
                         getContext().resources.getStringArray(R.array.categories)[2]

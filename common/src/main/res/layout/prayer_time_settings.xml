@@ -1,48 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
-    <data>
-        <import type="android.view.View" />
-        <import type="android.os.Build"/>
-        <import type="android.os.Build.VERSION"/>
-        <import type="android.os.Build.VERSION_CODES"/>
+  <data>
+    <import type="android.view.View" />
+    <import type="android.os.Build" />
+    <import type="android.os.Build.VERSION" />
+    <import type="android.os.Build.VERSION_CODES" />
 
-        <variable
-            name="settings"
-            type="com.thesunnahrevival.common.data.model.AppSettings"
-            />
-        <variable
-            name="calculationMethod"
-            type="java.lang.String" />
-        <variable
-            name="asrCalculationMethod"
-            type="java.lang.String" />
-        <variable
-            name="latitudeAdjustmentMethod"
-            type="java.lang.String" />
-    </data>
+    <variable
+        name="settings"
+        type="com.thesunnahrevival.common.data.model.AppSettings"
+        />
+    <variable
+        name="calculationMethod"
+        type="java.lang.String"
+        />
+    <variable
+        name="asrCalculationMethod"
+        type="java.lang.String"
+        />
+    <variable
+        name="latitudeAdjustmentMethod"
+        type="java.lang.String"
+        />
+    <variable
+        name="prayers"
+        type="java.lang.String[]"
+        />
+  </data>
 
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="@dimen/default_dimen"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/prayer_time_settings"
-            android:textColor="@color/colorAccent"
-            />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/prayer_time_settings"
+          android:textColor="@color/colorAccent"
+          />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/activate_prayer_time_alerts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/default_dimen"
-            android:text="@string/add_prayer_time"
-            android:button="@null"
-            android:checked="@{settings.automatic}" />
+      <com.google.android.material.switchmaterial.SwitchMaterial
+          android:id="@+id/activate_prayer_time_alerts"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:text="@string/add_prayer_time"
+          android:button="@null"
+          android:checked="@{settings.automaticPrayerAlertsEnabled}"
+          tools:checked="true"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:visibility="@{settings.automaticPrayerAlertsEnabled ? View.VISIBLE : View.GONE}"
+          >
 
         <LinearLayout
             android:id="@+id/location_details"
@@ -52,19 +76,22 @@
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/separatorColor"
-                android:text="@string/enter_city_town_name" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/enter_city_town_name"
+              />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{settings.formattedAddress.empty ? String.format(@string/location_cannot_be_empty) : settings.formattedAddress }"/>
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.formattedAddress.empty ? String.format(@string/location_cannot_be_empty) : settings.formattedAddress }"
+              tools:text="London, United Kingdom"
+              />
 
         </LinearLayout>
 
@@ -76,20 +103,23 @@
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/separatorColor"
-                android:text="@string/prayer_time_calculation_method" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/prayer_time_calculation_method"
+              />
 
-            <TextView
-                android:id="@+id/calculation_method"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{calculationMethod}"/>
+          <TextView
+              android:id="@+id/calculation_method"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{calculationMethod}"
+              tools:text="Muslim World League (default)"
+              />
 
         </LinearLayout>
 
@@ -101,20 +131,23 @@
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/separatorColor"
-                android:text="@string/asr_juristic_method" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/asr_juristic_method"
+              />
 
-            <TextView
-                android:id="@+id/asr_calculation_method"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{asrCalculationMethod}"/>
+          <TextView
+              android:id="@+id/asr_calculation_method"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{asrCalculationMethod}"
+              tools:text="Standard(Hanbali, Shafi, Maliki)"
+              />
 
         </LinearLayout>
 
@@ -126,64 +159,419 @@
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="@{settings.automatic ? View.VISIBLE : View.GONE}"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/separatorColor"
-                android:text="@string/higher_latitude_adjustment_method" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/higher_latitude_adjustment_method"
+              />
 
-            <TextView
-                android:id="@+id/higher_latitude_method"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{latitudeAdjustmentMethod}"/>
+          <TextView
+              android:id="@+id/higher_latitude_method"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{latitudeAdjustmentMethod}"
+              tools:text="Angle Based (Default)"
+              />
 
         </LinearLayout>
+
+      </LinearLayout>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/prayer_times_notification_settings"
+          android:layout_marginTop="24dp"
+          android:textColor="@color/colorAccent"
+          />
+
+      <LinearLayout
+          android:id="@+id/do_not_disturb"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:background="?android:attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
+          android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
+          android:orientation="vertical"
+          >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/prayer_times_notification_settings"
+            android:textColor="@color/separatorColor"
+            android:text="@string/set_phone_to_do_not_disturb_mode_for"
+            />
+
+        <TextView
+            android:id="@+id/do_not_disturb_minutes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{String.format(@string/dnd_minutes, settings.doNotDisturbMinutes)}"
+            tools:text="0 minutes"
+            />
+      </LinearLayout>
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="8dp"
+          android:textSize="12sp"
+          android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
+          android:drawablePadding="@dimen/default_dimen"
+          android:text="@string/use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered"
+          app:drawableStartCompat="@drawable/ic_info"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:visibility="@{(settings.automaticPrayerAlertsEnabled &amp;&amp; settings.formattedAddress != null &amp;&amp; !settings.formattedAddress.trim().isEmpty()) ? View.VISIBLE : View.GONE}"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fajr_prayer_settings"
             android:layout_marginTop="24dp"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            />
 
         <LinearLayout
-            android:id="@+id/do_not_disturb"
+            android:id="@+id/fajr_enable_alerts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_dimen"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/separatorColor"
-                android:text="@string/set_phone_to_do_not_disturb_mode_for" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/enable_alerts"
+              />
 
-            <TextView
-                android:id="@+id/do_not_disturb_minutes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{String.format(@string/dnd_minutes, settings.doNotDisturbMinutes)}"/>
+          <TextView
+              android:id="@+id/fajr_enable_alerts_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.generatePrayerTimeForPrayer[0] ? @string/yes : @string/no}"
+              tools:text="Yes"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fajr_offset_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, prayers[0])}"
+              tools:text="Change Fajr Prayer time By (+/- minutes)"
+              />
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/minutes"
+              android:importantForAutofill="no"
+              android:inputType="numberSigned"
+              android:background="@android:color/transparent"
+              android:text=""
+              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_info"
-            android:paddingTop="@dimen/default_dimen"
-            android:textSize="12sp"
-            android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
-            android:drawablePadding="@dimen/default_dimen"
-            android:text="@string/use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered"/>
+            android:text="@string/dhuhr_prayer_settings"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/colorAccent"
+            />
+
+        <LinearLayout
+            android:id="@+id/dhuhr_enable_alerts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/enable_alerts"
+              />
+
+          <TextView
+              android:id="@+id/dhuhr_enable_alerts_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.generatePrayerTimeForPrayer[1] ? @string/yes : @string/no}"
+              tools:text="Yes"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dhuhr_offset_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, prayers[1])}"
+              tools:text="Change Dhuhr Prayer time By (+/- minutes)"
+              />
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/minutes"
+              android:importantForAutofill="no"
+              android:inputType="numberSigned"
+              android:background="@android:color/transparent"
+              android:text=""
+              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/asr_prayer_settings"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/colorAccent"
+            />
+
+        <LinearLayout
+            android:id="@+id/asr_enable_alerts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/enable_alerts"
+              />
+
+          <TextView
+              android:id="@+id/asr_enable_alerts_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.generatePrayerTimeForPrayer[2] ? @string/yes : @string/no}"
+              tools:text="Yes"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/asr_offset_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, prayers[2])}"
+              tools:text="Change Asr Prayer time By (+/- minutes)"
+              />
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/minutes"
+              android:importantForAutofill="no"
+              android:inputType="numberSigned"
+              android:background="@android:color/transparent"
+              android:text=""
+              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/maghrib_prayer_settings"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/colorAccent"
+            />
+
+        <LinearLayout
+            android:id="@+id/maghrib_enable_alerts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/enable_alerts"
+              />
+
+          <TextView
+              android:id="@+id/maghrib_enable_alerts_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.generatePrayerTimeForPrayer[3] ? @string/yes : @string/no}"
+              tools:text="Yes"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/maghrib_offset_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, prayers[3])}"
+              tools:text="Change Maghrib Prayer time By (+/- minutes)"
+              />
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/minutes"
+              android:importantForAutofill="no"
+              android:inputType="numberSigned"
+              android:background="@android:color/transparent"
+              android:text=""
+              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/isha_prayer_settings"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/colorAccent"
+            />
+
+        <LinearLayout
+            android:id="@+id/isha_enable_alerts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@string/enable_alerts"
+              />
+
+          <TextView
+              android:id="@+id/isha_enable_alerts_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.generatePrayerTimeForPrayer[4] ? @string/yes : @string/no}"
+              tools:text="Yes"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/isha_offset_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/separatorColor"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, prayers[4])}"
+              tools:text="Change Isha Prayer time By (+/- minutes)"
+              />
+
+          <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/minutes"
+              android:importantForAutofill="no"
+              android:inputType="numberSigned"
+              android:background="@android:color/transparent"
+              android:text=""
+              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              />
+        </LinearLayout>
+
+      </LinearLayout>
 
 
     </LinearLayout>
+
+
+  </ScrollView>
+
+
 </layout>
