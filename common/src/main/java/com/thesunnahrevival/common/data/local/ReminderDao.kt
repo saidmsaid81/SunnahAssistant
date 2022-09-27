@@ -108,8 +108,8 @@ interface ReminderDao {
     )
     suspend fun updatePrayerNames(oldPrayerName: String, newPrayerName: String)
 
-    @Query("UPDATE reminders_table SET timeInSeconds = :timeInSeconds WHERE id == :id")
-    suspend fun updateGeneratedPrayerTime(id: Int, timeInSeconds: Long)
+    @Query("UPDATE reminders_table SET timeInSeconds = :timeInSeconds, isEnabled = :isEnabled WHERE id == :id")
+    suspend fun updateGeneratedPrayerTime(id: Int, timeInSeconds: Long, isEnabled: Boolean)
 
     @Query("DELETE FROM reminders_table WHERE id < -1019700")
     suspend fun deleteAllPrayerTimes()

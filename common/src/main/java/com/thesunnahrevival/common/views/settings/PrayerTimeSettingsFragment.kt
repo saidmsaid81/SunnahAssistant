@@ -24,6 +24,8 @@ import java.util.*
 
 class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
 
+    private val yesNoOptions = arrayOf("", "")
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,6 +37,8 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         )
 
         mViewModel.isPrayerSettingsUpdated = false
+        binding.prayers = resources.getStringArray(R.array.prayer_names)
+
         mViewModel.getSettings().observe(viewLifecycleOwner) {
             if (it != null) {
                 mViewModel.settingsValue = it
@@ -50,21 +54,32 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
 
         binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
-                mViewModel.settingsValue?.isAutomatic = isChecked
-                mViewModel.settingsValue?.generatePrayerRemindersAfter =
-                    Date(System.currentTimeMillis() - 86400000)
-                mViewModel.settingsValue?.let {
+                val settingsValue = mViewModel.settingsValue ?: return@setOnCheckedChangeListener
+                settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
+                settingsValue.generatePrayerTimeForPrayer = BooleanArray(5) { isChecked }
+                if (isChecked)
+                    settingsValue.generatePrayerRemindersAfter =
+                        Date(System.currentTimeMillis() - 86400000)
+                settingsValue.let {
                     mViewModel.updateSettings(it)
                     mViewModel.isPrayerSettingsUpdated = true
                 }
             }
         }
 
+        yesNoOptions[0] = getString(R.string.yes)
+        yesNoOptions[1] = getString(R.string.no)
         binding.locationDetails.setOnClickListener(this)
         binding.calculationDetails.setOnClickListener(this)
         binding.asrCalculationDetails.setOnClickListener(this)
         binding.higherLatitudeDetails.setOnClickListener(this)
         binding.doNotDisturb.setOnClickListener(this)
+        binding.fajrEnableAlerts.setOnClickListener(this)
+        binding.dhuhrEnableAlerts.setOnClickListener(this)
+        binding.maghribEnableAlerts.setOnClickListener(this)
+        binding.asrEnableAlerts.setOnClickListener(this)
+        binding.maghribEnableAlerts.setOnClickListener(this)
+        binding.ishaEnableAlerts.setOnClickListener(this)
         return binding.root
     }
 
@@ -97,6 +112,31 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
                         R.id.do_not_disturb_minutes, R.id.do_not_disturb
                     )
             }
+            R.id.fajr_enable_alerts ->
+                showPopup(
+                    yesNoOptions,
+                    R.id.fajr_enable_alerts_value, R.id.fajr_enable_alerts
+                )
+            R.id.dhuhr_enable_alerts ->
+                showPopup(
+                    yesNoOptions,
+                    R.id.dhuhr_enable_alerts_value, R.id.dhuhr_enable_alerts
+                )
+            R.id.asr_enable_alerts ->
+                showPopup(
+                    yesNoOptions,
+                    R.id.asr_enable_alerts_value, R.id.asr_enable_alerts
+                )
+            R.id.maghrib_enable_alerts ->
+                showPopup(
+                    yesNoOptions,
+                    R.id.maghrib_enable_alerts_value, R.id.maghrib_enable_alerts
+                )
+            R.id.isha_enable_alerts ->
+                showPopup(
+                    yesNoOptions,
+                    R.id.isha_enable_alerts_value, R.id.isha_enable_alerts
+                )
         }
     }
 
@@ -120,6 +160,36 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
             }
             R.id.do_not_disturb -> {
                 mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
+            }
+            R.id.fajr_enable_alerts -> {
+                val (yes) = yesNoOptions
+                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                    0, item.title.matches(yes.toRegex())
+                )
+            }
+            R.id.dhuhr_enable_alerts -> {
+                val (yes) = yesNoOptions
+                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                    1, item.title.matches(yes.toRegex())
+                )
+            }
+            R.id.asr_enable_alerts -> {
+                val (yes) = yesNoOptions
+                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                    2, item.title.matches(yes.toRegex())
+                )
+            }
+            R.id.maghrib_enable_alerts -> {
+                val (yes) = yesNoOptions
+                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                    3, item.title.matches(yes.toRegex())
+                )
+            }
+            R.id.isha_enable_alerts -> {
+                val (yes) = yesNoOptions
+                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                    4, item.title.matches(yes.toRegex())
+                )
             }
         }
         mViewModel.settingsValue?.let {

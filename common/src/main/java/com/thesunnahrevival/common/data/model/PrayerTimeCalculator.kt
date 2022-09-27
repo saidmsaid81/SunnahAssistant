@@ -1,5 +1,6 @@
 package com.thesunnahrevival.common.data.model
 
+import android.util.Log
 import com.batoulapps.adhan.*
 import com.batoulapps.adhan.data.DateComponents
 import com.thesunnahrevival.common.utilities.getTimestampInSeconds
@@ -24,9 +25,15 @@ class PrayerTimeCalculator(
      * @param day is the day of the month
      * @param month should be 0 based. That is January is 0 and December is 11
      * @param year should be between 1970 and 2069
+     * @param generatePrayerTimeForPrayer [BooleanArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
      * @throws IllegalArgumentException
      */
-    fun getPrayerTimeReminders(day: Int, month: Int, year: Int): ArrayList<Reminder> {
+    fun getPrayerTimeReminders(
+        day: Int,
+        month: Int,
+        year: Int,
+        generatePrayerTimeForPrayer: BooleanArray
+    ): ArrayList<Reminder> {
         when {
             year !in 1970..2069 ->
                 throw IllegalArgumentException("Year should be between 1970 and 2069")
@@ -49,8 +56,16 @@ class PrayerTimeCalculator(
         val prayerTimesStrings = prayerTimeStrings(day, month, year)
 
         for ((index, prayerTimeString) in prayerTimesStrings.withIndex()) {
-            val reminder = createReminder(index, day, month, year, prayerTimeString)
+            val isEnabled = try {
+                generatePrayerTimeForPrayer[index]
+            } catch (exception: java.lang.IndexOutOfBoundsException) {
+                Log.e("Error", "index $index of generatePrayerTimeForPrayer is out of bounds")
+                false
+            }
+
+            val reminder = createReminder(index, day, month, year, prayerTimeString, isEnabled)
             reminders.add(reminder)
+
         }
 
         return reminders
@@ -80,7 +95,8 @@ class PrayerTimeCalculator(
         day: Int,
         month: Int,
         year: Int,
-        prayerTimeString: String
+        prayerTimeString: String,
+        isEnabled: Boolean
     ): Reminder {
 
         return Reminder(
@@ -89,7 +105,7 @@ class PrayerTimeCalculator(
             getTimestampInSeconds(prayerTimeString),
             categoryName,
             Frequency.Daily,
-            false,
+            isEnabled,
             day,
             month,
             year,
