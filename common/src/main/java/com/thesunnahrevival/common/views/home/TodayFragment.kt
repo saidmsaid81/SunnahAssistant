@@ -198,9 +198,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     }
 
     override fun onSwipeToDelete(position: Int, reminder: Reminder) {
-        val prayer = resources.getStringArray(R.array.categories)[2]
-
-        if (reminder.category?.matches(prayer.toRegex()) == true && mAppSettings?.isAutomatic == true) {
+        if (reminder.isAutomaticPrayerTime()) {
             Snackbar.make(
                 mBinding.root, getString(R.string.cannot_delete_prayer_time),
                 Snackbar.LENGTH_LONG
