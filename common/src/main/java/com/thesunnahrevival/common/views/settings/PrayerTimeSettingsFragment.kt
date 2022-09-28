@@ -192,31 +192,31 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             }
             R.id.fajr_enable_alerts -> {
                 val (yes) = yesNoOptions
-                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
                     0, item.title.matches(yes.toRegex())
                 )
             }
             R.id.dhuhr_enable_alerts -> {
                 val (yes) = yesNoOptions
-                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
                     1, item.title.matches(yes.toRegex())
                 )
             }
             R.id.asr_enable_alerts -> {
                 val (yes) = yesNoOptions
-                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
                     2, item.title.matches(yes.toRegex())
                 )
             }
             R.id.maghrib_enable_alerts -> {
                 val (yes) = yesNoOptions
-                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
                     3, item.title.matches(yes.toRegex())
                 )
             }
             R.id.isha_enable_alerts -> {
                 val (yes) = yesNoOptions
-                mViewModel.settingsValue?.generatePrayerTimeForPrayer?.set(
+                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
                     4, item.title.matches(yes.toRegex())
                 )
             }

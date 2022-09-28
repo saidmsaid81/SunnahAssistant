@@ -265,7 +265,7 @@
               android:id="@+id/fajr_enable_alerts_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{settings.generatePrayerTimeForPrayer[0] ? @string/yes : @string/no}"
+              android:text="@{settings.enablePrayerTimeAlertsFor[0] ? @string/yes : @string/no}"
               tools:text="Yes"
               />
         </LinearLayout>
@@ -328,7 +328,7 @@
               android:id="@+id/dhuhr_enable_alerts_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{settings.generatePrayerTimeForPrayer[1] ? @string/yes : @string/no}"
+              android:text="@{settings.enablePrayerTimeAlertsFor[1] ? @string/yes : @string/no}"
               tools:text="Yes"
               />
         </LinearLayout>
@@ -391,7 +391,7 @@
               android:id="@+id/asr_enable_alerts_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{settings.generatePrayerTimeForPrayer[2] ? @string/yes : @string/no}"
+              android:text="@{settings.enablePrayerTimeAlertsFor[2] ? @string/yes : @string/no}"
               tools:text="Yes"
               />
         </LinearLayout>
@@ -454,7 +454,7 @@
               android:id="@+id/maghrib_enable_alerts_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{settings.generatePrayerTimeForPrayer[3] ? @string/yes : @string/no}"
+              android:text="@{settings.enablePrayerTimeAlertsFor[3] ? @string/yes : @string/no}"
               tools:text="Yes"
               />
         </LinearLayout>
@@ -517,7 +517,7 @@
               android:id="@+id/isha_enable_alerts_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{settings.generatePrayerTimeForPrayer[4] ? @string/yes : @string/no}"
+              android:text="@{settings.enablePrayerTimeAlertsFor[4] ? @string/yes : @string/no}"
               tools:text="Yes"
               />
         </LinearLayout>

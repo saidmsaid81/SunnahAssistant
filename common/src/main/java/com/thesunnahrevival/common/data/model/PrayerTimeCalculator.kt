@@ -24,7 +24,7 @@ class PrayerTimeCalculator(
      * @param day is the day of the month
      * @param month should be 0 based. That is January is 0 and December is 11
      * @param year should be between 1970 and 2069
-     * @param generatePrayerTimeForPrayer [BooleanArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
+     * @param enablePrayerTimeAlertsFor [BooleanArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
      * @param offsetInMinutes [IntArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
      * @throws IllegalArgumentException
      */
@@ -32,7 +32,7 @@ class PrayerTimeCalculator(
         day: Int,
         month: Int,
         year: Int,
-        generatePrayerTimeForPrayer: BooleanArray,
+        enablePrayerTimeAlertsFor: BooleanArray,
         offsetInMinutes: IntArray
     ): ArrayList<Reminder> {
         when {
@@ -57,7 +57,7 @@ class PrayerTimeCalculator(
         val prayerTimesStrings = prayerTimeStrings(day, month, year)
 
         for ((index, prayerTimeString) in prayerTimesStrings.withIndex()) {
-            val isEnabled = generatePrayerTimeForPrayer.getOrElse(index) { true }
+            val isEnabled = enablePrayerTimeAlertsFor.getOrElse(index) { true }
             val offset = offsetInMinutes.getOrElse(index) { 0 }
             val reminder =
                 createReminder(index, day, month, year, prayerTimeString, isEnabled, offset)
