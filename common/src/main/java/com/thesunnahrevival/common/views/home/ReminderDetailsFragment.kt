@@ -110,6 +110,9 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mReminder.reminderName,
                 formattedDate
             )
+            mBinding.tip.setOnClickListener {
+                findNavController().navigate(R.id.prayerTimeSettingsFragment)
+            }
         } else
             mBinding.isAutomaticPrayerTime = false
 
