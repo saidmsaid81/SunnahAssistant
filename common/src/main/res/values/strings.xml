@@ -28,7 +28,7 @@
     <string name="error_updating_location">Error updating Location. Please check your internet connection</string>
     <string name="prayer_time_calculation_method">Calculation Method:</string>
     <string name="asr_juristic_method">Asr Juristic Method:</string>
-  <string name="change_prayer_time_offset_by">Change %s time By (+/- minutes)</string>
+  <string name="change_prayer_time_offset_by">Notify (+/- minutes from prayer time)</string>
     <string name="prayer_offset_minute">minute(s)</string>
     <string name="value">Value</string>
     <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
@@ -250,6 +250,9 @@
   <string name="asr_prayer_settings">Asr Prayer Settings</string>
   <string name="maghrib_prayer_settings">Maghrib Prayer Settings</string>
   <string name="isha_prayer_settings">Isha Prayer Settings</string>
+  <string name="custom_reminder_offset">Custom Reminder Offset</string>
+  <string name="minutes_label">Minutes</string>
+  <string name="hours">Hour(s)</string>
 
 
   <string-array name="categories">
@@ -378,6 +381,11 @@
     <item>15 Minutes Before</item>
     <item>30 Minutes Before</item>
     <item>Custom</item>
+  </string-array>
+
+  <string-array name="offset_options">
+    <item>Before</item>
+    <item>After</item>
   </string-array>
 
 

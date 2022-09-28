@@ -289,15 +289,12 @@
               tools:text="Change Fajr Prayer time By (+/- minutes)"
               />
 
-          <EditText
+          <TextView
+              android:id="@+id/fajr_offset_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/minutes"
-              android:importantForAutofill="no"
-              android:inputType="numberSigned"
-              android:background="@android:color/transparent"
-              android:text=""
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              android:text="@{String.valueOf(settings.prayerTimeOffsetsInMinutes[0])}"
+
               />
         </LinearLayout>
 
@@ -355,15 +352,12 @@
               tools:text="Change Dhuhr Prayer time By (+/- minutes)"
               />
 
-          <EditText
+          <TextView
+              android:id="@+id/dhuhr_offset_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/minutes"
-              android:importantForAutofill="no"
-              android:inputType="numberSigned"
-              android:background="@android:color/transparent"
-              android:text=""
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              android:text="@{String.valueOf(settings.prayerTimeOffsetsInMinutes[1])}"
+
               />
         </LinearLayout>
 
@@ -421,15 +415,12 @@
               tools:text="Change Asr Prayer time By (+/- minutes)"
               />
 
-          <EditText
+          <TextView
+              android:id="@+id/asr_offset_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/minutes"
-              android:importantForAutofill="no"
-              android:inputType="numberSigned"
-              android:background="@android:color/transparent"
-              android:text=""
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              android:text="@{String.valueOf(settings.prayerTimeOffsetsInMinutes[2])}"
+
               />
         </LinearLayout>
 
@@ -487,15 +478,12 @@
               tools:text="Change Maghrib Prayer time By (+/- minutes)"
               />
 
-          <EditText
+          <TextView
+              android:id="@+id/maghrib_offset_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/minutes"
-              android:importantForAutofill="no"
-              android:inputType="numberSigned"
-              android:background="@android:color/transparent"
-              android:text=""
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              android:text="@{String.valueOf(settings.prayerTimeOffsetsInMinutes[3])}"
+
               />
         </LinearLayout>
 
@@ -553,15 +541,11 @@
               tools:text="Change Isha Prayer time By (+/- minutes)"
               />
 
-          <EditText
+          <TextView
+              android:id="@+id/isha_offset_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/minutes"
-              android:importantForAutofill="no"
-              android:inputType="numberSigned"
-              android:background="@android:color/transparent"
-              android:text=""
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+              android:text="@{String.valueOf(settings.prayerTimeOffsetsInMinutes[4])}"
               />
         </LinearLayout>
 

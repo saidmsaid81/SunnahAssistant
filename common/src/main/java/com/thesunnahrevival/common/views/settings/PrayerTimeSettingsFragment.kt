@@ -19,10 +19,13 @@ import com.thesunnahrevival.common.databinding.PrayerTimeSettingsBinding
 import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.common.views.dialogs.EnterLocationDialogFragment
+import com.thesunnahrevival.common.views.dialogs.EnterOffsetFragment
+import com.thesunnahrevival.common.views.dialogs.EnterOffsetFragment.Companion.CURRENT_VALUE
 import java.lang.Integer.parseInt
 import java.util.*
 
-class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
+open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener,
+    EnterOffsetFragment.EnterOffsetFragmentListener {
 
     private val yesNoOptions = arrayOf("", "")
 
@@ -55,15 +58,13 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 val settingsValue = mViewModel.settingsValue ?: return@setOnCheckedChangeListener
+                binding.activatePrayerTimeAlerts.isChecked =
+                    settingsValue.isAutomaticPrayerAlertsEnabled
                 settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
-                settingsValue.generatePrayerTimeForPrayer = BooleanArray(5) { isChecked }
                 if (isChecked)
                     settingsValue.generatePrayerRemindersAfter =
                         Date(System.currentTimeMillis() - 86400000)
-                settingsValue.let {
-                    mViewModel.updateSettings(it)
-                    mViewModel.isPrayerSettingsUpdated = true
-                }
+                updateSettings()
             }
         }
 
@@ -80,10 +81,22 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         binding.asrEnableAlerts.setOnClickListener(this)
         binding.maghribEnableAlerts.setOnClickListener(this)
         binding.ishaEnableAlerts.setOnClickListener(this)
+        binding.fajrOffsetSettings.setOnClickListener(this)
+        binding.dhuhrOffsetSettings.setOnClickListener(this)
+        binding.asrOffsetSettings.setOnClickListener(this)
+        binding.maghribOffsetSettings.setOnClickListener(this)
+        binding.ishaOffsetSettings.setOnClickListener(this)
         return binding.root
     }
 
     override fun onClick(v: View?) {
+        val prayerOffsetViews = arrayOf(
+            R.id.fajr_offset_settings,
+            R.id.dhuhr_offset_settings,
+            R.id.asr_offset_settings,
+            R.id.maghrib_offset_settings,
+            R.id.isha_offset_settings
+        )
         when (v?.id) {
             R.id.location_details -> {
                 val dialogFragment = EnterLocationDialogFragment()
@@ -137,6 +150,22 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
                     yesNoOptions,
                     R.id.isha_enable_alerts_value, R.id.isha_enable_alerts
                 )
+        }
+
+        val prayerOffsetIndex = prayerOffsetViews.indexOf(v?.id)
+
+        if (prayerOffsetIndex != -1) {
+            val enterOffsetFragment = EnterOffsetFragment()
+            enterOffsetFragment.setListener(this, prayerOffsetIndex)
+            enterOffsetFragment.arguments = Bundle().apply {
+                putInt(
+                    CURRENT_VALUE,
+                    mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
+                        prayerOffsetIndex
+                    ) ?: 0
+                )
+            }
+            enterOffsetFragment.show(requireActivity().supportFragmentManager, "$prayerOffsetIndex")
         }
     }
 
@@ -192,12 +221,17 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
                 )
             }
         }
+        updateSettings()
+        return true
+    }
+
+    private fun updateSettings() {
         mViewModel.settingsValue?.let {
             mViewModel.updateSettings(it)
             mViewModel.isPrayerSettingsUpdated = true
         }
-        return true
     }
+
 
     private fun isNotificationPolicyGranted(): Boolean {
         val notificationManager =
@@ -237,5 +271,17 @@ class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         super.onPause()
         if (mViewModel.isPrayerSettingsUpdated)
             mViewModel.updatePrayerTimesData()
+    }
+
+    override fun onOffsetSave(offsetInMinutes: Int, index: Int) {
+        val prayerTimeOffsetsInMinutes =
+            mViewModel.settingsValue?.prayerTimeOffsetsInMinutes ?: return
+        if (index in prayerTimeOffsetsInMinutes.indices) {
+            mViewModel.settingsValue?.let {
+                prayerTimeOffsetsInMinutes[index] = offsetInMinutes
+                mViewModel.updateSettings(it)
+                mViewModel.isPrayerSettingsUpdated = true
+            }
+        }
     }
 }
