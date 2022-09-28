@@ -23,7 +23,8 @@ data class AppSettings(
     @ColumnInfo(name = "isAutomatic")
     var isAutomaticPrayerAlertsEnabled: Boolean = false,
 
-    var generatePrayerTimeForPrayer: BooleanArray = BooleanArray(5) { false },
+    var generatePrayerTimeForPrayer: BooleanArray = BooleanArray(5) { true },
+    var prayerTimeOffsetsInMinutes: IntArray = IntArray(5) { 0 },
     var month: Int = 12,
     var hijriOffSet: Int = 0,
     var isLightMode: Boolean = true,

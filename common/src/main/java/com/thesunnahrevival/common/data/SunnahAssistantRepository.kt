@@ -1,7 +1,6 @@
 package com.thesunnahrevival.common.data
 
 import android.content.Context
-import android.util.Log
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
@@ -125,8 +124,6 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
 
     suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
-        Log.v("Old", oldPrayerDetails.toString())
-        Log.v("New", newPrayerDetails.toString())
         mReminderDao.updatePrayerTimeDetails(
             newPrayerDetails.reminderInfo,
             newPrayerDetails.offsetInMinutes,
@@ -163,7 +160,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
                         settings.latitudeAdjustmentMethod,
                         prayerNames,
                         prayerCategory,
-                        settings.generatePrayerTimeForPrayer
+                        settings.generatePrayerTimeForPrayer,
+                        settings.prayerTimeOffsetsInMinutes
                     )
                 mReminderDao.insertRemindersList(prayerTimeReminders)
             }
@@ -190,13 +188,15 @@ class SunnahAssistantRepository private constructor(context: Context) {
                     settings.latitudeAdjustmentMethod,
                     prayerNames,
                     prayerCategory,
-                    settings.generatePrayerTimeForPrayer
+                    settings.generatePrayerTimeForPrayer,
+                    settings.prayerTimeOffsetsInMinutes
                 )
                 for (prayerReminder in prayerRemindersList) {
                     mReminderDao.updateGeneratedPrayerTime(
                         prayerReminder.id,
                         prayerReminder.timeInSeconds,
-                        prayerReminder.isEnabled
+                        prayerReminder.isEnabled,
+                        prayerReminder.offsetInMinutes
                     )
                 }
             }
@@ -222,7 +222,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
         latitudeAdjustmentMethod: Int,
         prayerNames: Array<String>,
         prayerCategory: String,
-        generatePrayerTimeForPrayer: BooleanArray
+        generatePrayerTimeForPrayer: BooleanArray,
+        offsetInMinutesForPrayer: IntArray
     ): ArrayList<Reminder> {
 
         val prayerTimeCalculator = PrayerTimeCalculator(
@@ -238,7 +239,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
             day,
             month,
             year,
-            generatePrayerTimeForPrayer
+            generatePrayerTimeForPrayer,
+            offsetInMinutesForPrayer
         )
     }
 

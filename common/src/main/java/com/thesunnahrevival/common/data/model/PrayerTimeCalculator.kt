@@ -1,6 +1,5 @@
 package com.thesunnahrevival.common.data.model
 
-import android.util.Log
 import com.batoulapps.adhan.*
 import com.batoulapps.adhan.data.DateComponents
 import com.thesunnahrevival.common.utilities.getTimestampInSeconds
@@ -26,13 +25,15 @@ class PrayerTimeCalculator(
      * @param month should be 0 based. That is January is 0 and December is 11
      * @param year should be between 1970 and 2069
      * @param generatePrayerTimeForPrayer [BooleanArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
+     * @param offsetInMinutes [IntArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
      * @throws IllegalArgumentException
      */
     fun getPrayerTimeReminders(
         day: Int,
         month: Int,
         year: Int,
-        generatePrayerTimeForPrayer: BooleanArray
+        generatePrayerTimeForPrayer: BooleanArray,
+        offsetInMinutes: IntArray
     ): ArrayList<Reminder> {
         when {
             year !in 1970..2069 ->
@@ -56,14 +57,10 @@ class PrayerTimeCalculator(
         val prayerTimesStrings = prayerTimeStrings(day, month, year)
 
         for ((index, prayerTimeString) in prayerTimesStrings.withIndex()) {
-            val isEnabled = try {
-                generatePrayerTimeForPrayer[index]
-            } catch (exception: java.lang.IndexOutOfBoundsException) {
-                Log.e("Error", "index $index of generatePrayerTimeForPrayer is out of bounds")
-                false
-            }
-
-            val reminder = createReminder(index, day, month, year, prayerTimeString, isEnabled)
+            val isEnabled = generatePrayerTimeForPrayer.getOrElse(index) { true }
+            val offset = offsetInMinutes.getOrElse(index) { 0 }
+            val reminder =
+                createReminder(index, day, month, year, prayerTimeString, isEnabled, offset)
             reminders.add(reminder)
 
         }
@@ -96,7 +93,8 @@ class PrayerTimeCalculator(
         month: Int,
         year: Int,
         prayerTimeString: String,
-        isEnabled: Boolean
+        isEnabled: Boolean,
+        offsetInMinutes: Int
     ): Reminder {
 
         return Reminder(
@@ -109,7 +107,8 @@ class PrayerTimeCalculator(
             day,
             month,
             year,
-            id = parseInt("-$day$month$year$index")
+            id = parseInt("-$day$month$year$index"),
+            offsetInMinutes = offsetInMinutes
         )
     }
 }

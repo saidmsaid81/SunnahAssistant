@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = [Reminder::class, AppSettings::class], version = 6)
+@Database(entities = [Reminder::class, AppSettings::class], version = 7)
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
@@ -175,6 +175,14 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_6_7: Migration = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE app_settings ADD COLUMN prayerTimeOffsetsInMinutes TEXT DEFAULT \"\" NOT NULL"
+                )
+            }
+        }
+
         fun getInstance(context: Context): SunnahAssistantDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
@@ -209,7 +217,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 MIGRATION_2_3,
                 MIGRATION_3_4,
                 MIGRATION_4_5,
-                MIGRATION_5_6
+                MIGRATION_5_6,
+                MIGRATION_6_7
             )
             .build()
     }

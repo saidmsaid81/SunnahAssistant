@@ -79,21 +79,15 @@ class RoomTypeConverter {
     }
 
     @TypeConverter
-    fun toFrequency(number: String): Frequency {
-        return try {
-            Frequency.values()[parseInt(number)]
-        } catch (exception: NumberFormatException) {
-            Frequency.Daily
-        }
+    fun toFrequency(numberString: String): Frequency {
+        val number = numberString.toIntOrNull() ?: Frequency.Daily.ordinal
+        return Frequency.values().getOrElse(number) { Frequency.Daily }
     }
 
     @TypeConverter
     fun toCalculationMethod(number: Int): CalculationMethod {
-        return try {
-            CalculationMethod.values()[number]
-        } catch (exception: ArrayIndexOutOfBoundsException) {
-            CalculationMethod.MUSLIM_WORLD_LEAGUE
-        }
+        return CalculationMethod.values()
+            .getOrElse(number) { CalculationMethod.MUSLIM_WORLD_LEAGUE }
     }
 
     @TypeConverter
@@ -132,16 +126,35 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun toBooleanArray(string: String): BooleanArray {
-        val booleanArray = BooleanArray(5) { false }
+        val booleanArray = BooleanArray(5) { true }
         if (string.isNotBlank()) {
             val array = string.split(",")
-            array.forEachIndexed { index, it ->
-                if (it == "1") {
-                    booleanArray[index] = true
-                }
+            booleanArray.forEachIndexed { index, _ ->
+                booleanArray[index] = array.getOrElse(index) { "1" } == "1"
             }
         }
 
         return booleanArray
+    }
+
+    @TypeConverter
+    fun fromIntArray(array: IntArray): String {
+        val stringBuilder = StringBuilder()
+        array.forEach {
+            stringBuilder.append("$it,")
+        }
+        return stringBuilder.toString()
+    }
+
+    @TypeConverter
+    fun toIntArray(string: String): IntArray {
+        val intArray = IntArray(5) { 0 }
+        if (string.isNotBlank()) {
+            val array = string.split(",")
+            intArray.forEachIndexed { index, _ ->
+                intArray[index] = array.getOrElse(index) { "0" }.toIntOrNull() ?: 0
+            }
+        }
+        return intArray
     }
 }
