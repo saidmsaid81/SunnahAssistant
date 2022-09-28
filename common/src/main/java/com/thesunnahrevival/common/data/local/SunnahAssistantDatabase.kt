@@ -95,7 +95,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 )
 
                 database.execSQL(
-                    "ALTER TABLE app_settings ADD COLUMN generatePrayerTimeForPrayer TEXT DEFAULT \"\" NOT NULL"
+                    "ALTER TABLE app_settings ADD COLUMN enablePrayerTimeAlertsFor TEXT DEFAULT \"\" NOT NULL"
                 )
 
                 database.execSQL(

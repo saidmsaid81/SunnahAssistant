@@ -160,7 +160,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
                         settings.latitudeAdjustmentMethod,
                         prayerNames,
                         prayerCategory,
-                        settings.generatePrayerTimeForPrayer,
+                        settings.enablePrayerTimeAlertsFor,
                         settings.prayerTimeOffsetsInMinutes
                     )
                 mReminderDao.insertRemindersList(prayerTimeReminders)
@@ -188,7 +188,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
                     settings.latitudeAdjustmentMethod,
                     prayerNames,
                     prayerCategory,
-                    settings.generatePrayerTimeForPrayer,
+                    settings.enablePrayerTimeAlertsFor,
                     settings.prayerTimeOffsetsInMinutes
                 )
                 for (prayerReminder in prayerRemindersList) {
@@ -222,7 +222,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
         latitudeAdjustmentMethod: Int,
         prayerNames: Array<String>,
         prayerCategory: String,
-        generatePrayerTimeForPrayer: BooleanArray,
+        enablePrayerTimeAlertsFor: BooleanArray,
         offsetInMinutesForPrayer: IntArray
     ): ArrayList<Reminder> {
 
@@ -239,7 +239,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
             day,
             month,
             year,
-            generatePrayerTimeForPrayer,
+            enablePrayerTimeAlertsFor,
             offsetInMinutesForPrayer
         )
     }

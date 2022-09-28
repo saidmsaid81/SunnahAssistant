@@ -23,7 +23,7 @@ data class AppSettings(
     @ColumnInfo(name = "isAutomatic")
     var isAutomaticPrayerAlertsEnabled: Boolean = false,
 
-    var generatePrayerTimeForPrayer: BooleanArray = BooleanArray(5) { true },
+    var enablePrayerTimeAlertsFor: BooleanArray = BooleanArray(5) { true },
     var prayerTimeOffsetsInMinutes: IntArray = IntArray(5) { 0 },
     var month: Int = 12,
     var hijriOffSet: Int = 0,
@@ -61,7 +61,7 @@ data class AppSettings(
         if (longitude != other.longitude) return false
         if (calculationMethod != other.calculationMethod) return false
         if (asrCalculationMethod != other.asrCalculationMethod) return false
-        if (!generatePrayerTimeForPrayer.contentEquals(other.generatePrayerTimeForPrayer)) return false
+        if (!enablePrayerTimeAlertsFor.contentEquals(other.enablePrayerTimeAlertsFor)) return false
         if (month != other.month) return false
         if (hijriOffSet != other.hijriOffSet) return false
         if (isLightMode != other.isLightMode) return false
@@ -96,7 +96,7 @@ data class AppSettings(
         result = 31 * result + longitude.hashCode()
         result = 31 * result + calculationMethod.hashCode()
         result = 31 * result + asrCalculationMethod.hashCode()
-        result = 31 * result + generatePrayerTimeForPrayer.contentHashCode()
+        result = 31 * result + enablePrayerTimeAlertsFor.contentHashCode()
         result = 31 * result + month
         result = 31 * result + hijriOffSet
         result = 31 * result + isLightMode.hashCode()
