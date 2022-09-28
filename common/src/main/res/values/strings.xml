@@ -228,7 +228,7 @@
   <string name="category_cannot_be_changed">Category for automatic prayer time cannot be changed</string>
   <string name="time_cannot_be_changed">Time for automatic prayer time cannot be changed</string>
   <string name="minutes">+/- minutes</string>
-  <string name="automatic_prayer_time_reminder">Automatic %s time reminder for %s</string>
+  <string name="automatic_prayer_time_reminder">Changes made here only affect %s time reminder for %s. Tap to Go to Settings to change for all days.</string>
   <string name="delete">Delete</string>
   <string name="delete_reminder_title">Delete Reminder</string>
   <string name="delete_reminder_confirmation">Do you really want to delete this Reminder?</string>
