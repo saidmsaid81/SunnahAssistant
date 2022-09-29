@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
 
@@ -37,6 +36,10 @@
     <variable
         name="days"
         type="String[]"
+        />
+    <variable
+        name="isEnabled"
+        type="Boolean"
         />
   </data>
   <ScrollView
@@ -354,7 +357,6 @@
           android:id="@+id/notify"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:visibility="gone"
           tools:visibility="visible"
           android:layout_marginTop="@dimen/default_dimen"
           android:background="?android:attr/selectableItemBackground"
@@ -395,6 +397,7 @@
               android:layout_height="wrap_content"
               android:textSize="14sp"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.DropDownHint"
+              android:text="@{isEnabled ? @string/yes : @string/no}"
               tools:text="No Notification"
               />
         </LinearLayout>
