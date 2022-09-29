@@ -117,23 +117,25 @@
             android:paddingTop="@dimen/default_dimen"
             android:textSize="12sp"
             android:drawablePadding="@dimen/default_dimen"
-            android:text="@string/enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled"/>
+            android:text="@string/enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_to_dos_are_scheduled"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/next_reminder_sticky_notification"
+            android:text="@string/next_to_do_sticky_notification"
             android:layout_marginTop="24dp"
             android:textColor="@color/colorAccent" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/next_reminder_sticky_settings"
+            android:id="@+id/next_to_do_sticky_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/default_dimen"
-            android:text="@string/next_reminder_notification"
+            android:text="@string/next_to_do_notification"
             android:button="@null"
-            android:checked="@{settings.showNextReminderNotification}" />
+            android:checked="@{settings.showNextToDoNotification}"
+            />
 
         <TextView
             android:layout_width="wrap_content"

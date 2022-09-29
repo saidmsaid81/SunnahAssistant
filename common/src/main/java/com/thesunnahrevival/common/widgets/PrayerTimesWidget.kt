@@ -23,11 +23,11 @@ class PrayerTimesWidget : AppWidgetProvider() {
 
 internal fun updatePrayerAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, backgroundColor: Int, textColor :Int) {
 
-    val intent = Intent(context, PrayerRemindersRemoteViewsService::class.java)
+    val intent = Intent(context, PrayerToDosRemoteViewsService::class.java)
     intent.putExtra(TEXT_COLOR, textColor)
 
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.today_reminders_widget)
+    val views = RemoteViews(context.packageName, R.layout.today_to_dos_widget)
     views.setRemoteAdapter(R.id.widgetListView, intent)
     views.setInt(R.id.widget, "setBackgroundColor", backgroundColor)
     views.setInt(R.id.widgetTitleLabel, "setTextColor", textColor)

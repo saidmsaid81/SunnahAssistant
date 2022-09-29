@@ -3,30 +3,30 @@ package com.thesunnahrevival.common.data.local
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.thesunnahrevival.common.data.model.AppSettings
-import com.thesunnahrevival.common.data.model.Reminder
-import com.thesunnahrevival.common.data.model.ReminderDate
+import com.thesunnahrevival.common.data.model.ToDo
+import com.thesunnahrevival.common.data.model.ToDoDate
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ReminderDao {
+interface ToDoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertReminder(reminder: Reminder): Long
+    suspend fun insertToDo(toDo: ToDo): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertRemindersList(remindersList: List<Reminder>)
+    fun insertToDosList(toDosList: List<ToDo>)
 
     @Query("UPDATE reminders_table SET reminderName =:name, reminderInfo =:info, category =:category WHERE id =:id")
-    suspend fun updateReminder(id: Int, name: String, info: String, category: String)
+    suspend fun updateToDo(id: Int, name: String, info: String, category: String)
 
     @Delete
-    suspend fun deleteReminder(reminder: Reminder)
+    suspend fun deleteToDo(toDo: ToDo)
 
     @Query(
         "SELECT EXISTS (SELECT * FROM reminders_table WHERE (" +
                 "category != :excludeCategory " +
                 "AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')) LIMIT 1)"
     )
-    fun thereRemindersOnDay(
+    fun thereToDosOnDay(
         excludeCategory: String,
         numberOfTheWeekDay: String,
         day: Int,
@@ -35,24 +35,24 @@ interface ReminderDao {
     ): Boolean
 
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') ORDER BY isComplete, timeInSeconds")
-    fun getRemindersOnDay(
+    fun getToDosOnDay(
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int,
         category: String
-    ): PagingSource<Int, Reminder>
+    ): PagingSource<Int, ToDo>
 
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
-    fun getRemindersOnDayValue(
+    fun getToDosOnDayValue(
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int
-    ): List<Reminder>
+    ): List<ToDo>
 
     @Query("SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE time > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY time")
-    suspend fun getNextTimeForReminderForDay(
+    suspend fun getNextTimeForToDoForDay(
         offsetFromMidnight: Long,
         numberOfTheWeekDay: String,
         day: Int,
@@ -61,24 +61,24 @@ interface ReminderDao {
     ): Long?
 
 
-    @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForReminder AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
-    suspend fun getNextScheduledRemindersForDay(
-        timeForReminder: Long,
+    @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForToDo AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
+    suspend fun getNextScheduledToDosForDay(
+        timeForToDo: Long,
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int
-    ): List<Reminder>
+    ): List<ToDo>
 
     @Query(
         "SELECT EXISTS " +
                 "(SELECT * FROM reminders_table WHERE category == :prayerCategory AND " +
                 "id LIKE '-' || :id || '%')"
     )
-    fun therePrayerRemindersOnDay(prayerCategory: String, id: String): Boolean
+    fun therePrayerToDosOnDay(prayerCategory: String, id: String): Boolean
 
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
-    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder>
+    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<ToDo>
 
     @Query(
         "SELECT day, month, year FROM reminders_table WHERE " +
@@ -87,19 +87,19 @@ interface ReminderDao {
                 "(day >= 1 AND month >= 1 AND year > :year)) " +
                 "AND id <= -1019700 "
     )
-    fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ReminderDate>
+    fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ToDoDate>
 
     @Query(
-        "UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderInfo =:reminderInfo," +
+        "UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderInfo =:additionalInfo," +
                 " isEnabled = :isEnabled, isComplete = :isComplete" +
-                " WHERE id == :reminderId"
+                " WHERE id == :id"
     )
     suspend fun updatePrayerTimeDetails(
-        reminderInfo: String?,
+        additionalInfo: String?,
         offsetValue: Int,
         isEnabled: Boolean,
         isComplete: Boolean,
-        reminderId: Int
+        id: Int
     )
 
     @Query(
@@ -137,6 +137,6 @@ interface ReminderDao {
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)
 
-    @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextReminder")
-    suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextReminder: Boolean)
+    @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextToDo")
+    suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextToDo: Boolean)
 }

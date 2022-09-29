@@ -1,5 +1,6 @@
 package com.thesunnahrevival.common.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -7,13 +8,13 @@ import java.time.LocalDate
 import java.util.*
 
 @Entity(tableName = "reminders_table")
-data class Reminder(
-    var reminderName: String?,
-    var reminderInfo: String? = "",
+data class ToDo(
+    @ColumnInfo(name = "reminderName") var name: String?,
+    @ColumnInfo(name = "reminderInfo") var additionalInfo: String? = "",
     var timeInSeconds: Long = 172800,
     var category: String?,
     var frequency: Frequency?,
-    var isEnabled: Boolean = false,
+    @ColumnInfo(name = "isEnabled") var isReminderEnabled: Boolean = false,
     var day: Int,
     var month: Int,
     var year: Int,
@@ -21,26 +22,26 @@ data class Reminder(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var customScheduleDays: TreeSet<Int>? = TreeSet(),
     var isComplete: Boolean = false,
-    var predefinedReminderInfo: String = "",
-    var predefinedReminderLink: String = ""
+    @ColumnInfo(name = "predefinedReminderInfo") var predefinedToDoInfo: String = "",
+    @ColumnInfo(name = "predefinedReminderLink") var predefinedToDoLink: String = ""
 ) {
 
     @Ignore
     var timeInMilliseconds: Long = timeInSeconds * 1000
 
     init {
-        if (reminderName?.isBlank() == true)
-            reminderName = null
-        if (reminderInfo == null)
-            reminderInfo = ""
+        if (name?.isBlank() == true)
+            name = null
+        if (additionalInfo == null)
+            additionalInfo = ""
         if (category?.isBlank() == true)
             category = null
         if (frequency == null) {
             frequency = Frequency.OneTime
         }
-        if (id > 0) { //User defined reminder
-            predefinedReminderInfo = ""
-            predefinedReminderLink = ""
+        if (id > 0) { //User defined To-Do
+            predefinedToDoInfo = ""
+            predefinedToDoLink = ""
         }
 
         when (frequency) {
@@ -69,7 +70,7 @@ data class Reminder(
                     )
             }
             Frequency.Weekly -> {
-                day = -1 // day = 0 is reserved for non automatic prayer time daily reminders
+                day = -1 // day = 0 is reserved for non automatic prayer time daily to-dos
             }
             Frequency.Daily -> {
                 if (!isAutomaticPrayerTime())

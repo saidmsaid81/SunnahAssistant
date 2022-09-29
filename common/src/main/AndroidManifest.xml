@@ -46,7 +46,7 @@
         </activity>
 
         <activity
-            android:name="com.thesunnahrevival.common.widgets.TodayRemindersWidgetConfigureActivity"
+            android:name="com.thesunnahrevival.common.widgets.TodayToDosWidgetConfigureActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -60,15 +60,15 @@
         </activity>
 
         <receiver
-            android:name="com.thesunnahrevival.common.widgets.TodayRemindersWidget"
+            android:name="com.thesunnahrevival.common.widgets.TodayToDosWidget"
             android:label="@string/today_widget_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/today_reminders_widget_info" />
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/today_to_dos_widget_info" />
         </receiver>
 
         <receiver
@@ -78,9 +78,9 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/prayer_reminders_widget_info" />
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/prayer_to_dos_widget_info" />
         </receiver>
 
         <receiver
@@ -94,24 +94,24 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/hijri_date_widget_info" />
         </receiver>
-        <receiver android:name="com.thesunnahrevival.common.receivers.ReminderBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+      <receiver android:name="com.thesunnahrevival.common.receivers.ToDoBroadcastReceiver">
+        <intent-filter>
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+          <action android:name="android.intent.action.QUICKBOOT_POWERON" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
+          <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </receiver>
         <receiver android:name="com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver" />
 
         <service
-            android:name="com.thesunnahrevival.common.services.NextReminderService"
+            android:name="com.thesunnahrevival.common.services.NextToDoService"
             android:exported="false" />
         <service
-            android:name="com.thesunnahrevival.common.widgets.TodaysRemindersRemoteViewsService"
+            android:name="com.thesunnahrevival.common.widgets.TodaysToDosRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name="com.thesunnahrevival.common.widgets.PrayerRemindersRemoteViewsService"
+            android:name="com.thesunnahrevival.common.widgets.PrayerToDosRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
             android:name="com.thesunnahrevival.common.firebase.SAFirebaseMessagingService"

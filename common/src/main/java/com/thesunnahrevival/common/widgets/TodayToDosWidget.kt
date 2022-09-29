@@ -15,8 +15,12 @@ import com.thesunnahrevival.common.views.MainActivity
 /**
  * Implementation of App Widget functionality.
  */
-class TodayRemindersWidget : AppWidgetProvider() {
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+class TodayToDosWidget : AppWidgetProvider() {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId, Color.WHITE, Color.BLACK)
@@ -28,11 +32,11 @@ class TodayRemindersWidget : AppWidgetProvider() {
 const val TEXT_COLOR = "text_color"
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, backgroundColor: Int, textColor :Int) {
 
-    val intent = Intent(context, TodaysRemindersRemoteViewsService::class.java)
+    val intent = Intent(context, TodaysToDosRemoteViewsService::class.java)
     intent.putExtra(TEXT_COLOR, textColor)
 
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.today_reminders_widget)
+    val views = RemoteViews(context.packageName, R.layout.today_to_dos_widget)
     views.setRemoteAdapter(R.id.widgetListView, intent)
     views.setInt(R.id.widget, "setBackgroundColor", backgroundColor)
     views.setInt(R.id.widgetTitleLabel, "setTextColor", textColor)

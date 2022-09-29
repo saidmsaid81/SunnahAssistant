@@ -19,7 +19,7 @@ import com.sergivonavi.materialbanner.Banner
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.utilities.supportedLocales
-import com.thesunnahrevival.common.views.adapters.ReminderListAdapter
+import com.thesunnahrevival.common.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.common.views.home.TodayFragment
 import kotlinx.android.synthetic.main.activity_main.coordinator_layout
 import kotlinx.android.synthetic.main.today_fragment.*
@@ -29,15 +29,15 @@ const val requestCodeForUpdate: Int = 1
 
 fun showOnBoardingTutorial(
     activity: MainActivity,
-    reminderRecyclerAdapter: ReminderListAdapter,
+    toDoRecyclerAdapter: ToDoListAdapter,
     recyclerView: RecyclerView
 ) {
     TapTargetSequence(activity)
         .targets(
             TapTarget.forView(
                 activity.findViewById(R.id.fab),
-                activity.getString(R.string.add_new_reminder),
-                activity.getString(R.string.add_new_reminder_description)
+                activity.getString(R.string.add_new_to_do),
+                activity.getString(R.string.add_new_to_do_description)
             )
                 .outerCircleColor(android.R.color.holo_blue_dark)
                 .cancelable(false)
@@ -55,8 +55,8 @@ fun showOnBoardingTutorial(
                 .tintTarget(true),
             TapTarget.forView(
                 recyclerView,
-                activity.getString(R.string.edit_reminder),
-                activity.getString(R.string.edit_reminder_description)
+                activity.getString(R.string.edit_to_do),
+                activity.getString(R.string.edit_to_do_description)
             )
                 .outerCircleColor(android.R.color.holo_blue_dark)
                 .cancelable(false)
@@ -66,7 +66,7 @@ fun showOnBoardingTutorial(
         )
         .listener(object : TapTargetSequence.Listener {
             override fun onSequenceFinish() {
-                reminderRecyclerAdapter.deleteReminder(0)
+                toDoRecyclerAdapter.deleteToDo(0)
             }
 
             override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
@@ -218,7 +218,7 @@ fun shareAppIntent(): Intent {
     intent.type = "text/plain"
     intent.putExtra(
         Intent.EXTRA_TEXT,
-        "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To set any reminders\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+        "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To manage to-dos\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
     )
     return intent
 }

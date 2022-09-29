@@ -9,19 +9,19 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.AppSettings
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.data.typeconverters.RoomTypeConverter
-import com.thesunnahrevival.common.utilities.demoReminder
+import com.thesunnahrevival.common.utilities.demoToDo
 import com.thesunnahrevival.common.utilities.initialSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-@Database(entities = [Reminder::class, AppSettings::class], version = 6)
+@Database(entities = [ToDo::class, AppSettings::class], version = 6)
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
-    abstract fun reminderDao(): ReminderDao
+    abstract fun toDoDao(): ToDoDao
 
     companion object {
         @Volatile
@@ -195,16 +195,16 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         CoroutineScope(Dispatchers.IO).launch {
-                            INSTANCE?.reminderDao()?.insertReminder(
-                                demoReminder(
-                                    context.getString(R.string.demo_reminder),
+                            INSTANCE?.toDoDao()?.insertToDo(
+                                demoToDo(
+                                    context.getString(R.string.demo_to_dos),
                                     context.resources.getStringArray(R.array.categories)[3]
                                 )
                             )
 
                             val categories = TreeSet<String>()
                             categories.addAll(context.resources.getStringArray(R.array.categories))
-                            INSTANCE?.reminderDao()?.insertSettings(initialSettings(categories))
+                            INSTANCE?.toDoDao()?.insertSettings(initialSettings(categories))
                         }
                     }
                 }

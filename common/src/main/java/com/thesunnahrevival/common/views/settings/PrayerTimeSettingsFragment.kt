@@ -62,7 +62,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                     settingsValue.isAutomaticPrayerAlertsEnabled
                 settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
                 if (isChecked)
-                    settingsValue.generatePrayerRemindersAfter =
+                    settingsValue.generatePrayerToDosAfter =
                         Date(System.currentTimeMillis() - 86400000)
                 updateSettings()
             }

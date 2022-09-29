@@ -16,9 +16,9 @@ import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.NotificationSettings
 import com.thesunnahrevival.common.databinding.NotificationSettingsBinding
-import com.thesunnahrevival.common.services.NextReminderService
-import com.thesunnahrevival.common.utilities.createReminderNotificationChannel
-import com.thesunnahrevival.common.utilities.deleteReminderNotificationChannel
+import com.thesunnahrevival.common.services.NextToDoService
+import com.thesunnahrevival.common.utilities.createToDoNotificationChannel
+import com.thesunnahrevival.common.utilities.deleteToDoNotificationChannel
 import com.thesunnahrevival.common.views.FragmentWithPopups
 
 class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
@@ -64,7 +64,7 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         binding.notificationToneSettings.setOnClickListener(this)
         binding.notificationPrioritySettings.setOnClickListener(this)
         binding.notificationVibrationSettings.setOnClickListener(this)
-        binding.nextReminderStickySettings.setOnCheckedChangeListener(this)
+        binding.nextToDoStickySettings.setOnCheckedChangeListener(this)
         binding.useReliableAlarms.setOnCheckedChangeListener(this)
 
         return binding.root
@@ -126,10 +126,10 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         super.onPause()
         if (isSettingsUpdated) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context?.let { deleteReminderNotificationChannel(it) }
+                context?.let { deleteToDoNotificationChannel(it) }
                 mViewModel.settingsValue?.let {
                     context?.let { it1 ->
-                        createReminderNotificationChannel(
+                        createToDoNotificationChannel(
                             it1, it.notificationToneUri, it.isVibrate, it.priority
                         )
                     }
@@ -140,12 +140,12 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (buttonView?.isPressed == true) {
-            if (buttonView.id == R.id.next_reminder_sticky_settings)
-                mViewModel.settingsValue?.showNextReminderNotification = isChecked
+            if (buttonView.id == R.id.next_to_do_sticky_settings)
+                mViewModel.settingsValue?.showNextToDoNotification = isChecked
             else if (buttonView.id == R.id.use_reliable_alarms)
                 mViewModel.settingsValue?.useReliableAlarms = isChecked
             mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-            requireContext().startService(Intent(requireContext(), NextReminderService::class.java))
+            requireContext().startService(Intent(requireContext(), NextToDoService::class.java))
         }
     }
 }

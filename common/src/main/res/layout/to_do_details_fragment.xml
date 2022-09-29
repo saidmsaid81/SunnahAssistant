@@ -8,12 +8,12 @@
     <import type="android.view.View" />
 
     <variable
-        name="remindersName"
+        name="toDosName"
         type="String"
         />
 
     <variable
-        name="reminderInfo"
+        name="toDosAdditionalInfo"
         type="String"
         />
 
@@ -57,7 +57,7 @@
         >
 
       <LinearLayout
-          android:id="@+id/reminder_name"
+          android:id="@+id/to_do_name"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/default_dimen"
@@ -71,7 +71,7 @@
             android:paddingStart="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen"
             android:src="@drawable/ic_name"
-            android:contentDescription="@string/reminder_name_label"
+            android:contentDescription="@string/to_do_name_label"
             />
 
         <LinearLayout
@@ -81,25 +81,25 @@
             >
 
           <TextView
-              android:id="@+id/reminder_name_label"
+              android:id="@+id/to_do_name_label"
               android:layout_height="wrap_content"
               android:layout_width="wrap_content"
               android:textStyle="bold"
-              android:text="@string/reminder_name_label"
+              android:text="@string/to_do_name_label"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
 
               />
 
           <EditText
-              android:id="@+id/reminder_name_value"
+              android:id="@+id/to_do_name_value"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
-              android:hint="@string/reminder_name_hint"
+              android:hint="@string/to_do_name_hint"
               android:importantForAutofill="no"
               android:inputType="text"
               android:background="@android:color/transparent"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-              android:text="@{remindersName}"
+              android:text="@{toDosName}"
               android:enabled="@{isAutomaticPrayerTime == true ? false : true}"
               />
 
@@ -109,7 +109,7 @@
       </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/reminder_frequency"
+          android:id="@+id/to_do_frequency"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/default_dimen"
@@ -136,7 +136,7 @@
             >
 
           <TextView
-              android:id="@+id/reminder_frequency_label"
+              android:id="@+id/to_do_frequency_label"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
               android:textStyle="bold"
@@ -145,7 +145,7 @@
               />
 
           <TextView
-              android:id="@+id/reminder_frequency_value"
+              android:id="@+id/to_do_frequency_value"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
               android:textSize="14sp"
@@ -158,7 +158,7 @@
       </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/reminder_category"
+          android:id="@+id/to_do_category"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/default_dimen"
@@ -175,7 +175,7 @@
             android:paddingStart="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen"
             android:src="@drawable/ic_category"
-            android:contentDescription="@string/reminder_category"
+            android:contentDescription="@string/to_do_category"
             />
 
         <LinearLayout
@@ -185,16 +185,16 @@
             >
 
           <TextView
-              android:id="@+id/reminder_category_label"
+              android:id="@+id/to_do_category_label"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
               android:textStyle="bold"
-              android:text="@string/reminder_category"
+              android:text="@string/to_do_category"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
               />
 
           <TextView
-              android:id="@+id/reminder_category_value"
+              android:id="@+id/to_do_category_value"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
               android:textSize="14sp"
@@ -207,7 +207,7 @@
       </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/reminder_date"
+          android:id="@+id/to_do_date"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/default_dimen"
@@ -236,7 +236,7 @@
             >
 
           <TextView
-              android:id="@+id/reminder_date_label"
+              android:id="@+id/to_do_date_label"
               android:layout_height="wrap_content"
               android:layout_width="match_parent"
               android:textStyle="bold"
@@ -245,7 +245,7 @@
               />
 
           <TextView
-              android:id="@+id/reminder_date_value"
+              android:id="@+id/to_do_date_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:textSize="14sp"
@@ -305,7 +305,7 @@
       </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/reminder_time"
+          android:id="@+id/to_do_time"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/default_dimen"
@@ -332,7 +332,7 @@
             >
 
           <TextView
-              android:id="@+id/reminder_time_label"
+              android:id="@+id/to_do_time_label"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:textStyle="bold"
@@ -341,7 +341,7 @@
               />
 
           <TextView
-              android:id="@+id/reminder_time_value"
+              android:id="@+id/to_do_time_value"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:textSize="14sp"
@@ -484,7 +484,7 @@
               android:id="@+id/change_prayer_time_offset_label"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@{String.format(@string/change_prayer_time_offset_by, remindersName)}"
+              android:text="@{String.format(@string/change_prayer_time_offset_by, toDosName)}"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
               android:textStyle="bold"
               tools:text="Change Asr Prayer Time By"
@@ -505,7 +505,7 @@
       </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/reminder_additional_details"
+          android:id="@+id/to_dos_additional_details"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/default_dimen"
@@ -542,7 +542,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/enter_additional_details"
-              android:text="@{reminderInfo}"
+              android:text="@{toDosAdditionalInfo}"
               android:gravity="top|start"
               android:importantForAutofill="no"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"

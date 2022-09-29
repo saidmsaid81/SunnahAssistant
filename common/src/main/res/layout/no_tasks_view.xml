@@ -28,11 +28,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/add_reminder_info"
+            android:id="@+id/add_to_do_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/tap_the_icon_at_the_bottom_corner_to_add_a_new_reminder"
+            android:text="@string/tap_the_icon_at_the_bottom_corner_to_add_a_new_to_do"
             android:textAlignment="center"
             android:textSize="14sp"
             android:textStyle="bold" />

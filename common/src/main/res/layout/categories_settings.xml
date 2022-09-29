@@ -33,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             app:backgroundTint="@color/fabColor"
-            app:srcCompat="@drawable/ic_add_reminder" />
+            app:srcCompat="@drawable/ic_add_to_do"
+            />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

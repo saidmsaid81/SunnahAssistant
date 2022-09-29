@@ -20,7 +20,7 @@ class PrayerTimeCalculator(
 ) {
 
     /**
-     * @return [ArrayList] of prayer time [Reminder] for the given date based on [day], [month] and [year]
+     * @return [ArrayList] of prayer time [ToDo] for the given date based on [day], [month] and [year]
      * @param day is the day of the month
      * @param month should be 0 based. That is January is 0 and December is 11
      * @param year should be between 1970 and 2069
@@ -28,13 +28,13 @@ class PrayerTimeCalculator(
      * @param offsetInMinutes [IntArray] of size 5 with index 0 being Fajr Prayer and ndex 4 being isha prayer
      * @throws IllegalArgumentException
      */
-    fun getPrayerTimeReminders(
+    fun getPrayerTimeToDos(
         day: Int,
         month: Int,
         year: Int,
         enablePrayerTimeAlertsFor: BooleanArray,
         offsetInMinutes: IntArray
-    ): ArrayList<Reminder> {
+    ): ArrayList<ToDo> {
         when {
             year !in 1970..2069 ->
                 throw IllegalArgumentException("Year should be between 1970 and 2069")
@@ -53,19 +53,19 @@ class PrayerTimeCalculator(
             }
         }
 
-        val reminders = arrayListOf<Reminder>()
+        val toDos = arrayListOf<ToDo>()
         val prayerTimesStrings = prayerTimeStrings(day, month, year)
 
         for ((index, prayerTimeString) in prayerTimesStrings.withIndex()) {
             val isEnabled = enablePrayerTimeAlertsFor.getOrElse(index) { true }
             val offset = offsetInMinutes.getOrElse(index) { 0 }
-            val reminder =
-                createReminder(index, day, month, year, prayerTimeString, isEnabled, offset)
-            reminders.add(reminder)
+            val toDo =
+                createToDo(index, day, month, year, prayerTimeString, isEnabled, offset)
+            toDos.add(toDo)
 
         }
 
-        return reminders
+        return toDos
     }
 
     private fun prayerTimeStrings(day: Int, month: Int, year: Int): Array<String> {
@@ -87,7 +87,7 @@ class PrayerTimeCalculator(
         )
     }
 
-    private fun createReminder(
+    private fun createToDo(
         index: Int,
         day: Int,
         month: Int,
@@ -95,9 +95,9 @@ class PrayerTimeCalculator(
         prayerTimeString: String,
         isEnabled: Boolean,
         offsetInMinutes: Int
-    ): Reminder {
+    ): ToDo {
 
-        return Reminder(
+        return ToDo(
             prayerNames[index],
             "",
             getTimestampInSeconds(prayerTimeString),

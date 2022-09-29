@@ -7,7 +7,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.SunnahAssistantRepository
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.common.utilities.getDayDate
 import com.thesunnahrevival.common.utilities.getMonthNumber
@@ -18,7 +18,7 @@ class PrayerTimesRemoteViewsFactory(
     private val intent: Intent?
 ) : RemoteViewsService.RemoteViewsFactory {
 
-    private lateinit var mPrayerReminders: List<Reminder>
+    private lateinit var mPrayerToDos: List<ToDo>
 
     override fun onCreate() {
 
@@ -35,7 +35,7 @@ class PrayerTimesRemoteViewsFactory(
     override fun onDataSetChanged() {
         val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
 
-        mPrayerReminders = repository.getPrayerTimesValue(
+        mPrayerToDos = repository.getPrayerTimesValue(
             getDayDate(System.currentTimeMillis()),
             getMonthNumber(System.currentTimeMillis()),
             getYear(System.currentTimeMillis()).toInt(),
@@ -48,18 +48,18 @@ class PrayerTimesRemoteViewsFactory(
     }
 
     override fun getViewAt(position: Int): RemoteViews {
-        val remoteViews = RemoteViews(context.packageName, R.layout.widget_reminder_list_item)
+        val remoteViews = RemoteViews(context.packageName, R.layout.widget_to_do_list_item)
         remoteViews.setTextViewText(
-            R.id.reminder_name,
+            R.id.to_do_name,
             "${
                 formatTimeInMilliseconds(
                     context,
-                    mPrayerReminders[position].timeInMilliseconds
+                    mPrayerToDos[position].timeInMilliseconds
                 )
-            }: ${mPrayerReminders[position].reminderName}"
+            }: ${mPrayerToDos[position].name}"
         )
         remoteViews.setTextColor(
-            R.id.reminder_name,
+            R.id.to_do_name,
             intent?.getIntExtra(TEXT_COLOR, Color.BLACK) ?: Color.BLACK
         )
         val fillInIntent = Intent()
@@ -68,7 +68,7 @@ class PrayerTimesRemoteViewsFactory(
     }
 
     override fun getCount(): Int {
-        return mPrayerReminders.size
+        return mPrayerToDos.size
     }
 
     override fun getViewTypeCount(): Int {

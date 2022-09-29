@@ -52,12 +52,12 @@ class HijriDateWidgetConfigureActivity : AppCompatActivity(), View.OnClickListen
         // It is the responsibility of the configuration activity to update the app widget
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val hijriChecked = findViewById<SwitchMaterial>(R.id.display_hijri_date_switch).isChecked
-        val nextReminderChecked =
-            findViewById<SwitchMaterial>(R.id.display_next_reminder_switch).isChecked
-        if (hijriChecked || nextReminderChecked) {
+        val nextToDoChecked =
+            findViewById<SwitchMaterial>(R.id.display_next_to_do_switch).isChecked
+        if (hijriChecked || nextToDoChecked) {
             findViewById<TextView>(R.id.error).visibility = View.GONE
             CoroutineScope(Dispatchers.IO).launch {
-                updateWidgetSettings(context, hijriChecked, nextReminderChecked)
+                updateWidgetSettings(context, hijriChecked, nextToDoChecked)
                 val appWidgetIds = arrayOf(appWidgetId)
                 fetchDateFromDatabase(context, appWidgetManager, appWidgetIds)
             }

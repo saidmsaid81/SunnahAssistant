@@ -18,7 +18,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.AppSettings
-import com.thesunnahrevival.common.services.NextReminderService
+import com.thesunnahrevival.common.services.NextToDoService
 import com.thesunnahrevival.common.utilities.createNotificationChannels
 import com.thesunnahrevival.common.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.common.views.home.CalendarFragment
@@ -49,7 +49,7 @@ open class MainActivity : AppCompatActivity() {
         firebaseAnalytics = Firebase.analytics
         getSettings()
 
-        startService(Intent(this, NextReminderService::class.java))
+        startService(Intent(this, NextToDoService::class.java))
 
         if (intent.extras?.get("link") != null)
             findNavController(R.id.myNavHostFragment).navigate(R.id.webviewFragment, intent.extras)
@@ -172,6 +172,6 @@ open class MainActivity : AppCompatActivity() {
         super.onPause()
 
         //Start service to apply any changes done on scheduling notifications
-        startService(Intent(this, NextReminderService::class.java))
+        startService(Intent(this, NextToDoService::class.java))
     }
 }
