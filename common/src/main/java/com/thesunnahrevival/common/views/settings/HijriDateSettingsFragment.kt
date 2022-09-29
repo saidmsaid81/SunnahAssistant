@@ -6,13 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.databinding.HijriDateSettingsBinding
+import com.thesunnahrevival.common.utilities.InAppBrowser
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.SunnahAssistantFragment
 
 class HijriDateSettingsFragment : SunnahAssistantFragment() {
+
+    private var inAppBrowser: InAppBrowser? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +42,16 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
             }
         }
 
+        inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
+        binding.hijriInfo.setOnClickListener {
+            inAppBrowser?.launchInAppBrowser(
+                requireContext(),
+                "https://en.wikipedia.org/wiki/Islamic_calendar#Saudi_Arabia's_Umm_al-Qura_calendar",
+                findNavController(),
+                false
+            )
+        }
+
 
         return binding.root
     }
@@ -51,5 +66,4 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
             bundle
         )
     }
-
 }
