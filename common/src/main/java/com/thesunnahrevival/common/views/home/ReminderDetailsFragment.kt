@@ -51,7 +51,6 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     private lateinit var mReminder: Reminder
     private var mReminderCategories: ArrayList<String> = arrayListOf()
     private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
-    private var isReminderDeleted = false
     private var mTimeString: String? = null
     private var mDay: Int = LocalDate.now().dayOfMonth
     private var mMonth: Int = LocalDate.now().month.ordinal
@@ -124,10 +123,10 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateReminderFrequencyView(mReminder.frequency?.ordinal ?: 0)
         updateReminderCategoryView(mReminder.category)
         updateReminderTimeView(formatTimeInMilliseconds(context, mReminder.timeInMilliseconds))
+        updateNotifyView()
         updateMarkAsCompleteView(if (mReminder.isComplete) 1 else 0)
         updateTipView()
     }
-
 
     private fun updateReminderFrequencyView(frequencyOrdinal: Int) {
         mBinding.reminderFrequencyValue.text =
@@ -235,9 +234,31 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun updateReminderTimeView(timeString: String) {
+        if (mReminder.id == 0 &&
+            timeString != mTimeString &&
+            mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true
+        ) {
+            mBinding.isEnabled = true
+            mBinding.notify.isEnabled = true
+            mBinding.notifyLabel.isEnabled = true
+            mBinding.notifyValue.isEnabled = true
+        } else if (mReminder.id == 0) {
+            mBinding.notify.isEnabled = false
+            mBinding.notifyLabel.isEnabled = false
+            mBinding.notifyValue.isEnabled = false
+        }
+
         mTimeString = timeString
         mBinding.reminderTimeValue.text = timeString
         mBinding.reminderTime.setOnClickListener(this)
+    }
+
+    private fun updateNotifyView() {
+        mBinding.isEnabled = if (mReminder.id == 0)
+            false
+        else
+            mReminder.isEnabled
+        mBinding.notify.setOnClickListener(this)
     }
 
     private fun updateMarkAsCompleteView(markAsCompleteString: String) {
@@ -341,7 +362,18 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 )
             }
             R.id.tip_view -> launchInAppBrowser()
+            R.id.notify -> {
+                onNotifyClick()
+            }
         }
+    }
+
+    protected open fun onNotifyClick() {
+        val notifyOptions = arrayOf(getString(R.string.yes), getString(R.string.no))
+        showPopup(
+            notifyOptions,
+            R.id.notify_value, R.id.notify
+        )
     }
 
     private fun launchInAppBrowser() {
@@ -408,8 +440,17 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 updateMarkAsCompleteView(item.title.toString())
                 true
             }
+            R.id.notify -> {
+                onNotifyValueUpdate(item)
+                true
+            }
             else -> false
         }
+    }
+
+    protected open fun onNotifyValueUpdate(item: MenuItem) {
+        mBinding.isEnabled =
+            item.title.toString().matches(getString(R.string.yes).toRegex())
     }
 
     override fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>) {
@@ -576,7 +617,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 getTimestampInSeconds(requireContext(), mTimeString),
                 mBinding.reminderCategoryValue.text.toString(),
                 frequency,
-                isReminderEnabled(mTimeString),
+                isReminderEnabled(),
                 mDay,
                 mMonth,
                 mYear,
@@ -612,10 +653,14 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
-    open fun isReminderEnabled(timeSet: String?) =
-        timeSet?.matches(getString(R.string.time_not_set).toRegex()) == false
+    protected open fun isReminderEnabled(): Boolean {
+        if (mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true)
+            return false
 
-    open fun calculateOffsetForReminder(): Int {
+        return mBinding.notifyValue.text.matches(getString(R.string.yes).toRegex())
+    }
+
+    protected open fun calculateOffsetForReminder(): Int {
         return try {
             Integer.parseInt(mBinding.prayerOffsetValue.text.toString())
         } catch (error: NumberFormatException) {
