@@ -18,7 +18,6 @@ import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.GeocodingData
 import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.services.NextToDoService
-import com.thesunnahrevival.common.utilities.getPackageNameToUse
 import com.thesunnahrevival.common.utilities.sunnahReminders
 import com.thesunnahrevival.common.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +44,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     private val mutableReminderParameters =
         MutableLiveData(Pair(System.currentTimeMillis(), ""))
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
-    private var browserPackageNameToUse: String? = null
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
@@ -261,12 +259,4 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             }
         }
     }
-
-    fun browserWithCustomTabs() {
-        if (browserPackageNameToUse == null)
-            browserPackageNameToUse = getPackageNameToUse(getApplication())
-    }
-
-    fun getBrowserPackageName() = browserPackageNameToUse
-
 }

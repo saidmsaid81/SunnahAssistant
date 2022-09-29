@@ -1,42 +1,28 @@
 package com.thesunnahrevival.common.views.home
 
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.*
 import android.widget.Toast
-import androidx.browser.customtabs.CustomTabsClient
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.ToDo
-import com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver
-import com.thesunnahrevival.common.receivers.TEXTSUMMARY
-import com.thesunnahrevival.common.services.InAppBrowserConnection
-import com.thesunnahrevival.common.utilities.daySuffixes
-import com.thesunnahrevival.common.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.common.utilities.getLocale
-import com.thesunnahrevival.common.utilities.getTimestampInSeconds
+import com.thesunnahrevival.common.utilities.*
 import com.thesunnahrevival.common.views.FragmentWithPopups
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.dialogs.AddCategoryDialogFragment
 import com.thesunnahrevival.common.views.dialogs.DatePickerFragment
 import com.thesunnahrevival.common.views.dialogs.SelectDaysDialogFragment
 import com.thesunnahrevival.common.views.dialogs.TimePickerFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -55,7 +41,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     private var mDay: Int = LocalDate.now().dayOfMonth
     private var mMonth: Int = LocalDate.now().month.ordinal
     private var mYear: Int = LocalDate.now().year
-    private var mShareIcon: Bitmap? = null
+    private var inAppBrowser: InAppBrowser? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -116,6 +102,9 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             mBinding.isAutomaticPrayerTime = false
 
         updateView()
+        if (mToDo.predefinedToDoInfo.isNotBlank()) {
+            inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
+        }
     }
 
 
@@ -274,19 +263,6 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     private fun updateTipView() {
         if (mToDo.predefinedToDoInfo.isNotBlank()) {
-            mViewModel.browserWithCustomTabs()
-            if (mViewModel.getBrowserPackageName() != null) {
-                CustomTabsClient.bindCustomTabsService(
-                    requireContext(),
-                    requireContext().packageName,
-                    InAppBrowserConnection()
-                )
-                CoroutineScope(Dispatchers.Default).launch {
-                    mShareIcon =
-                        BitmapFactory.decodeResource(resources, android.R.drawable.ic_menu_share)
-                }
-            }
-
             mBinding.tip.text = mToDo.predefinedToDoInfo
             if (Patterns.WEB_URL.matcher(mToDo.predefinedToDoLink).matches())
                 mBinding.tipView.setOnClickListener(this)
@@ -361,7 +337,12 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     R.id.mark_as_complete_value, R.id.mark_as_complete
                 )
             }
-            R.id.tip_view -> launchInAppBrowser()
+            R.id.tip_view ->
+                inAppBrowser?.launchInAppBrowser(
+                    requireContext(),
+                    mToDo.predefinedToDoLink,
+                    findNavController()
+                )
             R.id.notify -> {
                 onNotifyClick()
             }
@@ -374,47 +355,6 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             notifyOptions,
             R.id.notify_value, R.id.notify
         )
-    }
-
-    private fun launchInAppBrowser() {
-        if (mViewModel.getBrowserPackageName() == null) {//No supported browser
-            val bundle = Bundle().apply {
-                putString("link", mToDo.predefinedToDoLink)
-            }
-            findNavController().navigate(R.id.webviewFragment, bundle)
-            return
-        }
-
-        val builder = CustomTabsIntent.Builder()
-        val actionIntent = Intent(
-            requireContext(), InAppBrowserBroadcastReceiver::class.java
-        )
-
-        actionIntent.putExtra(TEXTSUMMARY, mToDo.predefinedToDoInfo)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(), 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        builder.addMenuItem(
-            getString(R.string.share_message),
-            pendingIntent
-        )
-
-        val shareIcon = mShareIcon
-        if (shareIcon != null)
-            builder.setActionButton(
-                shareIcon,
-                getString(R.string.share_message),
-                pendingIntent,
-                true
-            )
-        val customTabsIntent = builder.build()
-        customTabsIntent.intent.setPackage(mViewModel.getBrowserPackageName())
-        customTabsIntent.intent.putExtra(
-            Intent.EXTRA_REFERRER,
-            Uri.parse("android-app://" + requireContext().packageName)
-        )
-        customTabsIntent.launchUrl(requireContext(), Uri.parse(mToDo.predefinedToDoLink))
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
