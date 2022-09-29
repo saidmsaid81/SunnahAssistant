@@ -116,6 +116,6 @@
       android:label="@string/developers_messages" />
 
   <fragment
-      android:id="@+id/reminderDetailsFragment"
-      android:name="com.thesunnahrevival.common.views.home.ReminderDetailsFragment" />
+      android:id="@+id/toDoDetailsFragment"
+      android:name="com.thesunnahrevival.common.views.home.ToDoDetailsFragment" />
 </navigation>

@@ -31,12 +31,17 @@ class CategoriesSettingsAdapter(private val categoriesList: TreeSet<String>, pri
             view.findViewById<LinearLayout>(R.id.root).visibility = View.VISIBLE
             view.findViewById<TextView>(R.id.category_name).text = categoriesList.elementAt(position)
             val deleteButton = view.findViewById<ImageView>(R.id.delete_button)
-            deleteButton.setOnClickListener { deleteListener.deleteReminderCategory(categoriesList, categoriesList.elementAt(position)) }
+            deleteButton.setOnClickListener {
+                deleteListener.deleteToDoCategory(
+                    categoriesList,
+                    categoriesList.elementAt(position)
+                )
+            }
         }
     }
 
     interface DeleteCategoryListener {
-       fun deleteReminderCategory(categoriesList: TreeSet<String>, category:String)
+        fun deleteToDoCategory(categoriesList: TreeSet<String>, category: String)
     }
 
 }

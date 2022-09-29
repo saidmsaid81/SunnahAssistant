@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.widget.TextView
 import com.thesunnahrevival.common.R
 
-class TodayRemindersWidgetConfigureActivity : SunnahAssistantConfigureWidgetActivity() {
+class TodayToDosWidgetConfigureActivity : SunnahAssistantConfigureWidgetActivity() {
     override fun createWidget(context: SunnahAssistantConfigureWidgetActivity) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val options = resources.getStringArray(R.array.widget_theme_options)

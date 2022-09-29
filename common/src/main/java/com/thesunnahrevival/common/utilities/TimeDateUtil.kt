@@ -7,7 +7,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.thesunnahrevival.common.R
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,11 +56,11 @@ fun formatTimeInMilliseconds(context: Context?, timeInMilliseconds: Long): Strin
     return context?.getString(R.string.time_not_set) ?: "Time Not Set"
 }
 
-fun isReminderDisabled(context: Context?, reminder: Reminder?): Boolean {
-    return if (reminder != null) {
-        val timeInMilliseconds = formatTimeInMilliseconds(context, reminder.timeInMilliseconds)
+fun isReminderDisabled(context: Context?, toDo: ToDo?): Boolean {
+    return if (toDo != null) {
+        val timeInMilliseconds = formatTimeInMilliseconds(context, toDo.timeInMilliseconds)
         return if (timeInMilliseconds == context?.getString(R.string.time_not_set)) false
-        else !reminder.isEnabled
+        else !toDo.isReminderEnabled
     } else
         true
 }

@@ -57,7 +57,7 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
         return mBinding.root
     }
 
-    override fun deleteReminderCategory(categoriesList: TreeSet<String>, category: String) {
+    override fun deleteToDoCategory(categoriesList: TreeSet<String>, category: String) {
         val prayer = resources.getStringArray(R.array.categories)[2]
         val uncategorized = resources.getStringArray(R.array.categories)[0]
         val deleteInfo: String

@@ -21,20 +21,20 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.Frequency
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.databinding.TodayFragmentBinding
 import com.thesunnahrevival.common.utilities.generateDateText
 import com.thesunnahrevival.common.views.MainActivity
 import com.thesunnahrevival.common.views.SwipeToDeleteCallback
-import com.thesunnahrevival.common.views.adapters.ReminderListAdapter
-import com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener
+import com.thesunnahrevival.common.views.adapters.ToDoListAdapter
+import com.thesunnahrevival.common.views.listeners.ToDoItemInteractionListener
 import com.thesunnahrevival.common.views.showOnBoardingTutorial
 import java.time.LocalDate
 
-open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
+open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
     private lateinit var mBinding: TodayFragmentBinding
-    private lateinit var mReminderRecyclerAdapter: ReminderListAdapter
+    private lateinit var mToDoRecyclerAdapter: ToDoListAdapter
     private var fabAnimator: ObjectAnimator? = null
     private var categoryToDisplay = ""
 
@@ -50,7 +50,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
         setHasOptionsMenu(true)
 
         mBinding.lifecycleOwner = viewLifecycleOwner
-        mBinding.reminderInteractionListener = this
+        mBinding.toDoInteractionListener = this
         setupTheRecyclerView()
         getSettings()
 
@@ -63,7 +63,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                 mAppSettings = settings
                 mViewModel.settingsValue = settings
                 setupCategoryChips()
-                mBinding.reminderList.visibility = View.VISIBLE
+                mBinding.toDoList.visibility = View.VISIBLE
 
                 if (this !is CalendarFragment) {
                     when {
@@ -72,8 +72,8 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                         else -> {
                             if (settings.showOnBoardingTutorial) {
                                 showOnBoardingTutorial(
-                                    (activity as MainActivity), mReminderRecyclerAdapter,
-                                    mBinding.reminderList
+                                    (activity as MainActivity), mToDoRecyclerAdapter,
+                                    mBinding.toDoList
                                 )
                                 settings.showOnBoardingTutorial = false
                                 mViewModel.updateSettings(settings)
@@ -128,40 +128,40 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                     this.categoryToDisplay = ""
                 else
                     this.categoryToDisplay = category
-                mViewModel.setReminderParameters(category = categoryToDisplay)
+                mViewModel.setToDoParameters(category = categoryToDisplay)
             }
         }
         return categoryChip
     }
 
     private fun setupTheRecyclerView() {
-        val reminderRecyclerView = mBinding.reminderList
+        val toDoRecyclerView = mBinding.toDoList
 
         //Setup the RecyclerView Adapter
-        mReminderRecyclerAdapter = ReminderListAdapter(requireContext())
-        mReminderRecyclerAdapter.setOnItemInteractionListener(this)
-        mReminderRecyclerAdapter.addLoadStateListener { loadState: CombinedLoadStates ->
+        mToDoRecyclerAdapter = ToDoListAdapter(requireContext())
+        mToDoRecyclerAdapter.setOnItemInteractionListener(this)
+        mToDoRecyclerAdapter.addLoadStateListener { loadState: CombinedLoadStates ->
             if (loadState.append.endOfPaginationReached) {
-                if (mReminderRecyclerAdapter.itemCount < 1) {
+                if (mToDoRecyclerAdapter.itemCount < 1) {
                     mBinding.noTasksView.root.visibility = View.VISIBLE
                     mBinding.appBar.setExpanded(true)
                 } else
                     mBinding.noTasksView.root.visibility = View.GONE
 
-                animateAddReminderButton()
+                animateAddToDoButton()
                 mBinding.progressBar.visibility = View.GONE
             }
         }
-        reminderRecyclerView.adapter = mReminderRecyclerAdapter
+        toDoRecyclerView.adapter = mToDoRecyclerAdapter
 
         //Set the swipe getsures
-        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mReminderRecyclerAdapter))
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mToDoRecyclerAdapter))
         itemTouchHelper.attachToRecyclerView(null)
-        itemTouchHelper.attachToRecyclerView(reminderRecyclerView)
+        itemTouchHelper.attachToRecyclerView(toDoRecyclerView)
 
-        mViewModel.getReminders()
-            .observe(viewLifecycleOwner) { reminders: PagingData<Reminder> ->
-                mReminderRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, reminders)
+        mViewModel.getToDos()
+            .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
+                mToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
                 if (this !is CalendarFragment)
                     displayHijriDate()
             }
@@ -178,7 +178,7 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
         }
     }
 
-    private fun animateAddReminderButton() {
+    private fun animateAddToDoButton() {
         if (fabAnimator == null) {
             fabAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 mBinding.fab,
@@ -197,8 +197,8 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
             fabAnimator?.cancel()
     }
 
-    override fun onSwipeToDelete(position: Int, reminder: Reminder) {
-        if (reminder.isAutomaticPrayerTime()) {
+    override fun onSwipeToDelete(position: Int, toDo: ToDo) {
+        if (toDo.isAutomaticPrayerTime()) {
             Snackbar.make(
                 mBinding.root, getString(R.string.cannot_delete_prayer_time),
                 Snackbar.LENGTH_LONG
@@ -206,18 +206,18 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
                 view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
                 show()
             }
-            mReminderRecyclerAdapter.notifyItemRemoved(position)
-            mReminderRecyclerAdapter.notifyItemInserted(position)
+            mToDoRecyclerAdapter.notifyItemRemoved(position)
+            mToDoRecyclerAdapter.notifyItemInserted(position)
             return
         }
 
-        mViewModel.deleteReminder(reminder)
+        mViewModel.deleteToDo(toDo)
         Snackbar.make(
-            mBinding.root, getString(R.string.delete_reminder),
+            mBinding.root, getString(R.string.delete_to_do),
             Snackbar.LENGTH_LONG
         ).apply {
             view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-            setAction(getString(R.string.undo_delete)) { mViewModel.insertReminder(reminder) }
+            setAction(getString(R.string.undo_delete)) { mViewModel.insertToDo(toDo) }
             setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
             show()
         }
@@ -226,31 +226,31 @@ open class TodayFragment : MenuBarFragment(), ReminderItemInteractionListener {
     override fun onMarkAsComplete(
         isPressed: Boolean,
         isChecked: Boolean?,
-        reminder: Reminder
+        toDo: ToDo
     ) {
         if (isPressed) {
-            val newReminder = reminder.copy(isComplete = isChecked ?: !reminder.isComplete)
-            mViewModel.insertReminder(newReminder, false)
+            val toDoCopy = toDo.copy(isComplete = isChecked ?: !toDo.isComplete)
+            mViewModel.insertToDo(toDoCopy, false)
         }
     }
 
-    override fun launchReminderDetailsFragment(v: View, reminder: Reminder?) {
-        mViewModel.selectedReminder = reminder
-            ?: Reminder(
-                reminderName = "", frequency = Frequency.OneTime,
+    override fun launchToDoDetailsFragment(v: View, toDo: ToDo?) {
+        mViewModel.selectedToDo = toDo
+            ?: ToDo(
+                name = "", frequency = Frequency.OneTime,
                 category = resources.getStringArray(R.array.categories)[0], //Uncategorized
                 day = LocalDate.now().dayOfMonth,
                 month = LocalDate.now().month.ordinal,
                 year = LocalDate.now().year
             )
 
-        findNavController().navigate(R.id.reminderDetailsFragment)
+        findNavController().navigate(R.id.toDoDetailsFragment)
     }
 
     override fun onResume() {
         super.onResume()
         if (this !is CalendarFragment) {
-            mViewModel.setReminderParameters(System.currentTimeMillis())
+            mViewModel.setToDoParameters(System.currentTimeMillis())
         }
 
         val bundle = Bundle()

@@ -3,11 +3,11 @@
   <string name="next_string">Next:</string>
   <string name="done_for_the_day">It\'s Empty Here</string>
   <string name="switch_to_dark_mode">Switch To Dark Mode</string>
-  <string name="reminder_name_label">Name</string>
-  <string name="reminder_name_hint">Enter The Name of The Reminder</string>
-  <string name="edit_reminder">Edit Reminder</string>
-  <string name="add_reminder">Add Reminder</string>
-  <string name="reminder_category">Category</string>
+  <string name="to_do_name_label">Name</string>
+  <string name="to_do_name_hint">Enter The Name of The To-Do</string>
+  <string name="edit_to_do">Edit To-Do</string>
+  <string name="add_to_do">Add To-Do</string>
+  <string name="to_do_category">Category</string>
   <string name="frequency">Repeat</string>
   <string name="pick_time">Pick Time</string>
   <string name="change_time">Change Time</string>
@@ -33,14 +33,14 @@
     <string name="value">Value</string>
     <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
     <string name="welcome">Welcome to Sunnah Assistant:</string>
-    <string name="tagline">Set Reminders that will help you become a better Muslim</string>
+  <string name="tagline">Set To-Dos that will help you become a better Muslim</string>
     <string name="quick_setup">Get Started</string>
-    <string name="delete_reminder">Reminder Deleted</string>
+  <string name="delete_to_do">To-Do Deleted</string>
     <string name="undo_delete">Undo</string>
-    <string name="cannot_delete_prayer_time">Automatic Prayer Reminders can only be deleted from Settings</string>
+  <string name="cannot_delete_prayer_time">Automatic Prayer alerts can only be deleted from Settings</string>
     <string name="time_not_set">Time not Set</string>
     <string name="general_settings">General Settings</string>
-    <string name="next_reminder_notification">Display The Next Reminder Notification</string>
+  <string name="next_to_do_notification">Display The Next To-Do Notification</string>
     <string name="next_reminder_disclaimer">Disabling this might lead to reminders not being triggered successfully</string>
     <string name="about_app">About App</string>
     <string name="version">Version: %s</string>
@@ -50,28 +50,28 @@
         Is a Free and &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/>Open Source&lt;/a> app&lt;br>
         Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/>@saidmsaid81&lt;/a>)
     </string>
-    <string name="app_icon_credit">Icons from: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a> </string>
-    <string name="we_are_social">Join Us on Social Media</string>
-    <string name="facebook_logo">Facebook logo</string>
-    <string name="no_email_app_installed">No Email App Installed</string>
-    <string name="contact_us">Contact Us via E-mail</string>
-    <string name="change_theme">Tap to Change Theme or Layout</string>
-    <string name="change_theme_description">Themes:- Dark Theme or Light Theme\nLayout:- Expanded or Condensed</string>
-    <string name="add_new_reminder">Add Reminder</string>
-    <string name="add_new_reminder_description">Tap To add any Reminder</string>
-    <string name="edit_reminder_description">~ Swipe Right or Left to delete Reminder\n~ Tap To edit Reminder\n~ Tap the bell icon (if time is set) to enable reminder</string>
-    <string name="spinner_tutorial">Reminders Switcher</string>
-    <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly reminders</string>
-    <string name="support_developer">Support Developer</string>
-    <string name="more_apps">More Apps</string>
-    <string name="rate_this_app">Rate this App</string>
-    <string name="send_feedback">Send Feedback</string>
-    <string name="telegram_logo">Telegram Logo</string>
-    <string name="instagram_logo">Instagram Logo</string>
-    <string name="twitter_logo">Twitter Logo</string>
-    <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_reminder">Tap the + icon at the bottom corner to add a new reminder</string>
-    <string name="open_source_licenses">Open Source Licenses</string>
-    <string name="name_of_the_new_category">Name of the New Category</string>
+  <string name="app_icon_credit">Icons from: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a> </string>
+  <string name="we_are_social">Join Us on Social Media</string>
+  <string name="facebook_logo">Facebook logo</string>
+  <string name="no_email_app_installed">No Email App Installed</string>
+  <string name="contact_us">Contact Us via E-mail</string>
+  <string name="change_theme">Tap to Change Theme or Layout</string>
+  <string name="change_theme_description">Themes:- Dark Theme or Light Theme\nLayout:- Expanded or Condensed</string>
+  <string name="add_new_to_do">Add To-Do</string>
+  <string name="add_new_to_do_description">Tap To add any To-Do</string>
+  <string name="edit_to_do_description">~ Swipe Right or Left to delete To-Do\n~ Tap To edit To-Do\n~ Tap the bell icon (if time is set) to enable To-Do</string>
+  <string name="spinner_tutorial">To-Do\'s Switcher</string>
+  <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly to-dos</string>
+  <string name="support_developer">Support Developer</string>
+  <string name="more_apps">More Apps</string>
+  <string name="rate_this_app">Rate this App</string>
+  <string name="send_feedback">Send Feedback</string>
+  <string name="telegram_logo">Telegram Logo</string>
+  <string name="instagram_logo">Instagram Logo</string>
+  <string name="twitter_logo">Twitter Logo</string>
+  <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_to_do">Tap the + icon at the bottom corner to add a new to-do</string>
+  <string name="open_source_licenses">Open Source Licenses</string>
+  <string name="name_of_the_new_category">Name of the New Category</string>
     <string name="cancel">Cancel</string>
     <string name="display_all">All</string>
     <string name="alternate_display_of_data">Switch to Condensed View</string>
@@ -84,30 +84,30 @@
     <string name="notification_tone">Notification Tone</string>
     <string name="vibrate">Vibrate</string>
     <string name="importance">Behavior</string>
-    <string name="next_reminder_sticky_notification">Next Reminder Sticky Notification</string>
-    <string name="layout_and_theme_settings">Layout and Theme Settings</string>
-    <string name="privacy_settings">Privacy Settings</string>
-    <string name="layout">Layout</string>
-    <string name="theme">Theme</string>
-    <string name="theme_in_android_10_follows_system_settings">Follows System</string>
-    <string name="delete_category">Delete Category?</string>
-    <string name="confirm_delete_category">%s Category Deleted</string>
-    <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
-    <string name="customize_categories">Customize Categories</string>
-    <string name="filter_displayed_reminders">Filter Displayed Reminders</string>
-    <string name="filter_displayed_reminders_description">Such as display all categories or only one category</string>
-    <string name="add_sunnah_reminders_alerts_such_as_fasting_on_mondays_and_thursdays">Tap to add Sunnah Reminders alerts</string>
-    <string name="sunnah_reminder_alerts_description">*such as Fasting on Mondays and Thursdays</string>
-    <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
-    <string name="pick_date_and_time">Pick Date and Time</string>
+  <string name="next_to_do_sticky_notification">Next To-Do Sticky Notification</string>
+  <string name="layout_and_theme_settings">Layout and Theme Settings</string>
+  <string name="privacy_settings">Privacy Settings</string>
+  <string name="layout">Layout</string>
+  <string name="theme">Theme</string>
+  <string name="theme_in_android_10_follows_system_settings">Follows System</string>
+  <string name="delete_category">Delete Category?</string>
+  <string name="confirm_delete_category">%s Category Deleted</string>
+  <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
+  <string name="customize_categories">Customize Categories</string>
+  <string name="filter_displayed_to_dos">Filter Displayed To-Dos</string>
+  <string name="filter_displayed_todos_description">Such as display all categories or only one category</string>
+  <string name="add_sunnah_to_dos_alerts_such_as_fasting_on_mondays_and_thursdays">Tap to add Sunnah To-Dos alerts</string>
+  <string name="sunnah_to_do_alerts_description">*such as Fasting on Mondays and Thursdays</string>
+  <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
+  <string name="pick_date_and_time">Pick Date and Time</string>
   <string name="please_pick_date_and_time">Please Pick Date and time</string>
   <string name="higher_latitude_adjustment_method">Higher Latitude Adjustment Method</string>
   <string name="add_widget">Add widget</string>
   <string name="display_hijri_date">Display Hijri Date</string>
-  <string name="display_the_next_reminder">Display the Next Reminder</string>
+  <string name="display_the_next_to_do">Display the Next To-Do</string>
   <string name="enable_at_least_one_option">Enable at least one option</string>
   <string name="setup_widget">Setup Widget</string>
-  <string name="today_s_reminder">Today\'s Reminders</string>
+  <string name="today_s_to_dos">Today\'s To-Dos</string>
   <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date used in this app is based on Umm al-Qura Calendar. Read more on Umm al-Qura Calendar here http://www.ummulqura.org.sa/default.aspx</string>
   <string name="read_more">Read more</string>
   <string name="read_more_on_dhuha_prayer">
@@ -126,18 +126,18 @@
         ‣ Help us translate the app to your language by tapping \"Help Translate App\" button below. Thank you.
     </string>
   <string name="updated">Updated</string>
-    <string name="updated_details">
+  <string name="updated_details">
         ‣ Updated and optimized all widgets.
     </string>
   <string name="fixes">Fixes</string>
   <string name="fixes_details">
         ‣ Fixed bug that persisted prayer time alerts even when automatic prayer time alerts are disabled\n
-        ‣ Fixed crash on some devices when scheduling reminders \n
+        ‣ Fixed crash on some devices when scheduling to-dos \n
         ‣ Minor bug fixes and improvements
     </string>
   <string name="add_or_delete_categories">Add or Delete Categories</string>
-  <string name="successfuly_added_sunnah_reminders">Successfully Added</string>
-  <string name="sticky_notification_description">Sticky Notification to display the next scheduled reminder</string>
+  <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>
+  <string name="sticky_notification_description">Sticky Notification to display the next scheduled to-do</string>
   <string name="dhuha_prayer">Praying Dhuha</string>
   <string name="morning_adhkar">Morning Adhkar</string>
   <string name="evening_adhkar">Evening Adhkar</string>
@@ -145,7 +145,7 @@
   <string name="reading_the_quran">Reading the Quran</string>
   <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
   <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
-  <string name="demo_reminder">Demo Reminder</string>
+  <string name="demo_to_dos">Demo To-Do</string>
   <string name="tomorrow_at">Tomorrow at&#160;</string>
   <string name="today_at">Today at&#160;</string>
   <string name="daily">Daily&#160;</string>
@@ -161,28 +161,28 @@
   <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s]]></string>
   <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
   <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
-  <string name="no_upcoming_reminder_today">No Upcoming Reminder Today</string>
+  <string name="no_upcoming_to_do_today">No Upcoming To-Do Today</string>
   <string name="tomorrow_at_notification">. Tomorrow at </string>
   <string name="at"> at </string>
-  <string name="next_reminder_dhuhr_prayer_at_12_45">Next Reminder: %s %s %s</string>
+  <string name="next_to_do_dhuhr_prayer_at_12_45">Next To-Do: %s %s %s</string>
   <string name="prayer_times_notification_settings">Prayer Times Notification Settings</string>
   <string name="dnd_minutes">%d minutes</string>
   <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
-  <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time reminder is triggered</string>
+  <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time Reminder is triggered</string>
   <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
   <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
   <string name="go_to_settings">Go to Settings</string>
   <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
-  <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_reminders_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when reminders are scheduled</string>
+  <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_to_dos_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when to-dos are scheduled</string>
   <string name="update_downloaded">An update has just been downloaded.</string>
   <string name="restart">RESTART</string>
-  <string name="error_adding_prayer_reminders">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
+  <string name="error_adding_prayer_time">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
   <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
   <string name="translate">Translate</string>
   <string name="translators">Translators</string>
   <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313\n
     Indonesian Translation by: Ilham Syahid S</string>
-  <string name="reminder">Reminder</string>
+  <string name="to_do">To-Do</string>
   <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
   <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
   <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
@@ -196,10 +196,10 @@
   <string name="dismiss">Dismiss</string>
   <string name="help_translate_app_button">Help Translate App</string>
   <string name="light_theme">Light</string>
-  <string name="today_widget_label">Today Reminders (Light, Dark, Transparent)</string>
+  <string name="today_widget_label">Today To-Dos (Light, Dark, Transparent)</string>
   <string name="prayer_times_widget_label">Prayer Times (Light, Dark, Transparent)</string>
   <string name="hijri_date_widget_label">Hijri Date Widget</string>
-  <string name="reminders">Reminders</string>
+  <string name="to_dos">To-Dos</string>
   <string name="developers_messages">Developer Messages</string>
   <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
   <string name="share_message">Share Page</string>
@@ -228,22 +228,22 @@
   <string name="category_cannot_be_changed">Category for automatic prayer time cannot be changed</string>
   <string name="time_cannot_be_changed">Time for automatic prayer time cannot be changed</string>
   <string name="minutes">+/- minutes</string>
-  <string name="automatic_prayer_time_reminder">Changes made here only affect %s time reminder for %s. Tap to Go to Settings to change for all days.</string>
+  <string name="automatic_prayer_time_info">Changes made here only affect %s time for %s. Tap to Go to Settings to change for all days.</string>
   <string name="delete">Delete</string>
-  <string name="delete_reminder_title">Delete Reminder</string>
-  <string name="delete_reminder_confirmation">Do you really want to delete this Reminder?</string>
+  <string name="delete_to_do_title">Delete To-Do</string>
+  <string name="delete_to_do_confirmation">Do you really want to delete this To-Do?</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
   <string name="category_cannot_be_blank">Error! Category cannot be blank</string>
   <string name="info">Info</string>
-  <string name="share_reminder">Share Reminder</string>
+  <string name="share_to_do">Share To-Do</string>
   <string name="completed">Completed</string>
   <string name="powered_by_sunnah_assistant">Powered by Sunnah Assistant App</string>
   <string name="get_sunnah_assistant">Get Sunnah Assistant App at</string>
   <string name="sent_from_sunnah_assistant_app">Sent from Sunnah Assistant App.</string>
   <string name="reminder_on">Reminder: On</string>
   <string name="reminder_off">Reminder: Off</string>
-  <string name="repeating_reminder">Repeating reminder</string>
+  <string name="repeating_to_do">Repeating to-do</string>
   <string name="fajr_prayer_settings">Fajr Prayer Settings</string>
   <string name="enable_alerts">Enable Alerts</string>
   <string name="dhuhr_prayer_settings">Dhuhr Prayer Settings</string>
@@ -290,7 +290,7 @@
     <string-array name="settings_lists">
         <item>Hijri Date Settings</item>
         <item>Prayer Time Settings</item>
-        <item>Customize Reminder Categories</item>
+      <item>Customize To-Do Categories</item>
         <item>Notifications Settings</item>
         <item>Layout and Theme Settings</item>
         <item>Privacy Settings</item>

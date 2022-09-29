@@ -12,8 +12,9 @@
         <import type="com.thesunnahrevival.common.utilities.TimeDateUtil" />
 
         <variable
-            name="reminder"
-            type="com.thesunnahrevival.common.data.model.Reminder" />
+            name="toDo"
+            type="com.thesunnahrevival.common.data.model.ToDo"
+            />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -37,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/default_dimen"
                 android:layout_marginStart="@dimen/default_dimen"
-                android:checked="@{reminder.complete}"
+                android:checked="@{toDo.complete}"
                 android:layout_gravity="center" />
 
             <LinearLayout
@@ -48,49 +49,52 @@
                 android:paddingBottom="@dimen/default_dimen"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/reminder_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@{reminder.reminderName}"
-                    android:enabled="@{!reminder.complete}"
-                    android:textAppearance="@android:style/TextAppearance.Material.Title"
-                    android:textSize="@dimen/default_text_size"
-                    tools:text="Fasting Ayyamul Beidh" />
+              <TextView
+                  android:id="@+id/to_do_title"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:ellipsize="end"
+                  android:maxLines="1"
+                  android:text="@{toDo.name}"
+                  android:enabled="@{!toDo.complete}"
+                  android:textAppearance="@android:style/TextAppearance.Material.Title"
+                  android:textSize="@dimen/default_text_size"
+                  tools:text="Fasting Ayyamul Beidh"
+                  />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/reminder_category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="@{reminder.category + &quot;,&quot;}"
-                        android:enabled="@{!reminder.complete}"
-                        tools:text="Sunnah," />
+                  <TextView
+                      android:id="@+id/to_do_category"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="14sp"
+                      android:text="@{toDo.category + &quot;,&quot;}"
+                      android:enabled="@{!toDo.complete}"
+                      tools:text="Sunnah,"
+                      />
 
-                    <TextView
-                        android:id="@+id/reminder_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, reminder.timeInMilliseconds) }"
-                        android:enabled="@{!reminder.complete}"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        tools:text="14:25" />
+                  <TextView
+                      android:id="@+id/to_do_time"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="14sp"
+                      android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, toDo.timeInMilliseconds) }"
+                      android:enabled="@{!toDo.complete}"
+                      android:paddingStart="8dp"
+                      android:paddingEnd="8dp"
+                      tools:text="14:25"
+                      />
 
                     <ImageView
                         android:id="@+id/reminders_on"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center_vertical"
-                        android:visibility="@{reminder.enabled ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{toDo.reminderEnabled ? View.VISIBLE : View.GONE}"
                         android:layout_marginEnd="@dimen/margin_dimen"
                         tools:visibility="visible"
                         android:src="@drawable/ic_notifications_on"
@@ -101,21 +105,22 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center_vertical"
-                        android:visibility="@{TimeDateUtil.isReminderDisabled(context, reminder) ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{TimeDateUtil.isReminderDisabled(context, toDo) ? View.VISIBLE : View.GONE}"
                         tools:visibility="visible"
                         android:src="@drawable/ic_notifications_off"
                         android:layout_marginEnd="@dimen/margin_dimen"
                         android:contentDescription="@string/reminder_off" />
 
-                    <ImageView
-                        android:id="@+id/repeat"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_gravity="center_vertical"
-                        android:visibility="@{reminder.frequency.ordinal() > 0 ? View.VISIBLE : View.GONE}"
-                        tools:visibility="visible"
-                        android:src="@drawable/ic_repeat"
-                        android:contentDescription="@string/repeating_reminder" />
+                  <ImageView
+                      android:id="@+id/repeat"
+                      android:layout_width="18dp"
+                      android:layout_height="18dp"
+                      android:layout_gravity="center_vertical"
+                      android:visibility="@{toDo.frequency.ordinal() > 0 ? View.VISIBLE : View.GONE}"
+                      tools:visibility="visible"
+                      android:src="@drawable/ic_repeat"
+                      android:contentDescription="@string/repeating_to_do"
+                      />
 
                 </LinearLayout>
 

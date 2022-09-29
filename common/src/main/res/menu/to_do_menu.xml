@@ -2,17 +2,17 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
   <item
-      android:id="@+id/save_reminder"
+      android:id="@+id/save_to_do"
       android:title="@string/save"
       app:showAsAction="ifRoom" />
   <item
-      android:id="@+id/delete_reminder"
+      android:id="@+id/delete_to_do"
       android:title="@string/delete"
       app:showAsAction="never" />
 
   <item
-      android:id="@+id/share_reminder"
-      android:title="@string/share_reminder"
+      android:id="@+id/share_to_do"
+      android:title="@string/share_to_do"
       app:showAsAction="never" />
 
 </menu>

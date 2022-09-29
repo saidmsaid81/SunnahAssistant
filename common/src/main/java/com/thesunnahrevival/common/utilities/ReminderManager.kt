@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import com.thesunnahrevival.common.receivers.ReminderBroadcastReceiver
+import com.thesunnahrevival.common.receivers.ToDoBroadcastReceiver
 import java.util.*
 
 class ReminderManager private constructor() {
@@ -26,7 +26,7 @@ class ReminderManager private constructor() {
         doNotDisturbMinutes: Int,
         isOneShot: Boolean = false
     ): PendingIntent {
-        val notificationIntent = Intent(context, ReminderBroadcastReceiver::class.java)
+        val notificationIntent = Intent(context, ToDoBroadcastReceiver::class.java)
         notificationIntent.putExtra(NOTIFICATION_TITLE, title)
         notificationIntent.putExtra(NOTIFICATION_TEXT, text)
         notificationIntent.putExtra(NOTIFICATION_TONE_URI, notificationUri.toString())

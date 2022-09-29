@@ -86,18 +86,18 @@ fun createNotificationChannels(context: Context) {
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        deleteReminderNotificationChannel(context)
+        deleteToDoNotificationChannel(context)
         val notificationManager = context.getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
             "remindersDefault",
-            context.getString(R.string.reminders),
+            context.getString(R.string.to_dos),
             NotificationManager.IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(channel)
 
         val nextReminderChannel = NotificationChannel(
             "Next Reminder",
-            context.getString(R.string.next_reminder_sticky_notification),
+            context.getString(R.string.next_to_do_sticky_notification),
             NotificationManager.IMPORTANCE_LOW
         )
         nextReminderChannel.description =
@@ -125,7 +125,7 @@ fun getReminderNotificationChannel(context: Context): NotificationChannel? {
     return null
 }
 
-fun deleteReminderNotificationChannel(context: Context) {
+fun deleteToDoNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val manager = context.getSystemService(NotificationManager::class.java)
         for (channel in manager.notificationChannels) {
@@ -135,16 +135,22 @@ fun deleteReminderNotificationChannel(context: Context) {
     }
 }
 
-fun createReminderNotificationChannel(context: Context, toneUri: Uri?, isVibrate: Boolean, priority: Int) {
+fun createToDoNotificationChannel(
+    context: Context,
+    toneUri: Uri?,
+    isVibrate: Boolean,
+    priority: Int
+) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(System.currentTimeMillis().toString(),
-                "Reminders",
-                priority
+        val channel = NotificationChannel(
+            System.currentTimeMillis().toString(),
+            "Reminders",
+            priority
         )
         val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                .build()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
         channel.setSound(toneUri, attributes)
         channel.enableVibration(isVibrate)
         val manager = context.getSystemService(NotificationManager::class.java)

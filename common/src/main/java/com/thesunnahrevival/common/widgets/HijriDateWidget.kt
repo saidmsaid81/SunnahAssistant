@@ -36,10 +36,10 @@ internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int,
-    isShowNextReminder: Boolean,
+    isShowNextToDo: Boolean,
     hijriText: String?,
-    reminderName: String?,
-    reminderTime: String?
+    toDoName: String?,
+    toDoTime: String?
 ) {
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.hijri_date_widget)
@@ -50,21 +50,21 @@ internal fun updateAppWidget(
         views.setViewVisibility(R.id.hijri_date_text, View.GONE)
     }
 
-    if (isShowNextReminder) {
-        views.setViewVisibility(R.id.next_reminder_text, View.VISIBLE)
+    if (isShowNextToDo) {
+        views.setViewVisibility(R.id.next_to_do_text, View.VISIBLE)
         val next = context.getString(R.string.next_string)
-        if (reminderName != null)
+        if (toDoName != null)
             views.setTextViewText(
-                R.id.next_reminder_text,
-                "$next $reminderName at $reminderTime"
+                R.id.next_to_do_text,
+                "$next $toDoName at $toDoTime"
             )
         else
             views.setTextViewText(
-                R.id.next_reminder_text,
-                context.getString(R.string.no_upcoming_reminder_today)
+                R.id.next_to_do_text,
+                context.getString(R.string.no_upcoming_to_do_today)
             )
     } else
-        views.setViewVisibility(R.id.next_reminder_text, View.GONE)
+        views.setViewVisibility(R.id.next_to_do_text, View.GONE)
 
     val widgetIntent = Intent(context, MainActivity::class.java)
     val widgetPendingIntent = PendingIntent.getActivity(context, 0, widgetIntent, 0)
@@ -77,10 +77,10 @@ internal fun updateAppWidget(
 internal suspend fun updateWidgetSettings(
     context: Context,
     isDisplayHijriDate: Boolean,
-    isDisplayNextReminder: Boolean
+    isDisplayNextToDo: Boolean
 ) {
     val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
-    repository.updateWidgetSettings(isDisplayHijriDate, isDisplayNextReminder)
+    repository.updateWidgetSettings(isDisplayHijriDate, isDisplayNextToDo)
 }
 
 internal suspend fun fetchDateFromDatabase(
@@ -94,27 +94,27 @@ internal suspend fun fetchDateFromDatabase(
     val hijriText = if (appSettings?.isShowHijriDateWidget == true)
         generateDateText(isOnlyHijriDate = true) else null
 
-    val nextReminder = if (appSettings?.isShowNextReminderWidget == true) {
+    val nextToDo = if (appSettings?.isShowNextToDoWidget == true) {
         val timeInMilliseconds = System.currentTimeMillis()
 
-        val nextTimeForReminderToday = repository.getNextTimeForReminderForDay(
+        val nextTimeForToDoToday = repository.getNextTimeForToDosForDay(
             calculateOffsetFromMidnight(),
             dayOfTheWeek.toString(),
             getDayDate(timeInMilliseconds),
             getMonthNumber(timeInMilliseconds),
             Integer.parseInt(getYear(timeInMilliseconds))
         )
-        repository.getNextScheduledRemindersForDay(
-            nextTimeForReminderToday ?: -1,
+        repository.getNextScheduledToDosForDay(
+            nextTimeForToDoToday ?: -1,
             dayOfTheWeek.toString(),
             getDayDate(timeInMilliseconds),
             getMonthNumber(timeInMilliseconds),
             getYear(timeInMilliseconds).toInt()
         ).firstOrNull()
     } else null
-    val reminderName = nextReminder?.reminderName
-    val reminderTime =
-        nextReminder?.timeInMilliseconds?.let { formatTimeInMilliseconds(context, it) }
+    val toDoName = nextToDo?.name
+    val toDoTime =
+        nextToDo?.timeInMilliseconds?.let { formatTimeInMilliseconds(context, it) }
 
     withContext(Dispatchers.Main) {
         // There may be multiple widgets active, so update all of them
@@ -123,10 +123,10 @@ internal suspend fun fetchDateFromDatabase(
                 context,
                 appWidgetManager,
                 appWidgetId,
-                appSettings?.isShowNextReminderWidget ?: false,
+                appSettings?.isShowNextToDoWidget ?: false,
                 hijriText,
-                reminderName,
-                reminderTime
+                toDoName,
+                toDoTime
             )
         }
     }

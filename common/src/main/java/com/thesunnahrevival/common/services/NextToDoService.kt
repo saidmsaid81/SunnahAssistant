@@ -9,7 +9,7 @@ import androidx.core.app.NotificationCompat
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.data.model.AppSettings
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.utilities.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 
-class NextReminderService : Service() {
+class NextToDoService : Service() {
 
     private lateinit var mRepository: SunnahAssistantRepository
 
@@ -27,19 +27,19 @@ class NextReminderService : Service() {
 
         CoroutineScope(Dispatchers.IO).launch {
             val settings = mRepository.getAppSettingsValue()
-            val isForegroundEnabled = settings?.showNextReminderNotification ?: false
+            val isForegroundEnabled = settings?.showNextToDoNotification ?: false
 
             val timeInMilliseconds = System.currentTimeMillis()
             var dayString = getString(R.string.at)
 
-            val nextTimeForReminderToday = mRepository.getNextTimeForReminderForDay(
+            val nextTimeForToDoToday = mRepository.getNextTimeForToDosForDay(
                 calculateOffsetFromMidnight(),
                 dayOfTheWeek.toString(),
                 getDayDate(timeInMilliseconds),
                 getMonthNumber(timeInMilliseconds), Integer.parseInt(getYear(timeInMilliseconds))
             )
 
-            val nextTimeForReminderTomorrow = mRepository.getNextTimeForReminderForDay(
+            val nextTimeForToDoTomorrow = mRepository.getNextTimeForToDosForDay(
                 -(86400 - calculateOffsetFromMidnight()),
                 tomorrowDayOfTheWeek.toString(),
                 getDayDate(timeInMilliseconds + 86400000),
@@ -47,23 +47,23 @@ class NextReminderService : Service() {
                 Integer.parseInt(getYear(timeInMilliseconds + 86400000))
             )
 
-            val nextScheduledReminders = arrayListOf<Reminder>()
+            val nextScheduledToDos = arrayListOf<ToDo>()
 
             when {
                 //Check to see if tomorrows reminders trigger time is offset to earlier than today reminders
-                nextTimeForReminderTomorrow != null &&
-                        nextTimeForReminderTomorrow < 0 &&
-                        ((24 * 60 * 60) + nextTimeForReminderTomorrow) < (nextTimeForReminderToday
+                nextTimeForToDoTomorrow != null &&
+                        nextTimeForToDoTomorrow < 0 &&
+                        ((24 * 60 * 60) + nextTimeForToDoTomorrow) < (nextTimeForToDoToday
                     ?: (24 * 60 * 60)) -> {
-                    nextScheduledReminders.addAll(
-                        getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
+                    nextScheduledToDos.addAll(
+                        getTomorrowsReminders(nextTimeForToDoTomorrow, timeInMilliseconds)
                     )
                 }
-                nextTimeForReminderToday != null -> {
+                nextTimeForToDoToday != null -> {
                     //Get Today Reminders
-                    nextScheduledReminders.addAll(
-                        mRepository.getNextScheduledRemindersForDay(
-                            nextTimeForReminderToday,
+                    nextScheduledToDos.addAll(
+                        mRepository.getNextScheduledToDosForDay(
+                            nextTimeForToDoToday,
                             dayOfTheWeek.toString(),
                             getDayDate(timeInMilliseconds),
                             getMonthNumber(timeInMilliseconds),
@@ -72,22 +72,22 @@ class NextReminderService : Service() {
                     )
 
                     //Check to see if tomorrows reminders trigger time is offset to same as today reminders
-                    if (nextTimeForReminderTomorrow != null &&
-                        ((24 * 60 * 60) + nextTimeForReminderTomorrow) == nextTimeForReminderToday
+                    if (nextTimeForToDoTomorrow != null &&
+                        ((24 * 60 * 60) + nextTimeForToDoTomorrow) == nextTimeForToDoToday
                     ) {
-                        nextScheduledReminders.addAll(
-                            getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
+                        nextScheduledToDos.addAll(
+                            getTomorrowsReminders(nextTimeForToDoTomorrow, timeInMilliseconds)
                         )
                     }
                 }
-                nextTimeForReminderTomorrow != null -> {
-                    nextScheduledReminders.addAll(
-                        getTomorrowsReminders(nextTimeForReminderTomorrow, timeInMilliseconds)
+                nextTimeForToDoTomorrow != null -> {
+                    nextScheduledToDos.addAll(
+                        getTomorrowsReminders(nextTimeForToDoTomorrow, timeInMilliseconds)
                     )
                 }
             }
 
-            if (nextTimeForReminderToday == null && nextTimeForReminderTomorrow != null) {
+            if (nextTimeForToDoToday == null && nextTimeForToDoTomorrow != null) {
                 dayString = getString(R.string.tomorrow_at_notification)
             }
 
@@ -95,12 +95,12 @@ class NextReminderService : Service() {
                 if (settings != null) {
                     scheduleTheNextReminder(
                         settings,
-                        nextScheduledReminders,
-                        this@NextReminderService,
+                        nextScheduledToDos,
+                        this@NextToDoService,
                         isForegroundEnabled,
                         dayString
                     )
-                    updateWidgets(this@NextReminderService)
+                    updateWidgets(this@NextToDoService)
                 }
             }
         }
@@ -110,7 +110,7 @@ class NextReminderService : Service() {
     private suspend fun getTomorrowsReminders(
         nextTimeForReminderTomorrow: Long,
         timeInMilliseconds: Long
-    ) = mRepository.getNextScheduledRemindersForDay(
+    ) = mRepository.getNextScheduledToDosForDay(
         nextTimeForReminderTomorrow,
         tomorrowDayOfTheWeek.toString(),
         getDayDate(timeInMilliseconds + 86400000),
@@ -119,30 +119,30 @@ class NextReminderService : Service() {
     )
 
     private fun scheduleTheNextReminder(
-        settings: AppSettings, nextScheduledReminders: List<Reminder>,
-        context: NextReminderService, isForegroundEnabled: Boolean, dayString: String
+        settings: AppSettings, nextScheduledToDos: List<ToDo>,
+        context: NextToDoService, isForegroundEnabled: Boolean, dayString: String
     ) {
         val title: String
         val text = getString(R.string.tap_to_disable_sticky_notification)
         val notificationToneUri: Uri? = settings.notificationToneUri
         val isVibrate: Boolean = settings.isVibrate
 
-        val names = Array(nextScheduledReminders.size) { "" }
-        val categories = Array(nextScheduledReminders.size) { "" }
+        val names = Array(nextScheduledToDos.size) { "" }
+        val categories = Array(nextScheduledToDos.size) { "" }
 
-        nextScheduledReminders.forEachIndexed { index, nextScheduledReminder: Reminder ->
-            nextScheduledReminder.reminderName?.let { name ->
+        nextScheduledToDos.forEachIndexed { index, nextScheduledToDo: ToDo ->
+            nextScheduledToDo.name?.let { name ->
                 names[index] = name
-                categories[index] = nextScheduledReminder.category.toString()
+                categories[index] = nextScheduledToDo.category.toString()
             }
 
         }
 
-        if (nextScheduledReminders.isNotEmpty()) {
-            val nextScheduledReminder = nextScheduledReminders.first()
+        if (nextScheduledToDos.isNotEmpty()) {
+            val nextScheduledReminder = nextScheduledToDos.first()
             title = getString(
-                R.string.next_reminder_dhuhr_prayer_at_12_45,
-                nextScheduledReminder.reminderName,
+                R.string.next_to_do_dhuhr_prayer_at_12_45,
+                nextScheduledReminder.name,
                 dayString,
                 formatTimeInMilliseconds(context, nextScheduledReminder.timeInMilliseconds)
             )
@@ -150,7 +150,7 @@ class NextReminderService : Service() {
             notificationToneUri?.let {
                 ReminderManager.getInstance().scheduleReminder(
                     context = context,
-                    title = getString(R.string.reminder),
+                    title = getString(R.string.to_do),
                     texts = names,
                     categories = categories,
                     timeInMilliseconds = nextScheduledReminder.timeInMilliseconds + (nextScheduledReminder.offsetInMinutes * 60 * 1000),
@@ -164,7 +164,7 @@ class NextReminderService : Service() {
         } else {
             //A dummy notification which enables scheduling reminders for the next day
 
-            title = getString(R.string.no_upcoming_reminder_today)
+            title = getString(R.string.no_upcoming_to_do_today)
             notificationToneUri?.let {
                 ReminderManager.getInstance().scheduleReminder(
                     context = context,

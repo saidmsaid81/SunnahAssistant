@@ -20,7 +20,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.Frequency
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.receivers.InAppBrowserBroadcastReceiver
 import com.thesunnahrevival.common.receivers.TEXTSUMMARY
 import com.thesunnahrevival.common.services.InAppBrowserConnection
@@ -43,13 +43,13 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
+open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
     TimePickerFragment.OnTimeSetListener {
 
-    protected lateinit var mBinding: com.thesunnahrevival.common.databinding.ReminderDetailsFragmentBinding
-    private lateinit var mReminder: Reminder
-    private var mReminderCategories: ArrayList<String> = arrayListOf()
+    protected lateinit var mBinding: com.thesunnahrevival.common.databinding.ToDoDetailsFragmentBinding
+    private lateinit var mToDo: ToDo
+    private var mToDoCategories: ArrayList<String> = arrayListOf()
     private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
     private var mTimeString: String? = null
     private var mDay: Int = LocalDate.now().dayOfMonth
@@ -65,19 +65,19 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         super.onCreateView(inflater, container, savedInstanceState)
 
         mBinding = DataBindingUtil.inflate(
-            inflater, R.layout.reminder_details_fragment, container, false
+            inflater, R.layout.to_do_details_fragment, container, false
         )
 
-        mReminder = mViewModel.selectedReminder
+        mToDo = mViewModel.selectedToDo
         (requireActivity() as MainActivity).supportActionBar?.setTitle(
-            if (mReminder.id == 0)
-                R.string.add_new_reminder
+            if (mToDo.id == 0)
+                R.string.add_new_to_do
             else
-                R.string.edit_reminder
+                R.string.edit_to_do
         )
 
         mCustomScheduleDays.clear()
-        mReminder.customScheduleDays?.let {
+        mToDo.customScheduleDays?.let {
             mCustomScheduleDays.addAll(it)
         }
 
@@ -89,24 +89,24 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mBinding.remindersName = mReminder.reminderName
-        mBinding.reminderInfo = mReminder.reminderInfo
-        mBinding.offsetInMinutes = mReminder.offsetInMinutes
+        mBinding.toDosName = mToDo.name
+        mBinding.toDosAdditionalInfo = mToDo.additionalInfo
+        mBinding.offsetInMinutes = mToDo.offsetInMinutes
         mBinding.lifecycleOwner = viewLifecycleOwner
 
-        if (mReminder.isAutomaticPrayerTime()) {
+        if (mToDo.isAutomaticPrayerTime()) {
             mBinding.isAutomaticPrayerTime = true
 
             val timeInMillis = GregorianCalendar.getInstance()
-                .apply { set(mReminder.year, mReminder.month, mReminder.day) }
+                .apply { set(mToDo.year, mToDo.month, mToDo.day) }
                 .timeInMillis
 
             val formattedDate = SimpleDateFormat("EEEE d MMMM, yyyy", getLocale())
                 .format(Date(timeInMillis))
 
             mBinding.tip.text = getString(
-                R.string.automatic_prayer_time_reminder,
-                mReminder.reminderName,
+                R.string.automatic_prayer_time_info,
+                mToDo.name,
                 formattedDate
             )
             mBinding.tip.setOnClickListener {
@@ -120,41 +120,41 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
 
     private fun updateView() {
-        updateReminderFrequencyView(mReminder.frequency?.ordinal ?: 0)
-        updateReminderCategoryView(mReminder.category)
-        updateReminderTimeView(formatTimeInMilliseconds(context, mReminder.timeInMilliseconds))
+        updateToDoFrequencyView(mToDo.frequency?.ordinal ?: 0)
+        updateToDoCategoryView(mToDo.category)
+        updateToDoTimeView(formatTimeInMilliseconds(context, mToDo.timeInMilliseconds))
         updateNotifyView()
-        updateMarkAsCompleteView(if (mReminder.isComplete) 1 else 0)
+        updateMarkAsCompleteView(if (mToDo.isComplete) 1 else 0)
         updateTipView()
     }
 
-    private fun updateReminderFrequencyView(frequencyOrdinal: Int) {
-        mBinding.reminderFrequencyValue.text =
+    private fun updateToDoFrequencyView(frequencyOrdinal: Int) {
+        mBinding.toDoFrequencyValue.text =
             resources.getStringArray(R.array.frequency)[frequencyOrdinal]
         mBinding.selectedFrequency = frequencyOrdinal
-        mBinding.reminderFrequency.setOnClickListener(this)
+        mBinding.toDoFrequency.setOnClickListener(this)
 
-        updateReminderDateView(mReminder.day, mReminder.month, mReminder.year)
+        updateToDoDateView(mToDo.day, mToDo.month, mToDo.year)
         updateSelectedDaysView()
     }
 
 
-    private fun updateReminderFrequencyView(frequencyString: String) {
+    private fun updateToDoFrequencyView(frequencyString: String) {
         val ordinal = resources.getStringArray(R.array.frequency).indexOf(frequencyString)
-        updateReminderFrequencyView(ordinal)
+        updateToDoFrequencyView(ordinal)
     }
 
-    private fun updateReminderCategoryView(selectedCategory: String?) {
-        mBinding.reminderCategoryValue.text = selectedCategory
+    private fun updateToDoCategoryView(selectedCategory: String?) {
+        mBinding.toDoCategoryValue.text = selectedCategory
         AddCategoryDialogFragment.category.value = ""
         AddCategoryDialogFragment.category.observe(viewLifecycleOwner) {
             if (it.isNotBlank())
-                mBinding.reminderCategoryValue.text = it
+                mBinding.toDoCategoryValue.text = it
         }
-        mBinding.reminderCategory.setOnClickListener(this)
+        mBinding.toDoCategory.setOnClickListener(this)
     }
 
-    private fun updateReminderDateView(day: Int, month: Int, year: Int) {
+    private fun updateToDoDateView(day: Int, month: Int, year: Int) {
         when (Frequency.values()[mBinding.selectedFrequency]) {
             Frequency.OneTime -> {//No repeat
                 mMonth = if (month in 0..11) month else LocalDate.now().month.ordinal
@@ -171,7 +171,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             else -> {}
         }
 
-        mBinding.reminderDate.setOnClickListener(this)
+        mBinding.toDoDate.setOnClickListener(this)
     }
 
     private fun updateNoRepeatDate() {
@@ -187,7 +187,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         simpleDateFormat.applyPattern("d")
         val dayDateFormatted = simpleDateFormat.format(date)
         simpleDateFormat.applyPattern("MMM, yyyy")
-        mBinding.reminderDateValue.text =
+        mBinding.toDoDateValue.text =
             getString(
                 R.string.one_time_frequency_display,
                 "${daySuffixes[dayDateFormatted.toInt()]} ${simpleDateFormat.format(date)}"
@@ -207,7 +207,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
         simpleDateFormat.applyPattern("d")
         val dayDateFormatted = simpleDateFormat.format(date)
-        mBinding.reminderDateValue.text =
+        mBinding.toDoDateValue.text =
             getString(
                 R.string.monthly_frequency_display,
                 daySuffixes[dayDateFormatted.toInt()]
@@ -233,8 +233,8 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
-    private fun updateReminderTimeView(timeString: String) {
-        if (mReminder.id == 0 &&
+    private fun updateToDoTimeView(timeString: String) {
+        if (mToDo.id == 0 &&
             timeString != mTimeString &&
             mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true
         ) {
@@ -242,22 +242,22 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             mBinding.notify.isEnabled = true
             mBinding.notifyLabel.isEnabled = true
             mBinding.notifyValue.isEnabled = true
-        } else if (mReminder.id == 0) {
+        } else if (mToDo.id == 0) {
             mBinding.notify.isEnabled = false
             mBinding.notifyLabel.isEnabled = false
             mBinding.notifyValue.isEnabled = false
         }
 
         mTimeString = timeString
-        mBinding.reminderTimeValue.text = timeString
-        mBinding.reminderTime.setOnClickListener(this)
+        mBinding.toDoTimeValue.text = timeString
+        mBinding.toDoTime.setOnClickListener(this)
     }
 
     private fun updateNotifyView() {
-        mBinding.isEnabled = if (mReminder.id == 0)
+        mBinding.isEnabled = if (mToDo.id == 0)
             false
         else
-            mReminder.isEnabled
+            mToDo.isReminderEnabled
         mBinding.notify.setOnClickListener(this)
     }
 
@@ -273,7 +273,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun updateTipView() {
-        if (mReminder.predefinedReminderInfo.isNotBlank()) {
+        if (mToDo.predefinedToDoInfo.isNotBlank()) {
             mViewModel.browserWithCustomTabs()
             if (mViewModel.getBrowserPackageName() != null) {
                 CustomTabsClient.bindCustomTabsService(
@@ -287,39 +287,39 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 }
             }
 
-            mBinding.tip.text = mReminder.predefinedReminderInfo
-            if (Patterns.WEB_URL.matcher(mReminder.predefinedReminderLink).matches())
+            mBinding.tip.text = mToDo.predefinedToDoInfo
+            if (Patterns.WEB_URL.matcher(mToDo.predefinedToDoLink).matches())
                 mBinding.tipView.setOnClickListener(this)
 
-        } else if (!mReminder.isAutomaticPrayerTime())
+        } else if (!mToDo.isAutomaticPrayerTime())
             mBinding.tipView.visibility = View.GONE
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.reminder_frequency -> {
+            R.id.to_do_frequency -> {
                 if (!isAutomaticPrayerTime(R.string.repeat_cannot_be_changed))
                     showPopup(
-                        resources.getStringArray(R.array.frequency), R.id.reminder_frequency_value,
-                        R.id.reminder_frequency
+                        resources.getStringArray(R.array.frequency), R.id.to_do_frequency_value,
+                        R.id.to_do_frequency
                     )
             }
-            R.id.reminder_category -> {
+            R.id.to_do_category -> {
                 if (!isAutomaticPrayerTime(R.string.category_cannot_be_changed))
                     mViewModel.settingsValue?.categories?.let {
-                        mReminderCategories.clear()
-                        mReminderCategories.addAll(it)
+                        mToDoCategories.clear()
+                        mToDoCategories.addAll(it)
                         val createNewCategory = getString(R.string.create_new_categories)
-                        if (!mReminderCategories.last().matches(createNewCategory.toRegex())) {
-                            mReminderCategories.add(createNewCategory)
+                        if (!mToDoCategories.last().matches(createNewCategory.toRegex())) {
+                            mToDoCategories.add(createNewCategory)
                         }
                         showPopup(
-                            mReminderCategories.toTypedArray(),
-                            R.id.reminder_category_value, R.id.reminder_category
+                            mToDoCategories.toTypedArray(),
+                            R.id.to_do_category_value, R.id.to_do_category
                         )
                     }
             }
-            R.id.reminder_date -> {
+            R.id.to_do_date -> {
                 val datePickerFragment = DatePickerFragment()
                 val bundle = Bundle().apply {
                     putInt(DatePickerFragment.DAY, mDay)
@@ -344,7 +344,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 dialogFragment.setListener(this)
                 dialogFragment.show(requireActivity().supportFragmentManager, "selectDays")
             }
-            R.id.reminder_time -> {
+            R.id.to_do_time -> {
                 if (!isAutomaticPrayerTime(R.string.time_cannot_be_changed)) {
                     val timePickerFragment = TimePickerFragment()
                     timePickerFragment.arguments =
@@ -379,7 +379,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     private fun launchInAppBrowser() {
         if (mViewModel.getBrowserPackageName() == null) {//No supported browser
             val bundle = Bundle().apply {
-                putString("link", mReminder.predefinedReminderLink)
+                putString("link", mToDo.predefinedToDoLink)
             }
             findNavController().navigate(R.id.webviewFragment, bundle)
             return
@@ -390,7 +390,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             requireContext(), InAppBrowserBroadcastReceiver::class.java
         )
 
-        actionIntent.putExtra(TEXTSUMMARY, mReminder.predefinedReminderInfo)
+        actionIntent.putExtra(TEXTSUMMARY, mToDo.predefinedToDoInfo)
 
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(), 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT
@@ -414,16 +414,16 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             Intent.EXTRA_REFERRER,
             Uri.parse("android-app://" + requireContext().packageName)
         )
-        customTabsIntent.launchUrl(requireContext(), Uri.parse(mReminder.predefinedReminderLink))
+        customTabsIntent.launchUrl(requireContext(), Uri.parse(mToDo.predefinedToDoLink))
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.groupId) {
-            R.id.reminder_frequency -> {
-                updateReminderFrequencyView(item.title.toString())
+            R.id.to_do_frequency -> {
+                updateToDoFrequencyView(item.title.toString())
                 true
             }
-            R.id.reminder_category -> {
+            R.id.to_do_category -> {
                 val createNewCategory = getString(R.string.create_new_categories)
                 if (item.title.toString().matches(createNewCategory.toRegex())) {
                     val dialogFragment = AddCategoryDialogFragment()
@@ -432,7 +432,7 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                         "addCategoryDialog"
                     )
                 } else
-                    updateReminderCategoryView(item.title.toString())
+                    updateToDoCategoryView(item.title.toString())
 
                 return true
             }
@@ -474,44 +474,44 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     override fun onDateSelected(day: Int, month: Int, year: Int) {
-        updateReminderDateView(day, month, year)
+        updateToDoDateView(day, month, year)
     }
 
     override fun onTimeSet(timeString: String) {
-        updateReminderTimeView(timeString)
+        updateToDoTimeView(timeString)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.reminder_menu, menu)
+        inflater.inflate(R.menu.to_do_menu, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        if (mReminder.id == 0 || mReminder.isAutomaticPrayerTime()) //New or Automatic prayer time
-            menu.findItem(R.id.delete_reminder).title = getString(R.string.cancel)
+        if (mToDo.id == 0 || mToDo.isAutomaticPrayerTime()) //New or Automatic prayer time
+            menu.findItem(R.id.delete_to_do).title = getString(R.string.cancel)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.delete_reminder -> {
-                if (mReminder.isAutomaticPrayerTime() || mReminder.id == 0) {
+            R.id.delete_to_do -> {
+                if (mToDo.isAutomaticPrayerTime() || mToDo.id == 0) {
                     findNavController().navigateUp()
                 } else
-                    deleteReminder()
+                    deleteToDo()
                 true
             }
-            R.id.save_reminder -> {
-                saveReminder()
+            R.id.save_to_do -> {
+                saveToDo()
                 true
             }
-            R.id.share_reminder -> {
+            R.id.share_to_do -> {
                 val shareIntent = Intent(Intent.ACTION_SEND)
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(
-                    Intent.EXTRA_TEXT, shareReminderText()
+                    Intent.EXTRA_TEXT, shareToDoText()
                 )
                 val chooserIntent = Intent.createChooser(
                     shareIntent,
-                    getString(R.string.share_reminder)
+                    getString(R.string.share_to_do)
                 )
                 requireContext().startActivity(chooserIntent)
                 true
@@ -521,30 +521,30 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
-    private fun shareReminderText(): String {
+    private fun shareToDoText(): String {
 
-        val reminderName = mBinding.reminderNameValue.text.toString()
+        val toDoName = mBinding.toDoNameValue.text.toString()
         val frequencies = resources.getStringArray(R.array.frequency)
-        val frequencyValue = mBinding.reminderFrequencyValue.text
+        val frequencyValue = mBinding.toDoFrequencyValue.text
 
         val date = if (frequencies.indexOf(frequencyValue) == Frequency.OneTime.ordinal)
-            mBinding.reminderDateValue.text
+            mBinding.toDoDateValue.text
         else if (frequencies.indexOf(frequencyValue) == Frequency.Daily.ordinal)
             frequencyValue
         else if (frequencies.indexOf(frequencyValue) == Frequency.Weekly.ordinal)
             mBinding.selectDaysValue.text
         else if (frequencies.indexOf(frequencyValue) == Frequency.Monthly.ordinal)
-            mBinding.reminderDateValue.text
+            mBinding.toDoDateValue.text
         else
             ""
 
-        val time = mBinding.reminderTimeValue.text
-        val category = mBinding.reminderCategoryValue.text
+        val time = mBinding.toDoTimeValue.text
+        val category = mBinding.toDoCategoryValue.text
         val completed = mBinding.markAsCompleteValue.text
 
 
-        return "${getString(R.string.reminder)}: $reminderName\n" +
-                "${getString(R.string.reminder_category)}: $category\n" +
+        return "${getString(R.string.to_do)}: $toDoName\n" +
+                "${getString(R.string.to_do_category)}: $category\n" +
                 "${getString(R.string.date)}: $date\n" +
                 "${getString(R.string.time_label)}: $time\n" +
                 "${getString(R.string.completed)}: $completed\n\n" +
@@ -554,13 +554,13 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     }
 
-    private fun deleteReminder() {
+    private fun deleteToDo() {
         AlertDialog.Builder(requireContext())
-            .setTitle(R.string.delete_reminder_title)
-            .setMessage(R.string.delete_reminder_confirmation)
+            .setTitle(R.string.delete_to_do_title)
+            .setMessage(R.string.delete_to_do_confirmation)
             .setPositiveButton(R.string.yes) { _, _ ->
-                mViewModel.deleteReminder(mReminder)
-                Toast.makeText(requireContext(), R.string.delete_reminder, Toast.LENGTH_LONG).show()
+                mViewModel.deleteToDo(mToDo)
+                Toast.makeText(requireContext(), R.string.delete_to_do, Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
             }
             .setNegativeButton(R.string.no) { _, _ -> }
@@ -568,26 +568,26 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     }
 
-    private fun saveReminder() {
-        val newReminder = createNewReminder() ?: return
+    private fun saveToDo() {
+        val newToDo = createNewToDo() ?: return
 
-        if (mReminder.isAutomaticPrayerTime()) { //Automatic prayer time
-            if (newReminder.reminderInfo != mReminder.reminderInfo ||
-                mReminder.isEnabled != newReminder.isEnabled ||
-                mReminder.offsetInMinutes != newReminder.offsetInMinutes ||
-                mReminder.isComplete != newReminder.isComplete
+        if (mToDo.isAutomaticPrayerTime()) { //Automatic prayer time
+            if (newToDo.additionalInfo != mToDo.additionalInfo ||
+                mToDo.isReminderEnabled != newToDo.isReminderEnabled ||
+                mToDo.offsetInMinutes != newToDo.offsetInMinutes ||
+                mToDo.isComplete != newToDo.isComplete
             ) {
-                mViewModel.updatePrayerTimeDetails(mReminder, newReminder)
+                mViewModel.updatePrayerTimeDetails(mToDo, newToDo)
                 Toast.makeText(
                     requireContext(), R.string.successfully_updated, Toast.LENGTH_LONG
                 )
                     .show()
             }
-        } else if (mReminder != newReminder) {
-            mViewModel.insertReminder(newReminder)
-            if (newReminder.id == 0)
+        } else if (mToDo != newToDo) {
+            mViewModel.insertToDo(newToDo)
+            if (newToDo.id == 0)
                 Toast.makeText(
-                    requireContext(), R.string.successfuly_added_sunnah_reminders, Toast.LENGTH_LONG
+                    requireContext(), R.string.successfuly_added_sunnah_to_dos, Toast.LENGTH_LONG
                 ).show()
             else
                 Toast.makeText(
@@ -597,37 +597,37 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         findNavController().navigateUp()
     }
 
-    private fun createNewReminder(): Reminder? {
+    private fun createNewToDo(): ToDo? {
         val frequency = Frequency.values()[mBinding.selectedFrequency]
         if (frequency == Frequency.Weekly && mCustomScheduleDays.isEmpty()) {
             showSnackbar(R.string.select_atleast_one_day)
             return null
         }
 
-        val reminderName = mBinding.reminderNameValue.text.toString()
-        if (reminderName.isBlank()) {
+        val toDoName = mBinding.toDoNameValue.text.toString()
+        if (toDoName.isBlank()) {
             showSnackbar(R.string.name_cannot_be_empty)
             return null
         }
 
         try {
-            return Reminder(
-                reminderName,
+            return ToDo(
+                toDoName,
                 mBinding.additionalDetails.text.toString(),
                 getTimestampInSeconds(requireContext(), mTimeString),
-                mBinding.reminderCategoryValue.text.toString(),
+                mBinding.toDoCategoryValue.text.toString(),
                 frequency,
-                isReminderEnabled(),
+                isToDoEnabled(),
                 mDay,
                 mMonth,
                 mYear,
-                calculateOffsetForReminder(),
-                mReminder.id,
+                calculateOffsetForToDo(),
+                mToDo.id,
                 mCustomScheduleDays,
                 resources.getStringArray(R.array.mark_as_complete_options)
                     .indexOf(mBinding.markAsCompleteValue.text) == 1,
-                mReminder.predefinedReminderInfo,
-                mReminder.predefinedReminderLink
+                mToDo.predefinedToDoInfo,
+                mToDo.predefinedToDoLink
             )
         } catch (exception: IllegalArgumentException) {
             Log.e("Exception", exception.toString())
@@ -653,14 +653,14 @@ open class ReminderDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
-    protected open fun isReminderEnabled(): Boolean {
+    protected open fun isToDoEnabled(): Boolean {
         if (mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true)
             return false
 
         return mBinding.notifyValue.text.matches(getString(R.string.yes).toRegex())
     }
 
-    protected open fun calculateOffsetForReminder(): Int {
+    protected open fun calculateOffsetForToDo(): Int {
         return try {
             Integer.parseInt(mBinding.prayerOffsetValue.text.toString())
         } catch (error: NumberFormatException) {

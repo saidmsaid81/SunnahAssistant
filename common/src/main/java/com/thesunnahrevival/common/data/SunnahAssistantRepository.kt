@@ -6,8 +6,8 @@ import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.ApiKey
 import com.thesunnahrevival.common.R
-import com.thesunnahrevival.common.data.local.ReminderDao
 import com.thesunnahrevival.common.data.local.SunnahAssistantDatabase
+import com.thesunnahrevival.common.data.local.ToDoDao
 import com.thesunnahrevival.common.data.model.*
 import com.thesunnahrevival.common.data.remote.GeocodingInterface
 import com.thesunnahrevival.common.data.remote.SunnahAssistantApiInterface
@@ -20,8 +20,8 @@ import java.time.LocalDate
 import java.util.*
 
 class SunnahAssistantRepository private constructor(context: Context) {
-    private val mReminderDao: ReminderDao =
-        SunnahAssistantDatabase.getInstance(context).reminderDao()
+    private val mToDoDao: ToDoDao =
+        SunnahAssistantDatabase.getInstance(context).toDoDao()
     private val mGeocodingRestApi: GeocodingInterface
     private val mSunnahAssistantApi: SunnahAssistantApiInterface
     private val prayerNames: Array<String>
@@ -44,35 +44,35 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     }
 
-    suspend fun insertReminder(reminder: Reminder) = mReminderDao.insertReminder(reminder)
+    suspend fun insertToDo(toDo: ToDo) = mToDoDao.insertToDo(toDo)
 
     //TODO use insert reminder
-    suspend fun updateReminder(id: Int, name: String?, info: String?, category: String?) {
+    suspend fun updateToDo(id: Int, name: String?, info: String?, category: String?) {
         if (name != null && info != null && category != null)
-            mReminderDao.updateReminder(id, name, info, category)
+            mToDoDao.updateToDo(id, name, info, category)
     }
 
-    suspend fun deleteReminder(reminder: Reminder) = mReminderDao.deleteReminder(reminder)
+    suspend fun deleteToDO(toDo: ToDo) = mToDoDao.deleteToDo(toDo)
 
-    fun thereRemindersOnDay(
+    fun thereToDosOnDay(
         excludeCategory: String,
         dayOfWeek: String,
         dayOfMonth: Int,
         month: Int,
         year: Int
     ): Boolean {
-        return mReminderDao.thereRemindersOnDay(
+        return mToDoDao.thereToDosOnDay(
             excludeCategory, dayOfWeek, dayOfMonth, month, year
         )
     }
 
-    fun getRemindersOnDay(date: Date, category: String): PagingSource<Int, Reminder> {
+    fun getToDosOnDay(date: Date, category: String): PagingSource<Int, ToDo> {
         CoroutineScope(Dispatchers.IO).launch {
             generatePrayerTimes(date)
         }
 
-        val (day, month, year, dayOfWeek) = getReminderDate(date)
-        return mReminderDao.getRemindersOnDay(
+        val (day, month, year, dayOfWeek) = getToDoDate(date)
+        return mToDoDao.getToDosOnDay(
             dayOfWeek.toString(),
             day,
             month,
@@ -81,17 +81,17 @@ class SunnahAssistantRepository private constructor(context: Context) {
         )
     }
 
-    fun getRemindersOnDayValue(
+    fun getToDosOnDayValue(
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int
-    ): List<Reminder> {
+    ): List<ToDo> {
         generatePrayerTimes(GregorianCalendar(year, month, day).time)
-        return mReminderDao.getRemindersOnDayValue(numberOfTheWeekDay, day, month, year)
+        return mToDoDao.getToDosOnDayValue(numberOfTheWeekDay, day, month, year)
     }
 
-    suspend fun getNextTimeForReminderForDay(
+    suspend fun getNextTimeForToDosForDay(
         offsetFromMidnight: Long,
         numberOfTheWeekDay: String,
         day: Int,
@@ -99,7 +99,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
         year: Int
     ): Long? {
         generatePrayerTimes(GregorianCalendar(year, month, day).time)
-        return mReminderDao.getNextTimeForReminderForDay(
+        return mToDoDao.getNextTimeForToDoForDay(
             offsetFromMidnight,
             numberOfTheWeekDay,
             day,
@@ -108,14 +108,14 @@ class SunnahAssistantRepository private constructor(context: Context) {
         )
     }
 
-    suspend fun getNextScheduledRemindersForDay(
-        timeForReminder: Long,
+    suspend fun getNextScheduledToDosForDay(
+        timeForToDos: Long,
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int
-    ) = mReminderDao.getNextScheduledRemindersForDay(
-        timeForReminder,
+    ) = mToDoDao.getNextScheduledToDosForDay(
+        timeForToDos,
         numberOfTheWeekDay,
         day,
         month,
@@ -123,32 +123,32 @@ class SunnahAssistantRepository private constructor(context: Context) {
     )
 
 
-    suspend fun updatePrayerDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
-        mReminderDao.updatePrayerTimeDetails(
-            newPrayerDetails.reminderInfo,
+    suspend fun updatePrayerDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
+        mToDoDao.updatePrayerTimeDetails(
+            newPrayerDetails.additionalInfo,
             newPrayerDetails.offsetInMinutes,
-            newPrayerDetails.isEnabled,
+            newPrayerDetails.isReminderEnabled,
             newPrayerDetails.isComplete,
             oldPrayerDetails.id
         )
     }
 
     suspend fun deletePrayerTimesData() =
-        mReminderDao.deleteAllPrayerTimes()
+        mToDoDao.deleteAllPrayerTimes()
 
-    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<Reminder> {
+    fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<ToDo> {
         generatePrayerTimes(GregorianCalendar(year, month, day).time)
-        return mReminderDao.getPrayerTimesValue(day, month, year, categoryName)
+        return mToDoDao.getPrayerTimesValue(day, month, year, categoryName)
     }
 
     private fun generatePrayerTimes(date: Date) {
-        val settings = mReminderDao.getAppSettingsValue()
+        val settings = mToDoDao.getAppSettingsValue()
         if (settings != null && settings.isAutomaticPrayerAlertsEnabled && settings.formattedAddress?.isNotBlank() == true) {
-            val (day, month, year) = getReminderDate(date)
-            val therePrayerRemindersOnDay =
-                mReminderDao.therePrayerRemindersOnDay(prayerCategory, "$day$month$year")
-            if (!therePrayerRemindersOnDay && date.after(settings.generatePrayerRemindersAfter)) {
-                val prayerTimeReminders =
+            val (day, month, year) = getToDoDate(date)
+            val therePrayerToDosOnDay =
+                mToDoDao.therePrayerToDosOnDay(prayerCategory, "$day$month$year")
+            if (!therePrayerToDosOnDay && date.after(settings.generatePrayerToDosAfter)) {
+                val prayerTimes =
                     getPrayerRemindersList(
                         day,
                         month,
@@ -163,16 +163,16 @@ class SunnahAssistantRepository private constructor(context: Context) {
                         settings.enablePrayerTimeAlertsFor,
                         settings.prayerTimeOffsetsInMinutes
                     )
-                mReminderDao.insertRemindersList(prayerTimeReminders)
+                mToDoDao.insertToDosList(prayerTimes)
             }
         }
     }
 
     suspend fun updatePrayerReminders(prayerNames: Array<String>, prayerCategory: String) {
-        val settings = mReminderDao.getAppSettingsValue()
+        val settings = mToDoDao.getAppSettingsValue()
         if (settings != null && settings.isAutomaticPrayerAlertsEnabled) {
             val todayDate = LocalDate.now()
-            val upcomingPrayerDatesList = mReminderDao.getUpcomingPrayerDates(
+            val upcomingPrayerDatesList = mToDoDao.getUpcomingPrayerDates(
                 todayDate.dayOfMonth, todayDate.month.ordinal, todayDate.year
             )
 
@@ -192,10 +192,10 @@ class SunnahAssistantRepository private constructor(context: Context) {
                     settings.prayerTimeOffsetsInMinutes
                 )
                 for (prayerReminder in prayerRemindersList) {
-                    mReminderDao.updateGeneratedPrayerTime(
+                    mToDoDao.updateGeneratedPrayerTime(
                         prayerReminder.id,
                         prayerReminder.timeInSeconds,
-                        prayerReminder.isEnabled,
+                        prayerReminder.isReminderEnabled,
                         prayerReminder.offsetInMinutes
                     )
                 }
@@ -206,7 +206,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
     suspend fun updatePrayerNames(oldPrayerNames: Array<String>, newPrayerNames: Array<String>) {
         if (oldPrayerNames.size == newPrayerNames.size) {
             oldPrayerNames.forEachIndexed { index, oldPrayerName ->
-                mReminderDao.updatePrayerNames(oldPrayerName, newPrayerNames[index])
+                mToDoDao.updatePrayerNames(oldPrayerName, newPrayerNames[index])
             }
         }
     }
@@ -224,7 +224,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
         prayerCategory: String,
         enablePrayerTimeAlertsFor: BooleanArray,
         offsetInMinutesForPrayer: IntArray
-    ): ArrayList<Reminder> {
+    ): ArrayList<ToDo> {
 
         val prayerTimeCalculator = PrayerTimeCalculator(
             latitude.toDouble(),
@@ -235,7 +235,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
             prayerNames,
             prayerCategory
         )
-        return prayerTimeCalculator.getPrayerTimeReminders(
+        return prayerTimeCalculator.getPrayerTimeToDos(
             day,
             month,
             year,
@@ -244,18 +244,18 @@ class SunnahAssistantRepository private constructor(context: Context) {
         )
     }
 
-    private fun getReminderDate(date: Date): ReminderDate {
+    private fun getToDoDate(date: Date): ToDoDate {
         val calendar = GregorianCalendar()
         calendar.time = date
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH)
         val year = calendar.get(Calendar.YEAR)
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK).toString()
-        return ReminderDate(day, month, year, dayOfWeek)
+        return ToDoDate(day, month, year, dayOfWeek)
     }
 
     suspend fun updateCategory(deletedCategory: String, newCategory: String) {
-        mReminderDao.updateCategory(deletedCategory, newCategory)
+        mToDoDao.updateCategory(deletedCategory, newCategory)
     }
 
     suspend fun updateDeletedCategories(
@@ -263,7 +263,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
         uncategorized: String
     ) {
         for (deletedCategory in deletedCategories) {
-            mReminderDao.updateCategory(
+            mToDoDao.updateCategory(
                 deletedCategory,
                 uncategorized
             )
@@ -271,19 +271,19 @@ class SunnahAssistantRepository private constructor(context: Context) {
     }
 
 
-    suspend fun updateAppSettings(settings: AppSettings) = mReminderDao.updateAppSettings(settings)
+    suspend fun updateAppSettings(settings: AppSettings) = mToDoDao.updateAppSettings(settings)
 
-    fun getAppSettings() = mReminderDao.getAppSettings()
+    fun getAppSettings() = mToDoDao.getAppSettings()
 
     suspend fun getAppSettingsValue(): AppSettings? {
-        return mReminderDao.getAppSettingsValue()
+        return mToDoDao.getAppSettingsValue()
     }
 
     suspend fun updateWidgetSettings(
         isShowHijriDateWidget: Boolean,
-        isDisplayNextReminder: Boolean
+        isDisplayNextToDo: Boolean
     ) =
-        mReminderDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextReminder)
+        mToDoDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextToDo)
 
     suspend fun getGeocodingData(address: String, locale: String): GeocodingData? {
         return mGeocodingRestApi.getGeocodingData(address, ApiKey.API_KEY, locale)

@@ -16,8 +16,8 @@ import com.thesunnahrevival.common.data.SunnahAssistantRepository.Companion.getI
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.GeocodingData
-import com.thesunnahrevival.common.data.model.Reminder
-import com.thesunnahrevival.common.services.NextReminderService
+import com.thesunnahrevival.common.data.model.ToDo
+import com.thesunnahrevival.common.services.NextToDoService
 import com.thesunnahrevival.common.utilities.getPackageNameToUse
 import com.thesunnahrevival.common.utilities.sunnahReminders
 import com.thesunnahrevival.common.utilities.supportedLocales
@@ -31,8 +31,8 @@ import java.util.*
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
 
-    var selectedReminder: Reminder = Reminder(
-        reminderName = "", frequency = Frequency.OneTime,
+    var selectedToDo: ToDo = ToDo(
+        name = "", frequency = Frequency.OneTime,
         category = application.resources.getStringArray(R.array.categories)[0], //Uncategorized
         day = LocalDate.now().dayOfMonth,
         month = LocalDate.now().month.ordinal,
@@ -47,7 +47,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
     private var browserPackageNameToUse: String? = null
 
-    fun setReminderParameters(date: Long? = null, category: String? = null) {
+    fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
             mutableReminderParameters.value?.first ?: System.currentTimeMillis()
         val currentCategoryParameter = mutableReminderParameters.value?.second ?: ""
@@ -55,11 +55,11 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             Pair(date ?: currentDateParameter, category ?: currentCategoryParameter)
     }
 
-    fun insertReminder(reminder: Reminder, updateCalendar: Boolean = true) {
+    fun insertToDo(toDo: ToDo, updateCalendar: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = mRepository.insertReminder(reminder)
-            reminder.id = id.toInt()
-            selectedReminder = reminder
+            val id = mRepository.insertToDo(toDo)
+            toDo.id = id.toInt()
+            selectedToDo = toDo
             withContext(Dispatchers.Main) {
                 startService()
                 if (updateCalendar)
@@ -68,9 +68,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun deleteReminder(reminder: Reminder) {
+    fun deleteToDo(toDo: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.deleteReminder(reminder)
+            mRepository.deleteToDO(toDo)
             withContext(Dispatchers.Main) {
                 startService()
                 triggerCalendarUpdate.value = true
@@ -78,23 +78,23 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun thereRemindersOnDay(dayOfWeek: String, dayOfMonth: Int, month: Int, year: Int): Boolean {
+    fun thereToDosOnDay(dayOfWeek: String, dayOfMonth: Int, month: Int, year: Int): Boolean {
         val excludePrayer = getContext().getString(R.string.prayer)
-        return mRepository.thereRemindersOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
+        return mRepository.thereToDosOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
     }
 
-    fun getReminders(): LiveData<PagingData<Reminder>> {
+    fun getToDos(): LiveData<PagingData<ToDo>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
             Pager(
                 PagingConfig(15),
                 pagingSourceFactory = {
-                    mRepository.getRemindersOnDay(Date(dateOfReminders), category)
+                    mRepository.getToDosOnDay(Date(dateOfReminders), category)
                 }
             ).liveData
         }
     }
 
-    fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
+    fun updatePrayerTimeDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)
             withContext(Dispatchers.Main) {
@@ -196,7 +196,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         getApplication<Application>().startService(
             Intent(
                 getApplication(),
-                NextReminderService::class.java
+                NextToDoService::class.java
             )
         )
     }
@@ -238,10 +238,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     mRepository.updateCategory(oldCategoryName, newCategoryNames[index])
                 }
                 for (reminder in reminders) {
-                    mRepository.updateReminder(
+                    mRepository.updateToDo(
                         reminder.id,
-                        reminder.reminderName,
-                        reminder.reminderInfo,
+                        reminder.name,
+                        reminder.additionalInfo,
                         reminder.category
                     )
                 }

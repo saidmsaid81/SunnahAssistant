@@ -12,10 +12,10 @@ import android.os.Build
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.Frequency
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.widgets.HijriDateWidget
 import com.thesunnahrevival.common.widgets.PrayerTimesWidget
-import com.thesunnahrevival.common.widgets.TodayRemindersWidget
+import com.thesunnahrevival.common.widgets.TodayToDosWidget
 import java.util.*
 
 val supportedLocales = arrayOf("en", "ar")
@@ -86,11 +86,11 @@ fun openDeveloperPage(context: Context) {
     }
 }
 
-fun sunnahReminders(context: Context): ArrayList<Reminder> {
+fun sunnahReminders(context: Context): ArrayList<ToDo> {
     val sunnah = context.resources.getStringArray(R.array.categories)[1]
-    val listOfReminders = ArrayList<Reminder>()
+    val listOfToDos = ArrayList<ToDo>()
 
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             name = context.getString(R.string.dhuha_prayer),
             frequency = Frequency.Daily,
@@ -101,7 +101,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             id = -1002,
             name = context.getString(R.string.morning_adhkar),
@@ -110,7 +110,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             id = -1003,
             name = context.getString(R.string.evening_adhkar),
@@ -119,7 +119,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             id = -1004,
             name = context.getString(R.string.tahajjud),
@@ -130,7 +130,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             id = -1005,
             name = context.getString(R.string.reading_the_quran),
@@ -141,7 +141,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
 
     var listOfDays = TreeSet<Int>()
     listOfDays.add(Calendar.FRIDAY)
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             id = -1006, name = context.getString(R.string.reading_suratul_kahf), category = sunnah,
             frequency = Frequency.Weekly, customScheduleList = listOfDays,
@@ -153,7 +153,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
     listOfDays = TreeSet<Int>()
     listOfDays.add(Calendar.SUNDAY)
     listOfDays.add(Calendar.WEDNESDAY)
-    listOfReminders.add(
+    listOfToDos.add(
         createReminder(
             id = -1007,
             name = context.getString(R.string.fasting_on_monday_and_thursday),
@@ -165,7 +165,7 @@ fun sunnahReminders(context: Context): ArrayList<Reminder> {
         )
     )
 
-    return listOfReminders
+    return listOfToDos
 }
 
 fun createReminder(
@@ -176,17 +176,17 @@ fun createReminder(
     id: Int = 0,
     predefinedReminderInfo: String = "",
     predefinedReminderLink: String = ""
-): Reminder {
+): ToDo {
     val day = if (frequency == Frequency.Daily) 0 else -1
-    return Reminder(
-        reminderName = name, predefinedReminderInfo = predefinedReminderInfo,
-        predefinedReminderLink = predefinedReminderLink,
-        category = category, frequency = frequency, isEnabled = false,
+    return ToDo(
+        name = name, predefinedToDoInfo = predefinedReminderInfo,
+        predefinedToDoLink = predefinedReminderLink,
+        category = category, frequency = frequency, isReminderEnabled = false,
         id = id, customScheduleDays = customScheduleList, day = day, month = 12, year = 0
     )
 }
 
-fun demoReminder(name: String, category: String): Reminder {
+fun demoToDo(name: String, category: String): ToDo {
     return createReminder(name, Frequency.Daily, category)
 }
 
@@ -223,7 +223,7 @@ private fun updateTodayRemindersWidgets(context: Context) {
     // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
     // since it seems the onUpdate() is only fired on that:
     val ids = AppWidgetManager.getInstance(context)
-        .getAppWidgetIds(ComponentName(context, TodayRemindersWidget::class.java))
+        .getAppWidgetIds(ComponentName(context, TodayToDosWidget::class.java))
     appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widgetListView)
 }
 

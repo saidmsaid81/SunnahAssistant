@@ -9,11 +9,11 @@ import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
 import com.thesunnahrevival.common.R
-import com.thesunnahrevival.common.services.NextReminderService
+import com.thesunnahrevival.common.services.NextToDoService
 import com.thesunnahrevival.common.utilities.ReminderManager
 import com.thesunnahrevival.common.utilities.createNotification
 
-class ReminderBroadcastReceiver : BroadcastReceiver() {
+class ToDoBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
         if (!(action != null && action.matches("android.intent.action.BOOT_COMPLETED".toRegex()))) {
@@ -49,7 +49,7 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
             }
         }
 
-        val service = Intent(context, NextReminderService::class.java)
+        val service = Intent(context, NextToDoService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             context.startForegroundService(service)
         else

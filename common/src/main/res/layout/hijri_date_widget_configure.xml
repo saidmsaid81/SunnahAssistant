@@ -43,11 +43,11 @@
             />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/display_next_reminder_switch"
+            android:id="@+id/display_next_to_do_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/default_dimen"
-            android:text="@string/display_the_next_reminder"
+            android:text="@string/display_the_next_to_do"
             android:checked="true"
             android:button="@null"
             />

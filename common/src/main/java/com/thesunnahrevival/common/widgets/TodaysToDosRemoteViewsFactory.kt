@@ -7,17 +7,17 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.SunnahAssistantRepository
-import com.thesunnahrevival.common.data.model.Reminder
+import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.utilities.*
 import java.lang.Integer.parseInt
 
 
-class TodaysRemindersRemoteViewsFactory(
+class TodaysToDosRemoteViewsFactory(
     private val context: Context,
     private val intent: Intent?
 ) : RemoteViewsService.RemoteViewsFactory {
 
-    private lateinit var mTodayReminders: List<Reminder>
+    private lateinit var mTodayToDos: List<ToDo>
 
     override fun onCreate() {
 
@@ -34,7 +34,7 @@ class TodaysRemindersRemoteViewsFactory(
     override fun onDataSetChanged() {
         val repository = SunnahAssistantRepository.getInstance(context.applicationContext)
 
-        mTodayReminders = repository.getRemindersOnDayValue(
+        mTodayToDos = repository.getToDosOnDayValue(
             dayOfTheWeek.toString(),
             getDayDate(System.currentTimeMillis()),
             getMonthNumber(System.currentTimeMillis()),
@@ -48,18 +48,18 @@ class TodaysRemindersRemoteViewsFactory(
     }
 
     override fun getViewAt(position: Int): RemoteViews {
-        val remoteViews = RemoteViews(context.packageName, R.layout.widget_reminder_list_item)
+        val remoteViews = RemoteViews(context.packageName, R.layout.widget_to_do_list_item)
         remoteViews.setTextViewText(
-            R.id.reminder_name,
+            R.id.to_do_name,
             "${
                 formatTimeInMilliseconds(
                     context,
-                    mTodayReminders[position].timeInMilliseconds
+                    mTodayToDos[position].timeInMilliseconds
                 )
-            }: ${mTodayReminders[position].reminderName}"
+            }: ${mTodayToDos[position].name}"
         )
         remoteViews.setTextColor(
-            R.id.reminder_name,
+            R.id.to_do_name,
             intent?.getIntExtra(TEXT_COLOR, Color.BLACK) ?: Color.BLACK
         )
         val fillInIntent = Intent()
@@ -68,7 +68,7 @@ class TodaysRemindersRemoteViewsFactory(
     }
 
     override fun getCount(): Int {
-        return mTodayReminders.size
+        return mTodayToDos.size
     }
 
     override fun getViewTypeCount(): Int {

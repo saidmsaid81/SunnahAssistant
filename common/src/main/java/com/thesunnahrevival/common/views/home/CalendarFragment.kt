@@ -51,7 +51,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             val calendar = Calendar.getInstance(Locale.US)
             calendar.set(day.date.year, day.date.month.ordinal, day.day)
 
-            val thereRemindersOnDay = mViewModel.thereRemindersOnDay(
+            val thereToDosOnDay = mViewModel.thereToDosOnDay(
                 calendar.get(Calendar.DAY_OF_WEEK).toString(),
                 day.day,
                 day.date.month.ordinal,
@@ -59,7 +59,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             )
 
             withContext(Dispatchers.Main) {
-                if (thereRemindersOnDay)
+                if (thereToDosOnDay)
                     container.eventDot.visibility = VISIBLE
                 else
                     container.eventDot.visibility = INVISIBLE
@@ -68,7 +68,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     }
 
     override fun onDateSelected(day: CalendarDay) {
-        mViewModel.setReminderParameters(date = day.date.toEpochDay() * 86400000)
+        mViewModel.setToDoParameters(date = day.date.toEpochDay() * 86400000)
 
         val gregorianCalendar = GregorianCalendar(
             day.date.year,

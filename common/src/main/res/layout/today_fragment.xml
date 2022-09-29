@@ -7,11 +7,12 @@
 
         <import type="android.view.View" />
 
-        <import type="com.thesunnahrevival.common.data.model.Reminder" />
+        <import type="com.thesunnahrevival.common.data.model.ToDo" />
 
-        <variable
-            name="reminderInteractionListener"
-            type="com.thesunnahrevival.common.views.listeners.ReminderItemInteractionListener" />
+      <variable
+          name="toDoInteractionListener"
+          type="com.thesunnahrevival.common.views.listeners.ToDoItemInteractionListener"
+          />
 
     </data>
 
@@ -106,14 +107,15 @@
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reminder_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/reminder_card_view" />
+          <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/to_do_list"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="8dp"
+              android:visibility="visible"
+              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+              tools:listitem="@layout/to_do_card_view"
+              />
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -131,16 +133,17 @@
                 android:layout_width="match_parent" />
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/default_dimen"
-            android:onClick="@{(view)-> reminderInteractionListener.launchReminderDetailsFragment(view,(Reminder) null)}"
-            app:backgroundTint="@color/fabColor"
-            android:contentDescription="@string/add_new_reminder"
-            app:srcCompat="@drawable/ic_add_reminder" />
+      <com.google.android.material.floatingactionbutton.FloatingActionButton
+          android:id="@+id/fab"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|end"
+          android:layout_margin="@dimen/default_dimen"
+          android:onClick="@{(view)-> toDoInteractionListener.launchToDoDetailsFragment(view,(ToDo) null)}"
+          app:backgroundTint="@color/fabColor"
+          android:contentDescription="@string/add_new_to_do"
+          app:srcCompat="@drawable/ic_add_to_do"
+          />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
 
