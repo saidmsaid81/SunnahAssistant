@@ -73,11 +73,14 @@
                 android:id="@+id/hijri_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/default_dimen"
+                android:paddingStart="@dimen/default_dimen"
+                android:paddingEnd="@dimen/default_dimen"
+                android:paddingTop="@dimen/default_dimen"
                 android:visibility="gone"
                 tools:visibility="visible"
                 tools:text="Today's Date: Monday 12 September 2022/ 16 Safar, 1444"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                />
 
             <TextView
                 android:id="@+id/selected_date"
@@ -94,6 +97,7 @@
                 android:paddingStart="@dimen/default_dimen"
                 android:paddingEnd="@dimen/default_dimen"
                 android:paddingBottom="8dp"
+                android:paddingTop="@dimen/default_dimen"
                 android:scrollbars="none">
 
                 <com.google.android.material.chip.ChipGroup

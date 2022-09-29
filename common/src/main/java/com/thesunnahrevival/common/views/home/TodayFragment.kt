@@ -175,7 +175,8 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             mBinding.hijriDate.visibility = View.VISIBLE
-        }
+        } else
+            mBinding.hijriDate.visibility = View.GONE
     }
 
     private fun animateAddToDoButton() {
