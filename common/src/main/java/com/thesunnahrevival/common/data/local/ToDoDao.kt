@@ -1,5 +1,6 @@
 package com.thesunnahrevival.common.data.local
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.thesunnahrevival.common.data.model.AppSettings
@@ -33,6 +34,9 @@ interface ToDoDao {
         month: Int,
         year: Int
     ): Boolean
+
+    @Query("SELECT * FROM reminders_table WHERE id = :id")
+    fun getToDo(id: Int): LiveData<ToDo?>
 
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') ORDER BY isComplete, timeInSeconds")
     fun getToDosOnDay(

@@ -30,13 +30,15 @@ import java.util.*
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
 
-    var selectedToDo: ToDo = ToDo(
-        name = "", frequency = Frequency.OneTime,
-        category = application.resources.getStringArray(R.array.categories)[0], //Uncategorized
-        day = LocalDate.now().dayOfMonth,
-        month = LocalDate.now().month.ordinal,
-        year = LocalDate.now().year
-    )
+    var selectedToDo =
+        ToDo(
+            name = "", frequency = Frequency.OneTime,
+            category = application.resources.getStringArray(R.array.categories)[0], //Uncategorized
+            day = LocalDate.now().dayOfMonth,
+            month = LocalDate.now().month.ordinal,
+            year = LocalDate.now().year
+        )
+
 
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
@@ -55,9 +57,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun insertToDo(toDo: ToDo, updateCalendar: Boolean = true) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = mRepository.insertToDo(toDo)
-            toDo.id = id.toInt()
-            selectedToDo = toDo
+            mRepository.insertToDo(toDo)
             withContext(Dispatchers.Main) {
                 startService()
                 if (updateCalendar)
@@ -80,6 +80,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val excludePrayer = getContext().getString(R.string.prayer)
         return mRepository.thereToDosOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
     }
+
+    fun getToDo(id: Int) = mRepository.getToDo(id)
 
     fun getToDos(): LiveData<PagingData<ToDo>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
