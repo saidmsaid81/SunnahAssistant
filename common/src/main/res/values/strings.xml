@@ -253,6 +253,7 @@
   <string name="custom_reminder_offset">Custom Reminder Offset</string>
   <string name="minutes_label">Minutes</string>
   <string name="hours">Hour(s)</string>
+  <string name="automatic_prayer_alerts_disabled">Automatic Prayer Alerts have been disabled</string>
 
 
   <string-array name="categories">

@@ -80,30 +80,51 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.offsetInMinutes = mToDo.offsetInMinutes
         mBinding.lifecycleOwner = viewLifecycleOwner
 
-        if (mToDo.isAutomaticPrayerTime()) {
-            mBinding.isAutomaticPrayerTime = true
-
-            val timeInMillis = GregorianCalendar.getInstance()
-                .apply { set(mToDo.year, mToDo.month, mToDo.day) }
-                .timeInMillis
-
-            val formattedDate = SimpleDateFormat("EEEE d MMMM, yyyy", getLocale())
-                .format(Date(timeInMillis))
-
-            mBinding.tip.text = getString(
-                R.string.automatic_prayer_time_info,
-                mToDo.name,
-                formattedDate
-            )
-            mBinding.tip.setOnClickListener {
-                findNavController().navigate(R.id.prayerTimeSettingsFragment)
-            }
-        } else
-            mBinding.isAutomaticPrayerTime = false
-
         updateView()
+
         if (mToDo.predefinedToDoInfo.isNotBlank()) {
             inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
+        }
+
+        if (mToDo.isAutomaticPrayerTime()) {
+            automaticPrayerTimeView()
+        } else
+            mBinding.isAutomaticPrayerTime = false
+    }
+
+    private fun automaticPrayerTimeView() {
+        mBinding.isAutomaticPrayerTime = true
+
+        val timeInMillis = GregorianCalendar.getInstance()
+            .apply { set(mToDo.year, mToDo.month, mToDo.day) }
+            .timeInMillis
+
+        val formattedDate = SimpleDateFormat("EEEE d MMMM, yyyy", getLocale())
+            .format(Date(timeInMillis))
+
+        mBinding.tip.text = getString(
+            R.string.automatic_prayer_time_info,
+            mToDo.name,
+            formattedDate
+        )
+        mBinding.tip.setOnClickListener {
+            findNavController().navigate(R.id.prayerTimeSettingsFragment)
+        }
+        mViewModel.getToDo(mViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
+            if (it != null) {
+                val timeString = formatTimeInMilliseconds(requireContext(), it.timeInMilliseconds)
+                updateToDoTimeView(timeString)
+                updateNotifyView(it)
+                mBinding.offsetInMinutes = it.offsetInMinutes
+            } else {
+                findNavController().navigate(R.id.todayFragment)
+                Toast.makeText(
+                    requireContext(),
+                    R.string.automatic_prayer_alerts_disabled,
+                    Toast.LENGTH_LONG
+                )
+                    .show()
+            }
         }
     }
 
@@ -242,11 +263,11 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.toDoTime.setOnClickListener(this)
     }
 
-    private fun updateNotifyView() {
-        mBinding.isEnabled = if (mToDo.id == 0)
+    private fun updateNotifyView(toDo: ToDo = mToDo) {
+        mBinding.isEnabled = if (toDo.id == 0)
             false
         else
-            mToDo.isReminderEnabled
+            toDo.isReminderEnabled
         mBinding.notify.setOnClickListener(this)
     }
 
