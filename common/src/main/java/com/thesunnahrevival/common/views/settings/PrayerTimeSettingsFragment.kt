@@ -68,104 +68,95 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             }
         }
 
+        setOnClickListeners(binding)
+        return binding.root
+    }
+
+    private fun setOnClickListeners(binding: PrayerTimeSettingsBinding) {
         yesNoOptions[0] = getString(R.string.yes)
         yesNoOptions[1] = getString(R.string.no)
-        binding.locationDetails.setOnClickListener(this)
-        binding.calculationDetails.setOnClickListener(this)
-        binding.asrCalculationDetails.setOnClickListener(this)
-        binding.higherLatitudeDetails.setOnClickListener(this)
-        binding.doNotDisturb.setOnClickListener(this)
-        binding.fajrEnableAlerts.setOnClickListener(this)
-        binding.dhuhrEnableAlerts.setOnClickListener(this)
-        binding.maghribEnableAlerts.setOnClickListener(this)
-        binding.asrEnableAlerts.setOnClickListener(this)
-        binding.maghribEnableAlerts.setOnClickListener(this)
-        binding.ishaEnableAlerts.setOnClickListener(this)
+
+        binding.locationDetails.setOnClickListener {
+            val dialogFragment = EnterLocationDialogFragment()
+            dialogFragment.show(requireActivity().supportFragmentManager, "dialog")
+        }
+        binding.calculationDetails.setOnClickListener {
+            showPopup(
+                resources.getStringArray(R.array.calculation_methods),
+                R.id.calculation_method, it.id
+            )
+        }
+        binding.asrCalculationDetails.setOnClickListener {
+            showPopup(
+                resources.getStringArray(R.array.asr_juristic_method),
+                R.id.asr_calculation_method, it.id
+            )
+        }
+        binding.higherLatitudeDetails.setOnClickListener {
+            showPopup(
+                resources.getStringArray(R.array.latitude_options),
+                R.id.higher_latitude_method, it.id
+            )
+        }
+        binding.doNotDisturb.setOnClickListener {
+            if (isNotificationPolicyGranted())
+                showPopup(
+                    resources.getStringArray(R.array.do_not_disturb_minutes),
+                    R.id.do_not_disturb_minutes, R.id.do_not_disturb
+                )
+        }
+        binding.fajrEnableAlerts.setOnClickListener {
+            showPopup(yesNoOptions, R.id.fajr_enable_alerts_value, it.id)
+        }
+        binding.dhuhrEnableAlerts.setOnClickListener {
+            showPopup(yesNoOptions, R.id.dhuhr_enable_alerts_value, it.id)
+        }
+        binding.asrEnableAlerts.setOnClickListener {
+            showPopup(yesNoOptions, R.id.asr_enable_alerts_value, it.id)
+        }
+        binding.maghribEnableAlerts.setOnClickListener {
+            showPopup(yesNoOptions, R.id.maghrib_enable_alerts_value, it.id)
+        }
+        binding.ishaEnableAlerts.setOnClickListener {
+            showPopup(yesNoOptions, R.id.isha_enable_alerts_value, it.id)
+        }
+
         binding.fajrOffsetSettings.setOnClickListener(this)
         binding.dhuhrOffsetSettings.setOnClickListener(this)
         binding.asrOffsetSettings.setOnClickListener(this)
         binding.maghribOffsetSettings.setOnClickListener(this)
         binding.ishaOffsetSettings.setOnClickListener(this)
-        return binding.root
     }
 
-    override fun onClick(v: View?) {
-        val prayerOffsetViews = arrayOf(
-            R.id.fajr_offset_settings,
-            R.id.dhuhr_offset_settings,
-            R.id.asr_offset_settings,
-            R.id.maghrib_offset_settings,
-            R.id.isha_offset_settings
-        )
-        when (v?.id) {
-            R.id.location_details -> {
-                val dialogFragment = EnterLocationDialogFragment()
-                dialogFragment.show(requireActivity().supportFragmentManager, "dialog")
-            }
-            R.id.calculation_details ->
-                showPopup(
-                    resources.getStringArray(R.array.calculation_methods),
-                    R.id.calculation_method,
-                    R.id.calculation_details
-                )
-            R.id.asr_calculation_details ->
-                showPopup(
-                    resources.getStringArray(R.array.asr_juristic_method),
-                    R.id.asr_calculation_method, R.id.asr_calculation_details
-                )
-            R.id.higher_latitude_details ->
-                showPopup(
-                    resources.getStringArray(R.array.latitude_options),
-                    R.id.higher_latitude_method, R.id.higher_latitude_details
-                )
-            R.id.do_not_disturb -> {
-                if (isNotificationPolicyGranted())
-                    showPopup(
-                        resources.getStringArray(R.array.do_not_disturb_minutes),
-                        R.id.do_not_disturb_minutes, R.id.do_not_disturb
+    override fun onClick(view: View?) {
+        if (view != null) {
+            val prayerOffsetViews = arrayOf(
+                R.id.fajr_offset_settings,
+                R.id.dhuhr_offset_settings,
+                R.id.asr_offset_settings,
+                R.id.maghrib_offset_settings,
+                R.id.isha_offset_settings
+            )
+            val prayerOffsetIndex = prayerOffsetViews.indexOf(view.id)
+
+            when {
+                prayerOffsetIndex != -1 -> {
+                    val enterOffsetFragment = EnterOffsetFragment()
+                    enterOffsetFragment.setListener(this, prayerOffsetIndex)
+                    enterOffsetFragment.arguments = Bundle().apply {
+                        putInt(
+                            CURRENT_VALUE,
+                            mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
+                                prayerOffsetIndex
+                            ) ?: 0
+                        )
+                    }
+                    enterOffsetFragment.show(
+                        requireActivity().supportFragmentManager,
+                        "$prayerOffsetIndex"
                     )
+                }
             }
-            R.id.fajr_enable_alerts ->
-                showPopup(
-                    yesNoOptions,
-                    R.id.fajr_enable_alerts_value, R.id.fajr_enable_alerts
-                )
-            R.id.dhuhr_enable_alerts ->
-                showPopup(
-                    yesNoOptions,
-                    R.id.dhuhr_enable_alerts_value, R.id.dhuhr_enable_alerts
-                )
-            R.id.asr_enable_alerts ->
-                showPopup(
-                    yesNoOptions,
-                    R.id.asr_enable_alerts_value, R.id.asr_enable_alerts
-                )
-            R.id.maghrib_enable_alerts ->
-                showPopup(
-                    yesNoOptions,
-                    R.id.maghrib_enable_alerts_value, R.id.maghrib_enable_alerts
-                )
-            R.id.isha_enable_alerts ->
-                showPopup(
-                    yesNoOptions,
-                    R.id.isha_enable_alerts_value, R.id.isha_enable_alerts
-                )
-        }
-
-        val prayerOffsetIndex = prayerOffsetViews.indexOf(v?.id)
-
-        if (prayerOffsetIndex != -1) {
-            val enterOffsetFragment = EnterOffsetFragment()
-            enterOffsetFragment.setListener(this, prayerOffsetIndex)
-            enterOffsetFragment.arguments = Bundle().apply {
-                putInt(
-                    CURRENT_VALUE,
-                    mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
-                        prayerOffsetIndex
-                    ) ?: 0
-                )
-            }
-            enterOffsetFragment.show(requireActivity().supportFragmentManager, "$prayerOffsetIndex")
         }
     }
 
