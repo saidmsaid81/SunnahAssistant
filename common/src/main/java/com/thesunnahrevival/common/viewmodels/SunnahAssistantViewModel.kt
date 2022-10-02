@@ -51,6 +51,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 )
             )
         }
+    val categoryToDisplay: String
+        get() {
+            return mutableReminderParameters.value?.second ?: ""
+        }
 
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
 

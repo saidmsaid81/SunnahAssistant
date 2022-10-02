@@ -30,7 +30,6 @@ import com.thesunnahrevival.common.views.SwipeGesturesCallback
 import com.thesunnahrevival.common.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.common.views.listeners.ToDoItemInteractionListener
 import com.thesunnahrevival.common.views.showOnBoardingTutorial
-import java.time.LocalDate
 import java.util.*
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
@@ -39,7 +38,6 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     private lateinit var incompleteToDoRecyclerAdapter: ToDoListAdapter
     private lateinit var completeToDoRecyclerAdapter: ToDoListAdapter
     private var fabAnimator: ObjectAnimator? = null
-    private var categoryToDisplay = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,6 +81,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                             }
                         }
                     }
+                    displayHijriDate()
                 }
             }
         }
@@ -93,7 +92,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         val categories = mAppSettings?.categories
         if (categories != null) {
             val displayAllCategoriesChip = createCategoryChip(getString(R.string.display_all))
-            displayAllCategoriesChip.isChecked = true
+            displayAllCategoriesChip.isChecked = mViewModel.categoryToDisplay.isBlank()
             mBinding.categoryChips.addView(displayAllCategoriesChip)
 
             val prayerCategory = resources.getStringArray(R.array.categories)[2]
@@ -112,6 +111,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     private fun createCategoryChip(category: String): Chip {
         val categoryChip = Chip(requireContext())
         categoryChip.isCheckable = true
+        categoryChip.isChecked = mViewModel.categoryToDisplay.matches(category.toRegex())
         categoryChip.text = category
         categoryChip.checkedIcon = null
         categoryChip.chipBackgroundColor =
@@ -125,12 +125,13 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 R.color.text_color_chip_state_list
             )
         )
-        categoryChip.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
-            if (isChecked) {
-                if (category.matches(getString(R.string.display_all).toRegex()))
-                    this.categoryToDisplay = ""
-                else
-                    this.categoryToDisplay = category
+        categoryChip.setOnCheckedChangeListener { button: CompoundButton, isChecked: Boolean ->
+            if (button.isPressed && isChecked) {
+                val categoryToDisplay =
+                    if (category.matches(getString(R.string.display_all).toRegex()))
+                        ""
+                    else
+                        category
                 mViewModel.setToDoParameters(category = categoryToDisplay)
             }
         }
@@ -274,16 +275,26 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     override fun launchToDoDetailsFragment(v: View, toDo: ToDo?) {
-        mViewModel.selectedToDo = toDo
-            ?: ToDo(
-                name = "", frequency = Frequency.OneTime,
-                category = resources.getStringArray(R.array.categories)[0], //Uncategorized
-                day = LocalDate.now().dayOfMonth,
-                month = LocalDate.now().month.ordinal,
-                year = LocalDate.now().year
-            )
+        val categoriesTreeSet = mAppSettings?.categories
+        val uncategorized = resources.getStringArray(R.array.categories).getOrNull(0)
+        val category = if (mViewModel.categoryToDisplay.isBlank())
+            categoriesTreeSet?.find { it == uncategorized }
+        else {
+            categoriesTreeSet?.find { it == mViewModel.categoryToDisplay } ?: uncategorized
+        }
+        if (category != null) {
+            mViewModel.selectedToDo = toDo
+                ?: ToDo(
+                    name = "", frequency = Frequency.OneTime,
+                    category = category,
+                    day = mViewModel.selectedToDoDate.dayOfMonth,
+                    month = mViewModel.selectedToDoDate.month.ordinal,
+                    year = mViewModel.selectedToDoDate.year
+                )
 
-        findNavController().navigate(R.id.toDoDetailsFragment)
+            findNavController().navigate(R.id.toDoDetailsFragment)
+        }
+
     }
 
     override fun onResume() {
