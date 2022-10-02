@@ -14,7 +14,7 @@ import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.databinding.ToDoCardViewBinding
 import com.thesunnahrevival.common.views.listeners.ToDoItemInteractionListener
 
-class ToDoListAdapter(val context: Context) :
+class ToDoListAdapter(val context: Context, val isCompletedToDos: Boolean = false) :
     PagingDataAdapter<ToDo, ToDoListAdapter.ViewHolder>(ToDo_COMPARATOR) {
     private var mListener: ToDoItemInteractionListener? = null
     private lateinit var mLayoutInflater: LayoutInflater
@@ -31,6 +31,10 @@ class ToDoListAdapter(val context: Context) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val currentToDo = getItem(position)
         currentToDo?.let { viewHolder.bind(it) }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.to_do_card_view
     }
 
     fun setOnItemInteractionListener(listener: ToDoItemInteractionListener?) {
@@ -52,7 +56,8 @@ class ToDoListAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(toDo: ToDo) {
             binding.toDo = toDo
-            if (toDo.isComplete)
+            binding.isComplete = isCompletedToDos
+            if (isCompletedToDos)
                 binding.toDoTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else
                 binding.toDoTitle.paintFlags = 0

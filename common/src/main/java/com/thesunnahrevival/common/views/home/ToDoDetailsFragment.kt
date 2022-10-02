@@ -61,7 +61,6 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             else
                 R.string.edit_to_do
         )
-
         mCustomScheduleDays.clear()
         mToDo.customScheduleDays?.let {
             mCustomScheduleDays.addAll(it)
@@ -134,7 +133,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateToDoCategoryView(mToDo.category)
         updateToDoTimeView(formatTimeInMilliseconds(context, mToDo.timeInMilliseconds))
         updateNotifyView()
-        updateMarkAsCompleteView(if (mToDo.isComplete) 1 else 0)
+        updateMarkAsCompleteView(if (mToDo.isComplete(mViewModel.selectedToDoDate)) 1 else 0)
         updateTipView()
     }
 
@@ -531,12 +530,11 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     private fun saveToDo() {
         val newToDo = createNewToDo() ?: return
-
         if (mToDo.isAutomaticPrayerTime()) { //Automatic prayer time
             if (newToDo.additionalInfo != mToDo.additionalInfo ||
                 mToDo.isReminderEnabled != newToDo.isReminderEnabled ||
                 mToDo.offsetInMinutes != newToDo.offsetInMinutes ||
-                mToDo.isComplete != newToDo.isComplete
+                mToDo.completedDates != newToDo.completedDates
             ) {
                 mViewModel.updatePrayerTimeDetails(mToDo, newToDo)
                 Toast.makeText(
@@ -571,6 +569,16 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             return null
         }
 
+        val completedDates = TreeSet<String>()
+        completedDates.addAll(mToDo.completedDates)
+        if (resources.getStringArray(R.array.mark_as_complete_options)
+                .indexOf(mBinding.markAsCompleteValue.text) == 1
+        ) {
+            //Marked as Yes
+            completedDates.add(mViewModel.selectedToDoDate.toString())
+        } else
+            completedDates.remove(mViewModel.selectedToDoDate.toString())
+
         try {
             return ToDo(
                 toDoName,
@@ -585,8 +593,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 calculateOffsetForToDo(),
                 mToDo.id,
                 mCustomScheduleDays,
-                resources.getStringArray(R.array.mark_as_complete_options)
-                    .indexOf(mBinding.markAsCompleteValue.text) == 1,
+                completedDates,
                 mToDo.predefinedToDoInfo,
                 mToDo.predefinedToDoLink
             )

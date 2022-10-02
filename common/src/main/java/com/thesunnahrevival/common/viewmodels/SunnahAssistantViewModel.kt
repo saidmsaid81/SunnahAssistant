@@ -18,6 +18,7 @@ import com.thesunnahrevival.common.data.model.Frequency
 import com.thesunnahrevival.common.data.model.GeocodingData
 import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.services.NextToDoService
+import com.thesunnahrevival.common.utilities.generateLocalDatefromDate
 import com.thesunnahrevival.common.utilities.sunnahReminders
 import com.thesunnahrevival.common.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
@@ -39,12 +40,21 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             year = LocalDate.now().year
         )
 
-
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
     private val mutableReminderParameters =
         MutableLiveData(Pair(System.currentTimeMillis(), ""))
+
+    val selectedToDoDate: LocalDate
+        get() {
+            return generateLocalDatefromDate(
+                Date(
+                    mutableReminderParameters.value?.first ?: System.currentTimeMillis()
+                )
+            )
+        }
+
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
@@ -83,12 +93,23 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun getToDo(id: Int) = mRepository.getToDo(id)
 
-    fun getToDos(): LiveData<PagingData<ToDo>> {
+    fun getIncompleteToDos(): LiveData<PagingData<ToDo>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
             Pager(
                 PagingConfig(15),
                 pagingSourceFactory = {
-                    mRepository.getToDosOnDay(Date(dateOfReminders), category)
+                    mRepository.getIncompleteToDosOnDay(Date(dateOfReminders), category)
+                }
+            ).liveData
+        }
+    }
+
+    fun getCompleteToDos(): LiveData<PagingData<ToDo>> {
+        return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
+            Pager(
+                PagingConfig(15),
+                pagingSourceFactory = {
+                    mRepository.getCompleteToDosOnDay(Date(dateOfReminders), category)
                 }
             ).liveData
         }

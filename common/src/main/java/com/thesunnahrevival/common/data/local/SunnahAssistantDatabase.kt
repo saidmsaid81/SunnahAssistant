@@ -103,7 +103,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 )
 
                 database.execSQL(
-                    "ALTER TABLE reminders_table ADD COLUMN isComplete INTEGER DEFAULT 0 NOT NULL"
+                    "ALTER TABLE reminders_table ADD COLUMN isComplete TEXT DEFAULT \"\" NOT NULL"
                 )
                 database.execSQL(
                     "ALTER TABLE reminders_table RENAME COLUMN offset TO offsetInMinutes"
