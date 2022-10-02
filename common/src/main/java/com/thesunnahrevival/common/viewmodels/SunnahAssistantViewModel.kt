@@ -6,10 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.liveData
+import androidx.paging.*
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.SunnahAssistantRepository
 import com.thesunnahrevival.common.data.SunnahAssistantRepository.Companion.getInstance
@@ -100,7 +97,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 pagingSourceFactory = {
                     mRepository.getIncompleteToDosOnDay(Date(dateOfReminders), category)
                 }
-            ).liveData
+            ).liveData.cachedIn(viewModelScope)
         }
     }
 
@@ -111,7 +108,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 pagingSourceFactory = {
                     mRepository.getCompleteToDosOnDay(Date(dateOfReminders), category)
                 }
-            ).liveData
+            ).liveData.cachedIn(viewModelScope)
         }
     }
 
