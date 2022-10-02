@@ -11,6 +11,7 @@ import com.thesunnahrevival.common.data.local.ToDoDao
 import com.thesunnahrevival.common.data.model.*
 import com.thesunnahrevival.common.data.remote.GeocodingInterface
 import com.thesunnahrevival.common.data.remote.SunnahAssistantApiInterface
+import com.thesunnahrevival.common.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,18 +69,35 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     fun getToDo(id: Int) = mToDoDao.getToDo(id)
 
-    fun getToDosOnDay(date: Date, category: String): PagingSource<Int, ToDo> {
+    fun getIncompleteToDosOnDay(date: Date, category: String): PagingSource<Int, ToDo> {
         CoroutineScope(Dispatchers.IO).launch {
             generatePrayerTimes(date)
         }
 
         val (day, month, year, dayOfWeek) = getToDoDate(date)
-        return mToDoDao.getToDosOnDay(
+        return mToDoDao.getIncompleteToDosOnDay(
             dayOfWeek.toString(),
             day,
             month,
             year,
-            category
+            category,
+            generateLocalDatefromDate(date).toString()
+        )
+    }
+
+    fun getCompleteToDosOnDay(date: Date, category: String): PagingSource<Int, ToDo> {
+        CoroutineScope(Dispatchers.IO).launch {
+            generatePrayerTimes(date)
+        }
+
+        val (day, month, year, dayOfWeek) = getToDoDate(date)
+        return mToDoDao.getCompleteToDosOnDay(
+            dayOfWeek.toString(),
+            day,
+            month,
+            year,
+            category,
+            generateLocalDatefromDate(date).toString()
         )
     }
 
@@ -130,7 +148,7 @@ class SunnahAssistantRepository private constructor(context: Context) {
             newPrayerDetails.additionalInfo,
             newPrayerDetails.offsetInMinutes,
             newPrayerDetails.isReminderEnabled,
-            newPrayerDetails.isComplete,
+            newPrayerDetails.completedDates,
             oldPrayerDetails.id
         )
     }

@@ -5,16 +5,20 @@
 
     <data>
 
-        <import type="android.content.Context" />
+      <import type="android.content.Context" />
 
-        <import type="android.view.View" />
+      <import type="android.view.View" />
 
-        <import type="com.thesunnahrevival.common.utilities.TimeDateUtil" />
+      <import type="com.thesunnahrevival.common.utilities.TimeDateUtil" />
 
-        <variable
-            name="toDo"
-            type="com.thesunnahrevival.common.data.model.ToDo"
-            />
+      <variable
+          name="toDo"
+          type="com.thesunnahrevival.common.data.model.ToDo"
+          />
+      <variable
+          name="isComplete"
+          type="boolean"
+          />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -38,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/default_dimen"
                 android:layout_marginStart="@dimen/default_dimen"
-                android:checked="@{toDo.complete}"
+                android:checked="@{isComplete}"
                 android:layout_gravity="center" />
 
             <LinearLayout
@@ -56,7 +60,7 @@
                   android:ellipsize="end"
                   android:maxLines="1"
                   android:text="@{toDo.name}"
-                  android:enabled="@{!toDo.complete}"
+                  android:enabled="@{!isComplete}"
                   android:textAppearance="@android:style/TextAppearance.Material.Title"
                   android:textSize="@dimen/default_text_size"
                   tools:text="Fasting Ayyamul Beidh"
@@ -73,7 +77,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="14sp"
                       android:text="@{toDo.category + &quot;,&quot;}"
-                      android:enabled="@{!toDo.complete}"
+                      android:enabled="@{!isComplete}"
                       tools:text="Sunnah,"
                       />
 
@@ -83,7 +87,7 @@
                       android:layout_height="wrap_content"
                       android:textSize="14sp"
                       android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, toDo.timeInMilliseconds) }"
-                      android:enabled="@{!toDo.complete}"
+                      android:enabled="@{!isComplete}"
                       android:paddingStart="8dp"
                       android:paddingEnd="8dp"
                       tools:text="14:25"

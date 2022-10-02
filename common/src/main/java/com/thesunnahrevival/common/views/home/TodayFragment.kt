@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -25,16 +26,18 @@ import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.databinding.TodayFragmentBinding
 import com.thesunnahrevival.common.utilities.generateDateText
 import com.thesunnahrevival.common.views.MainActivity
-import com.thesunnahrevival.common.views.SwipeToDeleteCallback
+import com.thesunnahrevival.common.views.SwipeGesturesCallback
 import com.thesunnahrevival.common.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.common.views.listeners.ToDoItemInteractionListener
 import com.thesunnahrevival.common.views.showOnBoardingTutorial
 import java.time.LocalDate
+import java.util.*
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
     private lateinit var mBinding: TodayFragmentBinding
-    private lateinit var mToDoRecyclerAdapter: ToDoListAdapter
+    private lateinit var incompleteToDoRecyclerAdapter: ToDoListAdapter
+    private lateinit var completeToDoRecyclerAdapter: ToDoListAdapter
     private var fabAnimator: ObjectAnimator? = null
     private var categoryToDisplay = ""
 
@@ -72,7 +75,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                         else -> {
                             if (settings.showOnBoardingTutorial) {
                                 showOnBoardingTutorial(
-                                    (activity as MainActivity), mToDoRecyclerAdapter,
+                                    (activity as MainActivity), incompleteToDoRecyclerAdapter,
                                     mBinding.toDoList
                                 )
                                 settings.showOnBoardingTutorial = false
@@ -138,11 +141,47 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         val toDoRecyclerView = mBinding.toDoList
 
         //Setup the RecyclerView Adapter
-        mToDoRecyclerAdapter = ToDoListAdapter(requireContext())
-        mToDoRecyclerAdapter.setOnItemInteractionListener(this)
-        mToDoRecyclerAdapter.addLoadStateListener { loadState: CombinedLoadStates ->
+        incompleteToDoRecyclerAdapter = ToDoListAdapter(requireContext())
+        setUpAdapter(incompleteToDoRecyclerAdapter)
+
+        completeToDoRecyclerAdapter = ToDoListAdapter(requireContext(), true)
+        setUpAdapter(completeToDoRecyclerAdapter)
+
+        val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(true).build()
+        toDoRecyclerView.adapter = ConcatAdapter(
+            config,
+            incompleteToDoRecyclerAdapter,
+            completeToDoRecyclerAdapter
+        )
+
+        //Set the swipe gestures
+        val incompleteItemTouchHelper = ItemTouchHelper(
+            SwipeGesturesCallback(requireContext())
+        )
+        incompleteItemTouchHelper.attachToRecyclerView(null)
+        incompleteItemTouchHelper.attachToRecyclerView(toDoRecyclerView)
+
+        mViewModel.getIncompleteToDos()
+            .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
+                incompleteToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
+                if (this !is CalendarFragment)
+                    displayHijriDate()
+            }
+
+        mViewModel.getCompleteToDos()
+            .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
+                completeToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
+                if (this !is CalendarFragment)
+                    displayHijriDate()
+            }
+
+    }
+
+    private fun setUpAdapter(adapter: ToDoListAdapter) {
+        adapter.setOnItemInteractionListener(this)
+        adapter.addLoadStateListener { loadState: CombinedLoadStates ->
             if (loadState.append.endOfPaginationReached) {
-                if (mToDoRecyclerAdapter.itemCount < 1) {
+                if (incompleteToDoRecyclerAdapter.itemCount < 1 && completeToDoRecyclerAdapter.itemCount < 1) {
                     mBinding.noTasksView.root.visibility = View.VISIBLE
                     mBinding.appBar.setExpanded(true)
                 } else
@@ -152,20 +191,6 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 mBinding.progressBar.visibility = View.GONE
             }
         }
-        toDoRecyclerView.adapter = mToDoRecyclerAdapter
-
-        //Set the swipe getsures
-        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback(mToDoRecyclerAdapter))
-        itemTouchHelper.attachToRecyclerView(null)
-        itemTouchHelper.attachToRecyclerView(toDoRecyclerView)
-
-        mViewModel.getToDos()
-            .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
-                mToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
-                if (this !is CalendarFragment)
-                    displayHijriDate()
-            }
-
     }
 
     private fun displayHijriDate() {
@@ -207,8 +232,8 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
                 show()
             }
-            mToDoRecyclerAdapter.notifyItemRemoved(position)
-            mToDoRecyclerAdapter.notifyItemInserted(position)
+            incompleteToDoRecyclerAdapter.notifyItemRemoved(position)
+            incompleteToDoRecyclerAdapter.notifyItemInserted(position)
             return
         }
 
@@ -225,12 +250,25 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     override fun onMarkAsComplete(
-        isPressed: Boolean,
+        userInitiated: Boolean,
         isChecked: Boolean?,
         toDo: ToDo
     ) {
-        if (isPressed) {
-            val toDoCopy = toDo.copy(isComplete = isChecked ?: !toDo.isComplete)
+        if (userInitiated) {
+            val completedDates = TreeSet<String>()
+            completedDates.addAll(toDo.completedDates)
+            if (isChecked == true)
+                completedDates.add(mViewModel.selectedToDoDate.toString())
+            else if (isChecked == false)
+                completedDates.remove(mViewModel.selectedToDoDate.toString())
+            else {
+                if (completedDates.contains(mViewModel.selectedToDoDate.toString()))
+                    completedDates.remove(mViewModel.selectedToDoDate.toString())
+                else
+                    completedDates.add(mViewModel.selectedToDoDate.toString())
+            }
+
+            val toDoCopy = toDo.copy(completedDates = completedDates)
             mViewModel.insertToDo(toDoCopy, false)
         }
     }

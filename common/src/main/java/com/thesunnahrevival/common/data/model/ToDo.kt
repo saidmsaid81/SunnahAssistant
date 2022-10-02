@@ -21,7 +21,7 @@ data class ToDo(
     var offsetInMinutes: Int = 0,
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var customScheduleDays: TreeSet<Int>? = TreeSet(),
-    var isComplete: Boolean = false,
+    var completedDates: TreeSet<String> = TreeSet(),
     @ColumnInfo(name = "predefinedReminderInfo") var predefinedToDoInfo: String = "",
     @ColumnInfo(name = "predefinedReminderLink") var predefinedToDoLink: String = ""
 ) {
@@ -96,6 +96,58 @@ data class ToDo(
     }
 
     fun isAutomaticPrayerTime() = this.id <= -1019700
+
+    fun isComplete(date: LocalDate): Boolean {
+        return completedDates.contains(date.toString())
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ToDo
+
+        if (name != other.name) return false
+        if (additionalInfo != other.additionalInfo) return false
+        if (timeInSeconds != other.timeInSeconds) return false
+        if (category != other.category) return false
+        if (frequency != other.frequency) return false
+        if (isReminderEnabled != other.isReminderEnabled) return false
+        if (day != other.day) return false
+        if (month != other.month) return false
+        if (year != other.year) return false
+        if (offsetInMinutes != other.offsetInMinutes) return false
+        if (id != other.id) return false
+        if (customScheduleDays != other.customScheduleDays) return false
+        if (completedDates != other.completedDates) return false
+        if (predefinedToDoInfo != other.predefinedToDoInfo) return false
+        if (predefinedToDoLink != other.predefinedToDoLink) return false
+        if (timeInMilliseconds != other.timeInMilliseconds) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name?.hashCode() ?: 0
+        result = 31 * result + (additionalInfo?.hashCode() ?: 0)
+        result = 31 * result + timeInSeconds.hashCode()
+        result = 31 * result + (category?.hashCode() ?: 0)
+        result = 31 * result + (frequency?.hashCode() ?: 0)
+        result = 31 * result + isReminderEnabled.hashCode()
+        result = 31 * result + day
+        result = 31 * result + month
+        result = 31 * result + year
+        result = 31 * result + offsetInMinutes
+        result = 31 * result + id
+        result = 31 * result + (customScheduleDays?.hashCode() ?: 0)
+        result = 31 * result + completedDates.hashCode()
+        result = 31 * result + predefinedToDoInfo.hashCode()
+        result = 31 * result + predefinedToDoLink.hashCode()
+        result = 31 * result + timeInMilliseconds.hashCode()
+        return result
+    }
+
+
 }
 
 enum class Frequency {

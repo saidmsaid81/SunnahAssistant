@@ -7,6 +7,7 @@ import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.data.model.ToDoDate
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 @Dao
 interface ToDoDao {
@@ -38,13 +39,24 @@ interface ToDoDao {
     @Query("SELECT * FROM reminders_table WHERE id = :id")
     fun getToDo(id: Int): LiveData<ToDo?>
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') ORDER BY isComplete, timeInSeconds")
-    fun getToDosOnDay(
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds")
+    fun getIncompleteToDosOnDay(
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
         year: Int,
-        category: String
+        category: String,
+        localDate: String
+    ): PagingSource<Int, ToDo>
+
+    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') AND (completedDates LIKE '%' || :localDate || '%') ORDER BY timeInSeconds")
+    fun getCompleteToDosOnDay(
+        numberOfTheWeekDay: String,
+        day: Int,
+        month: Int,
+        year: Int,
+        category: String,
+        localDate: String
     ): PagingSource<Int, ToDo>
 
     @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
@@ -95,14 +107,14 @@ interface ToDoDao {
 
     @Query(
         "UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderInfo =:additionalInfo," +
-                " isEnabled = :isEnabled, isComplete = :isComplete" +
+                " isEnabled = :isEnabled, completedDates = :completedDates" +
                 " WHERE id == :id"
     )
     suspend fun updatePrayerTimeDetails(
         additionalInfo: String?,
         offsetValue: Int,
         isEnabled: Boolean,
-        isComplete: Boolean,
+        completedDates: TreeSet<String>,
         id: Int
     )
 

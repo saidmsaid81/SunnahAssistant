@@ -10,6 +10,7 @@ import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.data.model.ToDo
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 val lastDayOfMonth: Int
@@ -142,6 +143,17 @@ fun UmmalquraCalendar.getHijriMonthName(): String {
         }
     }
     return hijriMonthName
+}
+
+fun generateLocalDatefromDate(date: Date): LocalDate {
+    val gregorianCalendar = GregorianCalendar().apply {
+        time = date
+    }
+    val day = gregorianCalendar.get(Calendar.DAY_OF_MONTH)
+    val month = gregorianCalendar.get(Calendar.MONTH) + 1
+    val year = gregorianCalendar.get(Calendar.YEAR)
+
+    return LocalDate.of(year, month, day)
 }
 
 

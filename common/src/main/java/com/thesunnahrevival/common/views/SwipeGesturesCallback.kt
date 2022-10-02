@@ -1,5 +1,6 @@
 package com.thesunnahrevival.common.views
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -11,16 +12,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.common.R
 import com.thesunnahrevival.common.views.adapters.ToDoListAdapter
 
-class SwipeToDeleteCallback(private val mToDoListAdapter: ToDoListAdapter) :
-    ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+class SwipeGesturesCallback(context: Context) :
+    ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
 
     private val deleteBackground = ColorDrawable(Color.RED)
     private val markAsCompleteBackground =
-        ColorDrawable(ContextCompat.getColor(mToDoListAdapter.context, R.color.colorAccent))
+        ColorDrawable(
+            ContextCompat.getColor(
+                context,
+                R.color.colorAccent
+            )
+        )
     private val deleteIcon =
-        ContextCompat.getDrawable(mToDoListAdapter.context, R.drawable.ic_delete)
+        ContextCompat.getDrawable(context, R.drawable.ic_delete)
     private val markAsCompleteIcon =
-        ContextCompat.getDrawable(mToDoListAdapter.context, R.drawable.ic_mark_as_complete)
+        ContextCompat.getDrawable(context, R.drawable.ic_mark_as_complete)
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -31,11 +37,19 @@ class SwipeToDeleteCallback(private val mToDoListAdapter: ToDoListAdapter) :
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        val position = viewHolder.adapterPosition
-        if (direction == LEFT)
-            mToDoListAdapter.deleteToDo(position)
-        else if (direction == RIGHT)
-            mToDoListAdapter.markAsComplete(position)
+        val adapter = viewHolder.bindingAdapter as ToDoListAdapter
+        val adapterPosition = viewHolder.bindingAdapterPosition
+        if (adapterPosition in 0 until adapter.itemCount) {
+            when (direction) {
+                LEFT -> {
+                    adapter.deleteToDo(adapterPosition)
+                }
+                RIGHT -> {
+                    adapter.markAsComplete(adapterPosition)
+                }
+            }
+        }
+
     }
 
     override fun onChildDraw(
