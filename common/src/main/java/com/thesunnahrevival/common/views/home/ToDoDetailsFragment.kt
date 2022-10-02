@@ -243,19 +243,22 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun updateToDoTimeView(timeString: String) {
-        if (mToDo.id == 0 &&
-            timeString != mTimeString &&
-            mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true
-        ) {
-            mBinding.isEnabled = true
-            mBinding.notify.isEnabled = true
-            mBinding.notifyLabel.isEnabled = true
-            mBinding.notifyValue.isEnabled = true
-        } else if (mToDo.id == 0) {
+
+        if (timeString.matches(getString(R.string.time_not_set).toRegex())) {
             mBinding.notify.isEnabled = false
             mBinding.notifyLabel.isEnabled = false
             mBinding.notifyValue.isEnabled = false
+        } else {
+            mBinding.notify.isEnabled = true
+            mBinding.notifyLabel.isEnabled = true
+            mBinding.notifyValue.isEnabled = true
         }
+
+        mBinding.isEnabled =
+            if (mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true && mTimeString != timeString)
+                true
+            else
+                mToDo.isReminderEnabled
 
         mTimeString = timeString
         mBinding.toDoTimeValue.text = timeString
