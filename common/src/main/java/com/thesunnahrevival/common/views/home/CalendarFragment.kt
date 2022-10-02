@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
+import java.time.YearMonth
 import java.util.*
 
 
@@ -34,8 +34,13 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        calendar_view.setupWithListeners(listeners = this)
-        calendar_view.scrollToSpecificDate(LocalDate.now())
+        val selectedToDoDate = mViewModel.selectedToDoDate
+        calendar_view.setupWithListeners(
+            listeners = this,
+            startMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
+            endMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue)
+        )
+        calendar_view.scrollToSpecificDate(selectedToDoDate)
 
         mViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
             val yearMonth = calendar_view.findFirstVisibleMonth()?.yearMonth
