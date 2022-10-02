@@ -88,16 +88,18 @@
                 android:layout_width="match_parent"
                 android:textSize="14sp"
                 android:visibility="gone"
-                android:padding="@dimen/default_dimen"
-                android:layout_height="wrap_content" />
+                android:paddingStart="@dimen/default_dimen"
+                android:paddingEnd="@dimen/default_dimen"
+                android:paddingTop="@dimen/default_dimen"
+                android:layout_height="wrap_content"
+                />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/default_dimen"
                 android:paddingEnd="@dimen/default_dimen"
-                android:paddingBottom="8dp"
-                android:paddingTop="@dimen/default_dimen"
+                android:paddingTop="8dp"
                 android:scrollbars="none">
 
                 <com.google.android.material.chip.ChipGroup
