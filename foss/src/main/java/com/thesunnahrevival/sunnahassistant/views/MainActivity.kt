@@ -1,8 +1,8 @@
 package com.thesunnahrevival.sunnahassistant.views
 
 import android.os.Bundle
-import com.thesunnahrevival.common.utilities.versionName
-import com.thesunnahrevival.common.views.MainActivity
+import com.thesunnahrevival.lite.utilities.versionName
+import com.thesunnahrevival.lite.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 
 class MainActivity : MainActivity() {
