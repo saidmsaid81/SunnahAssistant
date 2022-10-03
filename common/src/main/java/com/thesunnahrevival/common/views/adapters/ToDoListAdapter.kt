@@ -42,7 +42,13 @@ class ToDoListAdapter(val context: Context, val isCompletedToDos: Boolean = fals
     }
 
     fun deleteToDo(position: Int) {
-        getItem(position)?.let { mListener?.onSwipeToDelete(position, it) }
+        val toDo = getItem(position)
+        if (toDo?.isAutomaticPrayerTime() == true) {
+            notifyItemRemoved(position)
+            notifyItemInserted(position)
+        }
+
+        toDo?.let { mListener?.onSwipeToDelete(position, it) }
     }
 
     fun markAsComplete(position: Int) {
