@@ -108,10 +108,28 @@
                     android:layout_height="wrap_content"
                     app:singleSelection="true"
                     app:selectionRequired="true"
-                    app:singleLine="true">
+                    app:singleLine="true"
+                    >
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
+
+          <ProgressBar
+              android:id="@+id/progress_bar"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:visibility="visible"
+              />
+
+          <include
+              android:id="@+id/no_tasks_view"
+              layout="@layout/no_tasks_view"
+              tools:visibility="visible"
+              android:visibility="gone"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              />
 
           <androidx.recyclerview.widget.RecyclerView
               android:id="@+id/to_do_list"
@@ -122,21 +140,6 @@
               app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
               tools:listitem="@layout/to_do_card_view"
               />
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="visible" />
-
-            <include
-                android:id="@+id/no_tasks_view"
-                layout="@layout/no_tasks_view"
-                tools:visibility="visible"
-                android:visibility="gone"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent" />
         </LinearLayout>
 
       <com.google.android.material.floatingactionbutton.FloatingActionButton
