@@ -23,7 +23,8 @@ data class ToDo(
     var customScheduleDays: TreeSet<Int>? = TreeSet(),
     var completedDates: TreeSet<String> = TreeSet(),
     @ColumnInfo(name = "predefinedReminderInfo") var predefinedToDoInfo: String = "",
-    @ColumnInfo(name = "predefinedReminderLink") var predefinedToDoLink: String = ""
+    @ColumnInfo(name = "predefinedReminderLink") var predefinedToDoLink: String = "",
+    var repeatsFromDate: String = ""
 ) {
 
     @Ignore
@@ -82,6 +83,8 @@ data class ToDo(
         if (frequency != Frequency.OneTime && !isAutomaticPrayerTime()) {
             month = 12
             year = 0
+            if (id == 0 || repeatsFromDate.isBlank())
+                repeatsFromDate = LocalDate.now().toString()
         }
 
         if (frequency != Frequency.Weekly)

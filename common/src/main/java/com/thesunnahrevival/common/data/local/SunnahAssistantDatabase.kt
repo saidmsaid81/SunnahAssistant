@@ -16,6 +16,7 @@ import com.thesunnahrevival.common.utilities.initialSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 
 @Database(entities = [ToDo::class, AppSettings::class], version = 6)
@@ -114,6 +115,9 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL(
                     "ALTER TABLE reminders_table ADD COLUMN predefinedReminderLink TEXT DEFAULT '' NOT NULL"
                 )
+                database.execSQL(
+                    "ALTER TABLE reminders_table ADD COLUMN repeatsFromDate TEXT DEFAULT '' NOT NULL"
+                )
 
                 database.execSQL(
                     "UPDATE reminders_table SET reminderInfo = ''" +
@@ -176,6 +180,11 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                             " WHERE (day NOT BETWEEN 1 AND 31)" +
                             " AND frequency = 3 "
                 )
+
+                val now = LocalDate.now()
+                val sql =
+                    "UPDATE reminders_table SET repeatsFromDate = \"$now\" WHERE month == 12 AND year == 0"
+                database.execSQL(sql)
             }
         }
 

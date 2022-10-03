@@ -598,7 +598,8 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mCustomScheduleDays,
                 completedDates,
                 mToDo.predefinedToDoInfo,
-                mToDo.predefinedToDoLink
+                mToDo.predefinedToDoLink,
+                mToDo.repeatsFromDate
             )
         } catch (exception: IllegalArgumentException) {
             Log.e("Exception", exception.toString())

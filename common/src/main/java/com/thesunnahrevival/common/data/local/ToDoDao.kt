@@ -7,6 +7,7 @@ import com.thesunnahrevival.common.data.model.AppSettings
 import com.thesunnahrevival.common.data.model.ToDo
 import com.thesunnahrevival.common.data.model.ToDoDate
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import java.util.*
 
 @Dao
@@ -26,20 +27,33 @@ interface ToDoDao {
     @Query(
         "SELECT EXISTS (SELECT * FROM reminders_table WHERE (" +
                 "category != :excludeCategory " +
-                "AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%')) LIMIT 1)"
+                "AND ((day == :day AND month == :month AND year == :year) OR " +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date ) OR " +
+                " (day == 0 AND repeatsFromDate <= :date) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                ")) LIMIT 1)"
     )
     fun thereToDosOnDay(
         excludeCategory: String,
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
+        date: String = LocalDate.of(year, month + 1, day).toString(),
     ): Boolean
 
     @Query("SELECT * FROM reminders_table WHERE id = :id")
     fun getToDo(id: Int): LiveData<ToDo?>
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds")
+    @Query(
+        "SELECT * FROM reminders_table WHERE (" +
+                "(day == :day AND month == :month AND year == :year) OR " +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :localDate) OR " +
+                " (day == 0 AND repeatsFromDate <= :localDate) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate)" +
+                ") " +
+                " AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
+    )
     fun getIncompleteToDosOnDay(
         numberOfTheWeekDay: String,
         day: Int,
@@ -49,7 +63,16 @@ interface ToDoDao {
         localDate: String
     ): PagingSource<Int, ToDo>
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND (category LIKE '%' || :category || '%') AND (completedDates LIKE '%' || :localDate || '%') ORDER BY timeInSeconds")
+    @Query(
+        "SELECT * FROM reminders_table WHERE (" +
+                "(day == :day AND month == :month AND year == :year) OR " +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :localDate) OR " +
+                " (day == 0 AND repeatsFromDate <= :localDate) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate)" +
+                ") " +
+                " AND (category LIKE '%' || :category || '%') " +
+                " AND (completedDates LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
+    )
     fun getCompleteToDosOnDay(
         numberOfTheWeekDay: String,
         day: Int,
@@ -59,31 +82,60 @@ interface ToDoDao {
         localDate: String
     ): PagingSource<Int, ToDo>
 
-    @Query("SELECT * FROM reminders_table WHERE ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY timeInSeconds")
+    @Query(
+        "SELECT * FROM reminders_table WHERE (" +
+                " (day == :day AND month == :month AND year == :year) OR " +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
+                " (day == 0 AND repeatsFromDate <= :date) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                ") AND " +
+                " isEnabled " +
+                " ORDER BY timeInSeconds"
+    )
     fun getToDosOnDayValue(
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
+        date: String = LocalDate.of(year, month + 1, day).toString()
     ): List<ToDo>
 
-    @Query("SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE time > :offsetFromMidnight AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY time")
+    @Query(
+        "SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE " +
+                " time > :offsetFromMidnight AND " +
+                " ((day == :day AND month == :month AND year == :year) OR " +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
+                " (day == 0 AND repeatsFromDate <= :date) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                " ) AND isEnabled ORDER BY time"
+    )
     suspend fun getNextTimeForToDoForDay(
         offsetFromMidnight: Long,
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
+        date: String = LocalDate.of(year, month + 1, day).toString()
     ): Long?
 
 
-    @Query("SELECT * FROM reminders_table WHERE (timeInSeconds + (offsetInMinutes * 60)) == :timeForToDo AND ((day == :day AND month == :month AND year == :year) OR (day == :day AND month == 12 AND year == 0) OR day == 0 OR customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%') AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))")
+    @Query(
+        "SELECT * FROM reminders_table WHERE " +
+                " (timeInSeconds + (offsetInMinutes * 60)) == :timeForToDo AND " +
+                " ((day == :day AND month == :month AND year == :year) OR " +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
+                " (day == 0 AND repeatsFromDate <= :date) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                ") " +
+                " AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))"
+    )
     suspend fun getNextScheduledToDosForDay(
         timeForToDo: Long,
         numberOfTheWeekDay: String,
         day: Int,
         month: Int,
-        year: Int
+        year: Int,
+        date: String = LocalDate.of(year, month + 1, day).toString()
     ): List<ToDo>
 
     @Query(
