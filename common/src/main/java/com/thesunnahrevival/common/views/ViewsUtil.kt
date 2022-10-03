@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
@@ -29,7 +30,7 @@ const val requestCodeForUpdate: Int = 1
 
 fun showOnBoardingTutorial(
     activity: MainActivity,
-    toDoRecyclerAdapter: ToDoListAdapter,
+    adapter: ConcatAdapter,
     recyclerView: RecyclerView
 ) {
     TapTargetSequence(activity)
@@ -66,7 +67,7 @@ fun showOnBoardingTutorial(
         )
         .listener(object : TapTargetSequence.Listener {
             override fun onSequenceFinish() {
-                toDoRecyclerAdapter.deleteToDo(0)
+                (adapter.adapters[0] as ToDoListAdapter).deleteToDo(0)
             }
 
             override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}

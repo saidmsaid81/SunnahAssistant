@@ -35,8 +35,7 @@ import java.util.*
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
     private lateinit var mBinding: TodayFragmentBinding
-    private lateinit var incompleteToDoRecyclerAdapter: ToDoListAdapter
-    private lateinit var completeToDoRecyclerAdapter: ToDoListAdapter
+    private lateinit var concatAdapter: ConcatAdapter
     private var fabAnimator: ObjectAnimator? = null
 
     override fun onCreateView(
@@ -73,8 +72,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                         else -> {
                             if (settings.showOnBoardingTutorial) {
                                 showOnBoardingTutorial(
-                                    (activity as MainActivity), incompleteToDoRecyclerAdapter,
-                                    mBinding.toDoList
+                                    (activity as MainActivity), concatAdapter, mBinding.toDoList
                                 )
                                 settings.showOnBoardingTutorial = false
                                 mViewModel.updateSettings(settings)
@@ -142,25 +140,22 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         val toDoRecyclerView = mBinding.toDoList
 
         //Setup the RecyclerView Adapter
-        incompleteToDoRecyclerAdapter = ToDoListAdapter(requireContext())
-        setUpAdapter(incompleteToDoRecyclerAdapter)
+        val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(true).build()
+        concatAdapter = ConcatAdapter(config)
 
-        completeToDoRecyclerAdapter = ToDoListAdapter(requireContext(), true)
+        val incompleteToDoRecyclerAdapter = ToDoListAdapter(requireContext())
+        setUpAdapter(incompleteToDoRecyclerAdapter)
+        val completeToDoRecyclerAdapter = ToDoListAdapter(requireContext(), true)
         setUpAdapter(completeToDoRecyclerAdapter)
 
-        val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(true).build()
-        toDoRecyclerView.adapter = ConcatAdapter(
-            config,
-            incompleteToDoRecyclerAdapter,
-            completeToDoRecyclerAdapter
-        )
+        toDoRecyclerView.adapter = concatAdapter
 
         //Set the swipe gestures
-        val incompleteItemTouchHelper = ItemTouchHelper(
+        val itemTouchHelper = ItemTouchHelper(
             SwipeGesturesCallback(requireContext())
         )
-        incompleteItemTouchHelper.attachToRecyclerView(null)
-        incompleteItemTouchHelper.attachToRecyclerView(toDoRecyclerView)
+        itemTouchHelper.attachToRecyclerView(null)
+        itemTouchHelper.attachToRecyclerView(toDoRecyclerView)
 
         mViewModel.getIncompleteToDos()
             .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
@@ -175,23 +170,26 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 if (this !is CalendarFragment)
                     displayHijriDate()
             }
-
     }
 
     private fun setUpAdapter(adapter: ToDoListAdapter) {
         adapter.setOnItemInteractionListener(this)
         adapter.addLoadStateListener { loadState: CombinedLoadStates ->
             if (loadState.append.endOfPaginationReached) {
-                if (incompleteToDoRecyclerAdapter.itemCount < 1 && completeToDoRecyclerAdapter.itemCount < 1) {
+                if (concatAdapter.itemCount < 1) {
+                    mBinding.toDoList.visibility = View.GONE
                     mBinding.noTasksView.root.visibility = View.VISIBLE
                     mBinding.appBar.setExpanded(true)
-                } else
+                } else {
                     mBinding.noTasksView.root.visibility = View.GONE
+                    mBinding.toDoList.visibility = View.VISIBLE
+                }
 
                 animateAddToDoButton()
                 mBinding.progressBar.visibility = View.GONE
             }
         }
+        concatAdapter.addAdapter(adapter)
     }
 
     private fun displayHijriDate() {
@@ -233,8 +231,6 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
                 show()
             }
-            incompleteToDoRecyclerAdapter.notifyItemRemoved(position)
-            incompleteToDoRecyclerAdapter.notifyItemInserted(position)
             return
         }
 
