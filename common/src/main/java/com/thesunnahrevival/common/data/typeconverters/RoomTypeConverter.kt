@@ -5,40 +5,21 @@ import androidx.room.TypeConverter
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.common.data.model.Frequency
-import java.lang.Integer.parseInt
 import java.util.*
 
 class RoomTypeConverter {
     @TypeConverter
     fun fromTreeSetOfNumbers(numbers: TreeSet<Int>?): String {
-        if (numbers == null)
-            return ""
-        return try {
-            val stringBuilder = StringBuilder()
-            for (s in numbers) {
-                stringBuilder.append(s.toString())
-                stringBuilder.append(",")
-
-            }
-            stringBuilder.toString()
-        } catch (e: NullPointerException) {
-            ""
-        }
+        return numbers?.joinToString(separator = ",") ?: ""
     }
 
     @TypeConverter
-    fun toTreeSetOfNumbers(concatenatedStrings: String?): TreeSet<Int> {
+    fun toTreeSetOfNumbers(concatenatedNumbersString: String?): TreeSet<Int> {
         val treeSet = TreeSet<Int>()
-
-        if (concatenatedStrings == null)
-            return treeSet
-
-        val array = concatenatedStrings.split(",")
-        try {
-            for (index in 0..array.size)
-                treeSet.add(parseInt(array[index]))
-        } catch (exception: NumberFormatException) {
-            return treeSet
+        concatenatedNumbersString?.split(",")?.forEach { string ->
+            string.toIntOrNull()?.let {
+                treeSet.add(it)
+            }
         }
         return treeSet
     }
@@ -55,22 +36,15 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun fromTreeSet(strings: TreeSet<String?>): String {
-        return try {
-            val stringBuilder = StringBuilder()
-            for (s in strings) {
-                stringBuilder.append(s)
-                stringBuilder.append(",")
-            }
-            stringBuilder.toString()
-        } catch (e: NullPointerException) {
-            ""
-        }
+        return strings.joinToString(separator = ",")
     }
 
     @TypeConverter
     fun toTreeSet(concatenatedStrings: String): TreeSet<String> {
-        val list = listOf(*concatenatedStrings.split(",").toTypedArray())
-        return TreeSet(list.filter { it.isNotBlank() })
+        val treeSet = TreeSet<String>()
+        treeSet.addAll(concatenatedStrings.split(","))
+        treeSet.remove("")
+        return treeSet
     }
 
     @TypeConverter
@@ -117,11 +91,7 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun fromBooleanArray(array: BooleanArray): String {
-        val stringBuilder = StringBuilder()
-        array.forEach {
-            stringBuilder.append("${if (it) 1 else 0},")
-        }
-        return stringBuilder.toString()
+        return array.joinToString(",")
     }
 
     @TypeConverter
@@ -130,7 +100,7 @@ class RoomTypeConverter {
         if (string.isNotBlank()) {
             val array = string.split(",")
             booleanArray.forEachIndexed { index, _ ->
-                booleanArray[index] = array.getOrElse(index) { "1" } == "1"
+                booleanArray[index] = array.getOrElse(index) { "true" } == "true"
             }
         }
 
@@ -139,11 +109,7 @@ class RoomTypeConverter {
 
     @TypeConverter
     fun fromIntArray(array: IntArray): String {
-        val stringBuilder = StringBuilder()
-        array.forEach {
-            stringBuilder.append("$it,")
-        }
-        return stringBuilder.toString()
+        return array.joinToString(separator = ",")
     }
 
     @TypeConverter
