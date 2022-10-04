@@ -16,17 +16,19 @@ import com.thesunnahrevival.sunnahassistant.receivers.InAppBrowserBroadcastRecei
 import com.thesunnahrevival.sunnahassistant.receivers.TEXTSUMMARY
 import com.thesunnahrevival.sunnahassistant.services.InAppBrowserConnection
 import kotlinx.coroutines.launch
+import org.apache.commons.validator.routines.UrlValidator
+import java.net.MalformedURLException
 
-class InAppBrowser(context: Context, lifecycleScope: LifecycleCoroutineScope) {
+class InAppBrowser(private val context: Context, lifecycleScope: LifecycleCoroutineScope) {
 
     private var mShareIcon: Bitmap? = null
     private var browserPackageName: String? = null
 
     init {
-        prepareInAppBrowser(context, lifecycleScope)
+        prepareInAppBrowser(lifecycleScope)
     }
 
-    private fun prepareInAppBrowser(context: Context, lifecycleScope: LifecycleCoroutineScope) {
+    private fun prepareInAppBrowser(lifecycleScope: LifecycleCoroutineScope) {
         browserPackageName = getPackageNameToUse(context)
         CustomTabsClient.bindCustomTabsService(
             context,
@@ -40,11 +42,12 @@ class InAppBrowser(context: Context, lifecycleScope: LifecycleCoroutineScope) {
     }
 
     fun launchInAppBrowser(
-        context: Context,
         link: String,
         findNavController: NavController,
         showShareIcon: Boolean = true
     ) {
+        if (!isValidUrl(link))
+            throw MalformedURLException("$link is an invalid url")
         if (browserPackageName == null) {//No supported browser
             val bundle = Bundle().apply {
                 putString("link", link)
@@ -87,4 +90,6 @@ class InAppBrowser(context: Context, lifecycleScope: LifecycleCoroutineScope) {
         )
         customTabsIntent.launchUrl(context, Uri.parse(link))
     }
+
+    private fun isValidUrl(link: String) = UrlValidator().isValid(link)
 }

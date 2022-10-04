@@ -1,10 +1,12 @@
 package com.thesunnahrevival.sunnahassistant.views.settings
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -14,6 +16,7 @@ import com.thesunnahrevival.sunnahassistant.databinding.HijriDateSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import java.net.MalformedURLException
 
 class HijriDateSettingsFragment : SunnahAssistantFragment() {
 
@@ -44,12 +47,20 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
 
         inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
         binding.hijriInfo.setOnClickListener {
-            inAppBrowser?.launchInAppBrowser(
-                requireContext(),
-                "https://en.wikipedia.org/wiki/Islamic_calendar#Saudi_Arabia's_Umm_al-Qura_calendar",
-                findNavController(),
-                false
-            )
+            try {
+                inAppBrowser?.launchInAppBrowser(
+                    "https://en.wikipedia.org/wiki/Islamic_calendar#Saudi_Arabia's_Umm_al-Qura_calendar",
+                    findNavController(),
+                    false
+                )
+            } catch (exception: MalformedURLException) {
+                Log.e("MalformedURLException", exception.message.toString())
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.something_wrong),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
 
 
