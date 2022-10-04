@@ -23,6 +23,7 @@ import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragm
 import com.thesunnahrevival.sunnahassistant.views.dialogs.DatePickerFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.SelectDaysDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
+import java.net.MalformedURLException
 import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -361,11 +362,19 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 )
             }
             R.id.tip_view ->
-                inAppBrowser?.launchInAppBrowser(
-                    requireContext(),
-                    mToDo.predefinedToDoLink,
-                    findNavController()
-                )
+                try {
+                    inAppBrowser?.launchInAppBrowser(
+                        mToDo.predefinedToDoLink,
+                        findNavController()
+                    )
+                } catch (exception: MalformedURLException) {
+                    Log.e("MalformedURLException", exception.message.toString())
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.something_wrong),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             R.id.notify -> {
                 onNotifyClick()
             }
