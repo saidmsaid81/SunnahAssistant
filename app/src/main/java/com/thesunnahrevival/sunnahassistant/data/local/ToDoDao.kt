@@ -45,6 +45,9 @@ interface ToDoDao {
     @Query("SELECT * FROM reminders_table WHERE id = :id")
     fun getToDo(id: Int): LiveData<ToDo?>
 
+    @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999")
+    fun getTemplateToDoIds(): LiveData<List<Int>>
+
     @Query(
         "SELECT * FROM reminders_table WHERE (" +
                 "(day == :day AND month == :month AND year == :year) OR " +

@@ -69,6 +69,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
 
     fun getToDo(id: Int) = mToDoDao.getToDo(id)
 
+    fun getTemplateToDoIds() = mToDoDao.getTemplateToDoIds()
+
     fun getIncompleteToDosOnDay(date: Date, category: String): PagingSource<Int, ToDo> {
         CoroutineScope(Dispatchers.IO).launch {
             generatePrayerTimes(date)

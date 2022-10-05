@@ -86,108 +86,15 @@ fun openDeveloperPage(context: Context) {
     }
 }
 
-fun sunnahReminders(context: Context): ArrayList<ToDo> {
-    val sunnah = context.resources.getStringArray(R.array.categories)[1]
-    val listOfToDos = ArrayList<ToDo>()
-
-    listOfToDos.add(
-        createReminder(
-            name = context.getString(R.string.dhuha_prayer),
-            frequency = Frequency.Daily,
-            category = sunnah,
-            id = -1001,
-            predefinedReminderInfo = context.getString(R.string.read_more_on_dhuha_prayer),
-            predefinedReminderLink = "https://thesunnahrevival.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips"
-        )
-    )
-
-    listOfToDos.add(
-        createReminder(
-            id = -1002,
-            name = context.getString(R.string.morning_adhkar),
-            category = sunnah,
-            frequency = Frequency.Daily
-        )
-    )
-
-    listOfToDos.add(
-        createReminder(
-            id = -1003,
-            name = context.getString(R.string.evening_adhkar),
-            category = sunnah,
-            frequency = Frequency.Daily
-        )
-    )
-
-    listOfToDos.add(
-        createReminder(
-            id = -1004,
-            name = context.getString(R.string.tahajjud),
-            category = sunnah,
-            frequency = Frequency.Daily,
-            predefinedReminderInfo = context.getString(R.string.read_more_on_tahajjud_prayer),
-            predefinedReminderLink = "https://thesunnahrevival.com/2014/04/09/tahajjud"
-        )
-    )
-
-    listOfToDos.add(
-        createReminder(
-            id = -1005,
-            name = context.getString(R.string.reading_the_quran),
-            category = sunnah,
-            frequency = Frequency.Daily
-        )
-    )
-
-    var listOfDays = TreeSet<Int>()
-    listOfDays.add(Calendar.FRIDAY)
-    listOfToDos.add(
-        createReminder(
-            id = -1006, name = context.getString(R.string.reading_suratul_kahf), category = sunnah,
-            frequency = Frequency.Weekly, customScheduleList = listOfDays,
-            predefinedReminderInfo = context.getString(R.string.read_more_on_suratul_kahf),
-            predefinedReminderLink = "https://thesunnahrevival.com/2020/03/06/2769"
-        )
-    )
-
-    listOfDays = TreeSet<Int>()
-    listOfDays.add(Calendar.SUNDAY)
-    listOfDays.add(Calendar.WEDNESDAY)
-    listOfToDos.add(
-        createReminder(
-            id = -1007,
-            name = context.getString(R.string.fasting_on_monday_and_thursday),
-            category = sunnah,
-            frequency = Frequency.Weekly,
-            customScheduleList = listOfDays,
-            predefinedReminderInfo = context.getString(R.string.read_more_on_fasting_mondays_and_thursdays),
-            predefinedReminderLink = "https://thesunnahrevival.com/2016/01/06/revive-a-sunnah-fasting-on-monday-and-thursday"
-        )
-    )
-
-    return listOfToDos
-}
-
-fun createReminder(
-    name: String,
-    frequency: Frequency,
-    category: String,
-    customScheduleList: TreeSet<Int> = TreeSet(),
-    id: Int = 0,
-    predefinedReminderInfo: String = "",
-    predefinedReminderLink: String = ""
-): ToDo {
-    val day = if (frequency == Frequency.Daily) 0 else -1
-    return ToDo(
-        name = name, predefinedToDoInfo = predefinedReminderInfo,
-        predefinedToDoLink = predefinedReminderLink,
-        category = category, frequency = frequency, isReminderEnabled = false,
-        id = id, customScheduleDays = customScheduleList, day = day, month = 12, year = 0
-    )
-}
-
 fun demoToDo(name: String, category: String): ToDo {
-    return createReminder(name, Frequency.Daily, category)
+    return ToDo(
+        name = name,
+        frequency = Frequency.Daily,
+        category = category,
+        day = 0,
+        month = 12,
+        year = 0
+    )
 }
 
 fun initialSettings(categories: TreeSet<String>): AppSettings {

@@ -13,4 +13,10 @@
       app:labelVisibilityMode="unlabeled"
       android:title="@string/calendar" />
 
+  <item
+      android:id="@+id/tips"
+      android:icon="@drawable/ic_tips"
+      app:labelVisibilityMode="unlabeled"
+      android:title="@string/tips" />
+
 </menu>
