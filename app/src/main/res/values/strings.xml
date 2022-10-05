@@ -184,7 +184,6 @@
     Indonesian Translation by: Ilham Syahid S</string>
   <string name="to_do">To-Do</string>
   <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
-  <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
   <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
   <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
   <string name="read_privacy_policy">Privacy Policy</string>
@@ -304,7 +303,7 @@
     <item>Customize To-Do Categories</item>
     <item>Notifications Settings</item>
     <item>Layout and Theme Settings</item>
-    <item>Privacy Settings</item>
+    <item>Privacy Policy</item>
     <item>Contact Us</item>
 
   </string-array>

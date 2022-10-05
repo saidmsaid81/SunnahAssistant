@@ -10,12 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.InstallStatus
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
@@ -35,8 +29,6 @@ import kotlin.random.Random
 open class MainActivity : AppCompatActivity() {
 
     private lateinit var activity: MainActivity
-    lateinit var firebaseAnalytics: FirebaseAnalytics
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +38,6 @@ open class MainActivity : AppCompatActivity() {
         val navController = this.findNavController(R.id.myNavHostFragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
         activity = this
-        firebaseAnalytics = Firebase.analytics
         getSettings()
 
         startService(Intent(this, NextToDoService::class.java))
@@ -109,8 +100,6 @@ open class MainActivity : AppCompatActivity() {
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
 
-        else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0)
-            checkForUpdates(activity)
         else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
             val random = Random.nextInt(1, 5)
             //Work-around to get the active fragment
@@ -129,9 +118,6 @@ open class MainActivity : AppCompatActivity() {
                     3 -> {
                         showShareAppSnackBar(fragment)
                     }
-                    4 -> {
-                        showInAppReviewPrompt(activity)
-                    }
                 }
             }
         }
@@ -149,25 +135,6 @@ open class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         onSupportNavigateUp()
-    }
-
-    // Checks that the in app update is not stalled during 'onResume()'.
-    override fun onResume() {
-        super.onResume()
-        // Creates instance of the manager.
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-        appUpdateManager
-            .appUpdateInfo
-            .addOnSuccessListener { appUpdateInfo ->
-                // If the update is downloaded but not installed,
-                // notify the user to complete the update.
-                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                    popupSnackbar(
-                        activity, getString(R.string.update_downloaded), Snackbar.LENGTH_INDEFINITE,
-                        getString(R.string.restart)
-                    ) { appUpdateManager.completeUpdate() }
-                }
-            }
     }
 
     override fun onPause() {

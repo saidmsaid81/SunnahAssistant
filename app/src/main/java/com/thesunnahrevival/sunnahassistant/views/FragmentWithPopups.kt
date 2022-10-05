@@ -1,9 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views
 
-import android.os.Bundle
 import android.view.Menu
 import android.widget.PopupMenu
-import com.google.firebase.analytics.FirebaseAnalytics
 
 abstract class FragmentWithPopups : SunnahAssistantFragment(),
     PopupMenu.OnMenuItemClickListener {
@@ -19,16 +17,5 @@ abstract class FragmentWithPopups : SunnahAssistantFragment(),
         }
         popupMenu.setOnMenuItemClickListener(this)
         popupMenu.show()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(
-            FirebaseAnalytics.Event.SCREEN_VIEW,
-            bundle
-        )
     }
 }

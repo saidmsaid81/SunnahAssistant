@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.CategoriesSettingsBinding
-import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.CategoriesSettingsAdapter
 import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
@@ -95,16 +93,5 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
     override fun onPause() {
         super.onPause()
         mViewModel.updatedDeletedCategories(deletedCategories)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(
-            FirebaseAnalytics.Event.SCREEN_VIEW,
-            bundle
-        )
     }
 }
