@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import kotlinx.android.synthetic.main.fragment_welcome.*
 
@@ -49,9 +48,6 @@ class WelcomeFragment : SunnahAssistantFragment() {
 
                         settings.isFirstLaunch = false
                         settings.shareAnonymousUsageData = checkbox.isChecked
-                        (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
-                            checkbox.isChecked
-                        )
                         mViewModel.updateSettings(settings)
                     }
                 }

@@ -4,29 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.sergivonavi.materialbanner.Banner
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
-import kotlinx.android.synthetic.main.activity_main.coordinator_layout
 import kotlinx.android.synthetic.main.today_fragment.*
 import java.util.*
-
-const val requestCodeForUpdate: Int = 1
 
 fun showOnBoardingTutorial(
     activity: MainActivity,
@@ -75,73 +65,6 @@ fun showOnBoardingTutorial(
         })
         .start()
 
-}
-
-fun showInAppReviewPrompt(activity: MainActivity) {
-    val manager = ReviewManagerFactory.create(activity)
-    val request = manager.requestReviewFlow()
-    request.addOnCompleteListener {
-        if (it.isSuccessful) {
-            // We got the ReviewInfo object
-            val reviewInfo = it.result
-            manager.launchReviewFlow(activity, reviewInfo)
-        }
-    }
-}
-
-fun checkForUpdates(activity: MainActivity) {
-    // Creates instance of the manager.
-    val appUpdateManager = AppUpdateManagerFactory.create(activity)
-
-    // Returns an intent object that you use to check for an update.
-    val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
-    // Checks that the platform will allow the specified type of update.
-    appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-        ) {
-
-            appUpdateManager.registerListener { state ->
-                if (state.installStatus() == InstallStatus.DOWNLOADED) {
-                    // After the update is downloaded, show a notification
-                    // and request user confirmation to restart the app.
-                    popupSnackbar(
-                        activity,
-                        activity.getString(R.string.update_downloaded),
-                        Snackbar.LENGTH_INDEFINITE,
-                        activity.getString(R.string.restart)
-                    ) { appUpdateManager.completeUpdate() }
-                }
-            }
-            // Request the update.
-            appUpdateManager.startUpdateFlowForResult(
-                appUpdateInfo,
-                AppUpdateType.FLEXIBLE,
-                activity,
-                requestCodeForUpdate
-            )
-        }
-    }
-}
-
-fun popupSnackbar(
-    activity: MainActivity,
-    message: String,
-    duration: Int,
-    actionMessage: String,
-    listener: View.OnClickListener
-) {
-    Snackbar.make(
-        activity.coordinator_layout,
-        message,
-        duration
-    ).apply {
-        setAction(actionMessage, listener)
-        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.fabColor))
-        setActionTextColor(activity.resources.getColor(android.R.color.black))
-        show()
-    }
 }
 
 fun showHelpTranslateSnackBar(todayFragment: TodayFragment) {

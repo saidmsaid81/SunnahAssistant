@@ -10,11 +10,9 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.HijriDateSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
-import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import java.net.MalformedURLException
 
@@ -67,14 +65,4 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(
-            FirebaseAnalytics.Event.SCREEN_VIEW,
-            bundle
-        )
-    }
 }

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
@@ -298,13 +297,5 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         if (this !is CalendarFragment) {
             mViewModel.setToDoParameters(System.currentTimeMillis())
         }
-
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(
-            FirebaseAnalytics.Event.SCREEN_VIEW,
-            bundle
-        )
     }
 }
