@@ -15,8 +15,8 @@ import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
-import com.thesunnahrevival.sunnahassistant.utilities.sunnahReminders
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +36,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             month = LocalDate.now().month.ordinal,
             year = LocalDate.now().year
         )
+    var isToDoTemplate = false
 
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
@@ -93,6 +94,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     fun getToDo(id: Int) = mRepository.getToDo(id)
+
+    fun getTemplateToDoIds() = mRepository.getTemplateToDoIds()
 
     fun getIncompleteToDos(): LiveData<PagingData<ToDo>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
@@ -253,18 +256,18 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 .getStringArray(R.array.prayer_names)
             val newPrayerNames = getContext().resources.getStringArray(R.array.prayer_names)
 
-            val reminders = sunnahReminders(getApplication())
+            val templateToDos = getTemplateToDos()
 
             viewModelScope.launch(Dispatchers.IO) {
                 for ((index, oldCategoryName) in oldCategoryNames.withIndex()) {
                     mRepository.updateCategory(oldCategoryName, newCategoryNames[index])
                 }
-                for (reminder in reminders) {
+                for (toDo in templateToDos.values) {
                     mRepository.updateToDo(
-                        reminder.id,
-                        reminder.name,
-                        reminder.additionalInfo,
-                        reminder.category
+                        toDo.second.id,
+                        toDo.second.name,
+                        toDo.second.additionalInfo,
+                        toDo.second.category
                     )
                 }
 
@@ -283,4 +286,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             }
         }
     }
+
+    fun getTemplateToDos() = TemplateToDos().getTemplateToDos(getContext())
+
 }

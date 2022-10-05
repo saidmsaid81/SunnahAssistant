@@ -255,6 +255,16 @@
   <string name="hours">Hour(s)</string>
   <string name="automatic_prayer_alerts_disabled">Automatic Prayer Alerts have been disabled</string>
   <string name="something_wrong">Something went wrong. Please try again later</string>
+  <string name="tips">Tips</string>
+  <string name="to_do_templates">To-Do Templates (Random Order)</string>
+  <string name="setup">Setup</string>
+  <string name="suratul_mulk">Reading Suratul Mulk and Al-Sajdah</string>
+  <string name="reading">Reading</string>
+  <string name="sleeping">Sleeping Early</string>
+  <string name="exercising">Exercising</string>
+  <string name="pill">Pill Reminder</string>
+  <string name="drink_water">Drink Water</string>
+  <string name="prayer_time_alerts">Prayer Time Alerts</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>

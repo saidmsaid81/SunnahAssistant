@@ -34,7 +34,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
     TimePickerFragment.OnTimeSetListener {
 
-    protected lateinit var mBinding: com.thesunnahrevival.sunnahassistant.databinding.ToDoDetailsFragmentBinding
+    private lateinit var mBinding: com.thesunnahrevival.sunnahassistant.databinding.ToDoDetailsFragmentBinding
     private lateinit var mToDo: ToDo
     private var mToDoCategories: ArrayList<String> = arrayListOf()
     private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
@@ -554,13 +554,14 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 )
                     .show()
             }
-        } else if (mToDo != newToDo) {
+        } else if (mToDo != newToDo || mViewModel.isToDoTemplate) {
             mViewModel.insertToDo(newToDo)
-            if (newToDo.id == 0)
+            if (newToDo.id == 0 || mViewModel.isToDoTemplate) {
+                mViewModel.isToDoTemplate = false
                 Toast.makeText(
                     requireContext(), R.string.successfuly_added_sunnah_to_dos, Toast.LENGTH_LONG
                 ).show()
-            else
+            } else
                 Toast.makeText(
                     requireContext(), R.string.successfully_updated, Toast.LENGTH_LONG
                 ).show()
