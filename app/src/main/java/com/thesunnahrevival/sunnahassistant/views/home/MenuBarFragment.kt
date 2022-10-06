@@ -116,6 +116,10 @@ abstract class MenuBarFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                     startActivity(Intent(context, OssLicensesMenuActivity::class.java))
                     return true
                 }
+                R.id.backup_restore -> {
+                    findNavController().navigate(R.id.backupRestoreFragment)
+                    return true
+                }
             }
         }
 

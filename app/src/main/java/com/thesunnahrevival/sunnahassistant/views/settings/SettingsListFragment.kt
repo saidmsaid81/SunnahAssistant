@@ -79,13 +79,18 @@ class SettingsListFragment : Fragment(), AdapterView.OnItemClickListener {
             2 -> findNavController().navigate(R.id.customizeCategoriesFragment)
             3 -> findNavController().navigate(R.id.notificationSettingsFragment)
             4 -> findNavController().navigate(R.id.layoutSettingsFragment)
-            5 -> findNavController().navigate(R.id.privacySettingsFragment)
-            6 -> {
+            5 -> findNavController().navigate(R.id.backupRestoreFragment)
+            6 -> findNavController().navigate(R.id.privacySettingsFragment)
+            7 -> {
                 val intent = generateEmailIntent()
                 if (intent.resolveActivity(requireActivity().packageManager) != null)
                     startActivity(intent)
                 else
-                    Toast.makeText(context, getString(R.string.no_email_app_installed), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.no_email_app_installed),
+                        Toast.LENGTH_LONG
+                    ).show()
             }
         }
 
