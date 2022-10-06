@@ -107,4 +107,8 @@
         android:id="@+id/webviewFragment"
         android:name="com.thesunnahrevival.sunnahassistant.views.WebViewFragment"
         android:label="@string/developers_messages" />
+    <fragment
+        android:id="@+id/backupRestoreFragment"
+        android:name="com.thesunnahrevival.sunnahassistant.views.settings.BackupRestoreFragment"
+        android:label="@string/backup_restore_data" />
 </navigation>

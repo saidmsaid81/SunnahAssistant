@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
+import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
@@ -22,6 +26,9 @@ import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
@@ -245,5 +252,73 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             }
         }
     }
+
+
+    fun backupData(dataUri: Uri?): Pair<Boolean, String> {
+        var outputStream: OutputStream? = null
+        val applicationContext = getApplication<Application>().applicationContext
+        return try {
+
+            outputStream =
+                dataUri?.let { applicationContext.contentResolver.openOutputStream(it) }
+            if (outputStream != null) {
+                mRepository.closeDB()
+                outputStream.write(applicationContext.getDatabasePath(DB_NAME).readBytes())
+                Pair(true, applicationContext.getString(R.string.backup_successful))
+            } else {
+                Pair(false, "")
+            }
+        } catch (exception: Exception) {
+            Log.e("Back up Exception", exception.message.toString())
+            Pair(false, applicationContext.getString(R.string.backup_failed))
+        } finally {
+            outputStream?.close()
+        }
+    }
+
+    suspend fun restoreData(dataUri: Uri?): Pair<Boolean, String> {
+        return withContext(Dispatchers.IO) {
+            val applicationContext = getApplication<Application>().applicationContext
+            var backupInputStream: InputStream? = null
+            var restoredOutputStream: OutputStream? = null
+            val existingDataFile = File(applicationContext.filesDir, DB_NAME)
+            val databaseFile = applicationContext.getDatabasePath(DB_NAME)
+            return@withContext try {
+                backupInputStream =
+                    dataUri?.let { applicationContext.contentResolver.openInputStream(it) }
+                        ?: return@withContext Pair(false, "")
+
+                mRepository.closeDB()
+                val existingDBBytes = databaseFile.readBytes()
+                existingDataFile.writeBytes(existingDBBytes)
+                restoredOutputStream =
+                    applicationContext.contentResolver.openOutputStream(databaseFile.toUri())
+                restoredOutputStream?.write(backupInputStream.readBytes())
+
+                if (getAppSettingsValue() == null) {
+                    undoFailedRestore(databaseFile, existingDataFile)
+                    Pair(false, applicationContext.getString(R.string.restore_failed_invalid_file))
+                } else {
+                    Pair(true, applicationContext.getString(R.string.restore_successful))
+                }
+
+            } catch (exception: Exception) {
+                Log.e("Restore Exception", exception.toString())
+                undoFailedRestore(databaseFile, existingDataFile)
+                Pair(false, applicationContext.getString(R.string.restore_failed))
+            } finally {
+                backupInputStream?.close()
+                restoredOutputStream?.close()
+                existingDataFile.delete()
+            }
+        }
+
+    }
+
+    private fun undoFailedRestore(databaseFile: File, file: File) {
+        mRepository.closeDB()
+        databaseFile.writeBytes(file.readBytes())
+    }
+
 
 }

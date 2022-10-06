@@ -16,7 +16,10 @@ import com.thesunnahrevival.sunnahassistant.utilities.initialSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
+
+const val DB_NAME = "SunnahAssistant.db"
 
 @Database(entities = [Reminder::class, AppSettings::class], version = 5)
 @TypeConverters(RoomTypeConverter::class)
@@ -88,36 +91,47 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
         }
 
 
-        fun getInstance(context: Context): SunnahAssistantDatabase =
-            INSTANCE ?: synchronized(this) {
+        fun getInstance(context: Context): SunnahAssistantDatabase {
+            if (INSTANCE?.isOpen == false)
+                INSTANCE = null
+            return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
+        }
 
 
-        private fun buildDatabase(context: Context) = Room.databaseBuilder(
-            context.applicationContext,
-            SunnahAssistantDatabase::class.java, "SunnahAssistant.db"
-        )
+        private fun buildDatabase(context: Context): SunnahAssistantDatabase {
+            return Room.databaseBuilder(
+                context.applicationContext,
+                SunnahAssistantDatabase::class.java, DB_NAME
+            )
                 .addCallback(
-                        object : Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                CoroutineScope(Dispatchers.IO).launch {
-                    INSTANCE?.reminderDao()?.insertReminder(
-                        demoReminder(
-                            context.getString(R.string.demo_reminder),
-                            context.resources.getStringArray(R.array.categories)[3]
-                        )
-                    )
+                    object : Callback() {
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val file = File(context.filesDir, DB_NAME)
+                                if (!file.exists()) {
+                                    INSTANCE?.reminderDao()?.insertReminder(
+                                        demoReminder(
+                                            context.getString(R.string.demo_reminder),
+                                            context.resources.getStringArray(R.array.categories)[3]
+                                        )
+                                    )
 
-                    val categories = TreeSet<String>()
-                    categories.addAll(context.resources.getStringArray(R.array.categories))
-                    INSTANCE?.reminderDao()?.insertSettings(initialSettings(categories))
-                }
-            }
+                                    val categories = TreeSet<String>()
+                                    categories.addAll(context.resources.getStringArray(R.array.categories))
+                                    INSTANCE?.reminderDao()
+                                        ?.insertSettings(initialSettings(categories))
+                                }
+
+                            }
+
                         }
+                    }
                 )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .build()
+        }
     }
 }

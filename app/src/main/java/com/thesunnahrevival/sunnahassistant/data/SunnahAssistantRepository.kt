@@ -21,10 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 
 class SunnahAssistantRepository private constructor(private val application: Application){
-    private val mReminderDao: ReminderDao = SunnahAssistantDatabase.getInstance(application).reminderDao()
+    private val mReminderDao: ReminderDao
+        get() = SunnahAssistantDatabase.getInstance(application).reminderDao()
     private val mGeocodingRestApi: GeocodingInterface
     private val mSunnahAssistantApi: SunnahAssistantApiInterface
     private var mDay = getDayDate(System.currentTimeMillis())
@@ -193,15 +193,17 @@ class SunnahAssistantRepository private constructor(private val application: App
         mSunnahAssistantApi.reportGeocodingError(status)
     }
 
+    fun closeDB() = SunnahAssistantDatabase.getInstance(application).close()
+
     companion object {
         @Volatile
         private var INSTANCE: SunnahAssistantRepository? = null
 
         @JvmStatic
         fun getInstance(application: Application): SunnahAssistantRepository =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: buildRepository(application).also { INSTANCE = it }
-                }
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildRepository(application).also { INSTANCE = it }
+            }
 
         private fun buildRepository(application: Application) = SunnahAssistantRepository(application)
     }

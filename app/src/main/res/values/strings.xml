@@ -201,6 +201,16 @@
   <string name="developers_messages">Developer Messages</string>
   <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
   <string name="share_message">Share Message</string>
+  <string name="backup_restore_data">Backup/ Restore Data</string>
+  <string name="restoring_app_data_will_delete_all_existing_data_and_replace_it_with_restored_data">Restoring App Data will delete all existing data and replace it with restored data.</string>
+  <string name="experimental_label">(Experimental)</string>
+  <string name="backing_up_data_please_wait">Backing up Data. Please Wait…</string>
+  <string name="restoring_data_please_wait">Restoring Data. Please Wait…</string>
+  <string name="backup_successful">Backup Successful</string>
+  <string name="backup_failed">Error! Backup Failed. Please try again</string>
+  <string name="restore_failed">Error! Restore failed. Please try again</string>
+  <string name="restore_failed_invalid_file">Error! Restore failed.\nReason: Not a Sunnah Assistant Database File. Please try again.</string>
+  <string name="restore_successful">App Data was successfully restored</string>
 
   <string-array name="reminder_filter">
     <item>Upcoming</item>
@@ -234,26 +244,32 @@
         <item>United Arab Emirates</item>
         <item>Moonsighting Committee</item>
         <item>Islamic Society of North America (ISNA)</item>
-        <item>Kuwait</item>
-        <item>Qatar</item>
-        <item>Singapore</item>
+      <item>Kuwait</item>
+      <item>Qatar</item>
+      <item>Singapore</item>
     </string-array>
 
-    <string-array name="asr_juristic_method">
-        <item>Standard(Hanbali, Shafi, Maliki)</item>
-        <item>Hanafi</item>
-    </string-array>
+  <string-array name="asr_juristic_method">
+    <item>Standard(Hanbali, Shafi, Maliki)</item>
+    <item>Hanafi</item>
+  </string-array>
 
-    <string-array name="settings_lists">
-        <item>Hijri Date Settings</item>
-        <item>Prayer Time Settings</item>
-        <item>Customize Reminder Categories</item>
-        <item>Notifications Settings</item>
-        <item>Layout and Theme Settings</item>
-        <item>Privacy Settings</item>
-        <item>Contact Us</item>
+  <string-array name="settings_lists">
+    <item>Hijri Date Settings</item>
+    <item>Prayer Time Settings</item>
+    <item>Customize Reminder Categories</item>
+    <item>Notifications Settings</item>
+    <item>Layout and Theme Settings</item>
+    <item>Backup/ Restore Data (Experimental)</item>
+    <item>Privacy Settings</item>
+    <item>Contact Us</item>
 
-    </string-array>
+  </string-array>
+
+  <string-array name="backup_restore_options">
+    <item>Backup App Data to Internal Storage</item>
+    <item>Restore App Data</item>
+  </string-array>
 
   <string-array name="layout_options">
     <item>Expanded View</item>
