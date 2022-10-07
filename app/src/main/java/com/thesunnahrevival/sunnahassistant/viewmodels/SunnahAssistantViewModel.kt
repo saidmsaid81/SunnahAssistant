@@ -16,6 +16,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
 import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME
+import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.Reminder
@@ -281,7 +282,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             val applicationContext = getApplication<Application>().applicationContext
             var backupInputStream: InputStream? = null
             var restoredOutputStream: OutputStream? = null
-            val existingDataFile = File(applicationContext.filesDir, DB_NAME)
+            val existingDataFile = applicationContext.getDatabasePath(DB_NAME_TEMP)
             val databaseFile = applicationContext.getDatabasePath(DB_NAME)
             return@withContext try {
                 backupInputStream =
@@ -315,9 +316,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     }
 
-    private fun undoFailedRestore(databaseFile: File, file: File) {
+    private fun undoFailedRestore(databaseFile: File, existingDataFile: File) {
         mRepository.closeDB()
-        databaseFile.writeBytes(file.readBytes())
+        databaseFile.writeBytes(existingDataFile.readBytes())
     }
 
 

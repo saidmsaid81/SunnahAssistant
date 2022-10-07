@@ -16,10 +16,10 @@ import com.thesunnahrevival.sunnahassistant.utilities.initialSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 import java.util.*
 
 const val DB_NAME = "SunnahAssistant.db"
+const val DB_NAME_TEMP = "SunnahAssistant_temp.db"
 
 @Database(entities = [Reminder::class, AppSettings::class], version = 5)
 @TypeConverters(RoomTypeConverter::class)
@@ -110,8 +110,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             CoroutineScope(Dispatchers.IO).launch {
-                                val file = File(context.filesDir, DB_NAME)
-                                if (!file.exists()) {
+                                val tempDBBackup = context.getDatabasePath(DB_NAME_TEMP)
+                                if (!tempDBBackup.exists()) {
                                     INSTANCE?.reminderDao()?.insertReminder(
                                         demoReminder(
                                             context.getString(R.string.demo_reminder),
