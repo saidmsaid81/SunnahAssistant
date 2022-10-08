@@ -201,9 +201,8 @@
   <string name="developers_messages">Developer Messages</string>
   <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
   <string name="share_message">Share Message</string>
-  <string name="backup_restore_data">Backup/ Restore Data</string>
+  <string name="backup_restore_data">Backup/ Restore Data (Experimental)</string>
   <string name="restoring_app_data_will_delete_all_existing_data_and_replace_it_with_restored_data">Restoring App Data will delete all existing data and replace it with restored data.</string>
-  <string name="experimental_label">(Experimental)</string>
   <string name="backing_up_data_please_wait">Backing up Data. Please Wait…</string>
   <string name="restoring_data_please_wait">Restoring Data. Please Wait…</string>
   <string name="backup_successful">Backup Successful</string>
@@ -211,6 +210,17 @@
   <string name="restore_failed">Error! Restore failed. Please try again</string>
   <string name="restore_failed_invalid_file">Error! Restore failed.\nReason: Not a Sunnah Assistant Database File. Please try again.</string>
   <string name="restore_successful">App Data was successfully restored</string>
+  <string name="restore_failed_incorrect_password">Error! Restore failed due to incorrect password</string>
+  <string name="restore_encrypted_data_label">Restore Encrypted Data</string>
+  <string name="enter_decryption_password">Enter Decryption Password</string>
+  <string name="restore_data_button">Restore Data</string>
+  <string name="password_cannot_be_blank">Password cannot be blank</string>
+  <string name="backup_data">Backup Data</string>
+  <string name="password_doesnt_match">Password doesn\'t match</string>
+  <string name="protect_backup_with_password">Protect backup with Password</string>
+  <string name="protect_with_password">Protect with Password</string>
+  <string name="confirm_password">Confirm Password</string>
+  <string name="important_if_you_forget_the_password_there_is_no_way_the_app_can_help_you_retrieve_it">Important: If you forget the password, there is no way the app can help you retrieve it</string>
 
   <string-array name="reminder_filter">
     <item>Upcoming</item>

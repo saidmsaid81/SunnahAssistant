@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.settings
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,18 +16,25 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.views.dialogs.EncryptBackupFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterDecryptionPasswordFragment
 import kotlinx.android.synthetic.main.fragment_backup_restore.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-private const val WRITE_FILE = 1
-private const val READ_FILE = 2
+private const val WRITE_FILE = 0
+private const val READ_FILE = 1
 
-class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener {
+class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
+    EnterDecryptionPasswordFragment.EnterDecryptionPasswordFragmentListener,
+    EncryptBackupFragment.EncryptBackupFragmentListener {
+
     private lateinit var mViewModel: SunnahAssistantViewModel
+    private var password: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -35,8 +43,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_backup_restore, container, false)
-        view.findViewById<TextView>(R.id.title).text =
-            "${getString(R.string.backup_restore_data)} ${getString(R.string.experimental_label)}"
+        view.findViewById<TextView>(R.id.title).text = getString(R.string.backup_restore_data)
         val listView = view.findViewById<ListView>(R.id.options_list)
         listView.adapter =
             ArrayAdapter(
@@ -52,15 +59,13 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener {
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (position) {
-            0 -> {
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "application/x-sqlite3"
-                    putExtra(Intent.EXTRA_TITLE, DB_NAME)
+            WRITE_FILE -> {
+                val encryptBackupFragment = EncryptBackupFragment().apply {
+                    setListener(this@BackupRestoreFragment)
                 }
-                startActivityForResult(intent, WRITE_FILE)
+                encryptBackupFragment.show(requireActivity().supportFragmentManager, "backupData")
             }
-            1 -> {
+            READ_FILE -> {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     type = "application/octet-stream"
                 }
@@ -74,14 +79,30 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener {
         when (requestCode) {
             WRITE_FILE -> {
                 updateStatusMessage(getString(R.string.backing_up_data_please_wait), null)
-                val backupMessage = mViewModel.backupData(data?.data)
+                val password = this.password
+                val backupMessage = if (password != null)
+                    mViewModel.backupEncryptedData(data?.data, password)
+                else
+                    mViewModel.backupPlainData(data?.data)
                 updateStatusMessage(backupMessage.second, backupMessage.first)
+                this.password = null
             }
             READ_FILE -> {
                 mViewModel.viewModelScope.launch(Dispatchers.Main) {
                     updateStatusMessage(getString(R.string.restoring_data_please_wait), null)
-                    val restoreMessage = mViewModel.restoreData(data?.data)
-                    updateStatusMessage(restoreMessage.second, restoreMessage.first)
+                    val restoreMessage = mViewModel.restorePlainData(data?.data)
+                    if (restoreMessage.first == null) {
+                        val enterDecryptionPasswordFragment =
+                            EnterDecryptionPasswordFragment().apply {
+                                setListener(this@BackupRestoreFragment)
+                                setDataUri(data?.data)
+                            }
+                        enterDecryptionPasswordFragment.show(
+                            requireActivity().supportFragmentManager,
+                            "enterDecryptionPassword"
+                        )
+                    } else
+                        updateStatusMessage(restoreMessage.second, restoreMessage.first)
                 }
             }
         }
@@ -102,5 +123,32 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener {
         message.text = statusMessage
         message.setTextColor(ContextCompat.getColor(requireContext(), textColor))
         message.visibility = View.VISIBLE
+    }
+
+    override fun onRestoreEncryptedDataClick(uri: Uri?, password: String) {
+        if (password.isBlank())
+            updateStatusMessage("", null)
+        mViewModel.viewModelScope.launch(Dispatchers.Main) {
+            val encryptedRestoreMessage = mViewModel.restoreEncryptedData(uri, password)
+            updateStatusMessage(
+                encryptedRestoreMessage.second,
+                encryptedRestoreMessage.first ?: false
+            )
+        }
+    }
+
+    override fun onBackupDataClick(password: String?) {
+        if (password?.isBlank() == true) {
+            updateStatusMessage("", null)
+        } else {
+            val timestamp = SimpleDateFormat("ddMMyyyy_HHmmss", Locale.ENGLISH).format(Date())
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/x-sqlite3"
+                putExtra(Intent.EXTRA_TITLE, "SunnahAssistant_$timestamp.db")
+            }
+            this.password = password
+            startActivityForResult(intent, WRITE_FILE)
+        }
     }
 }
