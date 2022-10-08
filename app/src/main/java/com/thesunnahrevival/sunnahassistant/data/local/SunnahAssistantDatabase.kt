@@ -96,18 +96,15 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 )
 
                 database.execSQL(
-                    "ALTER TABLE app_settings ADD COLUMN enablePrayerTimeAlertsFor TEXT DEFAULT \"\" NOT NULL"
+                    "ALTER TABLE app_settings ADD COLUMN enablePrayerTimeAlertsFor TEXT DEFAULT '' NOT NULL"
                 )
 
                 database.execSQL(
-                    "ALTER TABLE app_settings ADD COLUMN prayerTimeOffsetsInMinutes TEXT DEFAULT \"\" NOT NULL"
+                    "ALTER TABLE app_settings ADD COLUMN prayerTimeOffsetsInMinutes TEXT DEFAULT '' NOT NULL"
                 )
 
                 database.execSQL(
-                    "ALTER TABLE reminders_table ADD COLUMN isComplete TEXT DEFAULT \"\" NOT NULL"
-                )
-                database.execSQL(
-                    "ALTER TABLE reminders_table RENAME COLUMN offset TO offsetInMinutes"
+                    "ALTER TABLE reminders_table ADD COLUMN completedDates TEXT DEFAULT '' NOT NULL"
                 )
                 database.execSQL(
                     "ALTER TABLE reminders_table ADD COLUMN predefinedReminderInfo TEXT DEFAULT '' NOT NULL"
@@ -161,7 +158,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     "UPDATE reminders_table SET day = 1, month = 0, year = 1" +
                             " WHERE (day NOT BETWEEN 1 AND 28)" +
                             " AND month = 1" +
-                            " AND MOD(year, 4) != 0" +
+                            " AND year % 4 != 0" +
                             " AND frequency = 0 "
                 )
 
@@ -170,7 +167,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     "UPDATE reminders_table SET day = 1, month = 0, year = 1 " +
                             " WHERE (day NOT BETWEEN 1 AND 29)" +
                             " AND month = 1" +
-                            " AND MOD(year, 4) = 0" +
+                            " AND year % 4 = 0" +
                             " AND frequency = 0 "
                 )
 

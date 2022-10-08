@@ -104,7 +104,7 @@ interface ToDoDao {
     ): List<ToDo>
 
     @Query(
-        "SELECT (timeInSeconds + (offsetInMinutes * 60)) AS time FROM reminders_table WHERE " +
+        "SELECT (timeInSeconds + (offset * 60)) AS time FROM reminders_table WHERE " +
                 " time > :offsetFromMidnight AND " +
                 " ((day == :day AND month == :month AND year == :year) OR " +
                 " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
@@ -124,13 +124,13 @@ interface ToDoDao {
 
     @Query(
         "SELECT * FROM reminders_table WHERE " +
-                " (timeInSeconds + (offsetInMinutes * 60)) == :timeForToDo AND " +
+                " (timeInSeconds + (offset * 60)) == :timeForToDo AND " +
                 " ((day == :day AND month == :month AND year == :year) OR " +
                 " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
                 " (day == 0 AND repeatsFromDate <= :date) OR " +
                 " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
                 ") " +
-                " AND isEnabled ORDER BY (timeInSeconds + (offsetInMinutes * 60))"
+                " AND isEnabled ORDER BY (timeInSeconds + (offset * 60))"
     )
     suspend fun getNextScheduledToDosForDay(
         timeForToDo: Long,
@@ -161,7 +161,7 @@ interface ToDoDao {
     fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ToDoDate>
 
     @Query(
-        "UPDATE reminders_table SET offsetInMinutes =:offsetValue, reminderInfo =:additionalInfo," +
+        "UPDATE reminders_table SET offset =:offsetValue, reminderInfo =:additionalInfo," +
                 " isEnabled = :isEnabled, completedDates = :completedDates" +
                 " WHERE id == :id"
     )
@@ -181,7 +181,7 @@ interface ToDoDao {
 
     @Query(
         "UPDATE reminders_table SET timeInSeconds = :timeInSeconds, isEnabled = :isEnabled," +
-                " offsetInMinutes = :offsetInMinutes WHERE id == :id"
+                " offset = :offsetInMinutes WHERE id == :id"
     )
     suspend fun updateGeneratedPrayerTime(
         id: Int,

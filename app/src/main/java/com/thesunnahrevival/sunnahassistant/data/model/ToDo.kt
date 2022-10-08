@@ -18,7 +18,7 @@ data class ToDo(
     var day: Int,
     var month: Int,
     var year: Int,
-    var offsetInMinutes: Int = 0,
+    @ColumnInfo(name = "offset") var offsetInMinutes: Int = 0,
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var customScheduleDays: TreeSet<Int>? = TreeSet(),
     var completedDates: TreeSet<String> = TreeSet(),
