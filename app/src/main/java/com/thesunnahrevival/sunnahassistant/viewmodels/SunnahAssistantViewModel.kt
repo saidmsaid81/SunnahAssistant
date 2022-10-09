@@ -5,24 +5,34 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
+import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME
+import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.Encryption
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.time.LocalDate
 import java.util.*
+import javax.crypto.BadPaddingException
 
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
@@ -31,7 +41,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var selectedToDo =
         ToDo(
             name = "", frequency = Frequency.OneTime,
-            category = application.resources.getStringArray(com.thesunnahrevival.sunnahassistant.R.array.categories)[0], //Uncategorized
+            category = application.resources.getStringArray(R.array.categories)[0], //Uncategorized
             day = LocalDate.now().dayOfMonth,
             month = LocalDate.now().month.ordinal,
             year = LocalDate.now().year
@@ -236,6 +246,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     !connectivityManager.activeNetworkInfo!!.isConnected
         }
 
+
     fun localeUpdate() {
         if (supportedLocales.contains(Locale.getDefault().language)) {
             val configuration =
@@ -257,7 +268,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             val newPrayerNames = getContext().resources.getStringArray(R.array.prayer_names)
 
             val templateToDos = getTemplateToDos()
-
             viewModelScope.launch(Dispatchers.IO) {
                 for ((index, oldCategoryName) in oldCategoryNames.withIndex()) {
                     mRepository.updateCategory(oldCategoryName, newCategoryNames[index])
@@ -287,6 +297,158 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+
     fun getTemplateToDos() = TemplateToDos().getTemplateToDos(getContext())
 
+    fun backupPlainData(dataUri: Uri?): Pair<Boolean, String> {
+        val dbPlainData = getContext().getDatabasePath(DB_NAME).readBytes()
+        return doBackup(dataUri, dbPlainData)
+    }
+
+    fun backupEncryptedData(dataUri: Uri?, password: String): Pair<Boolean, String> {
+        val encryptedData = Encryption().encrypt(
+            getContext().getDatabasePath(DB_NAME).readBytes(),
+            password
+        )
+        return doBackup(dataUri, encryptedData)
+    }
+
+    private fun doBackup(dataUri: Uri?, inputData: Any): Pair<Boolean, String> {
+        return try {
+            val outputStream =
+                dataUri?.let { getContext().contentResolver.openOutputStream(it) }
+                    ?: return Pair(false, "")
+
+            mRepository.closeDB()
+
+            if (inputData is ByteArray) { //Plain Text
+                outputStream.use {
+                    it.write(inputData)
+                }
+            } else { //Encrypted
+                ObjectOutputStream(outputStream).use {
+                    it.writeObject(inputData)
+                }
+            }
+
+            Pair(true, getContext().getString(R.string.backup_successful))
+        } catch (exception: Exception) {
+            Log.e("Back up Exception", exception.message.toString())
+            Pair(false, getContext().getString(R.string.backup_failed))
+        }
+    }
+
+    suspend fun restorePlainData(dataUri: Uri?): Pair<Boolean?, String> {
+        val backupInputStream =
+            dataUri?.let { getContext().contentResolver.openInputStream(it) }
+                ?: return Pair(false, "")
+
+        return doRestore(backupInputStream.readBytes())
+    }
+
+    suspend fun restoreEncryptedData(dataUri: Uri?, password: String): Pair<Boolean?, String> {
+        val backupInputStream =
+            dataUri?.let { getContext().contentResolver.openInputStream(it) }
+                ?: return Pair(false, "")
+
+        return withContext(Dispatchers.IO) {
+            try {
+                ObjectInputStream(backupInputStream).use {
+                    when (val data = it.readObject()) {
+                        is Map<*, *> -> {
+                            if (data.containsKey("iv") && data.containsKey("salt") && data.containsKey(
+                                    "encrypted"
+                                )
+                            ) {
+                                val iv = data["iv"]
+                                val salt = data["salt"]
+                                val encrypted = data["encrypted"]
+
+                                val decrypted =
+                                    if (iv is ByteArray && salt is ByteArray && encrypted is ByteArray) {
+                                        Encryption().decrypt(
+                                            hashMapOf(
+                                                "iv" to iv,
+                                                "salt" to salt,
+                                                "encrypted" to encrypted
+                                            ), password
+                                        )
+                                    } else
+                                        null
+                                if (decrypted != null)
+                                    return@withContext doRestore(decrypted)
+
+
+                            }
+                        }
+                    }
+                }
+                return@withContext Pair(
+                    false,
+                    getContext().getString(R.string.restore_failed_invalid_file)
+                )
+            } catch (exception: Exception) {
+                Log.e("Decryption Exception", exception.toString())
+                when (exception) {
+                    is BadPaddingException -> {
+                        return@withContext Pair(
+                            false,
+                            getContext().getString(R.string.restore_failed_incorrect_password)
+                        )
+                    }
+                    else -> return@withContext Pair(
+                        false,
+                        getContext().getString(R.string.restore_failed_invalid_file)
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun doRestore(dataToRestore: ByteArray): Pair<Boolean?, String> {
+        return withContext(Dispatchers.IO) {
+            val existingDataTempFile = getContext().getDatabasePath(DB_NAME_TEMP)
+            val databaseFile = getContext().getDatabasePath(DB_NAME)
+            return@withContext try {
+                mRepository.closeDB()
+
+                val restoredOutputStream =
+                    getContext().contentResolver.openOutputStream(databaseFile.toUri())
+
+                restoredOutputStream?.use {
+
+                    //Create a temp db file which will be used if restoring fails
+                    val existingDBBytes = databaseFile.readBytes()
+                    existingDataTempFile.writeBytes(existingDBBytes)
+
+                    it.write(dataToRestore)
+
+                    if (getAppSettingsValue() == null) {
+                        undoFailedRestore(databaseFile, existingDataTempFile)
+                        return@withContext Pair(
+                            null,
+                            ""
+                        )
+                    } else
+                        return@withContext Pair(
+                            true,
+                            getContext().getString(R.string.restore_successful)
+                        )
+                }
+
+                Pair(false, getContext().getString(R.string.restore_failed))
+            } catch (exception: Exception) {
+                Log.e("Restore Exception", exception.toString())
+                undoFailedRestore(databaseFile, existingDataTempFile)
+                Pair(false, getContext().getString(R.string.restore_failed))
+            } finally {
+                existingDataTempFile.delete()
+            }
+        }
+    }
+
+    private fun undoFailedRestore(databaseFile: File, existingDataFile: File) {
+        mRepository.closeDB()
+        databaseFile.writeBytes(existingDataFile.readBytes())
+    }
 }

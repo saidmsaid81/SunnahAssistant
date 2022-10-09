@@ -239,15 +239,7 @@
     <item>المعيار (حنبلي، شافعي، مالكي)</item>
     <item>حنيفة</item>
   </string-array>
-  <string-array name="settings_lists">
-    <item>إعدادات تاريخ الهجري</item>
-    <item>إعدادات وقت الصلاة</item>
-    <item>تخصيص فئات التذكير</item>
-    <item>إعدادات الإشعارات</item>
-    <item>إعدادات التخطيط والسمة</item>
-    <item>إعدادات الخصوصية</item>
-    <item>إتصل بنا</item>
-  </string-array>
+
   <string-array name="layout_options">
     <item>عرض موسع</item>
     <item>عرض مختصر</item>
@@ -304,5 +296,15 @@
     <item>أكتوبر</item>
     <item>نوفمبر</item>
     <item>ديسمبر</item>
+  </string-array>
+  <string-array name="settings_lists">
+    <item>إعدادات تاريخ الهجري</item>
+    <item>إعدادات وقت الصلاة</item>
+    <item>تخصيص فئات التذكير</item>
+    <item>إعدادات الإشعارات</item>
+    <item>إعدادات التخطيط والسمة</item>
+    <item>النسخ الاحتياطي / استعادة البيانات (تجريبي)</item>
+    <item>إعدادات الخصوصية</item>
+    <item>إتصل بنا</item>
   </string-array>
 </resources>

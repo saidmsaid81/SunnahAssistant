@@ -20,9 +20,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
 import java.util.*
 
-class SunnahAssistantRepository private constructor(context: Context) {
-    private val mToDoDao: ToDoDao =
-        SunnahAssistantDatabase.getInstance(context).toDoDao()
+class SunnahAssistantRepository private constructor(private val applicationContext: Context) {
+    private val mToDoDao: ToDoDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
+
     private val mGeocodingRestApi: GeocodingInterface
     private val mSunnahAssistantApi: SunnahAssistantApiInterface
     private val prayerNames: Array<String>
@@ -40,8 +41,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
             .build()
             .create(SunnahAssistantApiInterface::class.java)
 
-        prayerNames = context.resources.getStringArray(R.array.prayer_names)
-        prayerCategory = context.resources.getStringArray(R.array.categories)[2]
+        prayerNames = applicationContext.resources.getStringArray(R.array.prayer_names)
+        prayerCategory = applicationContext.resources.getStringArray(R.array.categories)[2]
 
     }
 
@@ -315,6 +316,8 @@ class SunnahAssistantRepository private constructor(context: Context) {
         mSunnahAssistantApi.reportGeocodingError(status)
     }
 
+    fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).close()
+
     companion object {
         @Volatile
         private var INSTANCE: SunnahAssistantRepository? = null
@@ -326,6 +329,6 @@ class SunnahAssistantRepository private constructor(context: Context) {
             }
 
         private fun buildRepository(context: Context) =
-            SunnahAssistantRepository(context)
+            SunnahAssistantRepository(context.applicationContext)
     }
 }
