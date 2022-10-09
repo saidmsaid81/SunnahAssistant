@@ -2,54 +2,56 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <item
+      android:id="@+id/settings"
+      android:icon="@drawable/ic_settings"
+      android:title="@string/settings"
+      app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/dark_mode_switch"
+      android:title="@string/switch_to_dark_mode"
+      android:icon="@drawable/ic_toggle_theme"
+      app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/settings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/settings"
-        app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/backup_restore"
+      android:title="@string/backup_restore_data"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/dark_mode_switch"
-        android:title="@string/switch_to_dark_mode"
-        android:icon="@drawable/ic_toggle_theme"
-        app:showAsAction="ifRoom" />
+  <item
+      android:id="@+id/share_app"
+      android:title="@string/share_app"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/share_app"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share_app"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/feedback"
+      android:title="@string/send_feedback"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/feedback"
-        android:title="@string/send_feedback"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/about"
+      android:title="@string/about_app"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/about"
-        android:title="@string/about_app"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/rate_this_app"
+      android:title="@string/rate_this_app"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/rate_this_app"
-        android:title="@string/rate_this_app"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/help_translate_app"
+      android:title="@string/help_translate_app_button"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/help_translate_app"
-        android:title="@string/help_translate_app_button"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/more_apps"
+      android:title="@string/more_apps"
+      app:showAsAction="never" />
 
-    <item
-        android:id="@+id/more_apps"
-        android:title="@string/more_apps"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/oss_licenses"
-        android:title="@string/open_source_licenses"
-        app:showAsAction="never" />
+  <item
+      android:id="@+id/oss_licenses"
+      android:title="@string/open_source_licenses"
+      app:showAsAction="never" />
 
 
 </menu>

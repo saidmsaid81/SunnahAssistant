@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*
 
+const val DB_NAME = "SunnahAssistant.db"
+const val DB_NAME_TEMP = "SunnahAssistant_temp.db"
+
 @Database(entities = [ToDo::class, AppSettings::class], version = 6)
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
@@ -186,11 +189,13 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
         }
 
 
-        fun getInstance(context: Context): SunnahAssistantDatabase =
-            INSTANCE ?: synchronized(this) {
+        fun getInstance(context: Context): SunnahAssistantDatabase {
+            if (INSTANCE?.isOpen == false)
+                INSTANCE = null
+            return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
-
+        }
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(
             context.applicationContext,
@@ -200,17 +205,20 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            INSTANCE?.toDoDao()?.insertToDo(
-                                demoToDo(
-                                    context.getString(R.string.demo_to_dos),
-                                    context.resources.getStringArray(R.array.categories)[3]
+                        val tempDBBackup = context.getDatabasePath(DB_NAME_TEMP)
+                        if (!tempDBBackup.exists()) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                INSTANCE?.toDoDao()?.insertToDo(
+                                    demoToDo(
+                                        context.getString(R.string.demo_to_dos),
+                                        context.resources.getStringArray(R.array.categories)[3]
+                                    )
                                 )
-                            )
 
-                            val categories = TreeSet<String>()
-                            categories.addAll(context.resources.getStringArray(R.array.categories))
-                            INSTANCE?.toDoDao()?.insertSettings(initialSettings(categories))
+                                val categories = TreeSet<String>()
+                                categories.addAll(context.resources.getStringArray(R.array.categories))
+                                INSTANCE?.toDoDao()?.insertSettings(initialSettings(categories))
+                            }
                         }
                     }
                 }

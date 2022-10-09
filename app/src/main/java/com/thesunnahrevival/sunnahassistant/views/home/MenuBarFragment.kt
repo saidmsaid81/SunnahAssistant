@@ -97,6 +97,10 @@ abstract class MenuBarFragment : SunnahAssistantFragment() {
                     launchOSSLicensesActivity()
                     return true
                 }
+                R.id.backup_restore -> {
+                    findNavController().navigate(R.id.backupRestoreFragment)
+                    return true
+                }
             }
         }
 

@@ -77,8 +77,9 @@ class SettingsListFragment : Fragment(), AdapterView.OnItemClickListener {
             2 -> findNavController().navigate(R.id.customizeCategoriesFragment)
             3 -> findNavController().navigate(R.id.notificationSettingsFragment)
             4 -> findNavController().navigate(R.id.layoutSettingsFragment)
-            5 -> findNavController().navigate(R.id.privacyPolicyFragment)
-            6 -> {
+            5 -> findNavController().navigate(R.id.backupRestoreFragment)
+            6 -> findNavController().navigate(R.id.privacyPolicyFragment)
+            7 -> {
                 val intent = generateEmailIntent()
                 if (intent.resolveActivity(requireActivity().packageManager) != null)
                     startActivity(intent)
