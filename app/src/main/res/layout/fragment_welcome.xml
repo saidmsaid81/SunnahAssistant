@@ -46,15 +46,6 @@
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"/>
 
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/quick_setup_button"
-        android:text="@string/share_anonymous_usage_data_string"
-        android:layout_centerInParent="true"
-        android:checked="true"
-       />
 
     <TextView
         android:id="@+id/privacy_policy"

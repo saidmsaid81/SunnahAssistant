@@ -33,7 +33,6 @@ class WelcomeFragment : SunnahAssistantFragment() {
 
                 quick_setup_button.setOnClickListener {
                     if (settings != null) {
-                        checkbox.visibility = View.INVISIBLE
                         privacy_policy.visibility = View.INVISIBLE
                         read_privacy_policy.visibility = View.INVISIBLE
                         progress_bar.visibility = View.VISIBLE
@@ -47,7 +46,7 @@ class WelcomeFragment : SunnahAssistantFragment() {
                         }
 
                         settings.isFirstLaunch = false
-                        settings.shareAnonymousUsageData = checkbox.isChecked
+                        settings.shareAnonymousUsageData = false
                         mViewModel.updateSettings(settings)
                     }
                 }
