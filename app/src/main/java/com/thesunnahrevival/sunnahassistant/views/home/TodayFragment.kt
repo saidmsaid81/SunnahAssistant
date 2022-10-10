@@ -28,7 +28,7 @@ import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
-import com.thesunnahrevival.sunnahassistant.views.showOnBoardingTutorial
+import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import java.util.*
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
@@ -70,8 +70,9 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                         settings.isAfterUpdate -> findNavController().navigate(R.id.changelogFragment)
                         else -> {
                             if (settings.showOnBoardingTutorial) {
-                                showOnBoardingTutorial(
-                                    (activity as MainActivity), concatAdapter, mBinding.toDoList
+                                ShowcaseView().showOnBoardingTutorial(
+                                    (activity as MainActivity),
+                                    concatAdapter
                                 )
                                 settings.showOnBoardingTutorial = false
                                 mViewModel.updateSettings(settings)

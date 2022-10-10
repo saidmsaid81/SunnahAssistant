@@ -3,69 +3,14 @@ package com.thesunnahrevival.sunnahassistant.views
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.getkeepsafe.taptargetview.TapTarget
-import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.sergivonavi.materialbanner.Banner
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
-import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import kotlinx.android.synthetic.main.today_fragment.*
 import java.util.*
-
-fun showOnBoardingTutorial(
-    activity: MainActivity,
-    adapter: ConcatAdapter,
-    recyclerView: RecyclerView
-) {
-    TapTargetSequence(activity)
-        .targets(
-            TapTarget.forView(
-                activity.findViewById(R.id.fab),
-                activity.getString(R.string.add_new_to_do),
-                activity.getString(R.string.add_new_to_do_description)
-            )
-                .outerCircleColor(android.R.color.holo_blue_dark)
-                .cancelable(false)
-                .textColor(R.color.bottomSheetColor)
-                .transparentTarget(true),
-            TapTarget.forToolbarOverflow(
-                activity.findViewById<View>(R.id.toolbar) as Toolbar,
-                activity.getString(R.string.change_theme),
-                activity.getString(R.string.change_theme_description)
-            )
-                .outerCircleColor(android.R.color.holo_blue_dark)
-                .transparentTarget(true)
-                .cancelable(false)
-                .textColor(R.color.bottomSheetColor)
-                .tintTarget(true),
-            TapTarget.forView(
-                recyclerView,
-                activity.getString(R.string.edit_to_do),
-                activity.getString(R.string.edit_to_do_description)
-            )
-                .outerCircleColor(android.R.color.holo_blue_dark)
-                .cancelable(false)
-                .tintTarget(true)
-                .textColor(R.color.bottomSheetColor)
-                .transparentTarget(true)
-        )
-        .listener(object : TapTargetSequence.Listener {
-            override fun onSequenceFinish() {
-                (adapter.adapters[0] as ToDoListAdapter).deleteToDo(0)
-            }
-
-            override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
-            override fun onSequenceCanceled(lastTarget: TapTarget) {}
-        })
-        .start()
-
-}
 
 fun showHelpTranslateSnackBar(todayFragment: TodayFragment) {
     if (!supportedLocales.contains(Locale.getDefault().language)) {
