@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
+import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,6 +52,10 @@ open class MainActivity : AppCompatActivity() {
                 R.id.calendarFragment, R.id.tipsFragment -> {
                     bottom_navigation_view.visibility = View.VISIBLE
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                }
+                R.id.welcomeFragment -> {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    bottom_navigation_view.visibility = View.GONE
                 }
                 else -> bottom_navigation_view.visibility = View.GONE
             }
@@ -102,10 +107,7 @@ open class MainActivity : AppCompatActivity() {
 
         else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
             val random = Random.nextInt(1, 5)
-            //Work-around to get the active fragment
-            val navHostFragment: Fragment? = supportFragmentManager
-                .findFragmentById(R.id.myNavHostFragment)
-            val fragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
+            val fragment = getActiveFragment()
 
             if (fragment is TodayFragment && fragment !is CalendarFragment) {
                 when (random) {
@@ -123,6 +125,13 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getActiveFragment(): Fragment? {
+        //Work-around to get the active fragment
+        val navHostFragment: Fragment? = supportFragmentManager
+            .findFragmentById(R.id.myNavHostFragment)
+        return navHostFragment?.childFragmentManager?.fragments?.get(0)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.myNavHostFragment)
         val homeFragments = listOf(R.id.todayFragment, R.id.calendarFragment)
@@ -134,7 +143,10 @@ open class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        onSupportNavigateUp()
+        if (getActiveFragment() is WelcomeFragment)
+            finish()
+        else
+            onSupportNavigateUp()
     }
 
     override fun onPause() {
