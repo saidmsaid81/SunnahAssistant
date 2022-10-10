@@ -5,7 +5,7 @@
   <string name="switch_to_dark_mode">Switch To Dark Mode</string>
   <string name="to_do_name_label">Name</string>
   <string name="to_do_name_hint">Enter The Name of The To-Do</string>
-  <string name="edit_to_do">Edit To-Do</string>
+  <string name="edit_to_do">Manage To-Do</string>
   <string name="add_to_do">Add To-Do</string>
   <string name="to_do_category">Category</string>
   <string name="frequency">Repeat</string>
@@ -55,11 +55,21 @@
   <string name="facebook_logo">Facebook logo</string>
   <string name="no_email_app_installed">No Email App Installed</string>
   <string name="contact_us">Contact Us via E-mail</string>
-  <string name="change_theme">Tap to Change Theme or Layout</string>
-  <string name="change_theme_description">Themes:- Dark Theme or Light Theme\nLayout:- Expanded or Condensed</string>
+  <string name="change_theme">Tap to Change Theme</string>
+  <string name="change_theme_description">Dark Theme or Light Theme</string>
   <string name="add_new_to_do">Add To-Do</string>
   <string name="add_new_to_do_description">Tap To add any To-Do</string>
-  <string name="edit_to_do_description">~ Swipe Right or Left to delete To-Do\n~ Tap To edit To-Do\n~ Tap the bell icon (if time is set) to enable To-Do</string>
+  <string name="edit_to_do_description">
+    Tap To edit To-Do
+  </string>
+  <string name="gestures_demo">
+    Swipe Gestures
+  </string>
+  <string name="gestures_description">
+    ⬅️ Swipe Left To Delete
+    \n➡️ Swipe Right to Mark as Complete\n\n\n
+  </string>
+
   <string name="spinner_tutorial">To-Do\'s Switcher</string>
   <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly to-dos</string>
   <string name="support_developer">Support Developer</string>
