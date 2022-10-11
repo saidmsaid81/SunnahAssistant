@@ -294,6 +294,11 @@
   <string name="protect_with_password">Protect with Password</string>
   <string name="confirm_password">Confirm Password</string>
   <string name="important_if_you_forget_the_password_there_is_no_way_the_app_can_help_you_retrieve_it">Important: If you forget the password, there is no way the app can help you retrieve it</string>
+  <string name="resolve_malformed_to_dos">Resolve Malformed To-Dos</string>
+  <string name="fix">Fix</string>
+  <string name="delete_all">Delete All</string>
+  <string name="delete_all_malformed_todos">Delete all Malformed To-Dos</string>
+  <string name="confirm_deleting_malformed_to_dos">Do you really want to Delete ALL Malformed To-Dos</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>

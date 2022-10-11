@@ -125,8 +125,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 )
 
                 /**
-                 * This is just for precaution to prevent malformed reminders from triggering
-                 * IllegalArgumentException. Reset all malformed reminders to 1/1/1 then present
+                 * This is just for precaution to prevent malformed to-dos from triggering
+                 * IllegalArgumentException. Reset all malformed to-dos to 1/1/1 then present
                  * them to the user to fix them
                  */
                 //For one time reminders

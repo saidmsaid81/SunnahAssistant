@@ -117,11 +117,16 @@
 
   <fragment
       android:id="@+id/toDoDetailsFragment"
-      android:name="com.thesunnahrevival.sunnahassistant.views.home.ToDoDetailsFragment" />
+      android:name="com.thesunnahrevival.sunnahassistant.views.toDoDetails.ToDoDetailsFragment" />
 
   <fragment
       android:id="@+id/backupRestoreFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.BackupRestoreFragment"
       android:label="@string/backup_restore_data" />
+
+  <fragment
+      android:id="@+id/resolveMalformedToDosFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment"
+      android:label="@string/resolve_malformed_to_dos" />
 
 </navigation>

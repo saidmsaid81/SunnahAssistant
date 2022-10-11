@@ -18,6 +18,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
+import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +54,7 @@ open class MainActivity : AppCompatActivity() {
                     bottom_navigation_view.visibility = View.VISIBLE
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
-                R.id.welcomeFragment -> {
+                R.id.welcomeFragment, R.id.resolveMalformedToDosFragment -> {
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     bottom_navigation_view.visibility = View.GONE
                 }
@@ -143,7 +144,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (getActiveFragment() is WelcomeFragment)
+        if (getActiveFragment() is WelcomeFragment || getActiveFragment() is ResolveMalformedToDosFragment)
             finish()
         else
             onSupportNavigateUp()

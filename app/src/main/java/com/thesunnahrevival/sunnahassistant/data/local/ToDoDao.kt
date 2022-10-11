@@ -24,6 +24,9 @@ interface ToDoDao {
     @Delete
     suspend fun deleteToDo(toDo: ToDo)
 
+    @Delete
+    suspend fun deleteListOfToDos(toDosList: List<ToDo>)
+
     @Query(
         "SELECT EXISTS (SELECT * FROM reminders_table WHERE (" +
                 "category != :excludeCategory " +
@@ -44,6 +47,9 @@ interface ToDoDao {
 
     @Query("SELECT * FROM reminders_table WHERE id = :id")
     fun getToDo(id: Int): LiveData<ToDo?>
+
+    @Query("SELECT * FROM reminders_table WHERE day == 1 AND month == 0 AND year == 1 AND (frequency == 3 OR frequency == 0)")
+    fun getMalformedToDos(): Flow<List<ToDo>>
 
     @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999")
     fun getTemplateToDoIds(): LiveData<List<Int>>

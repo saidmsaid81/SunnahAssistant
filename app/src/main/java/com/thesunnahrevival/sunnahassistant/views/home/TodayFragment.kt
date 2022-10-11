@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
@@ -29,6 +30,9 @@ import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
@@ -52,6 +56,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         mBinding.toDoInteractionListener = this
         setupTheRecyclerView()
         getSettings()
+        checkIfThereAreMalformedToDos()
 
         return mBinding.root
     }
@@ -292,6 +297,17 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         }
 
     }
+
+    private fun checkIfThereAreMalformedToDos() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            mViewModel.getMalformedToDos().collectLatest {
+                if (it.isNotEmpty()) {
+                    findNavController().navigate(R.id.resolveMalformedToDosFragment)
+                }
+            }
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()

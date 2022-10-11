@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.views.home
+package com.thesunnahrevival.sunnahassistant.views.toDoDetails
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -165,11 +165,19 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun updateToDoDateView(day: Int, month: Int, year: Int) {
+        mBinding.toDoDate.setOnClickListener(this)
         when (Frequency.values()[mBinding.selectedFrequency]) {
             Frequency.OneTime -> {//No repeat
                 mMonth = if (month in 0..11) month else LocalDate.now().month.ordinal
-                mYear = if (year > 0) year else LocalDate.now().year
-
+                if (year >= 1970)
+                    mYear = year
+                else {
+                    mMonth = LocalDate.now().month.ordinal
+                    mDay = LocalDate.now().dayOfMonth
+                    mYear = LocalDate.now().year
+                    updateNoRepeatDate()
+                    return
+                }
                 val lengthOfMonth = LocalDate.of(mYear, mMonth + 1, 1).lengthOfMonth()
                 mDay = if (day in 1..lengthOfMonth) day else 1
                 updateNoRepeatDate()
@@ -180,8 +188,6 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             }
             else -> {}
         }
-
-        mBinding.toDoDate.setOnClickListener(this)
     }
 
     private fun updateNoRepeatDate() {
