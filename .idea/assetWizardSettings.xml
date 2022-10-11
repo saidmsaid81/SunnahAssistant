@@ -159,7 +159,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/home/saidmsaid81/Documents/Programs/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/tips_and_updates/baseline_tips_and_updates_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialicons/cancel/baseline_cancel_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -170,8 +170,8 @@
                         <option name="values">
                           <map>
                             <entry key="autoMirrored" value="true" />
-                            <entry key="color" value="413c41" />
-                            <entry key="outputName" value="ic_tips" />
+                            <entry key="color" value="f30808" />
+                            <entry key="outputName" value="ic_delete_forever" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/ic_toggle_theme.svg" />
                           </map>
                         </option>

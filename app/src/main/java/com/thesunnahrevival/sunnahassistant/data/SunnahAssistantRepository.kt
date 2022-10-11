@@ -54,7 +54,9 @@ class SunnahAssistantRepository private constructor(private val applicationConte
             mToDoDao.updateToDo(id, name, info, category)
     }
 
-    suspend fun deleteToDO(toDo: ToDo) = mToDoDao.deleteToDo(toDo)
+    suspend fun deleteToDo(toDo: ToDo) = mToDoDao.deleteToDo(toDo)
+
+    suspend fun deleteListOfToDos(toDos: List<ToDo>) = mToDoDao.deleteListOfToDos(toDos)
 
     fun thereToDosOnDay(
         excludeCategory: String,
@@ -69,6 +71,8 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     }
 
     fun getToDo(id: Int) = mToDoDao.getToDo(id)
+
+    fun getMalformedToDos() = mToDoDao.getMalformedToDos()
 
     fun getTemplateToDoIds() = mToDoDao.getTemplateToDoIds()
 

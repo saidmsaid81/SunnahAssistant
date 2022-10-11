@@ -90,7 +90,17 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun deleteToDo(toDo: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.deleteToDO(toDo)
+            mRepository.deleteToDo(toDo)
+            withContext(Dispatchers.Main) {
+                startService()
+                triggerCalendarUpdate.value = true
+            }
+        }
+    }
+
+    fun deleteListOfToDos(toDos: List<ToDo>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mRepository.deleteListOfToDos(toDos)
             withContext(Dispatchers.Main) {
                 startService()
                 triggerCalendarUpdate.value = true
@@ -106,6 +116,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun getToDo(id: Int) = mRepository.getToDo(id)
 
     fun getTemplateToDoIds() = mRepository.getTemplateToDoIds()
+
+    fun getMalformedToDos() = mRepository.getMalformedToDos()
 
     fun getIncompleteToDos(): LiveData<PagingData<ToDo>> {
         return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
