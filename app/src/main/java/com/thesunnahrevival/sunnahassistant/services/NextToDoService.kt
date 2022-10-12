@@ -1,10 +1,13 @@
 package com.thesunnahrevival.sunnahassistant.services
 
+import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
@@ -184,10 +187,19 @@ class NextToDoService : Service() {
         val stickyNotification: Notification = createNotification(
             context, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate
         )
-        if (isForegroundEnabled)
-            startForeground(1, stickyNotification)
-        else
-            context.stopForeground(true)
+        when {
+            isForegroundEnabled -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    try {
+                        startForeground(1, stickyNotification)
+                    } catch (exception: ForegroundServiceStartNotAllowedException) {
+                        Log.e("Exception", exception.message.toString())
+                    }
+                } else
+                    startForeground(1, stickyNotification)
+            }
+            else -> context.stopForeground(true)
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {

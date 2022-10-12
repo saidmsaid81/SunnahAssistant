@@ -28,7 +28,7 @@
       android:layout_gravity="center"
       android:contentDescription="@string/icon"
       android:paddingBottom="@dimen/default_dimen"
-      android:src="@drawable/logo"
+      android:src="@mipmap/logo"
       />
 
   <TextView
