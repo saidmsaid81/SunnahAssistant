@@ -14,7 +14,7 @@
 
   <item
       android:id="@+id/backup_restore"
-      android:title="@string/backup_restore_data"
+      android:title="@string/backup_restore_data_menu"
       app:showAsAction="never" />
 
   <item
