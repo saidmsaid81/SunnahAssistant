@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
@@ -64,8 +65,14 @@ class InAppBrowser(private val context: Context, lifecycleScope: LifecycleCorout
 
             actionIntent.putExtra(TEXTSUMMARY, link)
 
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+
             val pendingIntent = PendingIntent.getBroadcast(
-                context, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                context, 0, actionIntent, flags
             )
             builder.addMenuItem(
                 context.getString(R.string.share_message),

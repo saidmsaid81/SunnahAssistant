@@ -43,11 +43,17 @@ fun createNotification(
     val res = context.resources
 
     // This image is used as the notification's large icon (thumbnail).
-    val picture = BitmapFactory.decodeResource(res, R.drawable.logo)
+    val picture = BitmapFactory.decodeResource(res, R.mipmap.logo)
     val intent = Intent(context, MainActivity::class.java)
 
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+
     val activity = if (priority != -1)
-        PendingIntent.getActivity(context, 0, intent, 0)
+        PendingIntent.getActivity(context, 0, intent, flag)
     else
         NavDeepLinkBuilder(context)
             .setGraph(R.navigation.navigation)

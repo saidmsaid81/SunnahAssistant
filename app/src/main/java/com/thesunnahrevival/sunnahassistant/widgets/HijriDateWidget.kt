@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import com.thesunnahrevival.sunnahassistant.R
@@ -67,7 +68,14 @@ internal fun updateAppWidget(
         views.setViewVisibility(R.id.next_to_do_text, View.GONE)
 
     val widgetIntent = Intent(context, MainActivity::class.java)
-    val widgetPendingIntent = PendingIntent.getActivity(context, 0, widgetIntent, 0)
+
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+
+    val widgetPendingIntent = PendingIntent.getActivity(context, 0, widgetIntent, flag)
     views.setOnClickPendingIntent(R.id.widget, widgetPendingIntent)
 
     // Instruct the widget manager to update the widget

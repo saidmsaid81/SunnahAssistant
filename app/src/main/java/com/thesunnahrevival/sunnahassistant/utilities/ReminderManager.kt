@@ -33,15 +33,34 @@ class ReminderManager private constructor() {
         notificationIntent.putExtra(NOTIFICATION_VIBRATE, isVibrate)
         notificationIntent.putExtra(NOTIFICATION_CATEGORY, category)
         notificationIntent.putExtra(NOTIFICATION_DND_MINUTES, doNotDisturbMinutes)
-        return if (!isOneShot)
-            PendingIntent.getBroadcast(
-                context,
-                0,
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        else
-            PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT)
+        return when {
+            !isOneShot -> {
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    notificationIntent,
+                    flags
+                )
+            }
+            else -> {
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_ONE_SHOT
+                }
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    notificationIntent,
+                    flags
+                )
+            }
+        }
     }
 
     /**
@@ -108,15 +127,18 @@ class ReminderManager private constructor() {
     }
 
     companion object {
-        val NOTIFICATION_TITLE = "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
-        val NOTIFICATION_TEXT = "com.thesunnahrevival.sunnahassistant.utilities.notificationText"
-        val NOTIFICATION_TONE_URI =
+        const val NOTIFICATION_TITLE =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
+        const val NOTIFICATION_TEXT =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationText"
+        const val NOTIFICATION_TONE_URI =
             "com.thesunnahrevival.sunnahassistant.utilities.notificationToneUri"
-        val NOTIFICATION_VIBRATE =
+        const val NOTIFICATION_VIBRATE =
             "com.thesunnahrevival.sunnahassistant.utilities.notificationVibrate"
-        val NOTIFICATION_CATEGORY =
+        const val NOTIFICATION_CATEGORY =
             "com.thesunnahrevival.sunnahassistant.utilities.notificationCategory"
-        val NOTIFICATION_DND_MINUTES = "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
+        const val NOTIFICATION_DND_MINUTES =
+            "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
 
         @Volatile
         private var mRemManagerInstance: ReminderManager? = null
