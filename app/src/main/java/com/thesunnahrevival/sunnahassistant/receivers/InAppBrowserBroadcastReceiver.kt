@@ -6,19 +6,17 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.thesunnahrevival.sunnahassistant.R
 
-const val TEXTSUMMARY = "MESSAGE"
+const val LINK = "link"
 
 class InAppBrowserBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val url = intent.dataString
-        val message = intent.getStringExtra(TEXTSUMMARY)
-        if (url != null) {
+        val link = intent.getStringExtra(LINK)
+        if (link != null) {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(
                 Intent.EXTRA_TEXT,
-                "$message\n\n" +
-                        "$url\n\n" +
+                "$link\n\n" +
                         "${context.getString(R.string.get_sunnah_assistant)}\n" +
                         "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
             )
