@@ -33,7 +33,7 @@ data class ToDo(
     init {
         if (name?.isBlank() == true)
             name = null
-        if (additionalInfo == null)
+        if (additionalInfo.isNullOrBlank())
             additionalInfo = ""
         if (category?.isBlank() == true)
             category = null
