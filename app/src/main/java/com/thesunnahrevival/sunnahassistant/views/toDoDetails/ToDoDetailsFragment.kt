@@ -510,8 +510,8 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     }
 
-    private fun saveToDo() {
-        val newToDo = createNewToDo() ?: return
+    private fun saveToDo(): Boolean {
+        val newToDo = createNewToDo() ?: return false
         if (mToDo.isAutomaticPrayerTime()) { //Automatic prayer time
             if (newToDo.additionalInfo != mToDo.additionalInfo ||
                 mToDo.isReminderEnabled != newToDo.isReminderEnabled ||
@@ -537,6 +537,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 ).show()
         }
         findNavController().navigateUp()
+        return true
     }
 
     private fun createNewToDo(): ToDo? {
@@ -640,16 +641,18 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 true
             }
             R.id.share_to_do -> {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                shareIntent.putExtra(
-                    Intent.EXTRA_TEXT, shareToDoText()
-                )
-                val chooserIntent = Intent.createChooser(
-                    shareIntent,
-                    getString(R.string.share_to_do)
-                )
-                requireContext().startActivity(chooserIntent)
+                if (saveToDo()) {
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    shareIntent.putExtra(
+                        Intent.EXTRA_TEXT, shareToDoText()
+                    )
+                    val chooserIntent = Intent.createChooser(
+                        shareIntent,
+                        getString(R.string.share_to_do)
+                    )
+                    requireContext().startActivity(chooserIntent)
+                }
                 true
             }
 

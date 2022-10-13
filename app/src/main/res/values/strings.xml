@@ -245,7 +245,7 @@
   <string name="no">No</string>
   <string name="category_cannot_be_blank">Error! Category cannot be blank</string>
   <string name="info">Info</string>
-  <string name="share_to_do">Share To-Do</string>
+  <string name="share_to_do">Save &amp; Share To-Do</string>
   <string name="completed">Completed</string>
   <string name="powered_by_sunnah_assistant">Powered by Sunnah Assistant App</string>
   <string name="get_sunnah_assistant">Get Sunnah Assistant App at</string>
