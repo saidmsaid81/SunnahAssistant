@@ -113,7 +113,20 @@
                         tools:visibility="visible"
                         android:src="@drawable/ic_notifications_off"
                         android:layout_marginEnd="@dimen/margin_dimen"
-                        android:contentDescription="@string/reminder_off" />
+                        android:contentDescription="@string/reminder_off"
+                        />
+
+                  <ImageView
+                      android:id="@+id/more_details"
+                      android:layout_width="18dp"
+                      android:layout_height="18dp"
+                      android:layout_gravity="center_vertical"
+                      android:visibility="@{toDo.additionalInfo.length() > 0 ? View.VISIBLE : View.GONE}"
+                      tools:visibility="visible"
+                      android:src="@drawable/ic_additional_details"
+                      android:layout_marginEnd="@dimen/margin_dimen"
+                      android:contentDescription="@string/repeating_to_do"
+                      />
 
                   <ImageView
                       android:id="@+id/repeat"
