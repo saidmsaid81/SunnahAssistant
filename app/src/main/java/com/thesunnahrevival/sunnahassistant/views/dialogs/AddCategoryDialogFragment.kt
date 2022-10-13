@@ -24,7 +24,7 @@ class AddCategoryDialogFragment : DialogFragment() {
 
         // Get the layout inflater
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.add_category_dialog_layout, null)
+        val view = inflater.inflate(R.layout.fragment_add_category_dialog, null)
 
         builder.setView(view) // Add action buttons
             .setPositiveButton(R.string.save, null)

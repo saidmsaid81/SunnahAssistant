@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.databinding.HijriDateSettingsBinding
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentHijriDateSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import java.net.MalformedURLException
@@ -26,8 +26,8 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val binding: HijriDateSettingsBinding = DataBindingUtil.inflate(
-            inflater, R.layout.hijri_date_settings, container, false
+        val binding: FragmentHijriDateSettingsBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_hijri_date_settings, container, false
         )
 
 

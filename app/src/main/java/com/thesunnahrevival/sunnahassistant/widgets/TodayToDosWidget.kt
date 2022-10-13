@@ -37,7 +37,7 @@ internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManage
     intent.putExtra(TEXT_COLOR, textColor)
 
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.today_to_dos_widget)
+    val views = RemoteViews(context.packageName, R.layout.widget_today_to_dos)
     views.setRemoteAdapter(R.id.widgetListView, intent)
     views.setInt(R.id.widget, "setBackgroundColor", backgroundColor)
     views.setInt(R.id.widgetTitleLabel, "setTextColor", textColor)

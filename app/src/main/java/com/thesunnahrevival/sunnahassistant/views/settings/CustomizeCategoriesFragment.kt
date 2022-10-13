@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.databinding.CategoriesSettingsBinding
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentCustomizeCategoriesBinding
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.CategoriesSettingsAdapter
 import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
@@ -16,7 +16,7 @@ import java.util.*
 class CustomizeCategoriesFragment : SunnahAssistantFragment(),
     CategoriesSettingsAdapter.DeleteCategoryListener {
 
-    private lateinit var mBinding: CategoriesSettingsBinding
+    private lateinit var mBinding: FragmentCustomizeCategoriesBinding
     private val deletedCategories = arrayListOf<String>()
 
     override fun onCreateView(
@@ -26,7 +26,7 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         mBinding = DataBindingUtil.inflate(
-            inflater, R.layout.categories_settings, container, false
+            inflater, R.layout.fragment_customize_categories, container, false
         )
 
         mViewModel.getSettings().observe(viewLifecycleOwner) {

@@ -15,7 +15,7 @@ import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
-import com.thesunnahrevival.sunnahassistant.databinding.NotificationSettingsBinding
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.createToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.utilities.deleteToDoNotificationChannel
@@ -32,8 +32,8 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val binding: NotificationSettingsBinding = DataBindingUtil.inflate(
-            inflater, R.layout.notification_settings, container, false
+        val binding: FragmentNotificationSettingsBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_notification_settings, container, false
         )
 
         val options = resources.getStringArray(R.array.priority_options)

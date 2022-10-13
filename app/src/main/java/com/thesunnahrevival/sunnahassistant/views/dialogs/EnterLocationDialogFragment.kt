@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
-import kotlinx.android.synthetic.main.add_location_layout.view.*
+import kotlinx.android.synthetic.main.fragment_add_location.view.*
 
 
 class EnterLocationDialogFragment :DialogFragment() {
@@ -22,7 +22,7 @@ class EnterLocationDialogFragment :DialogFragment() {
 
         val builder = context?.let { AlertDialog.Builder(it) }
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.add_location_layout, null)
+        val view = inflater.inflate(R.layout.fragment_add_location, null)
         val settings = mViewModel?.settingsValue
         if (settings != null)
             view.location.setText(settings.formattedAddress)

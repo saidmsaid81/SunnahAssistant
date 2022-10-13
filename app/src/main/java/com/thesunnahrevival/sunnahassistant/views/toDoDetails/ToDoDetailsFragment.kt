@@ -39,7 +39,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
     TimePickerFragment.OnTimeSetListener, MenuProvider {
 
-    private lateinit var mBinding: com.thesunnahrevival.sunnahassistant.databinding.ToDoDetailsFragmentBinding
+    private lateinit var mBinding: com.thesunnahrevival.sunnahassistant.databinding.FragmentToDoDetailsBinding
     private lateinit var mToDo: ToDo
     private var mToDoCategories: ArrayList<String> = arrayListOf()
     private var mCustomScheduleDays: TreeSet<Int> = TreeSet()
@@ -57,7 +57,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         super.onCreateView(inflater, container, savedInstanceState)
 
         mBinding = DataBindingUtil.inflate(
-            inflater, R.layout.to_do_details_fragment, container, false
+            inflater, R.layout.fragment_to_do_details, container, false
         )
 
         mToDo = mViewModel.selectedToDo

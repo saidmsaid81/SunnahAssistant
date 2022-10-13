@@ -43,7 +43,7 @@ internal fun updateAppWidget(
     toDoTime: String?
 ) {
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.hijri_date_widget)
+    val views = RemoteViews(context.packageName, R.layout.widget_hijri_date)
     if (hijriText != null) {
         views.setViewVisibility(R.id.hijri_date_text, View.VISIBLE)
         views.setTextViewText(R.id.hijri_date_text, hijriText)

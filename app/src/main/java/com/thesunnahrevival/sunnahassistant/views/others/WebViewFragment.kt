@@ -8,7 +8,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.thesunnahrevival.sunnahassistant.R
-import kotlinx.android.synthetic.main.web_view_fragment.*
+import kotlinx.android.synthetic.main.fragment_web_view.*
 
 open class WebViewFragment : Fragment() {
     override fun onCreateView(
@@ -17,7 +17,7 @@ open class WebViewFragment : Fragment() {
     ): View {
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.web_view_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_web_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -15,7 +15,7 @@ import androidx.databinding.DataBindingUtil
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.databinding.PrayerTimeSettingsBinding
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
@@ -35,8 +35,8 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val binding: PrayerTimeSettingsBinding = DataBindingUtil.inflate(
-            inflater, R.layout.prayer_time_settings, container, false
+        val binding: FragmentPrayerTimeSettingsBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_prayer_time_settings, container, false
         )
 
         mViewModel.isPrayerSettingsUpdated = false
@@ -72,7 +72,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         return binding.root
     }
 
-    private fun setOnClickListeners(binding: PrayerTimeSettingsBinding) {
+    private fun setOnClickListeners(binding: FragmentPrayerTimeSettingsBinding) {
         yesNoOptions[0] = getString(R.string.yes)
         yesNoOptions[1] = getString(R.string.no)
 

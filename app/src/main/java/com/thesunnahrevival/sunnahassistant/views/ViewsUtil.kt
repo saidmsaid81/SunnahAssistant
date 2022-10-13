@@ -9,7 +9,7 @@ import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
-import kotlinx.android.synthetic.main.today_fragment.*
+import kotlinx.android.synthetic.main.fragment_today.*
 import java.util.*
 
 fun showHelpTranslateSnackBar(todayFragment: TodayFragment) {

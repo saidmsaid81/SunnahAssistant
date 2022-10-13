@@ -11,7 +11,7 @@ import com.kizitonwose.calendarview.model.CalendarDay
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.adapters.DayViewContainer
 import com.thesunnahrevival.sunnahassistant.views.customviews.CalendarView
-import kotlinx.android.synthetic.main.date_picker_fragment.*
+import kotlinx.android.synthetic.main.fragment_date_picker.*
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -25,7 +25,7 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.date_picker_fragment, container)
+        return inflater.inflate(R.layout.fragment_date_picker, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

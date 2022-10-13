@@ -12,7 +12,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.views.adapters.DayViewContainer
 import com.thesunnahrevival.sunnahassistant.views.customviews.CalendarView
-import kotlinx.android.synthetic.main.today_fragment.*
+import kotlinx.android.synthetic.main.fragment_today.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
