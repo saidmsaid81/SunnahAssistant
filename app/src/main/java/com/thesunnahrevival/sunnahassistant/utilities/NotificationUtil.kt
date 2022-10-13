@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 fun createNotification(
     context: Context,
+    id: Int,
     title: String?,
     text: String?,
     priority: Int,

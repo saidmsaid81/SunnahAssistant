@@ -130,13 +130,13 @@ class NextToDoService : Service() {
         val notificationToneUri: Uri? = settings.notificationToneUri
         val isVibrate: Boolean = settings.isVibrate
 
-        val names = Array(nextScheduledToDos.size) { "" }
-        val categories = Array(nextScheduledToDos.size) { "" }
+        val names = HashMap<Int, String>()
+        val categories = HashMap<Int, String>()
 
-        nextScheduledToDos.forEachIndexed { index, nextScheduledToDo: ToDo ->
+        nextScheduledToDos.forEach { nextScheduledToDo: ToDo ->
             nextScheduledToDo.name?.let { name ->
-                names[index] = name
-                categories[index] = nextScheduledToDo.category.toString()
+                names[nextScheduledToDo.id] = name
+                categories[nextScheduledToDo.id] = nextScheduledToDo.category.toString()
             }
 
         }
@@ -172,8 +172,8 @@ class NextToDoService : Service() {
                 ReminderManager.getInstance().scheduleReminder(
                     context = context,
                     title = "",
-                    texts = arrayOf(""),
-                    categories = arrayOf("null"),
+                    texts = mapOf(),
+                    categories = mapOf(),
                     timeInMilliseconds =
                     (-TimeZone.getDefault().rawOffset + 10).toLong() + (9 * 60 * 60 * 1000), //9AM local time
                     notificationUri = it,
@@ -185,7 +185,7 @@ class NextToDoService : Service() {
         }
 
         val stickyNotification: Notification = createNotification(
-            context, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate
+            context, 0, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate
         )
         when {
             isForegroundEnabled -> {
