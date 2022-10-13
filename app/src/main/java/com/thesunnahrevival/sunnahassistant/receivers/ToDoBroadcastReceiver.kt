@@ -82,6 +82,15 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                     doNotDisturbMinutes, notificationTitle, notificationToneUri, isVibrate
                 )
             }
+        } else {
+            val prayerCategory = context.resources.getStringArray(R.array.categories)[2]
+            if (category?.containsValue(prayerCategory) == true &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                notificationManager.isNotificationPolicyAccessGranted
+            ) {
+                //Disable DND
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+            }
         }
     }
 
@@ -119,8 +128,8 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                         calculateDelayFromMidnight = false, isOneShot = true
                     )
                 }
-            } else
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+            }
+
         }
     }
 }
