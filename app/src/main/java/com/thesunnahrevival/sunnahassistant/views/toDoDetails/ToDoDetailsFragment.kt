@@ -8,7 +8,10 @@ import android.util.Patterns
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
@@ -32,7 +35,7 @@ import java.util.*
 
 open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
-    TimePickerFragment.OnTimeSetListener {
+    TimePickerFragment.OnTimeSetListener, MenuProvider {
 
     private lateinit var mBinding: com.thesunnahrevival.sunnahassistant.databinding.ToDoDetailsFragmentBinding
     private lateinit var mToDo: ToDo
@@ -67,13 +70,14 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             mCustomScheduleDays.addAll(it)
         }
 
-        setHasOptionsMenu(true)
-
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
 
         mBinding.toDosName = mToDo.name
         mBinding.toDosAdditionalInfo = mToDo.additionalInfo
@@ -459,46 +463,6 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateToDoTimeView(timeString)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.to_do_menu, menu)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        if (mToDo.id == 0 || mToDo.isAutomaticPrayerTime()) //New or Automatic prayer time
-            menu.findItem(R.id.delete_to_do).title = getString(R.string.cancel)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.delete_to_do -> {
-                if (mToDo.isAutomaticPrayerTime() || mToDo.id == 0) {
-                    findNavController().navigateUp()
-                } else
-                    deleteToDo()
-                true
-            }
-            R.id.save_to_do -> {
-                saveToDo()
-                true
-            }
-            R.id.share_to_do -> {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                shareIntent.putExtra(
-                    Intent.EXTRA_TEXT, shareToDoText()
-                )
-                val chooserIntent = Intent.createChooser(
-                    shareIntent,
-                    getString(R.string.share_to_do)
-                )
-                requireContext().startActivity(chooserIntent)
-                true
-            }
-
-            else -> false
-        }
-    }
-
     private fun shareToDoText(): String {
 
         val toDoName = mBinding.toDoNameValue.text.toString()
@@ -653,6 +617,43 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             Integer.parseInt(mBinding.prayerOffsetValue.text.toString())
         } catch (error: NumberFormatException) {
             0
+        }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.to_do_menu, menu)
+        if (mToDo.id == 0 || mToDo.isAutomaticPrayerTime()) //New or Automatic prayer time
+            menu.findItem(R.id.delete_to_do).title = getString(R.string.cancel)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
+            R.id.delete_to_do -> {
+                if (mToDo.isAutomaticPrayerTime() || mToDo.id == 0) {
+                    findNavController().navigateUp()
+                } else
+                    deleteToDo()
+                true
+            }
+            R.id.save_to_do -> {
+                saveToDo()
+                true
+            }
+            R.id.share_to_do -> {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(
+                    Intent.EXTRA_TEXT, shareToDoText()
+                )
+                val chooserIntent = Intent.createChooser(
+                    shareIntent,
+                    getString(R.string.share_to_do)
+                )
+                requireContext().startActivity(chooserIntent)
+                true
+            }
+
+            else -> false
         }
     }
 }
