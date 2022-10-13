@@ -164,6 +164,7 @@
         android:padding="@dimen/margin_dimen"
         android:textAllCaps="false"
         app:backgroundTint="@color/fabColor"
+        android:textColor="@android:color/white"
         android:text="@string/contact_us" />
 
 </LinearLayout>

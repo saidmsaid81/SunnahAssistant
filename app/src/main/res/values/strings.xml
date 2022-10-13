@@ -47,7 +47,7 @@
   <string name="icon">app icon</string>
   <string name="credits">Credits</string>
   <string name="about">
-        Is a Free and &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/>Open Source&lt;/a> app&lt;br>
+        Is a Free and &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/>Open Source&lt;/a> app&lt;br>&lt;br>
         Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/>@saidmsaid81&lt;/a>)
     </string>
   <string name="app_icon_credit">Icons from: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a> </string>
