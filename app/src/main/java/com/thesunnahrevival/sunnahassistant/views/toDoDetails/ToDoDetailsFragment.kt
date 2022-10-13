@@ -1,11 +1,13 @@
 package com.thesunnahrevival.sunnahassistant.views.toDoDetails
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -134,6 +136,8 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
 
     private fun updateView() {
+        mBinding.toDoNameLayout.setOnClickListener(this)
+        mBinding.moreDetailsLayout.setOnClickListener(this)
         updateToDoFrequencyView(mToDo.frequency?.ordinal ?: 0)
         updateToDoCategoryView(mToDo.category)
         updateToDoTimeView(formatTimeInMilliseconds(context, mToDo.timeInMilliseconds))
@@ -307,6 +311,12 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
     override fun onClick(v: View?) {
         when (v?.id) {
+            R.id.to_do_name_layout -> {
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                mBinding.toDoNameValue.requestFocus()
+                inputMethodManager.showSoftInput(mBinding.toDoNameValue, 0)
+            }
             R.id.to_do_frequency -> {
                 if (!isAutomaticPrayerTime(R.string.repeat_cannot_be_changed))
                     showPopup(
@@ -387,6 +397,12 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 }
             R.id.notify -> {
                 onNotifyClick()
+            }
+            R.id.more_details_layout -> {
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                mBinding.moreDetailsValue.requestFocus()
+                inputMethodManager.showSoftInput(mBinding.moreDetailsValue, 0)
             }
         }
     }
@@ -566,7 +582,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         try {
             return ToDo(
                 toDoName,
-                mBinding.additionalDetails.text.toString(),
+                mBinding.moreDetailsValue.text.toString(),
                 getTimestampInSeconds(requireContext(), mTimeString),
                 mBinding.toDoCategoryValue.text.toString(),
                 frequency,
