@@ -14,7 +14,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.receivers.InAppBrowserBroadcastReceiver
-import com.thesunnahrevival.sunnahassistant.receivers.TEXTSUMMARY
+import com.thesunnahrevival.sunnahassistant.receivers.LINK
 import com.thesunnahrevival.sunnahassistant.services.InAppBrowserConnection
 import kotlinx.coroutines.launch
 import org.apache.commons.validator.routines.UrlValidator
@@ -63,7 +63,7 @@ class InAppBrowser(private val context: Context, lifecycleScope: LifecycleCorout
                 context, InAppBrowserBroadcastReceiver::class.java
             )
 
-            actionIntent.putExtra(TEXTSUMMARY, link)
+            actionIntent.putExtra(LINK, link)
 
             val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
