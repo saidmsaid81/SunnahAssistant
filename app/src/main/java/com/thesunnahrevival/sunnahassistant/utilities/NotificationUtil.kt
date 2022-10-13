@@ -6,13 +6,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.receivers.MARK_AS_COMPLETE
+import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
+import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 fun createNotification(
@@ -41,10 +43,10 @@ fun createNotification(
             category = "Developer"
     }
 
-    val res = context.resources
+//    val res = context.resources
 
     // This image is used as the notification's large icon (thumbnail).
-    val picture = BitmapFactory.decodeResource(res, R.mipmap.logo)
+//    val picture = BitmapFactory.decodeResource(res, R.mipmap.logo)
     val intent = Intent(context, MainActivity::class.java)
 
     val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -60,8 +62,7 @@ fun createNotification(
             .setGraph(R.navigation.navigation)
             .setDestination(R.id.notificationSettingsFragment)
             .createPendingIntent()
-    var builder: NotificationCompat.Builder
-    builder = NotificationCompat.Builder(context, category)
+    val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, category)
         .setSmallIcon(R.drawable.ic_alarm)
         .setContentTitle(title)
         .setContentText(text)
@@ -75,15 +76,33 @@ fun createNotification(
         )
             .setAutoCancel(true)
     if (priority != -1) {
-        builder = builder.setLargeIcon(picture)
         if (notificationToneUri != null) builder.setSound(notificationToneUri)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             builder.setCategory(Notification.CATEGORY_REMINDER)
         }
+        builder.addAction(
+            R.drawable.ic_check,
+            context.getString(R.string.mark_as_complete),
+            getMarkAsCompletePendingIntent(context, id)
+        )
     }
     if (isVibrate)
         builder.setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
     return builder.build()
+}
+
+fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
+    val markAsCompleteIntent = Intent(context, ToDoBroadcastReceiver::class.java).apply {
+        action = MARK_AS_COMPLETE
+        putExtra(TO_DO_ID, id)
+    }
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+    return PendingIntent.getBroadcast(context, id, markAsCompleteIntent, flag)
+
 }
 
 /**
