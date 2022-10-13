@@ -149,6 +149,15 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         year
     )
 
+    suspend fun markAsComplete(id: Int) {
+        val toDo = mToDoDao.getToDoById(id)
+        val completedDates = toDo?.completedDates
+        completedDates?.add(LocalDate.now().toString())
+        val newToDo = completedDates?.let { toDo.copy(completedDates = it) }
+        newToDo?.let {
+            insertToDo(it)
+        }
+    }
 
     suspend fun updatePrayerDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
         mToDoDao.updatePrayerTimeDetails(

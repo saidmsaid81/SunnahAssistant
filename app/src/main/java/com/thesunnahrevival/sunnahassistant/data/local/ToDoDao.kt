@@ -48,6 +48,9 @@ interface ToDoDao {
     @Query("SELECT * FROM reminders_table WHERE id = :id")
     fun getToDo(id: Int): LiveData<ToDo?>
 
+    @Query("SELECT * FROM reminders_table WHERE id = :id")
+    fun getToDoById(id: Int): ToDo?
+
     @Query("SELECT * FROM reminders_table WHERE day == 1 AND month == 0 AND year == 1 AND (frequency == 3 OR frequency == 0)")
     fun getMalformedToDos(): Flow<List<ToDo>>
 

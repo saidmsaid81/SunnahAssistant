@@ -7,47 +7,29 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
+import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
 import com.thesunnahrevival.sunnahassistant.utilities.createNotification
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+const val MARK_AS_COMPLETE = "com.thesunnahrevival.sunnahassitant.MARK_AS_COMPLETE"
+const val TO_DO_ID = "com.thesunnahrevival.sunnahassitant.TO_DO_ID"
 
 class ToDoBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
+
         if (!(action != null && action.matches("android.intent.action.BOOT_COMPLETED".toRegex()))) {
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            val notificationTitle = intent.getStringExtra(ReminderManager.NOTIFICATION_TITLE)
-            val notificationText =
-                intent.getSerializableExtra(ReminderManager.NOTIFICATION_TEXT) as Map<Int, String>?
-            val category =
-                intent.getSerializableExtra(ReminderManager.NOTIFICATION_CATEGORY) as Map<Int, String>?
-            val doNotDisturbMinutes =
-                intent.getIntExtra(ReminderManager.NOTIFICATION_DND_MINUTES, 0)
-            val notificationToneUri: Uri? =
-                if (intent.getStringExtra(ReminderManager.NOTIFICATION_TONE_URI) != null)
-                    Uri.parse(intent.getStringExtra(ReminderManager.NOTIFICATION_TONE_URI))
-                else
-                    null
-
-            val isVibrate = intent.getBooleanExtra(ReminderManager.NOTIFICATION_VIBRATE, false)
-            if (!TextUtils.isEmpty(notificationTitle)) {
-                notificationText?.forEach { (id, text) ->
-                    notificationManager.notify(
-                        id,
-                        createNotification(
-                            context, id, notificationTitle, text,
-                            NotificationManager.IMPORTANCE_DEFAULT, notificationToneUri, isVibrate
-                        )
-                    )
-                    enableDoNotDisturbForPrayerReminders(
-                        notificationManager, id, category?.get(id), context,
-                        doNotDisturbMinutes, notificationTitle, notificationToneUri, isVibrate
-                    )
-                }
-            }
+            if (action == MARK_AS_COMPLETE) {
+                val id = intent.getIntExtra(TO_DO_ID, 0)
+                markAsComplete(context, id)
+            } else
+                showNotifications(context, intent)
         }
 
         val service = Intent(context, NextToDoService::class.java)
@@ -55,6 +37,52 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
             context.startForegroundService(service)
         else
             context.startService(service)
+    }
+
+    private fun markAsComplete(context: Context, id: Int) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(id)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val repository = SunnahAssistantRepository.getInstance(context)
+            repository.markAsComplete(id)
+        }
+    }
+
+    private fun showNotifications(context: Context, intent: Intent) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val notificationTitle = intent.getStringExtra(ReminderManager.NOTIFICATION_TITLE)
+        val notificationText =
+            intent.getSerializableExtra(ReminderManager.NOTIFICATION_TEXT) as Map<Int, String>?
+        val category =
+            intent.getSerializableExtra(ReminderManager.NOTIFICATION_CATEGORY) as Map<Int, String>?
+        val doNotDisturbMinutes =
+            intent.getIntExtra(ReminderManager.NOTIFICATION_DND_MINUTES, 0)
+        val notificationToneUri: Uri? =
+            if (intent.getStringExtra(ReminderManager.NOTIFICATION_TONE_URI) != null)
+                Uri.parse(intent.getStringExtra(ReminderManager.NOTIFICATION_TONE_URI))
+            else
+                null
+
+        val isVibrate = intent.getBooleanExtra(ReminderManager.NOTIFICATION_VIBRATE, false)
+        if (!TextUtils.isEmpty(notificationTitle)) {
+            notificationText?.forEach { (id, text) ->
+                notificationManager.notify(
+                    id,
+                    createNotification(
+                        context, id, notificationTitle, text,
+                        PRIORITY_DEFAULT, notificationToneUri, isVibrate
+                    )
+                )
+                enableDoNotDisturbForPrayerReminders(
+                    notificationManager, id, category?.get(id), context,
+                    doNotDisturbMinutes, notificationTitle, notificationToneUri, isVibrate
+                )
+            }
+        }
     }
 
     /**
