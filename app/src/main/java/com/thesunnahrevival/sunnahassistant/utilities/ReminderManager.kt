@@ -42,7 +42,7 @@ class ReminderManager private constructor() {
                 }
                 PendingIntent.getBroadcast(
                     context,
-                    0,
+                    -1,
                     notificationIntent,
                     flags
                 )
@@ -55,7 +55,7 @@ class ReminderManager private constructor() {
                 }
                 PendingIntent.getBroadcast(
                     context,
-                    0,
+                    -2,
                     notificationIntent,
                     flags
                 )
