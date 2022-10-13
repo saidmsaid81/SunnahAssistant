@@ -1,6 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.receivers
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,8 +20,10 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val notificationTitle = intent.getStringExtra(ReminderManager.NOTIFICATION_TITLE)
-            val notificationText = intent.getStringArrayExtra(ReminderManager.NOTIFICATION_TEXT)
-            val category = intent.getStringArrayExtra(ReminderManager.NOTIFICATION_CATEGORY)
+            val notificationText =
+                intent.getSerializableExtra(ReminderManager.NOTIFICATION_TEXT) as Map<Int, String>?
+            val category =
+                intent.getSerializableExtra(ReminderManager.NOTIFICATION_CATEGORY) as Map<Int, String>?
             val doNotDisturbMinutes =
                 intent.getIntExtra(ReminderManager.NOTIFICATION_DND_MINUTES, 0)
             val notificationToneUri: Uri? =
@@ -33,16 +34,16 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
 
             val isVibrate = intent.getBooleanExtra(ReminderManager.NOTIFICATION_VIBRATE, false)
             if (!TextUtils.isEmpty(notificationTitle)) {
-                notificationText?.forEachIndexed { index, text ->
+                notificationText?.forEach { (id, text) ->
                     notificationManager.notify(
-                        index + 2, //Weird that id 1 does not trigger notification
+                        id,
                         createNotification(
-                            context, notificationTitle, text,
-                            Notification.PRIORITY_DEFAULT, notificationToneUri, isVibrate
+                            context, id, notificationTitle, text,
+                            NotificationManager.IMPORTANCE_DEFAULT, notificationToneUri, isVibrate
                         )
                     )
                     enableDoNotDisturbForPrayerReminders(
-                        notificationManager, category?.get(index), context,
+                        notificationManager, id, category?.get(id), context,
                         doNotDisturbMinutes, notificationTitle, notificationToneUri, isVibrate
                     )
                 }
@@ -61,9 +62,9 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
      * @param doNotDisturbMinutes is the duration in minutes to enable DND.
      */
     private fun enableDoNotDisturbForPrayerReminders(
-        notificationManager: NotificationManager, category: String?,
-        context: Context, doNotDisturbMinutes: Int, notificationTitle: String?,
-        notificationToneUri: Uri?, isVibrate: Boolean
+        notificationManager: NotificationManager, id: Int,
+        category: String?, context: Context, doNotDisturbMinutes: Int,
+        notificationTitle: String?, notificationToneUri: Uri?, isVibrate: Boolean
     ) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
@@ -72,8 +73,13 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
             doNotDisturbMinutes > 0
         ) {
 
-            val text = arrayOf("")
-            val categories = arrayOf(context.resources.getStringArray(R.array.categories)[2])
+            val text = mapOf<Int, String>()
+            val categories = mapOf<Int, String>(
+                Pair(
+                    id,
+                    context.resources.getStringArray(R.array.categories)[2]
+                )
+            )
 
             if (!TextUtils.isEmpty(notificationTitle)) {
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)

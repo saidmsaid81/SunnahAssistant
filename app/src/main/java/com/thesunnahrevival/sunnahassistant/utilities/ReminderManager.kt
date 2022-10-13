@@ -19,8 +19,8 @@ class ReminderManager private constructor() {
     private fun createNotificationPendingIntent(
         context: Context,
         title: String,
-        text: Array<String>,
-        category: Array<String>,
+        text: Map<Int, String>,
+        category: Map<Int, String>,
         notificationUri: Uri,
         isVibrate: Boolean,
         doNotDisturbMinutes: Int,
@@ -28,10 +28,10 @@ class ReminderManager private constructor() {
     ): PendingIntent {
         val notificationIntent = Intent(context, ToDoBroadcastReceiver::class.java)
         notificationIntent.putExtra(NOTIFICATION_TITLE, title)
-        notificationIntent.putExtra(NOTIFICATION_TEXT, text)
+        notificationIntent.putExtra(NOTIFICATION_TEXT, text as java.io.Serializable)
         notificationIntent.putExtra(NOTIFICATION_TONE_URI, notificationUri.toString())
         notificationIntent.putExtra(NOTIFICATION_VIBRATE, isVibrate)
-        notificationIntent.putExtra(NOTIFICATION_CATEGORY, category)
+        notificationIntent.putExtra(NOTIFICATION_CATEGORY, category as java.io.Serializable)
         notificationIntent.putExtra(NOTIFICATION_DND_MINUTES, doNotDisturbMinutes)
         return when {
             !isOneShot -> {
@@ -69,8 +69,8 @@ class ReminderManager private constructor() {
     fun scheduleReminder(
         context: Context,
         title: String,
-        texts: Array<String>,
-        categories: Array<String>,
+        texts: Map<Int, String>,
+        categories: Map<Int, String>,
         timeInMilliseconds: Long,
         notificationUri: Uri,
         isVibrate: Boolean,
