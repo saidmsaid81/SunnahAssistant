@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.databinding.DisplaySettingsBinding
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentLayoutSettingsBinding
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 
 class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
@@ -20,8 +20,8 @@ class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val binding: DisplaySettingsBinding = DataBindingUtil.inflate(
-            inflater, R.layout.display_settings, container, false
+        val binding: FragmentLayoutSettingsBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_layout_settings, container, false
         )
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
             binding.themeSettings.setOnClickListener(this)

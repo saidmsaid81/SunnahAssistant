@@ -11,7 +11,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.translateLink
-import kotlinx.android.synthetic.main.changelog_layout.*
+import kotlinx.android.synthetic.main.fragment_changelog.*
 
 class ChangelogFragment : SunnahAssistantFragment() {
 
@@ -21,7 +21,7 @@ class ChangelogFragment : SunnahAssistantFragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(R.layout.changelog_layout, container, false)
+        val view = inflater.inflate(R.layout.fragment_changelog, container, false)
 
 
         //TODO update predefined reminders info

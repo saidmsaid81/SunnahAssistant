@@ -9,7 +9,7 @@
       android:id="@+id/todayFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.home.TodayFragment"
       android:label="@string/app_name"
-      tools:layout="@layout/today_fragment">
+      tools:layout="@layout/fragment_today">
     <action
         android:id="@+id/action_todayFragment_to_settingsFragment"
         app:destination="@id/settingsListFragment" />
@@ -28,7 +28,7 @@
       android:id="@+id/calendarFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment"
       android:label="@string/app_name"
-      tools:layout="@layout/today_fragment">
+      tools:layout="@layout/fragment_today">
 
   </fragment>
 
@@ -43,7 +43,7 @@
       android:id="@+id/settingsListFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.SettingsListFragment"
       android:label="@string/settings"
-      tools:layout="@layout/settings_lists">
+      tools:layout="@layout/fragment_settings_lists">
     <action
         android:id="@+id/action_settingsListFragment_to_hijriDateSettingsFragment"
         app:destination="@id/hijriDateSettingsFragment" />
@@ -72,7 +72,7 @@
   <fragment
       android:id="@+id/changelogFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.others.ChangelogFragment"
-      tools:layout="@layout/changelog_layout"
+      tools:layout="@layout/fragment_changelog"
       android:label="@string/what_s_new">
     <action
         android:id="@+id/action_changelogFragment_to_todayFragment"
@@ -81,27 +81,27 @@
   <fragment
       android:id="@+id/hijriDateSettingsFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.HijriDateSettingsFragment"
-      tools:layout="@layout/hijri_date_settings"
+      tools:layout="@layout/fragment_hijri_date_settings"
       android:label="@string/hijri_date_settings" />
   <fragment
       android:id="@+id/prayerTimeSettingsFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.PrayerTimeSettingsFragment"
-      tools:layout="@layout/prayer_time_settings"
+      tools:layout="@layout/fragment_prayer_time_settings"
       android:label="@string/prayer_time_settings" />
   <fragment
       android:id="@+id/customizeCategoriesFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.CustomizeCategoriesFragment"
       android:label="@string/customize_categories"
-      tools:layout="@layout/categories_settings" />
+      tools:layout="@layout/fragment_customize_categories" />
   <fragment
       android:id="@+id/notificationSettingsFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.NotificationSettingsFragment"
       android:label="@string/notification_settings"
-      tools:layout="@layout/notification_settings" />
+      tools:layout="@layout/fragment_notification_settings" />
   <fragment
       android:id="@+id/layoutSettingsFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.LayoutSettingsFragment"
-      tools:layout="@layout/display_settings"
+      tools:layout="@layout/fragment_layout_settings"
       android:label="@string/layout_and_theme_settings" />
 
   <fragment

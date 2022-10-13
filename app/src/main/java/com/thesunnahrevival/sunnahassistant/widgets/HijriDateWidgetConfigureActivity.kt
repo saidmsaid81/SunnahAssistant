@@ -26,7 +26,7 @@ class HijriDateWidgetConfigureActivity : AppCompatActivity(), View.OnClickListen
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED)
 
-        setContentView(R.layout.hijri_date_widget_configure)
+        setContentView(R.layout.activity_hijri_date_widget_configure)
         setSupportActionBar(findViewById(R.id.toolbar))
         findViewById<View>(R.id.add_button).setOnClickListener(this)
 

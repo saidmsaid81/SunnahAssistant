@@ -23,7 +23,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.databinding.TodayFragmentBinding
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentTodayBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
@@ -37,7 +37,7 @@ import java.util.*
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
-    private lateinit var mBinding: TodayFragmentBinding
+    private lateinit var mBinding: FragmentTodayBinding
     private lateinit var concatAdapter: ConcatAdapter
     private var fabAnimator: ObjectAnimator? = null
 
@@ -48,7 +48,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         mBinding = DataBindingUtil.inflate(
-            inflater, R.layout.today_fragment, container, false
+            inflater, R.layout.fragment_today, container, false
         )
         setHasOptionsMenu(true)
 
