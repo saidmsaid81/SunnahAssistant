@@ -112,22 +112,10 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     private fun createCategoryChip(category: String): Chip {
-        val categoryChip = Chip(requireContext())
-        categoryChip.isCheckable = true
+        val categoryChip =
+            layoutInflater.inflate(R.layout.choice_chip, mBinding.categoryChips, false) as Chip
         categoryChip.isChecked = mViewModel.categoryToDisplay.matches(category.toRegex())
         categoryChip.text = category
-        categoryChip.checkedIcon = null
-        categoryChip.chipBackgroundColor =
-            ContextCompat.getColorStateList(
-                requireContext(),
-                R.color.background_color_chip_state_list
-            )
-        categoryChip.setTextColor(
-            ContextCompat.getColorStateList(
-                requireContext(),
-                R.color.text_color_chip_state_list
-            )
-        )
         categoryChip.setOnCheckedChangeListener { button: CompoundButton, isChecked: Boolean ->
             if (button.isPressed && isChecked) {
                 val categoryToDisplay =
