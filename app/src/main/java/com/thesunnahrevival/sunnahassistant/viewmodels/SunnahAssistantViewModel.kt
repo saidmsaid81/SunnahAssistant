@@ -77,14 +77,19 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             Pair(date ?: currentDateParameter, category ?: currentCategoryParameter)
     }
 
-    fun insertToDo(toDo: ToDo, updateCalendar: Boolean = true) {
+    fun insertToDo(toDo: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.insertToDo(toDo)
             withContext(Dispatchers.Main) {
                 startService()
-                if (updateCalendar)
-                    triggerCalendarUpdate.value = true
+                triggerCalendarUpdate.value = true
             }
+        }
+    }
+
+    fun updateToDo(toDo: ToDo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mRepository.updateToDo(toDo)
         }
     }
 
@@ -279,18 +284,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 .getStringArray(R.array.prayer_names)
             val newPrayerNames = getContext().resources.getStringArray(R.array.prayer_names)
 
-            val templateToDos = getTemplateToDos()
             viewModelScope.launch(Dispatchers.IO) {
                 for ((index, oldCategoryName) in oldCategoryNames.withIndex()) {
                     mRepository.updateCategory(oldCategoryName, newCategoryNames[index])
-                }
-                for (toDo in templateToDos.values) {
-                    mRepository.updateToDo(
-                        toDo.second.id,
-                        toDo.second.name,
-                        toDo.second.additionalInfo,
-                        toDo.second.category
-                    )
                 }
 
                 mRepository.updatePrayerNames(oldPrayerNames, newPrayerNames)

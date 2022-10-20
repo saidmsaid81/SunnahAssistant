@@ -18,8 +18,8 @@ interface ToDoDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertToDosList(toDosList: List<ToDo>)
 
-    @Query("UPDATE reminders_table SET reminderName =:name, reminderInfo =:info, category =:category WHERE id =:id")
-    suspend fun updateToDo(id: Int, name: String, info: String, category: String)
+    @Update
+    suspend fun updateToDo(toDo: ToDo)
 
     @Delete
     suspend fun deleteToDo(toDo: ToDo)

@@ -48,11 +48,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
 
     suspend fun insertToDo(toDo: ToDo) = mToDoDao.insertToDo(toDo)
 
-    //TODO use insert reminder
-    suspend fun updateToDo(id: Int, name: String?, info: String?, category: String?) {
-        if (name != null && info != null && category != null)
-            mToDoDao.updateToDo(id, name, info, category)
-    }
+    suspend fun updateToDo(toDo: ToDo) = mToDoDao.updateToDo(toDo)
 
     suspend fun deleteToDo(toDo: ToDo) = mToDoDao.deleteToDo(toDo)
 
@@ -154,9 +150,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         val completedDates = toDo?.completedDates
         completedDates?.add(LocalDate.now().toString())
         val newToDo = completedDates?.let { toDo.copy(completedDates = it) }
-        newToDo?.let {
-            insertToDo(it)
-        }
+        newToDo?.let { updateToDo(it) }
     }
 
     suspend fun updatePrayerDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
