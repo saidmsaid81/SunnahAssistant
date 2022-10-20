@@ -259,7 +259,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             }
 
             val toDoCopy = toDo.copy(completedDates = completedDates)
-            mViewModel.insertToDo(toDoCopy, false)
+            mViewModel.updateToDo(toDoCopy)
         }
     }
 
