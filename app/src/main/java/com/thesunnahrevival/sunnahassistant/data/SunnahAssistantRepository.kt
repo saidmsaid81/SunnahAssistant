@@ -323,7 +323,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         mSunnahAssistantApi.reportGeocodingError(status)
     }
 
-    fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).close()
+    fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).closeDB()
 
     companion object {
         @Volatile
