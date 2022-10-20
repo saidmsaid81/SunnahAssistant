@@ -27,6 +27,11 @@ const val DB_NAME_TEMP = "SunnahAssistant_temp.db"
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun toDoDao(): ToDoDao
 
+    fun closeDB() {
+        INSTANCE?.close()
+        INSTANCE = null
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: SunnahAssistantDatabase? = null
@@ -190,8 +195,6 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
 
         fun getInstance(context: Context): SunnahAssistantDatabase {
-            if (INSTANCE?.isOpen == false)
-                INSTANCE = null
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
@@ -199,7 +202,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) = Room.databaseBuilder(
             context.applicationContext,
-            SunnahAssistantDatabase::class.java, "SunnahAssistant.db"
+            SunnahAssistantDatabase::class.java, DB_NAME
         )
             .addCallback(
                 object : Callback() {
