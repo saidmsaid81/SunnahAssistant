@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -58,6 +55,13 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        options_list.setOnItemClickListener { _, _, _, _ ->
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.operation_ongoing),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         when (position) {
             WRITE_FILE -> {
                 val encryptBackupFragment = EncryptBackupFragment().apply {
@@ -103,6 +107,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
                         )
                     } else
                         updateStatusMessage(restoreMessage.second, restoreMessage.first)
+                    options_list.onItemClickListener = this@BackupRestoreFragment
                 }
             }
         }
@@ -140,6 +145,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     override fun onBackupDataClick(password: String?) {
         if (password?.isBlank() == true) {
             updateStatusMessage("", null)
+            options_list.onItemClickListener = this
         } else {
             val timestamp = SimpleDateFormat("ddMMyyyy_HHmmss", Locale.ENGLISH).format(Date())
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {

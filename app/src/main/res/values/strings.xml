@@ -300,6 +300,7 @@
   <string name="delete_all">Delete All</string>
   <string name="delete_all_malformed_todos">Delete all Malformed To-Dos</string>
   <string name="confirm_deleting_malformed_to_dos">Do you really want to Delete ALL Malformed To-Dos</string>
+  <string name="operation_ongoing">Another Backup/Restore operation ongoing. Please wait...</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
