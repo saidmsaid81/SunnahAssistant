@@ -16,6 +16,7 @@ class EncryptBackupFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        isCancelable = false
         return inflater.inflate(R.layout.fragment_encrypt_backup, container, false)
     }
 
