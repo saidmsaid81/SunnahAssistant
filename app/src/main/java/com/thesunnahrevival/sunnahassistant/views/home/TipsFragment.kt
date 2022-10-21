@@ -27,7 +27,6 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        setHasOptionsMenu(true)
         browser = InAppBrowser(requireContext(), viewLifecycleOwner.lifecycleScope)
         return inflater.inflate(R.layout.fragment_tips, container, false)
     }

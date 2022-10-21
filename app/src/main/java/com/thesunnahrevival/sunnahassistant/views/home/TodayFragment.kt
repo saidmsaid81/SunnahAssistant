@@ -50,7 +50,6 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         mBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_today, container, false
         )
-        setHasOptionsMenu(true)
 
         mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.toDoInteractionListener = this
