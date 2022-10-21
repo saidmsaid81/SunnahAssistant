@@ -208,15 +208,15 @@ interface ToDoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSettings(settings: AppSettings)
 
-    @Query("SELECT * FROM app_settings")
+    @Query("SELECT * FROM app_settings WHERE id = 1")
     fun getAppSettings(): Flow<AppSettings?>
 
-    @Query("SELECT * FROM app_settings")
+    @Query("SELECT * FROM app_settings WHERE id = 1")
     fun getAppSettingsValue(): AppSettings?
 
     @Update
     suspend fun updateAppSettings(appSettings: AppSettings)
 
-    @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextToDo")
+    @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextToDo WHERE id = 1")
     suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextToDo: Boolean)
 }

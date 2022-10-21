@@ -10,7 +10,7 @@ import java.util.*
 
 @Entity(tableName = "app_settings")
 data class AppSettings(
-    @PrimaryKey(autoGenerate = true) var id: Int = 0,
+    @PrimaryKey(autoGenerate = true) var id: Int = 1,
     var formattedAddress: String? = "",
     var latitude: Float = 0F,
     var longitude: Float = 0F,
