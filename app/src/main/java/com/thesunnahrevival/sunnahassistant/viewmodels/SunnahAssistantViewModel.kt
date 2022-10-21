@@ -7,7 +7,6 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
@@ -312,11 +311,13 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun getTemplateToDos() = TemplateToDos().getTemplateToDos(getContext())
 
     fun backupPlainData(dataUri: Uri?): Pair<Boolean, String> {
+        mRepository.closeDB()
         val dbPlainData = getContext().getDatabasePath(DB_NAME).readBytes()
         return doBackup(dataUri, dbPlainData)
     }
 
     fun backupEncryptedData(dataUri: Uri?, password: String): Pair<Boolean, String> {
+        mRepository.closeDB()
         val encryptedData = Encryption().encrypt(
             getContext().getDatabasePath(DB_NAME).readBytes(),
             password
@@ -329,8 +330,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             val outputStream =
                 dataUri?.let { getContext().contentResolver.openOutputStream(it) }
                     ?: return Pair(false, "")
-
-            mRepository.closeDB()
 
             if (inputData is ByteArray) { //Plain Text
                 outputStream.use {
@@ -424,39 +423,33 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         return withContext(Dispatchers.IO) {
             val existingDataTempFile = getContext().getDatabasePath(DB_NAME_TEMP)
             val databaseFile = getContext().getDatabasePath(DB_NAME)
-            return@withContext try {
+            try {
                 mRepository.closeDB()
-                val restoredOutputStream =
-                    getContext().contentResolver.openOutputStream(databaseFile.toUri())
 
-                restoredOutputStream?.use {
-
-                    //Create a temp db file which will be used if restoring fails
-                    val existingDBBytes = databaseFile.readBytes()
-                    existingDataTempFile.writeBytes(existingDBBytes)
-
-                    it.write(dataToRestore)
-
-                    if (getAppSettingsValue() == null) {
-                        undoFailedRestore(databaseFile, existingDataTempFile)
-                        return@withContext Pair(
-                            null,
-                            ""
-                        )
-                    } else
-                        return@withContext Pair(
-                            true,
-                            getContext().getString(R.string.restore_successful)
-                        )
-                }
-
+                //Create a temp db file which will be used if restoring fails
+                val existingDBBytes = databaseFile.readBytes()
+                existingDataTempFile.writeBytes(existingDBBytes)
+                databaseFile.writeBytes(dataToRestore)
                 Pair(false, getContext().getString(R.string.restore_failed))
             } catch (exception: Exception) {
                 Log.e("Restore Exception", exception.toString())
                 undoFailedRestore(databaseFile, existingDataTempFile)
                 Pair(false, getContext().getString(R.string.restore_failed))
             } finally {
-                existingDataTempFile.delete()
+                if (getAppSettingsValue() == null) {
+                    undoFailedRestore(databaseFile, existingDataTempFile)
+                    return@withContext Pair(
+                        null,
+                        ""
+                    )
+                } else {
+                    existingDataTempFile.delete()
+                    return@withContext Pair(
+                        true,
+                        getContext().getString(R.string.restore_successful)
+                    )
+                }
+
             }
 
         }
@@ -465,5 +458,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     private fun undoFailedRestore(databaseFile: File, existingDataFile: File) {
         mRepository.closeDB()
         databaseFile.writeBytes(existingDataFile.readBytes())
+        existingDataFile.delete()
     }
 }
