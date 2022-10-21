@@ -1,6 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.settings
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,7 +34,44 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     private lateinit var mViewModel: SunnahAssistantViewModel
     private var password: String? = null
 
-    @SuppressLint("SetTextI18n")
+    private val writeFileActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                updateStatusMessage(getString(R.string.backing_up_data_please_wait), null)
+                val password = this.password
+                val backupMessage = if (password != null)
+                    mViewModel.backupEncryptedData(it.data?.data, password)
+                else
+                    mViewModel.backupPlainData(it.data?.data)
+                updateStatusMessage(backupMessage.second, backupMessage.first)
+                this.password = null
+                options_list.onItemClickListener = this
+            }
+        }
+
+    private val readFileActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                mViewModel.viewModelScope.launch(Dispatchers.Main) {
+                    updateStatusMessage(getString(R.string.restoring_data_please_wait), null)
+                    val restoreMessage = mViewModel.restorePlainData(it.data?.data)
+                    if (restoreMessage.first == null) {
+                        val enterDecryptionPasswordFragment =
+                            EnterDecryptionPasswordFragment().apply {
+                                setListener(this@BackupRestoreFragment)
+                                setDataUri(it.data?.data)
+                            }
+                        enterDecryptionPasswordFragment.show(
+                            requireActivity().supportFragmentManager,
+                            "enterDecryptionPassword"
+                        )
+                    } else
+                        updateStatusMessage(restoreMessage.second, restoreMessage.first)
+                    options_list.onItemClickListener = this@BackupRestoreFragment
+                }
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,7 +88,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
             )
         listView.onItemClickListener = this
 
-        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
+        mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
         return view
     }
 
@@ -73,45 +111,9 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     type = "application/octet-stream"
                 }
-                startActivityForResult(intent, READ_FILE)
+                readFileActivityResult.launch(intent)
             }
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            WRITE_FILE -> {
-                updateStatusMessage(getString(R.string.backing_up_data_please_wait), null)
-                val password = this.password
-                val backupMessage = if (password != null)
-                    mViewModel.backupEncryptedData(data?.data, password)
-                else
-                    mViewModel.backupPlainData(data?.data)
-                updateStatusMessage(backupMessage.second, backupMessage.first)
-                this.password = null
-            }
-            READ_FILE -> {
-                mViewModel.viewModelScope.launch(Dispatchers.Main) {
-                    updateStatusMessage(getString(R.string.restoring_data_please_wait), null)
-                    val restoreMessage = mViewModel.restorePlainData(data?.data)
-                    if (restoreMessage.first == null) {
-                        val enterDecryptionPasswordFragment =
-                            EnterDecryptionPasswordFragment().apply {
-                                setListener(this@BackupRestoreFragment)
-                                setDataUri(data?.data)
-                            }
-                        enterDecryptionPasswordFragment.show(
-                            requireActivity().supportFragmentManager,
-                            "enterDecryptionPassword"
-                        )
-                    } else
-                        updateStatusMessage(restoreMessage.second, restoreMessage.first)
-                    options_list.onItemClickListener = this@BackupRestoreFragment
-                }
-            }
-        }
-
     }
 
     private fun updateStatusMessage(statusMessage: String, status: Boolean?) {
@@ -154,7 +156,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
                 putExtra(Intent.EXTRA_TITLE, "SunnahAssistant_$timestamp.db")
             }
             this.password = password
-            startActivityForResult(intent, WRITE_FILE)
+            writeFileActivityResult.launch(intent)
         }
     }
 }
