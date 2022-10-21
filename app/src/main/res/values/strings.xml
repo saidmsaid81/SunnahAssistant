@@ -275,7 +275,7 @@
   <string name="drink_water">Drink Water</string>
   <string name="prayer_time_alerts">Prayer Time Alerts</string>
   <string name="backup_restore_data">Backup/ Restore Data (Experimental)</string>
-  <string name="backup_restore_data_menu">Backup/ Restore Data</string>
+  <string name="backup_restore_data_menu">Backup/Restore Data <span><sup><small>BETA</small></sup></span></string>
   <string name="restoring_app_data_will_delete_all_existing_data_and_replace_it_with_restored_data">Restoring App Data will delete all existing data and replace it with restored data.</string>
   <string name="backing_up_data_please_wait">Backing up Data. Please Wait…</string>
   <string name="restoring_data_please_wait">Restoring Data. Please Wait…</string>
