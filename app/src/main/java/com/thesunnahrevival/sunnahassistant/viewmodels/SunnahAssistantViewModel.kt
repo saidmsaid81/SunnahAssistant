@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
@@ -436,13 +437,19 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 undoFailedRestore(databaseFile, existingDataTempFile)
                 Pair(false, getContext().getString(R.string.restore_failed))
             } finally {
-                if (getAppSettingsValue() == null) {
+                val appSettings = getAppSettingsValue()
+                if (appSettings == null) {
                     undoFailedRestore(databaseFile, existingDataTempFile)
                     return@withContext Pair(
                         null,
                         ""
                     )
                 } else {
+                    appSettings.notificationToneUri =
+                        RingtoneManager.getActualDefaultRingtoneUri(
+                            getContext(), RingtoneManager.TYPE_NOTIFICATION
+                        )
+                    updateSettings(appSettings)
                     existingDataTempFile.delete()
                     return@withContext Pair(
                         true,
