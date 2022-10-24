@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
@@ -24,13 +25,12 @@ class ChangelogFragment : SunnahAssistantFragment() {
         val view = inflater.inflate(R.layout.fragment_changelog, container, false)
 
 
-        //TODO update predefined reminders info
-        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
-        mViewModel.settingsValue?.isAfterUpdate = false
-        mViewModel.settingsValue?.categories?.add("Prayer")
+        mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
+        mViewModel.settingsValue?.appVersion = BuildConfig.VERSION_NAME
+        mViewModel.settingsValue?.appVersionCode = BuildConfig.VERSION_CODE
+        mViewModel.settingsValue?.categories?.addAll(requireContext().resources.getStringArray(R.array.categories))
         mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
         //viewModel.localeUpdate()
-
 
         return view
     }

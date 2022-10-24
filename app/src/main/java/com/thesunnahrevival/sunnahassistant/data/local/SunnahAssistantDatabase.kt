@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
@@ -105,6 +106,14 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
                 database.execSQL(
                     "ALTER TABLE app_settings ADD COLUMN enablePrayerTimeAlertsFor TEXT DEFAULT '' NOT NULL"
+                )
+
+                database.execSQL(
+                    "ALTER TABLE app_settings ADD COLUMN appVersion TEXT DEFAULT '${BuildConfig.VERSION_NAME}' NOT NULL"
+                )
+
+                database.execSQL(
+                    "ALTER TABLE app_settings ADD COLUMN appVersionCode INTEGER DEFAULT '${BuildConfig.VERSION_CODE}' NOT NULL"
                 )
 
                 database.execSQL(
