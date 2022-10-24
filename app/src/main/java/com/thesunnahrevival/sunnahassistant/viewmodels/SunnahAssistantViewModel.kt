@@ -7,7 +7,6 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,6 +22,8 @@ import com.thesunnahrevival.sunnahassistant.data.model.Reminder
 import com.thesunnahrevival.sunnahassistant.utilities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.ObjectInputStream
@@ -36,6 +37,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
+    private val mutex = Mutex()
 
     fun addInitialReminders() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -276,11 +278,13 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     fun backupPlainData(dataUri: Uri?): Pair<Boolean, String> {
+        mRepository.closeDB()
         val dbPlainData = getContext().getDatabasePath(DB_NAME).readBytes()
         return doBackup(dataUri, dbPlainData)
     }
 
     fun backupEncryptedData(dataUri: Uri?, password: String): Pair<Boolean, String> {
+        mRepository.closeDB()
         val encryptedData = Encryption().encrypt(
             getContext().getDatabasePath(DB_NAME).readBytes(),
             password
@@ -293,9 +297,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             val outputStream =
                 dataUri?.let { getContext().contentResolver.openOutputStream(it) }
                     ?: return Pair(false, "")
-
-            mRepository.closeDB()
-
             if (inputData is ByteArray) { //Plain Text
                 outputStream.use {
                     it.write(inputData)
@@ -318,7 +319,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             dataUri?.let { getContext().contentResolver.openInputStream(it) }
                 ?: return Pair(false, "")
 
-        return doRestore(backupInputStream.readBytes())
+        return mutex.withLock {
+            doRestore(backupInputStream.readBytes())
+        }
     }
 
     suspend fun restoreEncryptedData(dataUri: Uri?, password: String): Pair<Boolean?, String> {
@@ -327,54 +330,56 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 ?: return Pair(false, "")
 
         return withContext(Dispatchers.IO) {
-            try {
-                ObjectInputStream(backupInputStream).use {
-                    when (val data = it.readObject()) {
-                        is Map<*, *> -> {
-                            if (data.containsKey("iv") && data.containsKey("salt") && data.containsKey(
-                                    "encrypted"
-                                )
-                            ) {
-                                val iv = data["iv"]
-                                val salt = data["salt"]
-                                val encrypted = data["encrypted"]
+            mutex.withLock {
+                try {
+                    ObjectInputStream(backupInputStream).use {
+                        when (val data = it.readObject()) {
+                            is Map<*, *> -> {
+                                if (data.containsKey("iv") && data.containsKey("salt") && data.containsKey(
+                                        "encrypted"
+                                    )
+                                ) {
+                                    val iv = data["iv"]
+                                    val salt = data["salt"]
+                                    val encrypted = data["encrypted"]
 
-                                val decrypted =
-                                    if (iv is ByteArray && salt is ByteArray && encrypted is ByteArray) {
-                                        Encryption().decrypt(
-                                            hashMapOf(
-                                                "iv" to iv,
-                                                "salt" to salt,
-                                                "encrypted" to encrypted
-                                            ), password
-                                        )
-                                    } else
-                                        null
-                                if (decrypted != null)
-                                    return@withContext doRestore(decrypted)
+                                    val decrypted =
+                                        if (iv is ByteArray && salt is ByteArray && encrypted is ByteArray) {
+                                            Encryption().decrypt(
+                                                hashMapOf(
+                                                    "iv" to iv,
+                                                    "salt" to salt,
+                                                    "encrypted" to encrypted
+                                                ), password
+                                            )
+                                        } else
+                                            null
+                                    if (decrypted != null)
+                                        return@withContext doRestore(decrypted)
 
 
+                                }
                             }
                         }
                     }
-                }
-                return@withContext Pair(
-                    false,
-                    getContext().getString(R.string.restore_failed_invalid_file)
-                )
-            } catch (exception: Exception) {
-                Log.e("Decryption Exception", exception.toString())
-                when (exception) {
-                    is BadPaddingException -> {
-                        return@withContext Pair(
-                            false,
-                            getContext().getString(R.string.restore_failed_incorrect_password)
-                        )
-                    }
-                    else -> return@withContext Pair(
+                    return@withContext Pair(
                         false,
                         getContext().getString(R.string.restore_failed_invalid_file)
                     )
+                } catch (exception: Exception) {
+                    Log.e("Decryption Exception", exception.toString())
+                    when (exception) {
+                        is BadPaddingException -> {
+                            return@withContext Pair(
+                                false,
+                                getContext().getString(R.string.restore_failed_incorrect_password)
+                            )
+                        }
+                        else -> return@withContext Pair(
+                            false,
+                            getContext().getString(R.string.restore_failed_invalid_file)
+                        )
+                    }
                 }
             }
         }
@@ -384,40 +389,31 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         return withContext(Dispatchers.IO) {
             val existingDataTempFile = getContext().getDatabasePath(DB_NAME_TEMP)
             val databaseFile = getContext().getDatabasePath(DB_NAME)
-            return@withContext try {
+            try {
                 mRepository.closeDB()
-
-                val restoredOutputStream =
-                    getContext().contentResolver.openOutputStream(databaseFile.toUri())
-
-                restoredOutputStream?.use {
-
-                    //Create a temp db file which will be used if restoring fails
-                    val existingDBBytes = databaseFile.readBytes()
-                    existingDataTempFile.writeBytes(existingDBBytes)
-
-                    it.write(dataToRestore)
-
-                    if (getAppSettingsValue() == null) {
-                        undoFailedRestore(databaseFile, existingDataTempFile)
-                        return@withContext Pair(
-                            null,
-                            ""
-                        )
-                    } else
-                        return@withContext Pair(
-                            true,
-                            getContext().getString(R.string.restore_successful)
-                        )
-                }
-
+                //Create a temp db file which will be used if restoring fails
+                val existingDBBytes = databaseFile.readBytes()
+                existingDataTempFile.writeBytes(existingDBBytes)
+                databaseFile.writeBytes(dataToRestore)
                 Pair(false, getContext().getString(R.string.restore_failed))
             } catch (exception: Exception) {
                 Log.e("Restore Exception", exception.toString())
                 undoFailedRestore(databaseFile, existingDataTempFile)
                 Pair(false, getContext().getString(R.string.restore_failed))
             } finally {
-                existingDataTempFile.delete()
+                if (getAppSettingsValue() == null) {
+                    undoFailedRestore(databaseFile, existingDataTempFile)
+                    return@withContext Pair(
+                        null,
+                        ""
+                    )
+                } else {
+                    existingDataTempFile.delete()
+                    return@withContext Pair(
+                        true,
+                        getContext().getString(R.string.restore_successful)
+                    )
+                }
             }
         }
     }
