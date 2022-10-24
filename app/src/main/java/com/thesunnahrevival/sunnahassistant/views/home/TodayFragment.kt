@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
@@ -71,7 +72,8 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 if (this !is CalendarFragment) {
                     when {
                         settings.isFirstLaunch -> findNavController().navigate(R.id.welcomeFragment)
-                        settings.isAfterUpdate -> findNavController().navigate(R.id.changelogFragment)
+                        settings.appVersionCode < BuildConfig.VERSION_CODE ->
+                            findNavController().navigate(R.id.changelogFragment)
                         else -> {
                             if (settings.showOnBoardingTutorial) {
                                 ShowcaseView().showOnBoardingTutorial(

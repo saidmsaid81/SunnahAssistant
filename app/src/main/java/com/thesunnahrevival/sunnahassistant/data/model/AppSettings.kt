@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
+import com.thesunnahrevival.sunnahassistant.BuildConfig
 import java.util.*
 
 @Entity(tableName = "app_settings")
@@ -35,6 +36,8 @@ data class AppSettings(
     var isShowHijriDateWidget: Boolean = true,
     @ColumnInfo(name = "isShowNextReminderWidget") var isShowNextToDoWidget: Boolean = true,
     var isAfterUpdate: Boolean = false,
+    var appVersionCode: Int = BuildConfig.VERSION_CODE,
+    var appVersion: String = BuildConfig.VERSION_NAME,
     var categories: TreeSet<String>? = null,
     var language: String = "en",
     var doNotDisturbMinutes: Int = 0,
@@ -55,7 +58,9 @@ data class AppSettings(
         if (longitude != other.longitude) return false
         if (calculationMethod != other.calculationMethod) return false
         if (asrCalculationMethod != other.asrCalculationMethod) return false
+        if (isAutomaticPrayerAlertsEnabled != other.isAutomaticPrayerAlertsEnabled) return false
         if (!enablePrayerTimeAlertsFor.contentEquals(other.enablePrayerTimeAlertsFor)) return false
+        if (!prayerTimeOffsetsInMinutes.contentEquals(other.prayerTimeOffsetsInMinutes)) return false
         if (month != other.month) return false
         if (hijriOffSet != other.hijriOffSet) return false
         if (isLightMode != other.isLightMode) return false
@@ -72,6 +77,8 @@ data class AppSettings(
         if (isShowHijriDateWidget != other.isShowHijriDateWidget) return false
         if (isShowNextToDoWidget != other.isShowNextToDoWidget) return false
         if (isAfterUpdate != other.isAfterUpdate) return false
+        if (appVersionCode != other.appVersionCode) return false
+        if (appVersion != other.appVersion) return false
         if (categories != other.categories) return false
         if (language != other.language) return false
         if (doNotDisturbMinutes != other.doNotDisturbMinutes) return false
@@ -90,7 +97,9 @@ data class AppSettings(
         result = 31 * result + longitude.hashCode()
         result = 31 * result + calculationMethod.hashCode()
         result = 31 * result + asrCalculationMethod.hashCode()
+        result = 31 * result + isAutomaticPrayerAlertsEnabled.hashCode()
         result = 31 * result + enablePrayerTimeAlertsFor.contentHashCode()
+        result = 31 * result + prayerTimeOffsetsInMinutes.contentHashCode()
         result = 31 * result + month
         result = 31 * result + hijriOffSet
         result = 31 * result + isLightMode.hashCode()
@@ -107,6 +116,8 @@ data class AppSettings(
         result = 31 * result + isShowHijriDateWidget.hashCode()
         result = 31 * result + isShowNextToDoWidget.hashCode()
         result = 31 * result + isAfterUpdate.hashCode()
+        result = 31 * result + appVersionCode
+        result = 31 * result + appVersion.hashCode()
         result = 31 * result + (categories?.hashCode() ?: 0)
         result = 31 * result + language.hashCode()
         result = 31 * result + doNotDisturbMinutes
