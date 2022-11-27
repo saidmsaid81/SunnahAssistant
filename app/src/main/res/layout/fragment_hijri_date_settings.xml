@@ -10,49 +10,55 @@
 
   </data>
 
-  <LinearLayout
+  <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:padding="@dimen/default_dimen"
-      android:orientation="vertical"
       >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hijri_date_settings"
-        android:textColor="@color/colorAccent"
-        />
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/display_hijri_date_switch"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/default_dimen"
-        android:text="@string/display_hijri_date_on_the_home_page"
-        android:button="@null"
-        android:checked="@{settings.displayHijriDate}"
-        />
+        android:orientation="vertical"
+        >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/default_dimen"
-        android:src="@drawable/ic_info"
-        />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/hijri_date_settings"
+          android:textColor="@color/colorAccent"
+          />
 
-    <TextView
-        android:id="@+id/hijri_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/default_dimen"
-        android:textSize="14sp"
-        android:focusable="true"
-        android:clickable="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx"
-        />
+      <com.google.android.material.switchmaterial.SwitchMaterial
+          android:id="@+id/display_hijri_date_switch"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:text="@string/display_hijri_date_on_the_home_page"
+          android:button="@null"
+          android:checked="@{settings.displayHijriDate}"
+          />
 
-  </LinearLayout>
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:src="@drawable/ic_info"
+          />
+
+      <TextView
+          android:id="@+id/hijri_info"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:textSize="14sp"
+          android:focusable="true"
+          android:clickable="true"
+          android:background="?android:attr/selectableItemBackground"
+          android:fontFamily="sans-serif-light"
+          android:text="@string/hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx"
+          />
+
+    </LinearLayout>
+  </ScrollView>
 </layout>

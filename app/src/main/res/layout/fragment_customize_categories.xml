@@ -18,12 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_or_delete_categories"
+            android:textSize="16sp"
             android:textColor="@color/colorAccent"            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/categories_list"
             android:layout_width="match_parent"
-            android:paddingTop="@dimen/default_dimen"
+            android:layout_marginTop="24dp"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
