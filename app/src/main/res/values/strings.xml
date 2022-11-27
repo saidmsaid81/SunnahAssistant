@@ -208,7 +208,7 @@
   <string name="backup_successful">Backup Successful</string>
   <string name="backup_failed">Error! Backup Failed. Please try again</string>
   <string name="restore_failed">Error! Restore failed. Please try again</string>
-  <string name="restore_failed_invalid_file">Error! Restore failed.\nReason: Not a Sunnah Assistant Database File. Please try again.</string>
+  <string name="restore_failed_invalid_file">Error! Restore failed.\nReason:\n 1. Either it is not a Sunnah Assistant Database File.\n2. OR It is for a later version of Sunnah Assistant. If that is the case update Sunnah Assistant App to the latest version. \n\nIf you think this is a mistake, please contact us at contact@thesunnahrevival.com. Thanks</string>
   <string name="restore_successful">App Data was successfully restored</string>
   <string name="restore_failed_incorrect_password">Error! Restore failed due to incorrect password</string>
   <string name="restore_encrypted_data_label">Restore Encrypted Data</string>
@@ -221,6 +221,8 @@
   <string name="protect_with_password">Protect with Password</string>
   <string name="confirm_password">Confirm Password</string>
   <string name="important_if_you_forget_the_password_there_is_no_way_the_app_can_help_you_retrieve_it">Important: If you forget the password, there is no way the app can help you retrieve it</string>
+  <string name="backup_data_to_internal_storage">Backup App Data to Internal Storage</string>
+  <string name="restore_data">Restore App Data</string>
 
   <string-array name="reminder_filter">
     <item>Upcoming</item>

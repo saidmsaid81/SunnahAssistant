@@ -7,9 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -29,9 +26,9 @@ import java.util.*
 private const val WRITE_FILE = 0
 private const val READ_FILE = 1
 
-class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
+class BackupRestoreFragment : Fragment(),
     EnterDecryptionPasswordFragment.EnterDecryptionPasswordFragmentListener,
-    EncryptBackupFragment.EncryptBackupFragmentListener {
+    EncryptBackupFragment.EncryptBackupFragmentListener, View.OnClickListener {
 
     private lateinit var mViewModel: SunnahAssistantViewModel
     private var password: String? = null
@@ -44,34 +41,16 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     ): View? {
         val view = inflater.inflate(R.layout.fragment_backup_restore, container, false)
         view.findViewById<TextView>(R.id.title).text = getString(R.string.backup_restore_data)
-        val listView = view.findViewById<ListView>(R.id.options_list)
-        listView.adapter =
-            ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                resources.getStringArray(R.array.backup_restore_options)
-            )
-        listView.onItemClickListener = this
-
+        val backupDataTextView = view.findViewById<TextView>(R.id.backup_data)
+        val restoreDataTextView = view.findViewById<TextView>(R.id.restore_data)
+        backupDataTextView.text =
+            resources.getStringArray(R.array.backup_restore_options).getOrElse(0) { "" }
+        restoreDataTextView.text =
+            resources.getStringArray(R.array.backup_restore_options).getOrElse(1) { "" }
+        backupDataTextView.setOnClickListener(this)
+        restoreDataTextView.setOnClickListener(this)
         mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
         return view
-    }
-
-    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        when (position) {
-            WRITE_FILE -> {
-                val encryptBackupFragment = EncryptBackupFragment().apply {
-                    setListener(this@BackupRestoreFragment)
-                }
-                encryptBackupFragment.show(requireActivity().supportFragmentManager, "backupData")
-            }
-            READ_FILE -> {
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    type = "application/octet-stream"
-                }
-                startActivityForResult(intent, READ_FILE)
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -149,6 +128,23 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
             }
             this.password = password
             startActivityForResult(intent, WRITE_FILE)
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            R.id.backup_data -> {
+                val encryptBackupFragment = EncryptBackupFragment().apply {
+                    setListener(this@BackupRestoreFragment)
+                }
+                encryptBackupFragment.show(requireActivity().supportFragmentManager, "backupData")
+            }
+            R.id.restore_data -> {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    type = "application/octet-stream"
+                }
+                startActivityForResult(intent, READ_FILE)
+            }
         }
     }
 }
