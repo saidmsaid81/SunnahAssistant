@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.thesunnahrevival.sunnahassistant.R
@@ -19,6 +20,13 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
 
     private lateinit var mCalendarDay: CalendarDay
     private var mListener: OnDateSelectedListener? = null
+
+    override fun onStart() {
+        super.onStart()
+        //this forces the sheet to appear at max height even on landscape
+        val bottomSheetBehavior = BottomSheetBehavior.from(requireView().parent as View)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

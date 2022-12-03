@@ -215,7 +215,11 @@ class CalendarView : CalendarView {
                     if (!isOneMonth) {
                         val hijriDay = getHijriDay(day)
                         container.hijriCalendarDay.text =
-                            String.format(getLocale(), "(%d)", hijriDay)
+                            String.format(getLocale(), "%d", hijriDay)
+                        listeners?.getEvents(container, day)
+                    } else {
+                        container.hijriCalendarDay.visibility = View.GONE
+                        container.eventDot.visibility = View.GONE
                     }
 
                     container.view.setOnClickListener {
@@ -224,11 +228,9 @@ class CalendarView : CalendarView {
 
                     setCalendarDayBackground(container, day)
                     container.gregorianCalendarDay.visibility = View.VISIBLE
-                    container.hijriCalendarDay.visibility = View.VISIBLE
 
                     if (day.date == selectedDate)
                         listeners?.onDateSelected(day)
-                    listeners?.getEvents(container, day)
 
                 } else {
                     container.gregorianCalendarDay.visibility = View.GONE

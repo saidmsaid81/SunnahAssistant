@@ -52,13 +52,15 @@
             android:textSize="16sp"
             android:ellipsize="marquee"
             android:singleLine="true"
+            android:textStyle="bold"
+            android:textColor="@color/calendar_day_unselected_text"
             tools:text="July 2022"
             />
         <TextView
             android:id="@+id/hijri_month_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:fontFamily="sans-serif-light"
             android:layout_marginBottom="@dimen/default_dimen"
             android:ellipsize="marquee"
