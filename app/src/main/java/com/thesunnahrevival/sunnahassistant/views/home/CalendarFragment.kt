@@ -3,7 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.google.android.material.appbar.AppBarLayout
@@ -67,7 +67,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
                 if (thereToDosOnDay)
                     container.eventDot.visibility = VISIBLE
                 else
-                    container.eventDot.visibility = INVISIBLE
+                    container.eventDot.visibility = GONE
             }
         }
     }

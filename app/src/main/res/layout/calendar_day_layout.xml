@@ -11,41 +11,51 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal|center_vertical"
-      android:orientation="horizontal"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_gravity="center"
+      android:orientation="vertical"
       >
 
     <TextView
         android:id="@+id/gregorian_calendar_day"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:textStyle="bold"
+        android:textSize="15sp"
         tools:text="18"
-        android:textSize="12sp"
         />
 
     <TextView
         android:id="@+id/hijri_calendar_day"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
-        tools:text="(19)"
+        android:gravity="center"
         android:textSize="12sp"
+        tools:text="19"
         />
 
-  </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
 
-  <View
-      android:id="@+id/event_dot"
-      android:layout_width="4.5dp"
-      android:layout_height="4.5dp"
-      android:layout_marginBottom="10dp"
-      android:layout_gravity="bottom|center_horizontal"
-      android:visibility="invisible"
-      android:background="@drawable/calendar_event_drawable"
-      />
+      <View
+          android:id="@+id/event_dot"
+          android:layout_width="4.5dp"
+          android:layout_height="4.5dp"
+          android:visibility="gone"
+          android:background="@drawable/calendar_event_drawable"
+          />
+
+    </LinearLayout>
+
+
+  </LinearLayout>
 
 
 </FrameLayout>
