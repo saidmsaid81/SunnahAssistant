@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+      <import type="android.content.Context" />
+
+      <import type="android.view.View" />
+
+      <import type="com.thesunnahrevival.sunnahassistant.utilities.TimeDateUtil" />
+
+      <variable
+          name="toDo"
+          type="com.thesunnahrevival.sunnahassistant.data.model.ToDo"
+          />
+      <variable
+          name="isComplete"
+          type="boolean"
+          />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="@dimen/default_dimen"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/mark_as_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/default_dimen"
+                android:layout_marginStart="@dimen/default_dimen"
+                android:checked="@{isComplete}"
+                android:layout_gravity="center" />
+
+            <LinearLayout
+                android:id="@+id/card_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/default_dimen"
+                android:paddingBottom="@dimen/default_dimen"
+                android:orientation="vertical">
+
+              <TextView
+                  android:id="@+id/to_do_title"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:ellipsize="end"
+                  android:maxLines="1"
+                  android:text="@{toDo.name}"
+                  android:enabled="@{!isComplete}"
+                  android:textAppearance="@android:style/TextAppearance.Material.Title"
+                  android:textSize="@dimen/default_text_size"
+                  tools:text="Fasting Ayyamul Beidh"
+                  />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                  <TextView
+                      android:id="@+id/to_do_category"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="14sp"
+                      android:text="@{toDo.category + &quot;,&quot;}"
+                      android:enabled="@{!isComplete}"
+                      tools:text="Sunnah,"
+                      />
+
+                  <TextView
+                      android:id="@+id/to_do_time"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="14sp"
+                      android:text="@{TimeDateUtil.formatTimeInMilliseconds(context, toDo.timeInMilliseconds) }"
+                      android:enabled="@{!isComplete}"
+                      android:paddingStart="8dp"
+                      android:paddingEnd="8dp"
+                      tools:text="14:25"
+                      />
+
+                    <ImageView
+                        android:id="@+id/reminders_on"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="@{toDo.reminderEnabled ? View.VISIBLE : View.GONE}"
+                        android:layout_marginEnd="@dimen/margin_dimen"
+                        tools:visibility="visible"
+                        android:src="@drawable/ic_notifications_on"
+                        android:contentDescription="@string/reminder_on" />
+
+                    <ImageView
+                        android:id="@+id/reminders_off"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="@{TimeDateUtil.isReminderDisabled(context, toDo) ? View.VISIBLE : View.GONE}"
+                        tools:visibility="visible"
+                        android:src="@drawable/ic_notifications_off"
+                        android:layout_marginEnd="@dimen/margin_dimen"
+                        android:contentDescription="@string/reminder_off"
+                        />
+
+                  <ImageView
+                      android:id="@+id/more_details"
+                      android:layout_width="18dp"
+                      android:layout_height="18dp"
+                      android:layout_gravity="center_vertical"
+                      android:visibility="@{toDo.additionalInfo.length() > 0 ? View.VISIBLE : View.GONE}"
+                      tools:visibility="visible"
+                      android:src="@drawable/ic_additional_details"
+                      android:layout_marginEnd="@dimen/margin_dimen"
+                      android:contentDescription="@string/repeating_to_do"
+                      />
+
+                  <ImageView
+                      android:id="@+id/repeat"
+                      android:layout_width="18dp"
+                      android:layout_height="18dp"
+                      android:layout_gravity="center_vertical"
+                      android:visibility="@{toDo.frequency.ordinal() > 0 ? View.VISIBLE : View.GONE}"
+                      tools:visibility="visible"
+                      android:src="@drawable/ic_repeat"
+                      android:contentDescription="@string/repeating_to_do"
+                      />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>
+
+

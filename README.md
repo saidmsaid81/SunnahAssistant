@@ -1,4 +1,10 @@
 # Sunnah Assistant Android App
+
+<a href='https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+
+[![Crowdin](https://badges.crowdin.net/sunnah-assistant/localized.svg)](https://crowdin.com/project/sunnah-assistant)
+
+
 An android app for setting reminders that help you become a better person.
 Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant
 
@@ -26,6 +32,7 @@ Thanks 😀
 <h4>Translators</h4>
 
 - Arabic Translation by MalkAlashter313
+- Indonesian translation by Ilham Syahid S
 
 <h4>Credits</h4>
 

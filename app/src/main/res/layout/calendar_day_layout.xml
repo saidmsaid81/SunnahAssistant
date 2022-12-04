@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/calendar_day_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/calendar_day_bg_color"
+    android:layout_margin="1dp"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_gravity="center"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        android:id="@+id/gregorian_calendar_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal|center_vertical"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        tools:text="18"
+        />
+
+    <TextView
+        android:id="@+id/hijri_calendar_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textSize="12sp"
+        tools:text="19"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+
+      <View
+          android:id="@+id/event_dot"
+          android:layout_width="4.5dp"
+          android:layout_height="4.5dp"
+          android:visibility="gone"
+          android:background="@drawable/calendar_event_drawable"
+          />
+
+    </LinearLayout>
+
+
+  </LinearLayout>
+
+
+</FrameLayout>
