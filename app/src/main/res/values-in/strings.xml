@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Sunnah Assistant</string>
+  <string name="next_string">Selanjutnya:</string>
+  <string name="done_for_the_day">Tidak Ada Pengingat Pada Kategori Ini</string>
+  <string name="switch_to_dark_mode">Ubah Ke Mode Gelap</string>
+  <string name="to_do_name_label">Nama:</string>
+  <string name="to_do_name_hint">Masukkan Nama Pengingat</string>
+  <string name="edit_to_do">Ubah Pengingat</string>
+  <string name="add_to_do">Tambah Pengingat</string>
+  <string name="to_do_category">Kategori:</string>
+  <string name="frequency">Frekuensi:</string>
+  <string name="pick_time">Pilih Waktu</string>
+  <string name="change_time">Ubah Waktu</string>
+  <string name="save">Simpan</string>
+  <string name="successfully_updated">Berhasil Diperbaharui</string>
+  <string name="no_changes">Tidak ada perubahan.</string>
+  <string name="name_cannot_be_empty">Nama tidak boleh kosong</string>
+  <string name="select_days">Pilih hari</string>
+  <string name="select_atleast_one_day">Pilih setidaknya satu hari</string>
+  <string name="more_details">Rincian lainnya</string>
+  <string name="enter_additional_details">Detail Tambahan</string>
+  <string name="settings">Pengaturan</string>
+  <string name="hijri_date_settings">Pengaturan Tanggal Hijriah</string>
+  <string name="prayer_time_settings">Pengaturan Tanggal Ibadah</string>
+  <string name="enter_city_town_name">Nama Kota + Negara</string>
+  <string name="city_name_example">*Contoh: Bandung, Indonesia</string>
+  <string name="location_hint">Masukkan Lokasi</string>
+  <string name="error_updating_location">Gagal memperbaharui lokasi. Periksa kembali koneksi internet</string>
+  <string name="prayer_time_calculation_method">Metode Kalkulasi:</string>
+  <string name="asr_juristic_method">Metode Ashar Juristik:</string>
+  <string name="change_prayer_time_offset_by">Sesuaikan waktu %s:</string>
+  <string name="prayer_offset_minute">menit</string>
+  <string name="value">Nilai</string>
+  <string name="add_prayer_time">Aktifikan pengingat Salat otomatis</string>
+  <string name="welcome">Selamat Datang di Sunnah Assistant:</string>
+  <string name="tagline">Atur pengingat yang dapat membantumu menjadi Muslim yang baik</string>
+  <string name="quick_setup">Mulai</string>
+  <string name="delete_to_do">Pengingat Dihapus</string>
+  <string name="undo_delete">Batal</string>
+  <string name="cannot_delete_prayer_time">Pengingat ibadah otomatis hanya dapat dihapus dari Pengaturan</string>
+  <string name="time_not_set">Waktu tidak diatur</string>
+  <string name="general_settings">Pengaturan Umum</string>
+  <string name="next_to_do_notification">Tampilkan Notifikasi Pengingat Selanjutnya</string>
+  <string name="next_reminder_disclaimer">Menonaktifkan ini dapat membuat pengingat tidak dapat dijalankan</string>
+  <string name="about_app">Tentang Aplikasi</string>
+  <string name="version">Versi: %s</string>
+  <string name="icon">ikon app</string>
+  <string name="credits">Credits</string>
+  <string name="about">        Gratis dan &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/&gt;Open Source&lt;/a&gt; app&lt;br&gt;
+        Dikembangkan Oleh Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/&gt;@saidmsaid81&lt;/a&gt;)
+    </string>
+  <string name="app_icon_credit">Ikon dari: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;https://www.flaticon.com/authors/freepik&lt;/a&gt; </string>
+  <string name="we_are_social">Ikuti kami di Media Sosial</string>
+  <string name="facebook_logo">Logo Facebook</string>
+  <string name="no_email_app_installed">No Email App Installed</string>
+  <string name="contact_us">Hubungi Kami lewat Email</string>
+  <string name="change_theme">Ketuk untuk mengubah Tema dan Layout</string>
+  <string name="change_theme_description">Tema:- Tema Gelap atau Tema Terang\nLayout:- Luas atau Padat</string>
+  <string name="add_new_to_do">Tambah Pengingat</string>
+  <string name="add_new_to_do_description">Ketuk untuk menambah pengingat</string>
+  <string name="edit_to_do_description">~ Geser Kanan atau Kiri untuk menghapus Pengingat\n~ Ketuk untuk menyunting Pengingat\n~ Ketuk ikon lonceng (jika waktu diatur) untuk mengaktifkan pengingat</string>
+  <string name="spinner_tutorial">Switch Pengingat</string>
+  <string name="spinner_tutorial_description">Ganti pengingat antara hari ini, besok, per minggu, per bulan</string>
+  <string name="support_developer">Dukung Pengembang</string>
+  <string name="more_apps">Aplikasi Lainnya</string>
+  <string name="rate_this_app">Berikan nilai untuk Aplikasi ini</string>
+  <string name="send_feedback">Kirim Masukan</string>
+  <string name="telegram_logo">Logo Telegram</string>
+  <string name="instagram_logo">Logo Instagram</string>
+  <string name="twitter_logo">Logo Twitter</string>
+</resources>

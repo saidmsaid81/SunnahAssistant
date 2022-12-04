@@ -159,7 +159,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$PROJECT_DIR$/../../Sdk/icons/material/materialicons/save/baseline_save_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialicons/cancel/baseline_cancel_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -169,8 +169,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ec685b" />
-                            <entry key="outputName" value="ic_save" />
+                            <entry key="autoMirrored" value="true" />
+                            <entry key="color" value="f30808" />
+                            <entry key="outputName" value="ic_delete_forever" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/ic_toggle_theme.svg" />
                           </map>
                         </option>

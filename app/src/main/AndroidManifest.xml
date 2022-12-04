@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.thesunnahrevival.sunnahassistant">
+
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.SENDTO" />
+      <data android:scheme="*" />
+    </intent>
+    <intent>
+      <action android:name="android.support.customtabs.action.CustomTabsService" />
+    </intent>
+  </queries>
+
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo"
+        android:supportsRtl="true"
+        android:hasFragileUserData="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidgetConfigureActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidgetConfigureActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidgetConfigureActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+      <activity
+          android:name="com.thesunnahrevival.sunnahassistant.views.MainActivity"
+          android:exported="true"
+          android:theme="@style/AppTheme.NoActionBar">
+        <intent-filter>
+          <action android:name="android.intent.action.MAIN" />
+
+          <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity>
+
+        <receiver
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget"
+            android:exported="false"
+            android:label="@string/today_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/today_to_dos_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget"
+            android:exported="false"
+            android:label="@string/prayer_times_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/prayer_to_dos_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget"
+            android:exported="false"
+            android:label="@string/hijri_date_widget_label">
+          <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+          </intent-filter>
+
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/hijri_date_widget_info" />
+        </receiver>
+      <receiver
+          android:name="com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver"
+          android:exported="false">
+        <intent-filter>
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+          <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+
+          <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </receiver>
+      <receiver android:name="com.thesunnahrevival.sunnahassistant.receivers.InAppBrowserBroadcastReceiver" />
+
+      <service
+            android:name="com.thesunnahrevival.sunnahassistant.services.NextToDoService"
+            android:exported="false" />
+        <service
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.TodaysToDosRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name="com.thesunnahrevival.sunnahassistant.widgets.PrayerToDosRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+    </application>
+
+
+</manifest>
