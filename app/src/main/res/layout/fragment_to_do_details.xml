@@ -400,60 +400,10 @@
               android:layout_height="wrap_content"
               android:textSize="14sp"
               android:textAppearance="@android:style/TextAppearance.Material.Widget.DropDownHint"
-              android:text="@{isEnabled ? @string/yes : @string/no}"
-              tools:text="No Notification"
+              tools:text="No"
               />
         </LinearLayout>
 
-      </LinearLayout>
-
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:visibility="@{isAutomaticPrayerTime == true ? View.VISIBLE : View.GONE}"
-          android:layout_marginTop="@dimen/default_dimen"
-          android:orientation="horizontal"
-          >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingStart="@dimen/default_dimen"
-            android:paddingEnd="@dimen/default_dimen"
-            android:src="@drawable/ic_clock"
-            android:contentDescription="@string/time_label"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-
-
-          <TextView
-              android:id="@+id/change_prayer_time_offset_label"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:text="@{String.format(@string/change_prayer_time_offset_by, toDosName)}"
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
-              android:textStyle="bold"
-              tools:text="Change Asr Prayer Time By"
-              />
-
-          <EditText
-              android:id="@+id/prayerOffsetValue"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:hint="@string/minutes"
-              android:importantForAutofill="no"
-              android:inputType="numberSigned"
-              android:background="@android:color/transparent"
-              android:text="@{String.valueOf(offsetInMinutes)}"
-              android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-              />
-        </LinearLayout>
       </LinearLayout>
 
       <LinearLayout

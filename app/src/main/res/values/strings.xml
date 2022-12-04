@@ -236,7 +236,7 @@
   <string name="repeat_cannot_be_changed">Repeat frequency for automatic prayer time cannot be changed</string>
   <string name="category_cannot_be_changed">Category for automatic prayer time cannot be changed</string>
   <string name="time_cannot_be_changed">Time for automatic prayer time cannot be changed</string>
-  <string name="minutes">+/- minutes</string>
+  <string name="minutes">minutes</string>
   <string name="automatic_prayer_time_info">Changes made here only affect %s time for %s. Tap to Go to Settings to change for all days.</string>
   <string name="delete">Delete</string>
   <string name="delete_to_do_title">Delete To-Do</string>
@@ -259,7 +259,7 @@
   <string name="asr_prayer_settings">Asr Prayer Settings</string>
   <string name="maghrib_prayer_settings">Maghrib Prayer Settings</string>
   <string name="isha_prayer_settings">Isha Prayer Settings</string>
-  <string name="custom_reminder_offset">Custom Reminder Offset</string>
+  <string name="custom_reminder_offset">Custom Offset</string>
   <string name="minutes_label">Minutes</string>
   <string name="hours">Hour(s)</string>
   <string name="automatic_prayer_alerts_disabled">Automatic Prayer Alerts have been disabled</string>

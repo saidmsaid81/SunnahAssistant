@@ -24,10 +24,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.*
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.DatePickerFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.SelectDaysDialogFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.*
 import java.net.MalformedURLException
 import java.text.DateFormatSymbols
 import java.text.ParseException
@@ -37,7 +34,8 @@ import java.util.*
 
 open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
-    TimePickerFragment.OnTimeSetListener, MenuProvider {
+    TimePickerFragment.OnTimeSetListener, MenuProvider,
+    EnterOffsetFragment.EnterOffsetFragmentListener {
 
     private lateinit var mBinding: com.thesunnahrevival.sunnahassistant.databinding.FragmentToDoDetailsBinding
     private lateinit var mToDo: ToDo
@@ -269,11 +267,11 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             mBinding.notifyValue.isEnabled = true
         }
 
-        mBinding.isEnabled =
-            if (mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true && mTimeString != timeString)
-                true
-            else
-                mToDo.isReminderEnabled
+        if (mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true && mTimeString != timeString)
+            mBinding.notifyValue.text =
+                resources.getStringArray(R.array.notify_options).getOrElse(1) { "" }
+        else if (mToDo.isReminderEnabled)
+            updateNotifyView(mToDo)
 
         mTimeString = timeString
         mBinding.toDoTimeValue.text = timeString
@@ -281,10 +279,25 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun updateNotifyView(toDo: ToDo = mToDo) {
-        mBinding.isEnabled = if (toDo.id == 0)
-            false
-        else
-            toDo.isReminderEnabled
+        val notifyOptions = resources.getStringArray(R.array.notify_options)
+
+        if (toDo.id == 0) {
+            mBinding.notifyValue.text = notifyOptions.getOrElse(0) { "" }
+        } else {
+            when (toDo.offsetInMinutes) {
+                -30 -> mBinding.notifyValue.text = notifyOptions.getOrElse(4) { "" }
+                -15 -> mBinding.notifyValue.text = notifyOptions.getOrElse(3) { "" }
+                -5 -> mBinding.notifyValue.text = notifyOptions.getOrElse(2) { "" }
+                0 -> {
+                    if (mToDo.isReminderEnabled)
+                        mBinding.notifyValue.text = notifyOptions.getOrElse(1) { "" }
+                    else
+                        mBinding.notifyValue.text = notifyOptions.getOrElse(0) { "" }
+                }
+                else -> formatOffset(toDo.offsetInMinutes)
+            }
+        }
+
         mBinding.notify.setOnClickListener(this)
     }
 
@@ -408,7 +421,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     protected open fun onNotifyClick() {
-        val notifyOptions = arrayOf(getString(R.string.yes), getString(R.string.no))
+        val notifyOptions = resources.getStringArray(R.array.notify_options)
         showPopup(
             notifyOptions,
             R.id.notify_value, R.id.notify
@@ -439,16 +452,32 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 true
             }
             R.id.notify -> {
-                onNotifyValueUpdate(item)
+                onNotifyMenuItemClick(item)
                 true
             }
             else -> false
         }
     }
 
-    protected open fun onNotifyValueUpdate(item: MenuItem) {
-        mBinding.isEnabled =
-            item.title.toString().matches(getString(R.string.yes).toRegex())
+    protected open fun onNotifyMenuItemClick(item: MenuItem) {
+        val custom = resources.getStringArray(R.array.notify_options).getOrElse(5) { "Custom" }
+        if (!item.title.toString().matches(custom.toRegex())) {
+            mBinding.notifyValue.text = item.title.toString()
+        } else {
+            val enterOffsetFragment = EnterOffsetFragment()
+            enterOffsetFragment.setListener(this, -1)
+            enterOffsetFragment.arguments = Bundle().apply {
+                putInt(
+                    EnterOffsetFragment.CURRENT_VALUE,
+                    mToDo.offsetInMinutes
+                )
+            }
+            enterOffsetFragment.show(
+                requireActivity().supportFragmentManager,
+                "$-1"
+            )
+        }
+
     }
 
     override fun onSelectDaysDialogPositiveClick(checkedDays: TreeSet<Int>) {
@@ -602,7 +631,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             Log.e("Exception", exception.toString())
             Toast.makeText(
                 requireContext(),
-                "An error occurred. Please try again. Error",
+                "An error occurred. Please try again.",
                 Toast.LENGTH_LONG
             )
                 .show()
@@ -623,19 +652,55 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     protected open fun isToDoEnabled(): Boolean {
-        if (mTimeString?.matches(getString(R.string.time_not_set).toRegex()) == true)
-            return false
-
-        return mBinding.notifyValue.text.matches(getString(R.string.yes).toRegex())
+        return !mBinding.notifyValue.text.matches(
+            resources.getStringArray(R.array.notify_options).getOrElse(0) { "" }.toRegex()
+        )
     }
 
     protected open fun calculateOffsetForToDo(): Int {
-        return try {
-            Integer.parseInt(mBinding.prayerOffsetValue.text.toString())
-        } catch (error: NumberFormatException) {
-            0
+        val selectedItem = mBinding.notifyValue.text.toString()
+        return when (resources.getStringArray(R.array.notify_options).indexOf(selectedItem)) {
+            0 -> 0
+            1 -> 0
+            2 -> -5
+            3 -> -15
+            4 -> -30
+            else -> {
+                val isBefore =
+                    selectedItem.contains(resources.getStringArray(R.array.offset_options)[0])
+                val selectedItemString = if (isBefore)
+                    selectedItem.replace(resources.getStringArray(R.array.offset_options)[0], "")
+                else
+                    selectedItem.replace(resources.getStringArray(R.array.offset_options)[1], "")
+                val replaceHours = selectedItemString.replace(getString(R.string.hours), ":")
+                val timeString = replaceHours.replace(
+                    getString(R.string.minutes),
+                    ""
+                ).filter { !it.isWhitespace() }
+
+                if (timeString.contains(":".toRegex())) {
+                    val timeArray = timeString.split(":")
+                    if (timeArray.size == 2) {
+                        if (timeArray[0].isNotBlank() && timeArray[1].isNotBlank()) {
+                            //Contains hours and minutes
+                            val offsetInMinutes =
+                                (timeArray[0].toInt() * 60) + timeArray[1].toInt()
+                            return if (isBefore) -offsetInMinutes else offsetInMinutes
+                        } else if (timeArray[0].isNotBlank() && timeArray[1].isBlank()) {
+                            //Contains hours but not minutes
+                            val offsetInMinutes = timeArray[0].toInt() * 60
+                            return if (isBefore) -offsetInMinutes else offsetInMinutes
+                        }
+                    }
+                } else if (timeString.isNotBlank()) { //No hours
+                    val offsetInMinutes = timeString.toInt()
+                    return if (isBefore) -offsetInMinutes else offsetInMinutes
+                }
+                0
+            }
         }
     }
+
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.to_do_menu, menu)
@@ -674,5 +739,37 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
             else -> false
         }
+    }
+
+    private fun formatOffset(offsetInMinutes: Int) {
+        val unsignedOffsetInMinutes = if (offsetInMinutes < 0) {
+            -(offsetInMinutes)
+        } else {
+            offsetInMinutes
+        }
+
+        val offsetOptions =
+            resources.getStringArray(R.array.offset_options)
+        val offsetKeyword = if (offsetInMinutes < 0) offsetOptions[0] else offsetOptions[1]
+
+        val hours = (unsignedOffsetInMinutes / 60)
+        val minutes = unsignedOffsetInMinutes % 60
+
+        val offsetString = StringBuilder()
+
+        if (hours > 0) {
+            offsetString.append("$hours ${getString(R.string.hours)} ")
+        }
+        if (minutes > 0) {
+            offsetString.append(
+                "$minutes ${getString(R.string.minutes)} "
+            )
+        }
+        offsetString.append(offsetKeyword)
+        mBinding.notifyValue.text = offsetString
+    }
+
+    override fun onOffsetSave(offsetInMinutes: Int, index: Int) {
+        formatOffset(offsetInMinutes)
     }
 }
