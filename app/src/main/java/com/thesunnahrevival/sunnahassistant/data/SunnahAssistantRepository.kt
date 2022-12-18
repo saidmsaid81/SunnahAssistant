@@ -241,6 +241,28 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         }
     }
 
+    fun getSunriseTime(
+        latitude: Double,
+        longitude: Double,
+        calculationMethod: CalculationMethod,
+        asrCalculationMethod: Madhab,
+        latitudeAdjustmentMethod: Int,
+        day: Int,
+        month: Int,
+        year: Int
+    ): Long {
+        val prayerTimeCalculator = PrayerTimeCalculator(
+            latitude.toDouble(),
+            longitude.toDouble(),
+            calculationMethod,
+            asrCalculationMethod,
+            latitudeAdjustmentMethod,
+            prayerNames,
+            prayerCategory
+        )
+        return prayerTimeCalculator.getSunrise(day, month, year)
+    }
+
     private fun getPrayerRemindersList(
         day: Int,
         month: Int,

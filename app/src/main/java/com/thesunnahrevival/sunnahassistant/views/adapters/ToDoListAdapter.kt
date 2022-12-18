@@ -18,6 +18,7 @@ class ToDoListAdapter(val context: Context, val isCompletedToDos: Boolean = fals
     PagingDataAdapter<ToDo, ToDoListAdapter.ViewHolder>(ToDo_COMPARATOR) {
     private var mListener: ToDoItemInteractionListener? = null
     private lateinit var mLayoutInflater: LayoutInflater
+    private var sunriseTime: Long? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         mLayoutInflater = LayoutInflater.from(context)
@@ -59,6 +60,10 @@ class ToDoListAdapter(val context: Context, val isCompletedToDos: Boolean = fals
         }
     }
 
+    fun setSunriseTime(sunriseTime: Long?) {
+        this.sunriseTime = sunriseTime
+    }
+
     /**
      * Inner Class
      */
@@ -67,6 +72,15 @@ class ToDoListAdapter(val context: Context, val isCompletedToDos: Boolean = fals
         fun bind(toDo: ToDo) {
             binding.toDo = toDo
             binding.isComplete = isCompletedToDos
+
+            if (toDo.isAutomaticPrayerTime() && toDo.id.toString().endsWith("0")) {
+                sunriseTime?.let {
+                    binding.sunriseTimeInMilliSeconds = it
+                }
+            } else {
+                binding.sunriseTimeInMilliSeconds = null
+            }
+
             if (isCompletedToDos)
                 binding.toDoTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else

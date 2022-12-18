@@ -149,6 +149,24 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    fun getSunriseTime(): Long? {
+        val settings = settingsValue
+        if (settings != null) {
+            return mRepository.getSunriseTime(
+                settings.latitude.toDouble(),
+                settings.longitude.toDouble(),
+                settings.calculationMethod,
+                settings.asrCalculationMethod,
+                settings.latitudeAdjustmentMethod,
+                selectedToDoDate.dayOfMonth,
+                selectedToDoDate.month.ordinal,
+                selectedToDoDate.year
+            )
+        }
+        return null
+
+    }
+
     fun updatePrayerTimeDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)

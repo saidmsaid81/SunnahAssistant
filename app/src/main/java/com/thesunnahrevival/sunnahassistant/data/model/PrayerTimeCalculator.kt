@@ -68,7 +68,27 @@ class PrayerTimeCalculator(
         return toDos
     }
 
+    fun getSunrise(day: Int, month: Int, year: Int): Long {
+        val prayerTimes = getPrayerTimes(year, month, day)
+        return prayerTimes.sunrise.time
+    }
+
     private fun prayerTimeStrings(day: Int, month: Int, year: Int): Array<String> {
+        val prayerTimes = getPrayerTimes(year, month, day)
+
+        val formatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
+        return arrayOf(
+            formatter.format(prayerTimes.fajr),
+            formatter.format(prayerTimes.dhuhr), formatter.format(prayerTimes.asr),
+            formatter.format(prayerTimes.maghrib), formatter.format(prayerTimes.isha)
+        )
+    }
+
+    private fun getPrayerTimes(
+        year: Int,
+        month: Int,
+        day: Int
+    ): PrayerTimes {
         val dateObject = GregorianCalendar(year, month, day).time
         val coordinates = Coordinates(latitude, longitude)
         val date = DateComponents.from(dateObject)
@@ -77,14 +97,7 @@ class PrayerTimeCalculator(
         params.madhab = asrCalculationMethod
         params.highLatitudeRule = HighLatitudeRule.values()[latitudeAdjustmentMethod]
 
-        val prayerTimes = PrayerTimes(coordinates, date, params)
-
-        val formatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-        return arrayOf(
-            formatter.format(prayerTimes.fajr),
-            formatter.format(prayerTimes.dhuhr), formatter.format(prayerTimes.asr),
-            formatter.format(prayerTimes.maghrib), formatter.format(prayerTimes.isha)
-        )
+        return PrayerTimes(coordinates, date, params)
     }
 
     private fun createToDo(
