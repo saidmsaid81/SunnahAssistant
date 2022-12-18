@@ -66,6 +66,12 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             if (settings != null) {
                 mAppSettings = settings
                 mViewModel.settingsValue = settings
+                concatAdapter.adapters.getOrNull(0)?.let {
+                    (it as ToDoListAdapter).setSunriseTime(mViewModel.getSunriseTime())
+                }
+                concatAdapter.adapters.getOrNull(1)?.let {
+                    (it as ToDoListAdapter).setSunriseTime(mViewModel.getSunriseTime())
+                }
                 setupCategoryChips()
                 mBinding.toDoList.visibility = View.VISIBLE
 
@@ -153,6 +159,8 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
         mViewModel.getIncompleteToDos()
             .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
+                if (mAppSettings?.isAutomaticPrayerAlertsEnabled == true)
+                    incompleteToDoRecyclerAdapter.setSunriseTime(mViewModel.getSunriseTime())
                 incompleteToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
                 if (this !is CalendarFragment)
                     displayHijriDate()
@@ -160,6 +168,8 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
         mViewModel.getCompleteToDos()
             .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
+                if (mAppSettings?.isAutomaticPrayerAlertsEnabled == true)
+                    completeToDoRecyclerAdapter.setSunriseTime(mViewModel.getSunriseTime())
                 completeToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
                 if (this !is CalendarFragment)
                     displayHijriDate()
