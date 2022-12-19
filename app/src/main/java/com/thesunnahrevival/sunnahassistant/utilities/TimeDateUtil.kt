@@ -106,29 +106,36 @@ fun getTimestampInSeconds(timeString: String?): Long {
 
 fun generateDateText(
     gregorianCalendar: GregorianCalendar = GregorianCalendar(),
-    isOnlyHijriDate: Boolean = false
+    includeHijriDate: Boolean = true,
+    includeGregorianDate: Boolean = true
 ): String {
     val stringBuilder = StringBuilder()
-    if (!isOnlyHijriDate) {
-        val simpleDateFormat = SimpleDateFormat("EEEE dd MMMM, yyyy", getLocale())
-        stringBuilder.append("${simpleDateFormat.format(gregorianCalendar.time)} / ")
+    val simpleDateFormat = SimpleDateFormat("EEEE", getLocale())
+    stringBuilder.append("${simpleDateFormat.format(gregorianCalendar.time)} ")
+
+    if (includeGregorianDate) {
+        simpleDateFormat.applyPattern("dd MMMM, yyyy")
+        stringBuilder.append(simpleDateFormat.format(gregorianCalendar.time))
     }
 
-    val ummalquraCalendar = UmmalquraCalendar()
-    ummalquraCalendar.time = gregorianCalendar.time
-    val hijriDateFormat = SimpleDateFormat("", getLocale())
-    hijriDateFormat.calendar = ummalquraCalendar
-    if (isOnlyHijriDate)
-        hijriDateFormat.applyPattern("EEEE dd")
-    else
-        hijriDateFormat.applyPattern("dd")
-    val hijriDay = hijriDateFormat.format(ummalquraCalendar.time)
-    val month = ummalquraCalendar.getHijriMonthName()
-    val year = hijriDateFormat.apply {
-        applyPattern("y")
-    }.format(ummalquraCalendar.time)
+    if (includeGregorianDate && includeHijriDate)
+        stringBuilder.append(" / ")
 
-    stringBuilder.append("$hijriDay $month, $year")
+    if (includeHijriDate) {
+        val ummalquraCalendar = UmmalquraCalendar()
+        ummalquraCalendar.time = gregorianCalendar.time
+
+        simpleDateFormat.applyPattern("dd")
+
+        val hijriDay = simpleDateFormat.format(ummalquraCalendar.time)
+        val month = ummalquraCalendar.getHijriMonthName()
+        val year = simpleDateFormat.apply {
+            applyPattern("yyyy")
+        }.format(ummalquraCalendar.time)
+
+        stringBuilder.append("$hijriDay $month, $year")
+
+    }
 
     return stringBuilder.toString()
 }

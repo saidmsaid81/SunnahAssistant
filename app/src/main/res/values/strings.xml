@@ -304,6 +304,7 @@
   <string name="sunrise">Sunrise:</string>
   <string name="no_notification">No Notification</string>
   <string name="do_not_disturb_settings">Do not Disturb Settings</string>
+  <string name="include_hijri_date_in_calendar">Include Hijri Date in Calendar</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>

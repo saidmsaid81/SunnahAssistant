@@ -39,6 +39,16 @@
           android:checked="@{settings.displayHijriDate}"
           />
 
+      <com.google.android.material.switchmaterial.SwitchMaterial
+          android:id="@+id/include_hijri_date_in_calendar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:text="@string/include_hijri_date_in_calendar"
+          android:button="@null"
+          android:checked="@{settings.includeHijriDateInCalendar}"
+          />
+
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
