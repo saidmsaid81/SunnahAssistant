@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.views.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.google.android.material.appbar.AppBarLayout
@@ -38,7 +37,8 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         calendar_view.setupWithListeners(
             listeners = this,
             startMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
-            endMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue)
+            endMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
+            showHijriDate = mViewModel.settingsValue?.includeHijriDateInCalendar ?: true
         )
         calendar_view.scrollToSpecificDate(selectedToDoDate)
 
@@ -66,8 +66,8 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             withContext(Dispatchers.Main) {
                 if (thereToDosOnDay)
                     container.eventDot.visibility = VISIBLE
-                else
-                    container.eventDot.visibility = GONE
+//                else
+//                    container.eventDot.visibility = INVISIBLE
             }
         }
     }
@@ -82,6 +82,9 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         )
 
         selected_date.visibility = VISIBLE
-        selected_date.text = generateDateText(gregorianCalendar)
+        selected_date.text = generateDateText(
+            gregorianCalendar,
+            mViewModel.settingsValue?.isDisplayHijriDate ?: true
+        )
     }
 }

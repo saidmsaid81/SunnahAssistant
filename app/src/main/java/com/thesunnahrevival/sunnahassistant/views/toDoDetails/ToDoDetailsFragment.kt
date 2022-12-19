@@ -371,6 +371,10 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                         DatePickerFragment.SHOWALLMONTHS,
                         mBinding.selectedFrequency == Frequency.OneTime.ordinal
                     )
+                    putBoolean(
+                        DatePickerFragment.SHOWHIJRIDATE,
+                        mViewModel.settingsValue?.includeHijriDateInCalendar ?: true
+                    )
                 }
                 datePickerFragment.arguments = bundle
                 datePickerFragment.setListener(this)

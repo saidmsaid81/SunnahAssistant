@@ -41,6 +41,7 @@
           android:gravity="center"
           android:layout_weight="2"
           android:orientation="vertical"
+          android:layout_marginBottom="@dimen/default_dimen"
           >
 
         <TextView
@@ -62,7 +63,6 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:fontFamily="sans-serif-light"
-            android:layout_marginBottom="@dimen/default_dimen"
             android:ellipsize="marquee"
             android:singleLine="true"
             tools:text="Thul-Hijjah 1443 - Muharram 1444"

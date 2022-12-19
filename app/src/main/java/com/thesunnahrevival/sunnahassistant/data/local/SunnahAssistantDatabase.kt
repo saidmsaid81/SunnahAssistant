@@ -120,6 +120,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     "ALTER TABLE app_settings ADD COLUMN prayerTimeOffsetsInMinutes TEXT DEFAULT '' NOT NULL"
                 )
 
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN includeHijriDateInCalendar INTEGER DEFAULT 1 NOT NULL")
+
                 database.execSQL(
                     "ALTER TABLE reminders_table ADD COLUMN completedDates TEXT DEFAULT '' NOT NULL"
                 )

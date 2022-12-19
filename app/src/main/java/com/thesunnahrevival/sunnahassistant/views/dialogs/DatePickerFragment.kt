@@ -49,6 +49,7 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
 
         val yearArgument = arguments?.getInt(YEAR) ?: now.year
         val showAllMonths = arguments?.getBoolean(SHOWALLMONTHS) ?: true
+        val showHijriDate = arguments?.getBoolean(SHOWHIJRIDATE) ?: true
 
         val month = if (monthArgument in 1..12)
             monthArgument
@@ -79,7 +80,8 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
             calendar_view.setupWithListeners(
                 startMonth,
                 startMonth,
-                listeners = this
+                listeners = this,
+                showHijriDate = showHijriDate
             )
             calendar_view.scrollToSpecificDate(LocalDate.of(year, month, day))
         } else {
@@ -120,6 +122,7 @@ class DatePickerFragment : BottomSheetDialogFragment(), CalendarView.Listeners {
         const val DAY = "DAY"
         const val MONTH = "MONTH"
         const val YEAR = "YEAR"
-        const val SHOWALLMONTHS = "SHOWALLMONTHSS"
+        const val SHOWALLMONTHS = "SHOWALLMONTHS"
+        const val SHOWHIJRIDATE = "SHOWHIJRIDATE"
     }
 }

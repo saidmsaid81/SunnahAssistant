@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.customviews
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -29,6 +30,8 @@ class CalendarView : CalendarView {
     private var selectedDate: LocalDate? = LocalDate.now()
     private val todayMonth: String
     private var listeners: Listeners? = null
+    private var showHijriDate: Boolean = false
+
     private var finishedUpdatingMonthRange = false
     private var isOneMonth = false
 
@@ -56,7 +59,8 @@ class CalendarView : CalendarView {
         startMonth: YearMonth? = null,
         endMonth: YearMonth? = null,
         firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek,
-        listeners: Listeners
+        listeners: Listeners,
+        showHijriDate: Boolean = true
     ) {
         if (startMonth != null && endMonth != null) {
             if (startMonth.isBefore(YearMonth.of(1970, 1)) ||
@@ -70,12 +74,11 @@ class CalendarView : CalendarView {
         } else
             setup(YearMonth.now(), YearMonth.now(), firstDayOfWeek)
 
+        this.showHijriDate = showHijriDate
         this.listeners = listeners
     }
 
-    fun setupMonthWithListeners(
-        listeners: Listeners
-    ) {
+    fun setupMonthWithListeners(listeners: Listeners) {
         val firstDayOfWeek = WeekFields.of(Locale.US).firstDayOfWeek
         setup(YearMonth.of(2017, 1), YearMonth.of(2017, 1), firstDayOfWeek)
         this.isOneMonth = true
@@ -112,12 +115,19 @@ class CalendarView : CalendarView {
                             R.array.gregorian_month_names
                         )[month.yearMonth.month.ordinal]
                         val gregorianYear = String.format(getLocale(), "%d", month.year)
-
-                        val hijriMonthName = getHijriMonthName(month)
-
                         container.gregorianMonthName.text =
                             "$gregorianMonthName $gregorianYear"
-                        container.hijriMonthName.text = hijriMonthName
+
+                        val showHijriDate = false
+
+                        if (showHijriDate) {
+                            val hijriMonthName = getHijriMonthName(month)
+                            container.hijriMonthName.text = hijriMonthName
+                        } else {
+                            container.hijriMonthName.visibility = View.GONE
+                            container.gregorianMonthName.typeface = Typeface.DEFAULT
+                        }
+
 
                         container.prevMonth.setOnClickListener {
                             findFirstVisibleMonth()?.let {
@@ -212,13 +222,17 @@ class CalendarView : CalendarView {
                     container.gregorianCalendarDay.text =
                         String.format(getLocale(), "%d", day.date.dayOfMonth)
 
-                    if (!isOneMonth) {
+                    if (!isOneMonth && showHijriDate) {
                         val hijriDay = getHijriDay(day)
                         container.hijriCalendarDay.text =
                             String.format(getLocale(), "%d", hijriDay)
                         listeners?.getEvents(container, day)
+                    } else if (!isOneMonth) {
+                        container.hijriCalendarDay.visibility = View.GONE
+                        listeners?.getEvents(container, day)
                     } else {
                         container.hijriCalendarDay.visibility = View.GONE
+                        container.gregorianCalendarDay.typeface = Typeface.DEFAULT
                         container.eventDot.visibility = View.GONE
                     }
 

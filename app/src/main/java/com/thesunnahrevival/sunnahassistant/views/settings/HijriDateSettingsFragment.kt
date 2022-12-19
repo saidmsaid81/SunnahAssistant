@@ -43,6 +43,13 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
             }
         }
 
+        binding.includeHijriDateInCalendar.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
+            if (buttonView.isPressed) {
+                mViewModel.settingsValue?.includeHijriDateInCalendar = isChecked
+                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+            }
+        }
+
         inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
         binding.hijriInfo.setOnClickListener {
             try {

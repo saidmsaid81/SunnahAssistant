@@ -197,14 +197,20 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     private fun displayHijriDate() {
-        if (mAppSettings?.isDisplayHijriDate == true) {
-            mBinding.hijriDate.text = HtmlCompat.fromHtml(
-                getString(R.string.hijri_date, generateDateText()),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            mBinding.hijriDate.visibility = View.VISIBLE
-        } else
-            mBinding.hijriDate.visibility = View.GONE
+        val includeHijriDate = mViewModel.settingsValue?.isDisplayHijriDate ?: true
+        mBinding.date.text = HtmlCompat.fromHtml(
+            getString(
+                R.string.hijri_date,
+                generateDateText(
+                    includeHijriDate = includeHijriDate
+                )
+            ),
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
+        mBinding.date.visibility = View.VISIBLE
+        if (!includeHijriDate) {
+            mBinding.date.textSize = 14F
+        }
     }
 
     private fun animateAddToDoButton() {

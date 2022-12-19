@@ -45,6 +45,7 @@ data class AppSettings(
     var numberOfLaunches: Int = 0,
     var shareAnonymousUsageData: Boolean = true,
     @ColumnInfo(name = "generatePrayerRemindersAfter") var generatePrayerToDosAfter: Date = Date(),
+    var includeHijriDateInCalendar: Boolean = true
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -86,6 +87,7 @@ data class AppSettings(
         if (numberOfLaunches != other.numberOfLaunches) return false
         if (shareAnonymousUsageData != other.shareAnonymousUsageData) return false
         if (generatePrayerToDosAfter != other.generatePrayerToDosAfter) return false
+        if (includeHijriDateInCalendar != other.includeHijriDateInCalendar) return false
 
         return true
     }

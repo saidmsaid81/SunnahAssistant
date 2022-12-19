@@ -100,7 +100,7 @@ internal suspend fun fetchDateFromDatabase(
     val appSettings = repository.getAppSettingsValue()
 
     val hijriText = if (appSettings?.isShowHijriDateWidget == true)
-        generateDateText(isOnlyHijriDate = true) else null
+        generateDateText(includeGregorianDate = false) else null
 
     val nextToDo = if (appSettings?.isShowNextToDoWidget == true) {
         val timeInMilliseconds = System.currentTimeMillis()
