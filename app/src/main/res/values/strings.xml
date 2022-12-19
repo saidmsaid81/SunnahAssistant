@@ -28,7 +28,7 @@
   <string name="error_updating_location">Error updating Location. Please check your internet connection</string>
   <string name="prayer_time_calculation_method">Calculation Method:</string>
   <string name="asr_juristic_method">Asr Juristic Method:</string>
-  <string name="change_prayer_time_offset_by">Notify (+/- minutes from prayer time)</string>
+  <string name="change_prayer_time_offset_by">%s Notification</string>
   <string name="prayer_offset_minute">minute(s)</string>
   <string name="value">Value</string>
   <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
@@ -302,6 +302,8 @@
   <string name="confirm_deleting_malformed_to_dos">Do you really want to Delete ALL Malformed To-Dos</string>
   <string name="operation_ongoing">Another Backup/Restore operation ongoing. Please wait...</string>
   <string name="sunrise">Sunrise:</string>
+  <string name="no_notification">No Notification</string>
+  <string name="do_not_disturb_settings">Do not Disturb Settings</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
