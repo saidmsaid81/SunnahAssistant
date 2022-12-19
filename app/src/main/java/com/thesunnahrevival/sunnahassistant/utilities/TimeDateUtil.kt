@@ -156,5 +156,39 @@ fun generateLocalDatefromDate(date: Date): LocalDate {
     return LocalDate.of(year, month, day)
 }
 
+fun getFormattedOffset(
+    offsetInMinutes: Int,
+    offsetOptions: Array<String>,
+    hoursLabel: String,
+    minutesLabel: String,
+    ontimeLabel: String
+): String {
+    val unsignedOffsetInMinutes = if (offsetInMinutes < 0) {
+        -(offsetInMinutes)
+    } else if (offsetInMinutes == 0) {
+        return ontimeLabel
+    } else {
+        offsetInMinutes
+    }
+
+    val offsetKeyword = if (offsetInMinutes < 0) offsetOptions[0] else offsetOptions[1]
+
+    val hours = (unsignedOffsetInMinutes / 60)
+    val minutes = unsignedOffsetInMinutes % 60
+
+    val offsetString = StringBuilder()
+
+    if (hours > 0) {
+        offsetString.append("$hours $hoursLabel ")
+    }
+    if (minutes > 0) {
+        offsetString.append(
+            "$minutes $minutesLabel "
+        )
+    }
+    offsetString.append(offsetKeyword)
+    return offsetString.toString()
+}
+
 
 

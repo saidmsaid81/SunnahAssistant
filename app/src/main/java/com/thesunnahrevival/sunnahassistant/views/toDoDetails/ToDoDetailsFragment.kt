@@ -294,7 +294,16 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     else
                         mBinding.notifyValue.text = notifyOptions.getOrElse(0) { "" }
                 }
-                else -> formatOffset(toDo.offsetInMinutes)
+                else -> {
+                    val offsetOptions = resources.getStringArray(R.array.offset_options)
+                    mBinding.notifyValue.text = getFormattedOffset(
+                        toDo.offsetInMinutes,
+                        offsetOptions,
+                        getString(R.string.hours),
+                        getString(R.string.minutes),
+                        notifyOptions[1]
+                    )
+                }
             }
         }
 
@@ -741,35 +750,14 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
-    private fun formatOffset(offsetInMinutes: Int) {
-        val unsignedOffsetInMinutes = if (offsetInMinutes < 0) {
-            -(offsetInMinutes)
-        } else {
-            offsetInMinutes
-        }
-
-        val offsetOptions =
-            resources.getStringArray(R.array.offset_options)
-        val offsetKeyword = if (offsetInMinutes < 0) offsetOptions[0] else offsetOptions[1]
-
-        val hours = (unsignedOffsetInMinutes / 60)
-        val minutes = unsignedOffsetInMinutes % 60
-
-        val offsetString = StringBuilder()
-
-        if (hours > 0) {
-            offsetString.append("$hours ${getString(R.string.hours)} ")
-        }
-        if (minutes > 0) {
-            offsetString.append(
-                "$minutes ${getString(R.string.minutes)} "
-            )
-        }
-        offsetString.append(offsetKeyword)
-        mBinding.notifyValue.text = offsetString
-    }
-
     override fun onOffsetSave(offsetInMinutes: Int, index: Int) {
-        formatOffset(offsetInMinutes)
+        val offsetOptions = resources.getStringArray(R.array.offset_options)
+        mBinding.notifyValue.text = getFormattedOffset(
+            offsetInMinutes,
+            offsetOptions,
+            getString(R.string.hours),
+            getString(R.string.minutes),
+            resources.getStringArray(R.array.notify_options)[1]
+        )
     }
 }

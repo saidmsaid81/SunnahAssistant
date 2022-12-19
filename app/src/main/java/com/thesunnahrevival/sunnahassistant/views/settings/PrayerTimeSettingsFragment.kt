@@ -41,6 +41,10 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
         mViewModel.isPrayerSettingsUpdated = false
         binding.prayers = resources.getStringArray(R.array.prayer_names)
+        binding.offsetOptions = resources.getStringArray(R.array.offset_options)
+        binding.hoursLabel = getString(R.string.hours)
+        binding.minutesLabel = getString(R.string.minutes)
+        binding.onTimeLabel = resources.getStringArray(R.array.notify_options)[1]
 
         mViewModel.getSettings().observe(viewLifecycleOwner) {
             if (it != null) {
@@ -105,59 +109,39 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                     R.id.do_not_disturb_minutes, R.id.do_not_disturb
                 )
         }
-        binding.fajrEnableAlerts.setOnClickListener {
-            showPopup(yesNoOptions, R.id.fajr_enable_alerts_value, it.id)
-        }
-        binding.dhuhrEnableAlerts.setOnClickListener {
-            showPopup(yesNoOptions, R.id.dhuhr_enable_alerts_value, it.id)
-        }
-        binding.asrEnableAlerts.setOnClickListener {
-            showPopup(yesNoOptions, R.id.asr_enable_alerts_value, it.id)
-        }
-        binding.maghribEnableAlerts.setOnClickListener {
-            showPopup(yesNoOptions, R.id.maghrib_enable_alerts_value, it.id)
-        }
-        binding.ishaEnableAlerts.setOnClickListener {
-            showPopup(yesNoOptions, R.id.isha_enable_alerts_value, it.id)
-        }
 
-        binding.fajrOffsetSettings.setOnClickListener(this)
-        binding.dhuhrOffsetSettings.setOnClickListener(this)
-        binding.asrOffsetSettings.setOnClickListener(this)
-        binding.maghribOffsetSettings.setOnClickListener(this)
-        binding.ishaOffsetSettings.setOnClickListener(this)
+        binding.fajrNotificationSettings.setOnClickListener(this)
+        binding.dhuhrNotificationSettings.setOnClickListener(this)
+        binding.asrNotificationSettings.setOnClickListener(this)
+        binding.maghribNotificationSettings.setOnClickListener(this)
+        binding.ishaNotificationSettings.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
         if (view != null) {
-            val prayerOffsetViews = arrayOf(
-                R.id.fajr_offset_settings,
-                R.id.dhuhr_offset_settings,
-                R.id.asr_offset_settings,
-                R.id.maghrib_offset_settings,
-                R.id.isha_offset_settings
+            val notifyOptions = resources.getStringArray(R.array.notify_options)
+            showPopup(
+                notifyOptions,
+                view.id, view.id
             )
-            val prayerOffsetIndex = prayerOffsetViews.indexOf(view.id)
-
-            when {
-                prayerOffsetIndex != -1 -> {
-                    val enterOffsetFragment = EnterOffsetFragment()
-                    enterOffsetFragment.setListener(this, prayerOffsetIndex)
-                    enterOffsetFragment.arguments = Bundle().apply {
-                        putInt(
-                            CURRENT_VALUE,
-                            mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
-                                prayerOffsetIndex
-                            ) ?: 0
-                        )
-                    }
-                    enterOffsetFragment.show(
-                        requireActivity().supportFragmentManager,
-                        "$prayerOffsetIndex"
-                    )
-                }
-            }
         }
+    }
+
+    private fun showEnterOffsetFragment(prayerOffsetIndex: Int) {
+        val enterOffsetFragment = EnterOffsetFragment()
+        enterOffsetFragment.setListener(this, prayerOffsetIndex)
+        enterOffsetFragment.arguments = Bundle().apply {
+            putInt(
+                CURRENT_VALUE,
+                mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
+                    prayerOffsetIndex
+                ) ?: 0
+            )
+        }
+        enterOffsetFragment.show(
+            requireActivity().supportFragmentManager,
+            "$prayerOffsetIndex"
+        )
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -181,39 +165,28 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             R.id.do_not_disturb -> {
                 mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
             }
-            R.id.fajr_enable_alerts -> {
-                val (yes) = yesNoOptions
-                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
-                    0, item.title.matches(yes.toRegex())
-                )
-            }
-            R.id.dhuhr_enable_alerts -> {
-                val (yes) = yesNoOptions
-                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
-                    1, item.title.matches(yes.toRegex())
-                )
-            }
-            R.id.asr_enable_alerts -> {
-                val (yes) = yesNoOptions
-                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
-                    2, item.title.matches(yes.toRegex())
-                )
-            }
-            R.id.maghrib_enable_alerts -> {
-                val (yes) = yesNoOptions
-                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
-                    3, item.title.matches(yes.toRegex())
-                )
-            }
-            R.id.isha_enable_alerts -> {
-                val (yes) = yesNoOptions
-                mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(
-                    4, item.title.matches(yes.toRegex())
-                )
-            }
+            R.id.fajr_notification_settings -> setPrayerOffset(0, item)
+            R.id.dhuhr_notification_settings -> setPrayerOffset(1, item)
+            R.id.asr_notification_settings -> setPrayerOffset(2, item)
+            R.id.maghrib_notification_settings -> setPrayerOffset(3, item)
+            R.id.isha_notification_settings -> setPrayerOffset(4, item)
         }
         updateSettings()
         return true
+    }
+
+    private fun setPrayerOffset(prayerTimeIndex: Int, item: MenuItem) {
+        val notifyOptions = resources.getStringArray(R.array.notify_options)
+        mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, true)
+
+        when (notifyOptions.indexOf(item.title)) {
+            0 -> mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, false)
+            1 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, 0)
+            2 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -5)
+            3 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -15)
+            4 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -30)
+            else -> showEnterOffsetFragment(prayerTimeIndex)
+        }
     }
 
     private fun updateSettings() {
