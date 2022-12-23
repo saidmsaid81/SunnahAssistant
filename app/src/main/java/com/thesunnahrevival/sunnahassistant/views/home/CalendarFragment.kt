@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.google.android.material.appbar.AppBarLayout
@@ -43,10 +44,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         calendar_view.scrollToSpecificDate(selectedToDoDate)
 
         mViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
-            val yearMonth = calendar_view.findFirstVisibleMonth()?.yearMonth
-            if (yearMonth != null) {
-                calendar_view.notifyMonthChanged(yearMonth)
-            }
+            calendar_view.notifyCalendarChanged()
         }
     }
 
@@ -66,8 +64,8 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             withContext(Dispatchers.Main) {
                 if (thereToDosOnDay)
                     container.eventDot.visibility = VISIBLE
-//                else
-//                    container.eventDot.visibility = INVISIBLE
+                else
+                    container.eventDot.visibility = INVISIBLE
             }
         }
     }

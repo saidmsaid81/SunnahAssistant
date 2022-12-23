@@ -31,7 +31,6 @@ class CalendarView : CalendarView {
     private val todayMonth: String
     private var listeners: Listeners? = null
     private var showHijriDate: Boolean = false
-
     private var finishedUpdatingMonthRange = false
     private var isOneMonth = false
 
@@ -109,8 +108,8 @@ class CalendarView : CalendarView {
                         container.monthHeaderView.visibility = View.GONE
                         container.oneMonthHeader.visibility = View.VISIBLE
                     } else {
-                        container.oneMonthHeader.visibility = View.GONE
                         container.monthHeaderView.visibility = View.VISIBLE
+                        container.oneMonthHeader.visibility = View.GONE
                         val gregorianMonthName = resources.getStringArray(
                             R.array.gregorian_month_names
                         )[month.yearMonth.month.ordinal]
@@ -118,11 +117,10 @@ class CalendarView : CalendarView {
                         container.gregorianMonthName.text =
                             "$gregorianMonthName $gregorianYear"
 
-                        val showHijriDate = false
-
                         if (showHijriDate) {
                             val hijriMonthName = getHijriMonthName(month)
                             container.hijriMonthName.text = hijriMonthName
+                            container.hijriMonthName.visibility = View.VISIBLE
                         } else {
                             container.hijriMonthName.visibility = View.GONE
                             container.gregorianMonthName.typeface = Typeface.DEFAULT
@@ -226,6 +224,7 @@ class CalendarView : CalendarView {
                         val hijriDay = getHijriDay(day)
                         container.hijriCalendarDay.text =
                             String.format(getLocale(), "%d", hijriDay)
+                        container.hijriCalendarDay.visibility = View.VISIBLE
                         listeners?.getEvents(container, day)
                     } else if (!isOneMonth) {
                         container.hijriCalendarDay.visibility = View.GONE
@@ -247,6 +246,7 @@ class CalendarView : CalendarView {
                         listeners?.onDateSelected(day)
 
                 } else {
+                    container.view.setBackgroundResource(R.color.calendar_day_bg_color)
                     container.gregorianCalendarDay.visibility = View.GONE
                     container.hijriCalendarDay.visibility = View.GONE
                     container.eventDot.visibility = View.GONE
