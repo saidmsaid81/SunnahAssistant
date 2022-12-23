@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget
+import java.time.LocalDate
 import java.util.*
 
 val supportedLocales = arrayOf("en", "ar")
@@ -87,13 +88,14 @@ fun openDeveloperPage(context: Context) {
 }
 
 fun demoToDo(name: String, category: String): ToDo {
+    val now = LocalDate.now()
     return ToDo(
         name = name,
-        frequency = Frequency.Daily,
+        frequency = Frequency.OneTime,
         category = category,
-        day = 0,
-        month = 12,
-        year = 0,
+        day = now.dayOfMonth,
+        month = now.month.ordinal,
+        year = now.year,
         id = 1
     )
 }

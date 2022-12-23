@@ -555,16 +555,30 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     }
 
     private fun deleteToDo() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.delete_to_do_title)
-            .setMessage(R.string.delete_to_do_confirmation)
-            .setPositiveButton(R.string.yes) { _, _ ->
-                mViewModel.deleteToDo(mToDo)
-                Toast.makeText(requireContext(), R.string.delete_to_do, Toast.LENGTH_LONG).show()
-                findNavController().navigateUp()
+        if (mToDo.frequency == Frequency.OneTime)
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.delete_to_do_title)
+                .setMessage(R.string.delete_to_do_confirmation)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    mViewModel.deleteToDo(mToDo)
+                    Toast.makeText(requireContext(), R.string.delete_to_do, Toast.LENGTH_LONG)
+                        .show()
+                    findNavController().navigateUp()
+                }
+                .setNegativeButton(R.string.no) { _, _ -> }
+                .show()
+        else {
+            val dialogFragment = DeleteToDoFragment()
+            dialogFragment.arguments = Bundle().apply {
+                putSerializable(DeleteToDoFragment.TODO, mToDo)
             }
-            .setNegativeButton(R.string.no) { _, _ -> }
-            .show()
+            dialogFragment.show(requireActivity().supportFragmentManager, "dialog")
+            dialogFragment.setOnDismissListener(object : DeleteToDoFragment.OnDismissListener {
+                override fun onDismiss() {
+                    findNavController().navigateUp()
+                }
+            })
+        }
 
     }
 

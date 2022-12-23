@@ -10,4 +10,7 @@ interface ToDoItemInteractionListener {
     fun onSwipeToMarkAsComplete(toDo: ToDo) {
         onMarkAsComplete(true, null, toDo)
     }
+
+    fun showUndoDeleteSnackbar(toDo: ToDo)
+    fun showPrayerTimeDeletionError()
 }

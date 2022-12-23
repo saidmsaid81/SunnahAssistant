@@ -305,6 +305,9 @@
   <string name="no_notification">No Notification</string>
   <string name="do_not_disturb_settings">Do not Disturb Settings</string>
   <string name="include_hijri_date_in_calendar">Include Hijri Date in Calendar</string>
+  <string name="delete_only_this_date">Delete only this date (%s)</string>
+  <string name="delete_future_repetitions">Delete all future repetitions (after %s)</string>
+  <string name="delete_repetitive_to_do">Delete Repetitive To-Do</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>

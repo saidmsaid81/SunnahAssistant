@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views.home
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
+import com.thesunnahrevival.sunnahassistant.views.dialogs.DeleteToDoFragment
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import kotlinx.coroutines.Dispatchers
@@ -233,25 +235,51 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     override fun onSwipeToDelete(position: Int, toDo: ToDo) {
-        if (toDo.isAutomaticPrayerTime()) {
-            Snackbar.make(
-                mBinding.root, getString(R.string.cannot_delete_prayer_time),
-                Snackbar.LENGTH_LONG
-            ).apply {
-                view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-                show()
-            }
-            return
+        val dialogFragment = DeleteToDoFragment()
+        dialogFragment.arguments = Bundle().apply {
+            putSerializable(DeleteToDoFragment.TODO, toDo)
         }
+        dialogFragment.setOnToDoDeleteListener(this)
+        dialogFragment.show(requireActivity().supportFragmentManager, "dialog")
+    }
 
-        mViewModel.deleteToDo(toDo)
+    override fun showUndoDeleteSnackbar(toDo: ToDo) {
         Snackbar.make(
             mBinding.root, getString(R.string.delete_to_do),
             Snackbar.LENGTH_LONG
         ).apply {
-            view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-            setAction(getString(R.string.undo_delete)) { mViewModel.insertToDo(toDo) }
-            setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+            view.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.fabColor
+                )
+            )
+            setAction(getString(R.string.undo_delete)) {
+                Log.v("To-Do", toDo.toString())
+                val newToDo = toDo.copy()
+                mViewModel.insertToDo(newToDo)
+            }
+            setActionTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    android.R.color.black
+                )
+            )
+            show()
+        }
+    }
+
+    override fun showPrayerTimeDeletionError() {
+        Snackbar.make(
+            mBinding.root, getString(R.string.cannot_delete_prayer_time),
+            Snackbar.LENGTH_LONG
+        ).apply {
+            view.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.fabColor
+                )
+            )
             show()
         }
     }

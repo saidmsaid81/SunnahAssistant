@@ -134,6 +134,12 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL(
                     "ALTER TABLE reminders_table ADD COLUMN repeatsFromDate TEXT DEFAULT '' NOT NULL"
                 )
+                database.execSQL(
+                    "ALTER TABLE reminders_table ADD COLUMN endsOnDate TEXT DEFAULT '' NOT NULL"
+                )
+                database.execSQL(
+                    "ALTER TABLE reminders_table ADD COLUMN deletedDates TEXT DEFAULT '' NOT NULL"
+                )
 
                 database.execSQL(
                     "UPDATE reminders_table SET reminderInfo = ''" +

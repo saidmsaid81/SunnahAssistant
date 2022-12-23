@@ -197,5 +197,12 @@ fun getFormattedOffset(
     return offsetString.toString()
 }
 
+fun LocalDate.formatDate(): String {
+    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", getLocale())
+    val date = simpleDateFormat.parse(this.toString()) ?: Date()
+    simpleDateFormat.applyPattern("dd MMM yyyy")
+    return simpleDateFormat.format(date)
+}
+
 
 
