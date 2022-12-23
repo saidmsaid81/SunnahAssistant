@@ -10,6 +10,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.databinding.ToDoCardViewBinding
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
@@ -45,12 +46,17 @@ class ToDoListAdapter(val context: Context, val isCompletedToDos: Boolean = fals
     fun deleteToDo(position: Int) {
         if (position in 0 until itemCount) {
             val toDo = getItem(position)
-            if (toDo?.isAutomaticPrayerTime() == true) {
-                notifyItemRemoved(position)
-                notifyItemInserted(position)
-            }
 
-            toDo?.let { mListener?.onSwipeToDelete(position, it) }
+            toDo?.let {
+                mListener?.onSwipeToDelete(position, it)
+
+                if (it.isAutomaticPrayerTime()) {
+                    notifyItemRemoved(position)
+                    notifyItemInserted(position)
+                } else if (it.frequency != Frequency.OneTime) {
+                    notifyItemChanged(position)
+                }
+            }
         }
     }
 

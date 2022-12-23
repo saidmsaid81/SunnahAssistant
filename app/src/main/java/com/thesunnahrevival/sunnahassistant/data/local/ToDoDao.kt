@@ -31,9 +31,9 @@ interface ToDoDao {
         "SELECT EXISTS (SELECT * FROM reminders_table WHERE (" +
                 "category != :excludeCategory " +
                 "AND ((day == :day AND month == :month AND year == :year) OR " +
-                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date ) OR " +
-                " (day == 0 AND repeatsFromDate <= :date) OR " +
-                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  ) OR " +
+                " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  ) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  )" +
                 ")) LIMIT 1)"
     )
     fun thereToDosOnDay(
@@ -60,9 +60,9 @@ interface ToDoDao {
     @Query(
         "SELECT * FROM reminders_table WHERE (" +
                 "(day == :day AND month == :month AND year == :year) OR " +
-                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :localDate) OR " +
-                " (day == 0 AND repeatsFromDate <= :localDate) OR " +
-                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate)" +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
+                " (day == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' )" +
                 ") " +
                 " AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
     )
@@ -78,9 +78,9 @@ interface ToDoDao {
     @Query(
         "SELECT * FROM reminders_table WHERE (" +
                 "(day == :day AND month == :month AND year == :year) OR " +
-                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :localDate) OR " +
-                " (day == 0 AND repeatsFromDate <= :localDate) OR " +
-                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate)" +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
+                " (day == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' )" +
                 ") " +
                 " AND (category LIKE '%' || :category || '%') " +
                 " AND (completedDates LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
@@ -97,9 +97,9 @@ interface ToDoDao {
     @Query(
         "SELECT * FROM reminders_table WHERE (" +
                 " (day == :day AND month == :month AND year == :year) OR " +
-                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
-                " (day == 0 AND repeatsFromDate <= :date) OR " +
-                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
+                " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' )" +
                 ") AND " +
                 " isEnabled " +
                 " ORDER BY timeInSeconds"
@@ -116,9 +116,9 @@ interface ToDoDao {
         "SELECT (timeInSeconds + (offset * 60)) AS time FROM reminders_table WHERE " +
                 " time > :offsetFromMidnight AND " +
                 " ((day == :day AND month == :month AND year == :year) OR " +
-                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
-                " (day == 0 AND repeatsFromDate <= :date) OR " +
-                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
+                " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' )" +
                 " ) AND isEnabled ORDER BY time"
     )
     suspend fun getNextTimeForToDoForDay(
@@ -135,9 +135,9 @@ interface ToDoDao {
         "SELECT * FROM reminders_table WHERE " +
                 " (timeInSeconds + (offset * 60)) == :timeForToDo AND " +
                 " ((day == :day AND month == :month AND year == :year) OR " +
-                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date) OR " +
-                " (day == 0 AND repeatsFromDate <= :date) OR " +
-                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date)" +
+                " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
+                " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
+                " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' )" +
                 ") " +
                 " AND isEnabled ORDER BY (timeInSeconds + (offset * 60))"
     )
