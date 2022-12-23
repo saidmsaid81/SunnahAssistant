@@ -25,8 +25,8 @@
 
       <ImageView
           android:id="@+id/prev_month"
-          android:layout_width="36dp"
-          android:layout_height="36dp"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:layout_marginEnd="22dp"
           android:layout_gravity="center"
           android:background="?attr/selectableItemBackgroundBorderless"
@@ -72,8 +72,8 @@
 
       <ImageView
           android:id="@+id/next_month"
-          android:layout_width="36dp"
-          android:layout_height="36dp"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
           android:layout_gravity="center"
           android:background="?attr/selectableItemBackgroundBorderless"
           app:srcCompat="@drawable/ic_arrow_right"
