@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import com.google.android.material.appbar.AppBarLayout
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
@@ -29,7 +28,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         savedInstanceState: Bundle?
     ): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        view.findViewById<AppBarLayout>(R.id.app_bar).visibility = VISIBLE
+        view.findViewById<CalendarView>(R.id.calendar_view).visibility = VISIBLE
         return view
     }
 

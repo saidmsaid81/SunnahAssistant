@@ -1,158 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
-    <data>
+  <data>
 
-        <import type="android.view.View" />
+    <import type="android.view.View" />
 
-        <import type="com.thesunnahrevival.sunnahassistant.data.model.ToDo" />
+    <import type="com.thesunnahrevival.sunnahassistant.data.model.ToDo" />
 
-      <variable
-          name="toDoInteractionListener"
-          type="com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener"
-          />
+    <variable
+        name="toDoInteractionListener"
+        type="com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener"
+        />
 
-    </data>
+  </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:id="@+id/coordinator_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:context=".views.MainActivity"
+      >
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".views.MainActivity">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:fitsSystemWindows="true"
+        >
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
+      <com.google.android.material.appbar.CollapsingToolbarLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+          >
+
+        <com.thesunnahrevival.sunnahassistant.views.customviews.CalendarView
+            android:id="@+id/calendar_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            app:cv_orientation="horizontal"
+            app:cv_scrollMode="paged"
+            android:layout_margin="@dimen/default_dimen"
+            android:background="@color/calendar_bg_color"
+            android:elevation="4dp"
+            app:cv_monthHeaderResource="@layout/calendar_month_header_layout"
+            app:cv_dayViewResource="@layout/calendar_day_layout"
+            app:layout_collapseMode="pin"
+            android:fitsSystemWindows="true"
             android:visibility="gone"
-            android:fitsSystemWindows="true">
+            />
+      </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          >
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/default_dimen"
+            android:paddingEnd="@dimen/default_dimen"
+            android:paddingTop="@dimen/default_dimen"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="Today's Date: Monday 12 September 2022/ 16 Safar, 1444"
+            android:textSize="12sp"
+            />
 
-              <com.thesunnahrevival.sunnahassistant.views.customviews.CalendarView
-                  android:id="@+id/calendar_view"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  app:cv_orientation="horizontal"
-                  app:cv_scrollMode="paged"
-                  android:layout_margin="@dimen/default_dimen"
-                  android:background="@color/calendar_bg_color"
-                  android:elevation="4dp"
-                  app:cv_monthHeaderResource="@layout/calendar_month_header_layout"
-                  app:cv_dayViewResource="@layout/calendar_day_layout"
-                    app:layout_collapseMode="pin"
-                    android:fitsSystemWindows="true" />
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/selected_date"
+            android:textStyle="bold"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="vertical">
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:paddingStart="@dimen/default_dimen"
+            android:paddingEnd="@dimen/default_dimen"
+            android:paddingTop="@dimen/default_dimen"
+            android:layout_height="wrap_content"
+            />
 
-            <com.sergivonavi.materialbanner.Banner
-                android:id="@+id/banner"
-                app:backgroundColor="@color/fabColor"
-                app:messageTextColor="@android:color/white"
-                app:buttonsTextColor="@android:color/holo_blue_bright"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:visibility="visible" />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/default_dimen"
+            android:paddingEnd="@dimen/default_dimen"
+            android:paddingTop="8dp"
+            android:scrollbars="none"
+            >
 
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/default_dimen"
-                android:paddingEnd="@dimen/default_dimen"
-                android:paddingTop="@dimen/default_dimen"
-                android:visibility="gone"
-                tools:visibility="visible"
-                tools:text="Today's Date: Monday 12 September 2022/ 16 Safar, 1444"
-                android:textSize="12sp"
-                />
-
-            <TextView
-                android:id="@+id/selected_date"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:textSize="14sp"
-                android:visibility="gone"
-                android:paddingStart="@dimen/default_dimen"
-                android:paddingEnd="@dimen/default_dimen"
-                android:paddingTop="@dimen/default_dimen"
-                android:layout_height="wrap_content"
-                />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/default_dimen"
-                android:paddingEnd="@dimen/default_dimen"
-                android:paddingTop="8dp"
-                android:scrollbars="none">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/category_chips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:singleSelection="true"
-                    app:selectionRequired="true"
-                    app:singleLine="true"
-                    >
-
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
-
-          <ProgressBar
-              android:id="@+id/progress_bar"
+          <com.google.android.material.chip.ChipGroup
+              android:id="@+id/category_chips"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:visibility="visible"
-              />
+              app:singleSelection="true"
+              app:selectionRequired="true"
+              app:singleLine="true"
+              >
 
-          <include
-              android:id="@+id/no_tasks_view"
-              layout="@layout/no_tasks_view"
-              tools:visibility="visible"
-              android:visibility="gone"
-              android:layout_height="wrap_content"
-              android:layout_width="match_parent"
-              />
+          </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+      </LinearLayout>
 
-          <androidx.recyclerview.widget.RecyclerView
-              android:id="@+id/to_do_list"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_marginBottom="8dp"
-              android:visibility="visible"
-              app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-              tools:listitem="@layout/to_do_card_view"
-              />
-        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-      <com.google.android.material.floatingactionbutton.FloatingActionButton
-          android:id="@+id/fab"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical"
+        >
+
+      <com.sergivonavi.materialbanner.Banner
+          android:id="@+id/banner"
+          app:backgroundColor="@color/fabColor"
+          app:messageTextColor="@android:color/white"
+          app:buttonsTextColor="@android:color/holo_blue_bright"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          tools:visibility="visible"
+          />
+
+
+      <ProgressBar
+          android:id="@+id/progress_bar"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="bottom|end"
-          android:layout_margin="@dimen/default_dimen"
-          android:onClick="@{(view)-> toDoInteractionListener.launchToDoDetailsFragment(view,(ToDo) null)}"
-          app:backgroundTint="@color/fabColor"
-          android:contentDescription="@string/add_new_to_do"
-          app:srcCompat="@drawable/ic_add_to_do"
+          android:layout_gravity="center"
+          android:visibility="visible"
           />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+      <include
+          android:id="@+id/no_tasks_view"
+          layout="@layout/no_tasks_view"
+          tools:visibility="visible"
+          android:visibility="gone"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          />
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/to_do_list"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginBottom="8dp"
+          android:visibility="visible"
+          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+          tools:listitem="@layout/to_do_card_view"
+          />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/default_dimen"
+        android:onClick="@{(view)-> toDoInteractionListener.launchToDoDetailsFragment(view,(ToDo) null)}"
+        app:backgroundTint="@color/fabColor"
+        android:contentDescription="@string/add_new_to_do"
+        app:srcCompat="@drawable/ic_add_to_do"
+        />
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
 
