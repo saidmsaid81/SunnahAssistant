@@ -6,10 +6,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -32,6 +38,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.random.Random
 
+const val requestCodeForUpdate: Int = 1
 
 open class MainActivity : AppCompatActivity() {
 
@@ -113,7 +120,42 @@ open class MainActivity : AppCompatActivity() {
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
 
-        if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
+        if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0) {
+            val appUpdateManager = AppUpdateManagerFactory.create(this)
+
+            // Returns an intent object that you use to check for an update.
+            val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+            // Checks that the platform will allow the specified type of update.
+            appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+                ) {
+                    // Request the update.
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.FLEXIBLE,
+                        this,
+                        requestCodeForUpdate
+                    )
+
+                }
+            }
+
+            appUpdateManager.registerListener { state ->
+                if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                    // After the update is downloaded, show a notification
+                    // and request user confirmation to restart the app.
+                    popupSnackbar(
+                        activity,
+                        activity.getString(R.string.update_downloaded),
+                        Snackbar.LENGTH_INDEFINITE,
+                        activity.getString(R.string.restart)
+                    ) { appUpdateManager.completeUpdate() }
+                }
+            }
+
+        } else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
             val random = Random(System.currentTimeMillis()).nextInt(1, 5)
             val fragment = getActiveFragment()
 
@@ -172,10 +214,48 @@ open class MainActivity : AppCompatActivity() {
             onSupportNavigateUp()
     }
 
+    // Checks that the in app update is not stalled during 'onResume()'.
+    override fun onResume() {
+        super.onResume()
+        // Creates instance of the manager.
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                // If the update is downloaded but not installed,
+                // notify the user to complete the update.
+                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbar(
+                        activity, getString(R.string.update_downloaded), Snackbar.LENGTH_INDEFINITE,
+                        getString(R.string.restart)
+                    ) { appUpdateManager.completeUpdate() }
+                }
+            }
+    }
+
     override fun onPause() {
         super.onPause()
 
         //Start service to apply any changes done on scheduling notifications
         startService(Intent(this, NextToDoService::class.java))
+    }
+
+    private fun popupSnackbar(
+        activity: MainActivity,
+        message: String,
+        duration: Int,
+        actionMessage: String,
+        listener: View.OnClickListener
+    ) {
+        Snackbar.make(
+            activity.coordinator_layout,
+            message,
+            duration
+        ).apply {
+            setAction(actionMessage, listener)
+            view.setBackgroundColor(ContextCompat.getColor(activity, R.color.fabColor))
+            setActionTextColor(activity.resources.getColor(android.R.color.black))
+            show()
+        }
     }
 }
