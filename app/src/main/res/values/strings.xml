@@ -300,7 +300,7 @@
   <string name="delete_all">Delete All</string>
   <string name="delete_all_malformed_todos">Delete all Malformed To-Dos</string>
   <string name="confirm_deleting_malformed_to_dos">Do you really want to Delete ALL Malformed To-Dos</string>
-  <string name="operation_ongoing">Another Backup/Restore operation ongoing. Please wait...</string>
+  <string name="operation_ongoing">Another Backup/Restore operation ongoing. Please wait…</string>
   <string name="sunrise">Sunrise:</string>
   <string name="no_notification">No Notification</string>
   <string name="do_not_disturb_settings">Do not Disturb Settings</string>
@@ -308,6 +308,7 @@
   <string name="delete_only_this_date">Delete only this date (%s)</string>
   <string name="delete_future_repetitions">Delete all future repetitions (after %s)</string>
   <string name="delete_repetitive_to_do">Delete Repetitive To-Do</string>
+  <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
@@ -348,7 +349,7 @@
     <item>Notifications Settings</item>
     <item>Layout and Theme Settings</item>
     <item>Backup/ Restore Data (Experimental)</item>
-    <item>Privacy Policy</item>
+    <item>Privacy Settings</item>
     <item>Contact Us</item>
 
   </string-array>

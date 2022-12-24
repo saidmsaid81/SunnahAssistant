@@ -209,6 +209,7 @@
   <string name="saturday_abbreviated">س</string>
   <string name="calendar">التقويم</string>
   <string name="today">اليوم</string>
+  <string name="share_anonymous_usage_data"><![CDATA[<b>مشاركة بيانات الاستخدام المجهولة</b><br /><small>ستساعدنا البيانات في تحسين التطبيق</small><br />]]></string>
 
 
   <string-array name="categories">
