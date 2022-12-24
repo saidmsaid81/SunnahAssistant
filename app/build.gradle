@@ -121,13 +121,12 @@ dependencies {
     //OSS Licenses
     implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
 
-    //Apache commons
-    implementation 'commons-validator:commons-validator:1.7'
-
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    //In-app Review
+    implementation 'com.google.android.play:review:2.0.1'
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"

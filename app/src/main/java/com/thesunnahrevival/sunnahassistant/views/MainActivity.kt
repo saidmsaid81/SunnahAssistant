@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -113,7 +114,7 @@ open class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
 
         if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
-            val random = Random(System.currentTimeMillis()).nextInt(1, 4)
+            val random = Random(System.currentTimeMillis()).nextInt(1, 5)
             val fragment = getActiveFragment()
 
             if (fragment is TodayFragment && fragment !is CalendarFragment) {
@@ -129,6 +130,18 @@ open class MainActivity : AppCompatActivity() {
                     }
                     3 -> {
                         showShareAppBanner(fragment)
+                    }
+                    4 -> {
+                        val manager = ReviewManagerFactory.create(this)
+                        val request = manager.requestReviewFlow()
+                        request.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // We got the ReviewInfo object
+                                val reviewInfo = task.result
+                                manager.launchReviewFlow(activity, reviewInfo)
+
+                            }
+                        }
                     }
                 }
             }
