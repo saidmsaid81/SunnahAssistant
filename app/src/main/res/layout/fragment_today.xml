@@ -60,6 +60,16 @@
           android:layout_height="wrap_content"
           android:orientation="vertical"
           >
+        <com.sergivonavi.materialbanner.Banner
+            android:id="@+id/banner"
+            app:backgroundColor="@color/fabColor"
+            app:messageTextColor="@android:color/white"
+            app:buttonsTextColor="@android:color/holo_blue_bright"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
@@ -115,18 +125,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:orientation="vertical"
         >
-
-      <com.sergivonavi.materialbanner.Banner
-          android:id="@+id/banner"
-          app:backgroundColor="@color/fabColor"
-          app:messageTextColor="@android:color/white"
-          app:buttonsTextColor="@android:color/holo_blue_bright"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:visibility="gone"
-          tools:visibility="visible"
-          />
-
 
       <ProgressBar
           android:id="@+id/progress_bar"

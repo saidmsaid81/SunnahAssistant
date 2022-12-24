@@ -12,7 +12,7 @@ import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import kotlinx.android.synthetic.main.fragment_today.*
 import java.util.*
 
-fun showHelpTranslateSnackBar(todayFragment: TodayFragment) {
+fun showHelpTranslateBanner(todayFragment: TodayFragment) {
     if (!supportedLocales.contains(Locale.getDefault().language)) {
         val onClickListener = BannerInterface.OnClickListener {
             translateLink(todayFragment)
@@ -44,7 +44,7 @@ fun translateLink(fragment: Fragment) {
     }
 }
 
-fun showSendFeedbackSnackBar(todayFragment: TodayFragment) {
+fun showSendFeedbackBanner(todayFragment: TodayFragment) {
     val onClickListener = BannerInterface.OnClickListener {
         val browserIntent = Intent(
             Intent.ACTION_VIEW,
@@ -63,7 +63,7 @@ fun showSendFeedbackSnackBar(todayFragment: TodayFragment) {
     )
 }
 
-fun showShareAppSnackBar(todayFragment: TodayFragment) {
+fun showShareAppBanner(todayFragment: TodayFragment) {
     val onClickListener = BannerInterface.OnClickListener {
         val shareAppIntent = shareAppIntent()
         todayFragment.startActivity(
