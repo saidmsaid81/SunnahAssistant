@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
+import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
@@ -111,20 +112,23 @@ open class MainActivity : AppCompatActivity() {
             else
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
 
-        else if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
-            val random = Random.nextInt(1, 5)
+        if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 5 == 0) {
+            val random = Random(System.currentTimeMillis()).nextInt(1, 4)
             val fragment = getActiveFragment()
 
             if (fragment is TodayFragment && fragment !is CalendarFragment) {
                 when (random) {
                     1 -> {
-                        showHelpTranslateSnackBar(fragment)
+                        if (!supportedLocales.contains(Locale.getDefault().language))
+                            showHelpTranslateBanner(fragment)
+                        else
+                            showShareAppBanner(fragment)
                     }
                     2 -> {
-                        showSendFeedbackSnackBar(fragment)
+                        showSendFeedbackBanner(fragment)
                     }
                     3 -> {
-                        showShareAppSnackBar(fragment)
+                        showShareAppBanner(fragment)
                     }
                 }
             }
