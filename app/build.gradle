@@ -128,6 +128,10 @@ dependencies {
     //In-app Review
     implementation 'com.google.android.play:review:2.0.1'
 
+    //In app updates
+    implementation("com.google.android.play:app-update:2.0.1")
+
+
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
