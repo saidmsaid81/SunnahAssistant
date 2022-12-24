@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget
+import java.net.URL
 import java.time.LocalDate
 import java.util.*
 
@@ -155,4 +156,13 @@ fun getLocale(): Locale {
         Locale.getDefault()
     else
         Locale("en")
+}
+
+fun isValidUrl(link: String): Boolean {
+    return try {
+        URL(link).toURI()
+        true
+    } catch (exception: Exception) {
+        false
+    }
 }

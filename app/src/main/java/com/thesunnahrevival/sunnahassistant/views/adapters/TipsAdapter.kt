@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Tip
 import com.thesunnahrevival.sunnahassistant.data.model.TipDiffCallBack
-import org.apache.commons.validator.routines.UrlValidator
+import com.thesunnahrevival.sunnahassistant.utilities.isValidUrl
 
 class TipsAdapter(private val listener: TipsItemInteractionListener) :
     RecyclerView.Adapter<TipsAdapter.ViewHolder>() {
@@ -72,7 +72,7 @@ class TipsAdapter(private val listener: TipsItemInteractionListener) :
             }
 
             val infoView = view.findViewById<ImageView>(R.id.info)
-            if (UrlValidator().isValid(tip.infoLink)) {
+            if (isValidUrl(tip.infoLink)) {
                 infoView.setOnClickListener {
                     listener.onInfoClickListener(tip.infoLink)
                 }
