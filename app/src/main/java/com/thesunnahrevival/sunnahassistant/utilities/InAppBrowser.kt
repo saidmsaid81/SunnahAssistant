@@ -17,7 +17,6 @@ import com.thesunnahrevival.sunnahassistant.receivers.InAppBrowserBroadcastRecei
 import com.thesunnahrevival.sunnahassistant.receivers.LINK
 import com.thesunnahrevival.sunnahassistant.services.InAppBrowserConnection
 import kotlinx.coroutines.launch
-import org.apache.commons.validator.routines.UrlValidator
 import java.net.MalformedURLException
 
 class InAppBrowser(private val context: Context, lifecycleScope: LifecycleCoroutineScope) {
@@ -97,6 +96,4 @@ class InAppBrowser(private val context: Context, lifecycleScope: LifecycleCorout
         )
         customTabsIntent.launchUrl(context, Uri.parse(link))
     }
-
-    private fun isValidUrl(link: String) = UrlValidator().isValid(link)
 }
