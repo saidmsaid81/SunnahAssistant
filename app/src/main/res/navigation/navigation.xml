@@ -59,6 +59,9 @@
     <action
         android:id="@+id/action_settingsListFragment_to_layoutSettingsFragment"
         app:destination="@id/layoutSettingsFragment" />
+    <action
+        android:id="@+id/action_settingsListFragment_to_privacySettingsFragment"
+        app:destination="@id/privacySettingsFragment" />
   </fragment>
   <fragment
       android:id="@+id/welcomeFragment"
@@ -108,6 +111,11 @@
       android:id="@+id/privacyPolicyFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.PrivacyPolicyFragment"
       android:label="@string/read_privacy_policy" />
+
+  <fragment
+      android:id="@+id/privacySettingsFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.settings.PrivacySettingsFragment"
+      android:label="@string/privacy_settings" />
 
   <fragment
       android:id="@+id/webviewFragment"
