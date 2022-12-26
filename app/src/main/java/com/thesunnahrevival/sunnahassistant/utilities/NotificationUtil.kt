@@ -75,7 +75,7 @@ fun createNotification(
                 .setBigContentTitle(title)
         )
             .setAutoCancel(true)
-    if (priority != -1) {
+    if (priority != -1 && id > 0) {
         if (notificationToneUri != null) builder.setSound(notificationToneUri)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             builder.setCategory(Notification.CATEGORY_REMINDER)

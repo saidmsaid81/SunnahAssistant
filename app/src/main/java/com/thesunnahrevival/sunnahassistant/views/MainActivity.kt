@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +25,7 @@ import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -58,8 +61,21 @@ open class MainActivity : AppCompatActivity() {
 
         startService(Intent(this, NextToDoService::class.java))
 
-        if (intent.extras?.get("link") != null)
-            findNavController(R.id.myNavHostFragment).navigate(R.id.webviewFragment, intent.extras)
+        val link = intent.extras?.get("link")
+        if (link != null) {
+            if ((link as String).contains("market://details")) {
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_VIEW
+                sendIntent.data = Uri.parse(link)
+                if (sendIntent.resolveActivity(packageManager) != null) {
+                    startActivity(sendIntent)
+                }
+            } else
+                InAppBrowser(this, lifecycleScope).launchInAppBrowser(
+                    link,
+                    findNavController(R.id.myNavHostFragment)
+                )
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
