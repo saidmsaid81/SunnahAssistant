@@ -13,6 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
@@ -41,12 +44,14 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.random.Random
 
+
 const val requestCodeForUpdate: Int = 1
 
 open class MainActivity : AppCompatActivity() {
 
     private lateinit var activity: MainActivity
     lateinit var firebaseAnalytics: FirebaseAnalytics
+    lateinit var mAdView: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +65,8 @@ open class MainActivity : AppCompatActivity() {
         getSettings()
 
         startService(Intent(this, NextToDoService::class.java))
+
+        loadAds()
 
         val link = intent.extras?.get("link")
         if (link != null) {
@@ -78,6 +85,7 @@ open class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            mAdView.visibility = View.VISIBLE
             when (destination.id) {
                 R.id.todayFragment -> bottom_navigation_view.visibility = View.VISIBLE
                 R.id.calendarFragment, R.id.tipsFragment -> {
@@ -87,7 +95,9 @@ open class MainActivity : AppCompatActivity() {
                 R.id.welcomeFragment, R.id.resolveMalformedToDosFragment -> {
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     bottom_navigation_view.visibility = View.GONE
+                    mAdView.visibility = View.GONE
                 }
+                R.id.changelogFragment -> mAdView.visibility = View.GONE
                 else -> bottom_navigation_view.visibility = View.GONE
             }
         }
@@ -102,6 +112,14 @@ open class MainActivity : AppCompatActivity() {
             }
             return@setOnNavigationItemSelectedListener true
         }
+    }
+
+
+    private fun loadAds() {
+        MobileAds.initialize(this) { }
+        mAdView = findViewById<AdView>(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     private fun getSettings() {
