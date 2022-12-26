@@ -13,12 +13,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-val lastDayOfMonth: Int
-    get() {
-        val calendar = Calendar.getInstance()
-        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-    }
-
 val dayOfTheWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
 
 val daySuffixes = arrayOf(
@@ -114,7 +108,7 @@ fun generateDateText(
     stringBuilder.append("${simpleDateFormat.format(gregorianCalendar.time)} ")
 
     if (includeGregorianDate) {
-        simpleDateFormat.applyPattern("dd MMMM, yyyy")
+        simpleDateFormat.applyPattern("d MMMM, yyyy")
         stringBuilder.append(simpleDateFormat.format(gregorianCalendar.time))
     }
 
@@ -124,8 +118,8 @@ fun generateDateText(
     if (includeHijriDate) {
         val ummalquraCalendar = UmmalquraCalendar()
         ummalquraCalendar.time = gregorianCalendar.time
-
-        simpleDateFormat.applyPattern("dd")
+        simpleDateFormat.calendar = ummalquraCalendar
+        simpleDateFormat.applyPattern("d")
 
         val hijriDay = simpleDateFormat.format(ummalquraCalendar.time)
         val month = ummalquraCalendar.getHijriMonthName()
@@ -133,7 +127,7 @@ fun generateDateText(
             applyPattern("yyyy")
         }.format(ummalquraCalendar.time)
 
-        stringBuilder.append("$hijriDay $month, $year")
+        stringBuilder.append("$hijriDay $month, $year AH")
 
     }
 
