@@ -309,6 +309,7 @@
   <string name="delete_future_repetitions">Delete all future repetitions (after %s)</string>
   <string name="delete_repetitive_to_do">Delete Repetitive To-Do</string>
   <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
+  <string name="no_prayer_times_added">No prayer times added</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
