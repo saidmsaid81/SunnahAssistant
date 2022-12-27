@@ -100,8 +100,7 @@ interface ToDoDao {
                 " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
                 " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' ) OR " +
                 " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%' )" +
-                ") AND " +
-                " isEnabled " +
+                ") " +
                 " ORDER BY timeInSeconds"
     )
     fun getToDosOnDayValue(

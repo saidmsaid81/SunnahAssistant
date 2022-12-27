@@ -3,6 +3,8 @@ package com.thesunnahrevival.sunnahassistant.widgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.thesunnahrevival.sunnahassistant.R
@@ -12,6 +14,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getDayDate
 import com.thesunnahrevival.sunnahassistant.utilities.getMonthNumber
 import com.thesunnahrevival.sunnahassistant.utilities.getYear
+import java.time.LocalDate
 
 class PrayerTimesRemoteViewsFactory(
     private val context: Context,
@@ -40,7 +43,7 @@ class PrayerTimesRemoteViewsFactory(
             getMonthNumber(System.currentTimeMillis()),
             getYear(System.currentTimeMillis()).toInt(),
             context.resources.getStringArray(R.array.categories)[2]
-        )
+        ).sortedBy { it.isComplete(LocalDate.now()) }
     }
 
     override fun hasStableIds(): Boolean {
@@ -49,26 +52,57 @@ class PrayerTimesRemoteViewsFactory(
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteViews = RemoteViews(context.packageName, R.layout.widget_to_do_list_item)
-        remoteViews.setTextViewText(
-            R.id.to_do_name,
-            "${
-                formatTimeInMilliseconds(
-                    context,
-                    mPrayerToDos[position].timeInMilliseconds
+
+        if (mPrayerToDos.isNotEmpty()) {
+            remoteViews.setViewVisibility(R.id.no_data, View.GONE)
+            remoteViews.setViewVisibility(R.id.to_do_name, View.VISIBLE)
+
+            remoteViews.setTextViewText(
+                R.id.to_do_name,
+                "${
+                    formatTimeInMilliseconds(
+                        context,
+                        mPrayerToDos[position].timeInMilliseconds
+                    )
+                }: ${mPrayerToDos[position].name}"
+            )
+            remoteViews.setTextColor(
+                R.id.to_do_name,
+                intent?.getIntExtra(TEXT_COLOR, Color.BLACK) ?: Color.BLACK
+            )
+
+            if (mPrayerToDos[position].isComplete(LocalDate.now()))
+                remoteViews.setInt(
+                    R.id.to_do_name, "setPaintFlags",
+                    Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
                 )
-            }: ${mPrayerToDos[position].name}"
-        )
-        remoteViews.setTextColor(
-            R.id.to_do_name,
-            intent?.getIntExtra(TEXT_COLOR, Color.BLACK) ?: Color.BLACK
-        )
+            else
+                remoteViews.setInt(
+                    R.id.to_do_name, "setPaintFlags",
+                    Paint.ANTI_ALIAS_FLAG
+                )
+        } else {
+            remoteViews.setViewVisibility(R.id.to_do_name, View.GONE)
+            remoteViews.setViewVisibility(R.id.no_data, View.VISIBLE)
+
+            remoteViews.setTextViewText(
+                R.id.no_data,
+                context.getString(R.string.no_prayer_times_added)
+            )
+            remoteViews.setTextColor(
+                R.id.no_data,
+                intent?.getIntExtra(TEXT_COLOR, Color.BLACK) ?: Color.BLACK
+            )
+        }
+
+
         val fillInIntent = Intent()
         remoteViews.setOnClickFillInIntent(R.id.widget_item_container, fillInIntent)
         return remoteViews
     }
 
     override fun getCount(): Int {
-        return mPrayerToDos.size
+        return if (mPrayerToDos.isNotEmpty()) mPrayerToDos.size else 1
     }
 
     override fun getViewTypeCount(): Int {

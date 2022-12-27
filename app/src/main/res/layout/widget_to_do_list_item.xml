@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/widget_item_container"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<LinearLayout android:id="@+id/widget_item_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
 
     <TextView
         android:id="@+id/to_do_name"
         android:layout_width="wrap_content"
         android:textSize="14sp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:id="@+id/no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/done_for_the_day"
+        android:visibility="gone"
+        android:gravity="center"
+        />
 
 </LinearLayout>
