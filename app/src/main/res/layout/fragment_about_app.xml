@@ -73,7 +73,7 @@
 
     <TextView
         android:id="@+id/app_icon_credit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clickable="true"
@@ -81,6 +81,7 @@
         android:linksClickable="true"
         android:text="@string/app_icon_credit"
         android:textColorLink="@android:color/holo_blue_dark"
+        android:textAlignment="center"
         android:textSize="16sp" />
 
     <TextView
