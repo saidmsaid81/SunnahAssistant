@@ -133,21 +133,38 @@
   <string name="what_s_new">What\'s New</string>
   <string name="create_new_categories">Create New Category</string>
   <string name="important">Important</string>
-  <string name="important_changes"></string>
+  <string name="important_changes">
+    ‣ We updated our Privacy Policy to indicate that the app now has ads (to support development).\n\nBy continuing to use this app you agree to the New Privacy Policy. Tap the "Privacy Policy " button below to read it
+  </string>
   <string name="new_features">New Features</string>
   <string name="new_features_details">
-        ‣ Added partial indonesian translations.\n
-        ‣ Help us translate the app to your language by tapping \"Help Translate App\" button below. Thank you.
+        ‣ Major redesign of the app.\n
+        ‣ Introduced a calendar section which supports Gregorian Calendar and Hijri Calendar (based on Ummul-Qura Calendar).\n
+        ‣ Calendar section shows a blue dot if there is a to-do on that day.\n
+        ‣ Date pickers now show both Gregorian dates and Hijri dates.\n
+        ‣ Introduced an option to mark a To-Do as complete or incomplete.\n
+        ‣ Introduced an option to be notified of a To-Do ahead or after the set time.\n
+        ‣ Introduced an option to be notified of a To-Do ahead or after the set time.\n
+        ‣ Option to share To-Do via your app of choice.\n
+        ‣ Introduced a Tips Section containing recommended To-Dos.\n
+        ‣ Introduced new options when deleting a To-Do such as only this date or only future occurrences.\n
+        ‣ Introduced new options when deleting a To-Do such as only this date or only future occurrences.\n
+        ‣ Introduced a Local Backup and Restore option (Experimental).\n
+        ‣ Introduced a Snooze option when a notification is triggered.\n
+        ‣ Introduced a Mark as Complete option when a notification is triggered.\n
+        ‣ Introduced a Share To-Do option when a notification is triggered.\n
+        ‣ More soon In shaa Allah.
     </string>
   <string name="updated">Updated</string>
   <string name="updated_details">
-        ‣ Updated and optimized all widgets.
+        ‣ Updated and optimized all widgets.\n
+        ‣ Updated the Prayer Time Settings section\n
+        ‣ Improved the more details section when adding a To-Do.\n
+        ‣ Improved "Filter To-Do by category" feature
     </string>
   <string name="fixes">Fixes</string>
   <string name="fixes_details">
-        ‣ Fixed bug that persisted prayer time alerts even when automatic prayer time alerts are disabled\n
-        ‣ Fixed crash on some devices when scheduling to-dos \n
-        ‣ Minor bug fixes and improvements
+        ‣ Fixed many bugs
     </string>
   <string name="add_or_delete_categories">Add or Delete Categories</string>
   <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>

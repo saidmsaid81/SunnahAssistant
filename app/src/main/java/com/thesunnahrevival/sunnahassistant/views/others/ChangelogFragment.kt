@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
@@ -44,6 +45,9 @@ class ChangelogFragment : SunnahAssistantFragment() {
         }
         rate_this_app.setOnClickListener {
             openPlayStore(requireActivity(), requireActivity().packageName)
+        }
+        privacy_policy.setOnClickListener {
+            findNavController().navigate(R.id.privacyPolicyFragment)
         }
     }
 
