@@ -47,10 +47,14 @@
   <string name="icon">app icon</string>
   <string name="credits">Credits</string>
   <string name="about">
-        Is a Free and &lt;a href=https://github.com/saidmsaid81/SunnahAssistant/>Open Source&lt;/a> app&lt;br>&lt;br>
-        Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/>@saidmsaid81&lt;/a>)
-    </string>
-  <string name="app_icon_credit">Icons from: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a> </string>
+    Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/>@saidmsaid81&lt;/a>)
+  </string>
+  <string name="app_icon_credit">
+    App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/>https://www.flaticon.com/authors/sbts2018&lt;/a>&lt;br>
+    Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/>https://www.flaticon.com/authors/bzzrincantation&lt;/a>&lt;br>
+    Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/>https://www.flaticon.com/authors/shmain&lt;/a>&lt;br>
+    Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a>
+  </string>
   <string name="we_are_social">Join Us on Social Media</string>
   <string name="facebook_logo">Facebook logo</string>
   <string name="no_email_app_installed">No Email App Installed</string>
