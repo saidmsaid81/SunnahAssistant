@@ -9,17 +9,20 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.prayerTimeRemindersId
 import com.thesunnahrevival.sunnahassistant.receivers.MARK_AS_COMPLETE
 import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SHARE
 
 fun createNotification(
     context: Context,
-    id: Int,
+    id: Int?,
     title: String?,
     text: String?,
     priority: Int,
@@ -43,10 +46,6 @@ fun createNotification(
             category = "Developer"
     }
 
-//    val res = context.resources
-
-    // This image is used as the notification's large icon (thumbnail).
-//    val picture = BitmapFactory.decodeResource(res, R.mipmap.logo)
     val intent = Intent(context, MainActivity::class.java)
 
     val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -75,15 +74,26 @@ fun createNotification(
                 .setBigContentTitle(title)
         )
             .setAutoCancel(true)
-    if (priority != -1 && id > 0) {
+    if (priority != -1 && id != null) {
         if (notificationToneUri != null) builder.setSound(notificationToneUri)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            builder.setCategory(Notification.CATEGORY_REMINDER)
+            //Important to set prayer time reminders to Notification.CATEGORY_ALARM so it triggers even when Sunnah Assistant initiated DND is on
+            builder.setCategory(if (id > prayerTimeRemindersId) Notification.CATEGORY_REMINDER else Notification.CATEGORY_ALARM)
         }
         builder.addAction(
             R.drawable.ic_check,
             context.getString(R.string.mark_as_complete),
             getMarkAsCompletePendingIntent(context, id)
+        )
+        builder.addAction(
+            R.drawable.ic_check,
+            context.getString(R.string.snooze),
+            snoozeNotification(context, id)
+        )
+        builder.addAction(
+            R.drawable.ic_check,
+            context.getString(R.string.share),
+            shareToDo(context, id)
         )
     }
     if (isVibrate)
@@ -103,6 +113,27 @@ fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
     }
     return PendingIntent.getBroadcast(context, id, markAsCompleteIntent, flag)
 
+}
+
+fun snoozeNotification(context: Context, id: Int): PendingIntent {
+    return NavDeepLinkBuilder(context)
+        .setGraph(R.navigation.navigation)
+        .setArguments(Bundle().apply { putInt(TO_DO_ID, id) })
+        .setDestination(R.id.snooze_options)
+        .createPendingIntent()
+}
+
+fun shareToDo(context: Context, id: Int): PendingIntent? {
+    val shareToDoIntent = Intent(context, MainActivity::class.java).apply {
+        action = SHARE
+        putExtra(TO_DO_ID, id)
+    }
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+    return PendingIntent.getActivity(context, id, shareToDoIntent, flag)
 }
 
 /**

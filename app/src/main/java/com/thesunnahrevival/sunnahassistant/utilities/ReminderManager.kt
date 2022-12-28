@@ -24,7 +24,8 @@ class ReminderManager private constructor() {
         notificationUri: Uri,
         isVibrate: Boolean,
         doNotDisturbMinutes: Int,
-        isOneShot: Boolean = false
+        isOneShot: Boolean = false,
+        isSnooze: Boolean = false
     ): PendingIntent {
         val notificationIntent = Intent(context, ToDoBroadcastReceiver::class.java)
         notificationIntent.putExtra(NOTIFICATION_TITLE, title)
@@ -42,7 +43,7 @@ class ReminderManager private constructor() {
                 }
                 PendingIntent.getBroadcast(
                     context,
-                    -1,
+                    if (isSnooze) System.currentTimeMillis().toInt() else -1,
                     notificationIntent,
                     flags
                 )
@@ -77,7 +78,8 @@ class ReminderManager private constructor() {
         doNotDisturbMinutes: Int,
         calculateDelayFromMidnight: Boolean = true,
         isOneShot: Boolean = false,
-        useReliableAlarms: Boolean = false
+        useReliableAlarms: Boolean = false,
+        isSnooze: Boolean = false
     ) {
 
         val pendingIntent = createNotificationPendingIntent(
@@ -88,7 +90,8 @@ class ReminderManager private constructor() {
             notificationUri,
             isVibrate,
             doNotDisturbMinutes,
-            isOneShot
+            isOneShot,
+            isSnooze
         )
 
         val delay = if (calculateDelayFromMidnight)

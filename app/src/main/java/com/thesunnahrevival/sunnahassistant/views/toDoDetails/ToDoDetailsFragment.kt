@@ -114,7 +114,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.tip.setOnClickListener {
             findNavController().navigate(R.id.prayerTimeSettingsFragment)
         }
-        mViewModel.getToDo(mViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
+        mViewModel.getToDoLiveData(mViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
             if (it != null) {
                 val timeString = formatTimeInMilliseconds(requireContext(), it.timeInMilliseconds)
                 updateToDoTimeView(timeString)

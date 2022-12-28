@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -27,9 +28,11 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
+import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
@@ -41,21 +44,25 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import java.util.*
 import kotlin.random.Random
 
 
-const val requestCodeForUpdate: Int = 1
+const val REQUESTCODEFORUPDATE: Int = 1
+const val SHARE = "SHARE"
 
 open class MainActivity : AppCompatActivity() {
 
     private lateinit var activity: MainActivity
     lateinit var firebaseAnalytics: FirebaseAnalytics
     lateinit var mAdView: AdView
+    private lateinit var mViewModel: SunnahAssistantViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mViewModel = ViewModelProvider(this)[SunnahAssistantViewModel::class.java]
         createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         val navController = this.findNavController(R.id.myNavHostFragment)
@@ -70,18 +77,11 @@ open class MainActivity : AppCompatActivity() {
 
         val link = intent.extras?.get("link")
         if (link != null) {
-            if ((link as String).contains("market://details")) {
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_VIEW
-                sendIntent.data = Uri.parse(link)
-                if (sendIntent.resolveActivity(packageManager) != null) {
-                    startActivity(sendIntent)
-                }
-            } else
-                InAppBrowser(this, lifecycleScope).launchInAppBrowser(
-                    link,
-                    findNavController(R.id.myNavHostFragment)
-                )
+            launchInAppBrowser(link)
+        }
+
+        if (intent.action == SHARE) {
+            showShareToDo()
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -114,6 +114,65 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showShareToDo() {
+        val toDoId = intent.extras?.getInt(TO_DO_ID) ?: 0
+        Toast.makeText(
+            this,
+            getString(R.string.launching_share_menu_please_wait),
+            Toast.LENGTH_SHORT
+        ).show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val toDo = mViewModel.getToDoById(toDoId)
+            if (toDo != null) {
+                withContext(Dispatchers.Main) {
+                    val now = LocalDate.now()
+                    val date = "${now.dayOfMonth} ${
+                        now.month.name.lowercase().replaceFirstChar { it.titlecase() }
+                    }, ${now.year}"
+
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+                    shareIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "${getString(R.string.to_do)}: ${toDo.name}\n" +
+                                "${getString(R.string.to_do_category)}: ${toDo.category}\n" +
+                                "${getString(R.string.date)}: $date\n" +
+                                "${getString(R.string.time_label)}: ${
+                                    formatTimeInMilliseconds(
+                                        applicationContext,
+                                        toDo.timeInMilliseconds
+                                    )
+                                }\n" +
+                                "${getString(R.string.powered_by_sunnah_assistant)}\n\n" +
+                                "Get Sunnah Assistant App at\n" +
+                                "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+                    )
+                    val chooserIntent = Intent.createChooser(
+                        shareIntent,
+                        getString(R.string.share_to_do)
+                    )
+                    startActivity(chooserIntent)
+                }
+            }
+        }
+    }
+
+    private fun launchInAppBrowser(link: Any?) {
+        if ((link as String).contains("market://details")) {
+            val sendIntent = Intent()
+            sendIntent.action = Intent.ACTION_VIEW
+            sendIntent.data = Uri.parse(link)
+            if (sendIntent.resolveActivity(packageManager) != null) {
+                startActivity(sendIntent)
+            }
+        } else
+            InAppBrowser(this, lifecycleScope).launchInAppBrowser(
+                link,
+                findNavController(R.id.myNavHostFragment)
+            )
+    }
+
 
     private fun loadAds() {
         MobileAds.initialize(this) { }
@@ -123,22 +182,20 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun getSettings() {
-        val viewModel = ViewModelProvider(this).get(SunnahAssistantViewModel::class.java)
-
         CoroutineScope(Dispatchers.IO).launch {
-            val settings = viewModel.getAppSettingsValue()
+            val settings = mViewModel.getAppSettingsValue()
             var numberOfLaunches = settings?.numberOfLaunches
             if (numberOfLaunches != null) {
                 numberOfLaunches++
                 settings?.numberOfLaunches = numberOfLaunches
-                settings?.let { viewModel.updateSettings(it) }
+                settings?.let { mViewModel.updateSettings(it) }
 
             }
 
             withContext(Dispatchers.Main) {
                 if (settings != null) {
                     if (!settings.language.matches(Locale.getDefault().language.toRegex())) {
-                        viewModel.localeUpdate()
+                        mViewModel.localeUpdate()
                     }
                     applySettings(settings)
                 }
@@ -170,7 +227,7 @@ open class MainActivity : AppCompatActivity() {
                         appUpdateInfo,
                         AppUpdateType.FLEXIBLE,
                         this,
-                        requestCodeForUpdate
+                        REQUESTCODEFORUPDATE
                     )
 
                 }

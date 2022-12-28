@@ -66,7 +66,9 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         )
     }
 
-    fun getToDo(id: Int) = mToDoDao.getToDo(id)
+    fun getToDoLiveData(id: Int) = mToDoDao.getToDo(id)
+
+    fun getToDoById(id: Int) = mToDoDao.getToDoById(id)
 
     fun getMalformedToDos() = mToDoDao.getMalformedToDos()
 
