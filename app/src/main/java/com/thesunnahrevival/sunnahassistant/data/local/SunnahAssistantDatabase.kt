@@ -113,7 +113,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 )
 
                 database.execSQL(
-                    "ALTER TABLE app_settings ADD COLUMN appVersionCode INTEGER DEFAULT '${BuildConfig.VERSION_CODE}' NOT NULL"
+                    "ALTER TABLE app_settings ADD COLUMN appVersionCode INTEGER DEFAULT '${BuildConfig.VERSION_CODE - 1}' NOT NULL"
                 )
 
                 database.execSQL(
