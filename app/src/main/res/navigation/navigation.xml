@@ -137,4 +137,8 @@
       android:name="com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment"
       android:label="@string/resolve_malformed_to_dos" />
 
+  <dialog
+      android:id="@+id/snooze_options"
+      android:name="com.thesunnahrevival.sunnahassistant.views.dialogs.SnoozeOptionsFragment" />
+
 </navigation>

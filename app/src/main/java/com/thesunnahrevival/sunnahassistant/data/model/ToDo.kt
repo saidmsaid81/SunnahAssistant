@@ -8,6 +8,8 @@ import java.io.Serializable
 import java.time.LocalDate
 import java.util.*
 
+const val prayerTimeRemindersId = -1019700
+
 @Entity(tableName = "reminders_table")
 data class ToDo(
     @ColumnInfo(name = "reminderName") var name: String?,
@@ -101,7 +103,7 @@ data class ToDo(
         }
     }
 
-    fun isAutomaticPrayerTime() = this.id <= -1019700
+    fun isAutomaticPrayerTime() = this.id <= prayerTimeRemindersId
 
     fun isComplete(date: LocalDate): Boolean {
         return completedDates.contains(date.toString())

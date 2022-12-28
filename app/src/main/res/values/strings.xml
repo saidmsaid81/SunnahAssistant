@@ -310,6 +310,12 @@
   <string name="delete_repetitive_to_do">Delete Repetitive To-Do</string>
   <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
   <string name="no_prayer_times_added">No prayer times added</string>
+  <string name="launching_share_menu_please_wait">Launching share menu please wait…</string>
+  <string name="notification_successfully_snoozed">Notification successfully snoozed</string>
+  <string name="snooze_for">Snooze for: </string>
+  <string name="snooze">Snooze</string>
+  <string name="share">Share</string>
+  <string name="reminder">Reminder</string>
 
   <string-array name="categories">
     <item>Uncategorized</item>
@@ -400,11 +406,11 @@
   </string-array>
 
   <string-array name="do_not_disturb_minutes">
-    <item>0</item>
-    <item>15</item>
-    <item>30</item>
-    <item>45</item>
-    <item>60</item>
+    <item>0 Minutes</item>
+    <item>15 Minutes</item>
+    <item>30 Minutes</item>
+    <item>45 Minutes</item>
+    <item>60 Minutes</item>
   </string-array>
 
   <string-array name="mark_as_complete_options">
@@ -444,6 +450,14 @@
     <item>15 Minutes Before</item>
     <item>30 Minutes Before</item>
     <item>Custom</item>
+  </string-array>
+
+  <string-array name="snooze_options">
+    <item>5 Minutes</item>
+    <item>15 Minutes</item>
+    <item>30 Minutes</item>
+    <item>45 Minutes</item>
+    <item>1 Hour</item>
   </string-array>
 
   <string-array name="offset_options">

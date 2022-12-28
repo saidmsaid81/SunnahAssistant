@@ -1,13 +1,16 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
@@ -20,10 +23,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
-import com.thesunnahrevival.sunnahassistant.utilities.Encryption
-import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
-import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -121,7 +121,9 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         return mRepository.thereToDosOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
     }
 
-    fun getToDo(id: Int) = mRepository.getToDo(id)
+    fun getToDoLiveData(id: Int) = mRepository.getToDoLiveData(id)
+
+    suspend fun getToDoById(id: Int) = mRepository.getToDoById(id)
 
     fun getTemplateToDoIds() = mRepository.getTemplateToDoIds()
 
@@ -249,6 +251,52 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             withContext(Dispatchers.Main) {
                 messages.value = message
             }
+        }
+    }
+
+    fun snoozeNotification(id: Int, timeInMinutes: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDo = getToDoById(id) ?: return@launch
+            if (settingsValue == null)
+                settingsValue = getAppSettingsValue()
+            val settings = settingsValue ?: return@launch
+
+            val notificationManager =
+                getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (toDo.isAutomaticPrayerTime() &&
+                settings.doNotDisturbMinutes > 0 &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                notificationManager.isNotificationPolicyAccessGranted
+            ) {
+                //Disable the already enabled dnd will be re-enabled
+                // when snoozed notification triggers
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+            }
+
+            withContext(Dispatchers.Main) {
+                ReminderManager.getInstance().scheduleReminder(
+                    getContext(),
+                    getContext().getString(R.string.reminder),
+                    mapOf(Pair(id, "${getContext().getString(R.string.snooze)}: ${toDo.name}")),
+                    mapOf(Pair(id, toDo.category ?: "Uncategorized")),
+                    System.currentTimeMillis() + (timeInMinutes * 60 * 1000),
+                    settings.notificationToneUri ?: RingtoneManager.getActualDefaultRingtoneUri(
+                        getContext(), RingtoneManager.TYPE_NOTIFICATION
+                    ),
+                    settings.isVibrate,
+                    settings.doNotDisturbMinutes,
+                    useReliableAlarms = settings.useReliableAlarms,
+                    calculateDelayFromMidnight = false,
+                    isSnooze = true
+                )
+                Toast.makeText(
+                    getContext(),
+                    getContext().getString(R.string.notification_successfully_snoozed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
         }
     }
 

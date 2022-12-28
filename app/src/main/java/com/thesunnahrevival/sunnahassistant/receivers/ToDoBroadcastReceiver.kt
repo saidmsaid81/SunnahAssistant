@@ -119,11 +119,11 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
             )
 
             if (!TextUtils.isEmpty(notificationTitle)) {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE)
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALARMS)
                 if (notificationToneUri != null) {
                     ReminderManager.getInstance().scheduleReminder(
                         context, "", text, categories,
-                        (System.currentTimeMillis() + (doNotDisturbMinutes * 60000)),
+                        (System.currentTimeMillis() + (doNotDisturbMinutes * 60 * 1000)),
                         notificationToneUri, isVibrate, doNotDisturbMinutes,
                         calculateDelayFromMidnight = false, isOneShot = true
                     )

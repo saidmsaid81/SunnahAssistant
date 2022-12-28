@@ -17,7 +17,7 @@ class SAFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.notification?.let {
             val notification = createNotification(
                 applicationContext,
-                -2,
+                null,
                 it.title,
                 it.body,
                 NotificationCompat.PRIORITY_DEFAULT,

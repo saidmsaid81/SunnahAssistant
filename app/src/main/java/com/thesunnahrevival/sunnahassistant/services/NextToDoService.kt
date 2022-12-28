@@ -153,7 +153,7 @@ class NextToDoService : Service() {
             notificationToneUri?.let {
                 ReminderManager.getInstance().scheduleReminder(
                     context = context,
-                    title = getString(R.string.to_do),
+                    title = getString(R.string.reminder),
                     texts = names,
                     categories = categories,
                     timeInMilliseconds = nextScheduledReminder.timeInMilliseconds + (nextScheduledReminder.offsetInMinutes * 60 * 1000),
@@ -185,7 +185,13 @@ class NextToDoService : Service() {
         }
 
         val stickyNotification: Notification = createNotification(
-            context, 0, title, text, NotificationCompat.PRIORITY_LOW, notificationToneUri, isVibrate
+            context,
+            null,
+            title,
+            text,
+            NotificationCompat.PRIORITY_LOW,
+            notificationToneUri,
+            isVibrate
         )
         when {
             isForegroundEnabled -> {
