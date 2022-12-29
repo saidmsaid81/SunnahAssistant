@@ -23,7 +23,7 @@ import java.util.*
 const val DB_NAME = "SunnahAssistant.db"
 const val DB_NAME_TEMP = "SunnahAssistant_temp.db"
 
-@Database(entities = [ToDo::class, AppSettings::class], version = 6)
+@Database(entities = [ToDo::class, AppSettings::class], version = 7)
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun toDoDao(): ToDoDao
@@ -99,7 +99,6 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
         private val MIGRATION_5_6: Migration = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
-//                database.execSQL("UPDATE app_settings SET isAfterUpdate = 1")
                 database.execSQL(
                     "ALTER TABLE app_settings ADD COLUMN generatePrayerRemindersAfter INTEGER DEFAULT 0 NOT NULL"
                 )
@@ -210,6 +209,12 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_6_7: Migration = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DELETE FROM reminders_table WHERE id < 0 AND id > -1000")
+            }
+        }
+
 
         fun getInstance(context: Context): SunnahAssistantDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -248,7 +253,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 MIGRATION_2_3,
                 MIGRATION_3_4,
                 MIGRATION_4_5,
-                MIGRATION_5_6
+                MIGRATION_5_6,
+                MIGRATION_6_7
             )
             .build()
     }
