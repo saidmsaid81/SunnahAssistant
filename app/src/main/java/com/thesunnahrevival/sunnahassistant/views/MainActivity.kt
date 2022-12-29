@@ -97,7 +97,7 @@ open class MainActivity : AppCompatActivity() {
                     bottom_navigation_view.visibility = View.GONE
                     mAdView.visibility = View.GONE
                 }
-                R.id.changelogFragment -> {
+                R.id.changelogFragment, R.id.toDoDetailsFragment -> {
                     mAdView.visibility = View.GONE
                     bottom_navigation_view.visibility = View.GONE
                 }
