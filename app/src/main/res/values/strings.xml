@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Sunnah Assistant</string>
   <string name="next_string">Next:</string>
@@ -46,14 +47,12 @@
   <string name="version">Version: %s</string>
   <string name="icon">app icon</string>
   <string name="credits">Credits</string>
-  <string name="about">
-    Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/>@saidmsaid81&lt;/a>)
+  <string name="about">    Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/&gt;@saidmsaid81&lt;/a&gt;)
   </string>
-  <string name="app_icon_credit">
-    App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/>https://www.flaticon.com/authors/sbts2018&lt;/a>&lt;br>
-    Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/>https://www.flaticon.com/authors/bzzrincantation&lt;/a>&lt;br>
-    Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/>https://www.flaticon.com/authors/shmain&lt;/a>&lt;br>
-    Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/>https://www.flaticon.com/authors/freepik&lt;/a>
+  <string name="app_icon_credit">    App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/&gt;https://www.flaticon.com/authors/sbts2018&lt;/a&gt;&lt;br&gt;
+    Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/&gt;https://www.flaticon.com/authors/bzzrincantation&lt;/a&gt;&lt;br&gt;
+    Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/&gt;https://www.flaticon.com/authors/shmain&lt;/a&gt;&lt;br&gt;
+    Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;https://www.flaticon.com/authors/freepik&lt;/a&gt;
   </string>
   <string name="we_are_social">Join Us on Social Media</string>
   <string name="facebook_logo">Facebook logo</string>
@@ -63,17 +62,13 @@
   <string name="change_theme_description">Dark Theme or Light Theme</string>
   <string name="add_new_to_do">Add To-Do</string>
   <string name="add_new_to_do_description">Tap To add any To-Do</string>
-  <string name="edit_to_do_description">
-    Tap To edit To-Do
+  <string name="edit_to_do_description">    Tap To edit To-Do
   </string>
-  <string name="gestures_demo">
-    Swipe Gestures
+  <string name="gestures_demo">    Swipe Gestures
   </string>
-  <string name="gestures_description">
-    ⬅️ Swipe Left To Delete
+  <string name="gestures_description">    ⬅️ Swipe Left To Delete
     \n➡️ Swipe Right to Mark as Complete\n\n\n
   </string>
-
   <string name="spinner_tutorial">To-Do\'s Switcher</string>
   <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly to-dos</string>
   <string name="support_developer">Support Developer</string>
@@ -124,8 +119,7 @@
   <string name="today_s_to_dos">Today\'s To-Dos</string>
   <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date used in this app is based on Umm al-Qura Calendar.\nIt should be noted that, Umm al-Qura calendar is a calculated calendar and may vary with your local moonsighting.\nTherefore, it is recommended to verify the dates here with your local moonsighting. \n\nTap to Read more on Umm al-Qura Calendar</string>
   <string name="read_more">Read more</string>
-  <string name="read_more_on_dhuha_prayer">
-      Tap to read more on Duha Prayer, its time and  number of rakaahs
+  <string name="read_more_on_dhuha_prayer">      Tap to read more on Duha Prayer, its time and  number of rakaahs
     </string>
   <string name="read_more_on_tahajjud_prayer">Tap to read more on Tahajjud prayer, its time and number of rakaahs</string>
   <string name="read_more_on_suratul_kahf">Tap to read more on the importance of reading Suratul Kahf every Friday</string>
@@ -133,21 +127,17 @@
   <string name="what_s_new">What\'s New</string>
   <string name="create_new_categories">Create New Category</string>
   <string name="important">Important</string>
-  <string name="important_changes">
-    ‣ We updated our Privacy Policy to indicate that the app now has ads (to support development).\n\nBy continuing to use this app you agree to the New Privacy Policy. Tap the "Privacy Policy " button below to read it
+  <string name="important_changes">    ‣ We updated our Privacy Policy to indicate that the app now has ads (to support development).\n\nBy continuing to use this app you agree to the New Privacy Policy. Tap the "Privacy Policy " button below to read it
   </string>
   <string name="new_features">New Features</string>
-  <string name="new_features_details">
-        ‣ Major redesign of the app.\n
+  <string name="new_features_details">        ‣ Major redesign of the app.\n
         ‣ Introduced a calendar section which supports Gregorian Calendar and Hijri Calendar (based on Ummul-Qura Calendar).\n
         ‣ Calendar section shows a blue dot if there is a to-do on that day.\n
         ‣ Date pickers now show both Gregorian dates and Hijri dates.\n
         ‣ Introduced an option to mark a To-Do as complete or incomplete.\n
         ‣ Introduced an option to be notified of a To-Do ahead or after the set time.\n
-        ‣ Introduced an option to be notified of a To-Do ahead or after the set time.\n
         ‣ Option to share To-Do via your app of choice.\n
         ‣ Introduced a Tips Section containing recommended To-Dos.\n
-        ‣ Introduced new options when deleting a To-Do such as only this date or only future occurrences.\n
         ‣ Introduced new options when deleting a To-Do such as only this date or only future occurrences.\n
         ‣ Introduced a Local Backup and Restore option (Experimental).\n
         ‣ Introduced a Snooze option when a notification is triggered.\n
@@ -156,15 +146,13 @@
         ‣ More soon In shaa Allah.
     </string>
   <string name="updated">Updated</string>
-  <string name="updated_details">
-        ‣ Updated and optimized all widgets.\n
+  <string name="updated_details">        ‣ Updated and optimized all widgets.\n
         ‣ Updated the Prayer Time Settings section\n
         ‣ Improved the more details section when adding a To-Do.\n
         ‣ Improved "Filter To-Do by category" feature
     </string>
   <string name="fixes">Fixes</string>
-  <string name="fixes_details">
-        ‣ Fixed many bugs
+  <string name="fixes_details">        ‣ Fixed many bugs
     </string>
   <string name="add_or_delete_categories">Add or Delete Categories</string>
   <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>
@@ -296,7 +284,11 @@
   <string name="drink_water">Drink Water</string>
   <string name="prayer_time_alerts">Prayer Time Alerts</string>
   <string name="backup_restore_data">Backup/ Restore Data (Experimental)</string>
-  <string name="backup_restore_data_menu">Backup/Restore Data <span><sup><small>BETA</small></sup></span></string>
+  <string name="backup_restore_data_menu">Backup/Restore Data <span>
+  <sup>
+    <small>BETA</small>
+  </sup>
+</span></string>
   <string name="restoring_app_data_will_delete_all_existing_data_and_replace_it_with_restored_data">Restoring App Data will delete all existing data and replace it with restored data.</string>
   <string name="backing_up_data_please_wait">Backing up Data. Please Wait…</string>
   <string name="restoring_data_please_wait">Restoring Data. Please Wait…</string>
@@ -337,21 +329,18 @@
   <string name="snooze">Snooze</string>
   <string name="share">Share</string>
   <string name="reminder">Reminder</string>
-
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>
     <item>Prayer</item>
     <item>Other</item>
   </string-array>
-
   <string-array name="frequency">
     <item>No Repeat</item>
     <item>Daily</item>
     <item>Weekly</item>
     <item>Monthly</item>
   </string-array>
-
   <string-array name="calculation_methods">
     <item>Muslim World League (default)</item>
     <item>Egyptian General Authority of Survey.</item>
@@ -364,12 +353,10 @@
     <item>Qatar</item>
     <item>Singapore</item>
   </string-array>
-
   <string-array name="asr_juristic_method">
     <item>Standard(Hanbali, Shafi, Maliki)</item>
     <item>Hanafi</item>
   </string-array>
-
   <string-array name="settings_lists">
     <item>Hijri Date Settings</item>
     <item>Prayer Time Settings</item>
@@ -379,25 +366,19 @@
     <item>Backup/ Restore Data (Experimental)</item>
     <item>Privacy Settings</item>
     <item>Contact Us</item>
-
   </string-array>
-
   <string-array name="backup_restore_options">
     <item>Backup App Data to Internal Storage</item>
     <item>Restore App Data</item>
-
   </string-array>
-
   <string-array name="layout_options">
     <item>Expanded View</item>
     <item>Condensed View</item>
   </string-array>
-
   <string-array name="theme_options">
     <item>Light</item>
     <item>Dark</item>
   </string-array>
-
   <string-array name="widget_theme_options">
     <item>Light</item>
     <item>Dark</item>
@@ -425,7 +406,6 @@
     <item>Maghrib Prayer</item>
     <item>Isha Prayer</item>
   </string-array>
-
   <string-array name="do_not_disturb_minutes">
     <item>0 Minutes</item>
     <item>15 Minutes</item>
@@ -433,12 +413,10 @@
     <item>45 Minutes</item>
     <item>60 Minutes</item>
   </string-array>
-
   <string-array name="mark_as_complete_options">
     <item>No</item>
     <item>Yes</item>
   </string-array>
-
   <string-array name="gregorian_month_names">
     <item>January</item>
     <item>February</item>
@@ -453,7 +431,6 @@
     <item>November</item>
     <item>December</item>
   </string-array>
-
   <string-array name="day_name_abbr">
     <item>S</item>
     <item>M</item>
@@ -463,7 +440,6 @@
     <item>F</item>
     <item>S</item>
   </string-array>
-
   <string-array name="notify_options">
     <item>No Notification</item>
     <item>On Time</item>
@@ -472,7 +448,6 @@
     <item>30 Minutes Before</item>
     <item>Custom</item>
   </string-array>
-
   <string-array name="snooze_options">
     <item>5 Minutes</item>
     <item>15 Minutes</item>
@@ -480,11 +455,8 @@
     <item>45 Minutes</item>
     <item>1 Hour</item>
   </string-array>
-
   <string-array name="offset_options">
     <item>Before</item>
     <item>After</item>
   </string-array>
-
-
 </resources>
