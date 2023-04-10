@@ -1,11 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.firebase
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.thesunnahrevival.sunnahassistant.utilities.createNotification
@@ -17,19 +17,26 @@ class SAFirebaseMessagingService : FirebaseMessagingService() {
         remoteMessage.notification?.let {
             val notification = createNotification(
                 applicationContext,
+                null,
                 it.title,
                 it.body,
-                Notification.PRIORITY_DEFAULT,
+                NotificationCompat.PRIORITY_DEFAULT,
                 null,
-                false
+                isVibrate = false,
+                isFCMMessage = true
             )
 
             // Check if message contains a data payload.
             if (remoteMessage.data.isNotEmpty() && remoteMessage.data["link"] != null) {
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.putExtra("link", remoteMessage.data["link"])
+                val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    0
+                }
                 val activity =
-                    PendingIntent.getActivity(applicationContext, 0, intent, FLAG_CANCEL_CURRENT)
+                    PendingIntent.getActivity(applicationContext, 0, intent, flag)
                 notification.contentIntent = activity
             }
             val notificationManager =

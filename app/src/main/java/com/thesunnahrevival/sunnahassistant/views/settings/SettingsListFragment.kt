@@ -7,17 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
-import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
-class SettingsListFragment : Fragment(), AdapterView.OnItemClickListener {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.settings_lists, container, false)
+class SettingsListFragment : SunnahAssistantFragment(), AdapterView.OnItemClickListener {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
+        val view = inflater.inflate(R.layout.fragment_settings_lists, container, false)
         val listView = view.findViewById<ListView>(R.id.settings_lists)
         listView.adapter =
             ArrayAdapter(
@@ -79,23 +82,20 @@ class SettingsListFragment : Fragment(), AdapterView.OnItemClickListener {
             2 -> findNavController().navigate(R.id.customizeCategoriesFragment)
             3 -> findNavController().navigate(R.id.notificationSettingsFragment)
             4 -> findNavController().navigate(R.id.layoutSettingsFragment)
-            5 -> findNavController().navigate(R.id.privacySettingsFragment)
-            6 -> {
+            5 -> findNavController().navigate(R.id.backupRestoreFragment)
+            6 -> findNavController().navigate(R.id.privacySettingsFragment)
+            7 -> {
                 val intent = generateEmailIntent()
                 if (intent.resolveActivity(requireActivity().packageManager) != null)
                     startActivity(intent)
                 else
-                    Toast.makeText(context, getString(R.string.no_email_app_installed), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.no_email_app_installed),
+                        Toast.LENGTH_LONG
+                    ).show()
             }
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, this.javaClass.simpleName)
-        bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, this.javaClass.simpleName)
-        (activity as MainActivity).firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle)
     }
 }

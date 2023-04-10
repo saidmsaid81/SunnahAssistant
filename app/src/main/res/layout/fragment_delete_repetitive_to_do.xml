@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/radio_group"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/default_dimen"
+    >
+  <RadioButton
+      android:id="@+id/delete_only_this_date"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+  <RadioButton
+      android:id="@+id/delete_future_repetitions"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/default_dimen"
+      />
+  <RadioButton
+      android:id="@+id/delete_all"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/delete_all"
+      android:layout_marginTop="@dimen/default_dimen"
+      />
+</RadioGroup>
+

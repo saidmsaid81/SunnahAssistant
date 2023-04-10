@@ -1,105 +1,214 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.media.RingtoneManager
 import android.net.ConnectivityManager
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import android.net.Uri
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.*
+import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
+import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME
+import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
-import com.thesunnahrevival.sunnahassistant.data.model.Reminder
-import com.thesunnahrevival.sunnahassistant.utilities.NextReminderService
-import com.thesunnahrevival.sunnahassistant.utilities.getMonthNumber
-import com.thesunnahrevival.sunnahassistant.utilities.sunnahReminders
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
+import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.time.LocalDate
 import java.util.*
+import javax.crypto.BadPaddingException
+
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
-    var selectedReminder: Reminder? = null
+    private val mutex = Mutex()
+
+    var selectedToDo =
+        ToDo(
+            name = "", frequency = Frequency.OneTime,
+            category = application.resources.getStringArray(R.array.categories)[0], //Uncategorized
+            day = LocalDate.now().dayOfMonth,
+            month = LocalDate.now().month.ordinal,
+            year = LocalDate.now().year
+        )
+    var isToDoTemplate = false
+
     var settingsValue: AppSettings? = null
     val messages = MutableLiveData<String>()
     var isPrayerSettingsUpdated = false
+    private val mutableReminderParameters =
+        MutableLiveData(Pair(System.currentTimeMillis(), ""))
 
-    fun addInitialReminders() {
+    val selectedToDoDate: LocalDate
+        get() {
+            return generateLocalDatefromDate(
+                Date(
+                    mutableReminderParameters.value?.first ?: System.currentTimeMillis()
+                )
+            )
+        }
+    val categoryToDisplay: String
+        get() {
+            return mutableReminderParameters.value?.second ?: ""
+        }
+
+    val triggerCalendarUpdate = MutableLiveData<Boolean>()
+
+    fun setToDoParameters(date: Long? = null, category: String? = null) {
+        val currentDateParameter =
+            mutableReminderParameters.value?.first ?: System.currentTimeMillis()
+        val currentCategoryParameter = mutableReminderParameters.value?.second ?: ""
+        mutableReminderParameters.value =
+            Pair(date ?: currentDateParameter, category ?: currentCategoryParameter)
+    }
+
+    fun insertToDo(toDo: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.addInitialReminders()
+            mRepository.insertToDo(toDo)
+            withContext(Dispatchers.Main) {
+                startService()
+                triggerCalendarUpdate.value = true
+            }
         }
     }
 
-    fun delete(reminder: Reminder) {
+    fun updateToDo(toDo: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.deleteReminder(reminder)
+            mRepository.updateToDo(toDo)
         }
     }
 
-    fun insert(reminder: Reminder) {
+    fun deleteToDo(toDo: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.addReminder(reminder)
-            if (reminder.isEnabled)
-                startServiceFromCoroutine()
+            mRepository.deleteToDo(toDo)
+            withContext(Dispatchers.Main) {
+                startService()
+                triggerCalendarUpdate.value = true
+            }
         }
     }
 
-    suspend fun getNextScheduledReminderToday(offsetFromMidnight: Long, day: Int, month: Int, year: Int): Reminder? {
-        return mRepository.getNextScheduledReminderToday(offsetFromMidnight, day, month, year)
-    }
-
-    suspend fun getNextScheduledReminderTomorrow(day: Int, month: Int, year: Int): Reminder? {
-        return mRepository.getNextScheduledReminderTomorrow(day, month, year)
-    }
-
-    fun getStatusOfAddingListOfReminders() = mRepository.statusOfAddingListOfReminders
-
-    fun getReminders(filter: Int): LiveData<List<Reminder>> {
-        return when (filter) {
-            1 -> mRepository.getPastReminders()
-            2 -> mRepository.getRemindersOnDay(false)
-            3 -> mRepository.getRemindersOnDay(true)
-            4 -> mRepository.getPrayerTimes()
-            5 -> mRepository.getWeeklyReminders()
-            6 -> mRepository.getMonthlyReminders()
-            7 -> mRepository.getOneTimeReminders()
-            else -> mRepository.getUpcomingReminders()
+    fun deleteListOfToDos(toDos: List<ToDo>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mRepository.deleteListOfToDos(toDos)
+            withContext(Dispatchers.Main) {
+                startService()
+                triggerCalendarUpdate.value = true
+            }
         }
     }
 
-    fun updatePrayerTimeDetails(oldPrayerDetails: Reminder, newPrayerDetails: Reminder) {
+    fun thereToDosOnDay(dayOfWeek: String, dayOfMonth: Int, month: Int, year: Int): Boolean {
+        val excludePrayer = getContext().getString(R.string.prayer)
+        return mRepository.thereToDosOnDay(excludePrayer, dayOfWeek, dayOfMonth, month, year)
+    }
+
+    fun getToDoLiveData(id: Int) = mRepository.getToDoLiveData(id)
+
+    suspend fun getToDoById(id: Int) = mRepository.getToDoById(id)
+
+    fun getTemplateToDoIds() = mRepository.getTemplateToDoIds()
+
+    fun getMalformedToDos() = mRepository.getMalformedToDos()
+
+    fun getIncompleteToDos(): LiveData<PagingData<ToDo>> {
+        return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
+            Pager(
+                PagingConfig(15),
+                pagingSourceFactory = {
+                    mRepository.getIncompleteToDosOnDay(Date(dateOfReminders), category)
+                }
+            ).liveData.cachedIn(viewModelScope)
+        }
+    }
+
+    fun getCompleteToDos(): LiveData<PagingData<ToDo>> {
+        return Transformations.switchMap(mutableReminderParameters) { (dateOfReminders, category) ->
+            Pager(
+                PagingConfig(15),
+                pagingSourceFactory = {
+                    mRepository.getCompleteToDosOnDay(Date(dateOfReminders), category)
+                }
+            ).liveData.cachedIn(viewModelScope)
+        }
+    }
+
+    fun getSunriseTime(): Long? {
+        val settings = settingsValue
+        if (settings != null) {
+            return mRepository.getSunriseTime(
+                settings.latitude.toDouble(),
+                settings.longitude.toDouble(),
+                settings.calculationMethod,
+                settings.asrCalculationMethod,
+                settings.latitudeAdjustmentMethod,
+                selectedToDoDate.dayOfMonth,
+                selectedToDoDate.month.ordinal,
+                selectedToDoDate.year
+            )
+        }
+        return null
+
+    }
+
+    fun updatePrayerTimeDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)
+            withContext(Dispatchers.Main) {
+                startService()
+            }
         }
     }
 
-    fun getSettings() = mRepository.appSettings
+    fun updatePrayerTimesData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val settings = settingsValue
+            if (settings?.formattedAddress?.isNotBlank() == true) {
+                if (settings.isAutomaticPrayerAlertsEnabled) {
+                    mRepository.updatePrayerReminders(
+                        getContext().resources.getStringArray(R.array.prayer_names),
+                        getContext().resources.getStringArray(R.array.categories)[2]
+                    )
+                } else
+                    mRepository.deletePrayerTimesData()
+                updateSettings(settings)
+            }
+        }
+    }
+
+    fun updatedDeletedCategories(deletedCategories: ArrayList<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (deletedCategories.isNotEmpty()) {
+                mRepository.updateDeletedCategories(
+                    deletedCategories,
+                    getContext().resources.getStringArray(R.array.categories)[0]
+                )
+            }
+        }
+    }
+
+    fun getSettings() = mRepository.getAppSettings().asLiveData()
 
     suspend fun getAppSettingsValue(): AppSettings? {
         return mRepository.getAppSettingsValue()
-    }
-
-    fun updateGeneratedPrayerTimes(settings: AppSettings) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (isLoadFreshData(settings.month)) {
-                if (settings.isAutomatic) {
-                    mRepository.updateGeneratedPrayerTimes(
-                            settings.latitude, settings.longitude,
-                            settings.calculationMethod, settings.asrCalculationMethod,
-                            settings.latitudeAdjustmentMethod)
-                    //Save the Month in User Settings to prevent re-fetching the data the current month
-                    settings.month = getMonthNumber(System.currentTimeMillis())
-                    updateSettings(settings)
-                }
-            }
-        }
     }
 
     fun updateSettings(settings: AppSettings) {
@@ -108,20 +217,13 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    private fun isLoadFreshData(month: Int) = month != getMonthNumber(System.currentTimeMillis())
-
-    val isDeviceOffline: Boolean
-        get() {
-            val connectivityManager = getApplication<Application>().applicationContext
-                    .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return connectivityManager.activeNetworkInfo == null ||
-                    !connectivityManager.activeNetworkInfo.isConnected
-        }
-
     fun getGeocodingData(address: String) {
-        val unavailableLocationString = getApplication<Application>().getString(R.string.unavailable_location)
-        val serverError: String = getApplication<Application>().getString(R.string.server_error_occured)
-        val noNetworkString = getApplication<Application>().getString(R.string.error_updating_location)
+        val unavailableLocationString =
+            getContext().getString(R.string.unavailable_location)
+        val serverError: String =
+            getContext().getString(R.string.server_error_occured)
+        val noNetworkString =
+            getContext().getString(R.string.error_updating_location)
 
         viewModelScope.launch(Dispatchers.IO) {
             val data = mRepository.getGeocodingData(address, settingsValue?.language ?: "en")
@@ -132,7 +234,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     updateLocationDetails(data)
                     message = "Successful"
                 }
-                data != null && data.results.isEmpty() -> {
+                data != null -> {
                     if (data.status == "ZERO_RESULTS")
                         message = unavailableLocationString
                     else {
@@ -147,10 +249,55 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             }
 
             withContext(Dispatchers.Main) {
-               messages.value = message
+                messages.value = message
             }
         }
+    }
 
+    fun snoozeNotification(id: Int, timeInMinutes: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDo = getToDoById(id) ?: return@launch
+            if (settingsValue == null)
+                settingsValue = getAppSettingsValue()
+            val settings = settingsValue ?: return@launch
+
+            val notificationManager =
+                getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (toDo.isAutomaticPrayerTime() &&
+                settings.doNotDisturbMinutes > 0 &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                notificationManager.isNotificationPolicyAccessGranted
+            ) {
+                //Disable the already enabled dnd will be re-enabled
+                // when snoozed notification triggers
+                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
+            }
+
+            withContext(Dispatchers.Main) {
+                ReminderManager.getInstance().scheduleReminder(
+                    getContext(),
+                    getContext().getString(R.string.reminder),
+                    mapOf(Pair(id, "${getContext().getString(R.string.snooze)}: ${toDo.name}")),
+                    mapOf(Pair(id, toDo.category ?: "Uncategorized")),
+                    System.currentTimeMillis() + (timeInMinutes * 60 * 1000),
+                    settings.notificationToneUri ?: RingtoneManager.getActualDefaultRingtoneUri(
+                        getContext(), RingtoneManager.TYPE_NOTIFICATION
+                    ),
+                    settings.isVibrate,
+                    settings.doNotDisturbMinutes,
+                    useReliableAlarms = settings.useReliableAlarms,
+                    calculateDelayFromMidnight = false,
+                    isSnooze = true
+                )
+                Toast.makeText(
+                    getContext(),
+                    getContext().getString(R.string.notification_successfully_snoozed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+        }
     }
 
     private fun updateLocationDetails(data: GeocodingData) {
@@ -166,84 +313,224 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun updatePrayerTimesData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val settings = settingsValue
-            if (settings?.formattedAddress?.isNotBlank() == true) {
-                mRepository.deletePrayerTimesData()
-                if (settings.isAutomatic) {
-                    mRepository.generatePrayerTimes(
-                            settings.latitude, settings.longitude, settings.calculationMethod, settings.asrCalculationMethod,
-                            settings.latitudeAdjustmentMethod
-                    )
-                }
-                updateSettings(settings)
-            }
-        }
+    private fun startService() {
+        getApplication<Application>().startService(
+            Intent(
+                getApplication(),
+                NextToDoService::class.java
+            )
+        )
     }
 
-    fun updatedDeletedCategories(deletedCategories: ArrayList<String>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (deletedCategories.isNotEmpty()) {
-                mRepository.updateDeletedCategories(deletedCategories)
-            }
-        }
-    }
+    private fun getContext() = getApplication<Application>().applicationContext
 
-    fun scheduleReminder(reminder: Reminder) {
-        viewModelScope.launch(Dispatchers.IO) {
-            reminder.isEnabled = true
-            mRepository.setReminderIsEnabled(reminder)
-            startServiceFromCoroutine()
-        }
-    }
-
-    fun cancelScheduledReminder(reminder: Reminder) {
-        viewModelScope.launch(Dispatchers.IO) {
-            reminder.isEnabled = false
-            mRepository.setReminderIsEnabled(reminder)
-            startServiceFromCoroutine()
+    val isDeviceOffline: Boolean
+        get() {
+            val connectivityManager = getContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            return connectivityManager.activeNetworkInfo == null ||
+                    !connectivityManager.activeNetworkInfo!!.isConnected
         }
 
-    }
-
-    private suspend fun startServiceFromCoroutine() {
-        withContext(Dispatchers.Main) {
-            getApplication<Application>().startService(Intent(getApplication(), NextReminderService::class.java))
-        }
-    }
 
     fun localeUpdate() {
         if (supportedLocales.contains(Locale.getDefault().language)) {
-            val  configuration = Configuration(getApplication<Application>().applicationContext.resources.configuration)
+            val configuration =
+                Configuration(getContext().resources.configuration)
             configuration.setLocale(Locale(settingsValue?.language ?: "en"))
 
-            val oldCategoryNames = getApplication<Application>().applicationContext
-                    .createConfigurationContext(configuration)
-                    .resources
-                    .getStringArray(R.array.categories)
+            val oldCategoryNames = getContext()
+                .createConfigurationContext(configuration)
+                .resources
+                .getStringArray(R.array.categories)
 
             val newCategoryNames = mutableListOf<String>()
-            newCategoryNames.addAll(( getApplication<Application>().resources.getStringArray(R.array.categories)))
-            val reminders = sunnahReminders(getApplication())
+            newCategoryNames.addAll((getContext().resources.getStringArray(R.array.categories)))
 
-            viewModelScope.launch(Dispatchers.IO){
-                for ((index, oldCategoryName) in oldCategoryNames.withIndex()){
+            val oldPrayerNames = getContext()
+                .createConfigurationContext(configuration)
+                .resources
+                .getStringArray(R.array.prayer_names)
+            val newPrayerNames = getContext().resources.getStringArray(R.array.prayer_names)
+
+            viewModelScope.launch(Dispatchers.IO) {
+                for ((index, oldCategoryName) in oldCategoryNames.withIndex()) {
                     mRepository.updateCategory(oldCategoryName, newCategoryNames[index])
                 }
-                for (reminder in reminders){
-                    mRepository.updateReminder(reminder.id, reminder.reminderName, reminder.reminderInfo, reminder.category)
-                }
-                updatePrayerTimesData()
+
+                mRepository.updatePrayerNames(oldPrayerNames, newPrayerNames)
+
                 settingsValue?.language = Locale.getDefault().language
-                settingsValue?.categories?.removeAll(oldCategoryNames)
+                settingsValue?.categories?.removeAll(oldCategoryNames.toSet())
                 settingsValue?.categories?.addAll(newCategoryNames)
                 settingsValue?.let {
                     updateSettings(it)
                 }
 
+                withContext(Dispatchers.Main) {
+                    startService()
+                }
             }
         }
     }
 
+
+    fun getTemplateToDos() = TemplateToDos().getTemplateToDos(getContext())
+
+    fun backupPlainData(dataUri: Uri?): Pair<Boolean, String> {
+        mRepository.closeDB()
+        val dbPlainData = getContext().getDatabasePath(DB_NAME).readBytes()
+        return doBackup(dataUri, dbPlainData)
+    }
+
+    fun backupEncryptedData(dataUri: Uri?, password: String): Pair<Boolean, String> {
+        mRepository.closeDB()
+        val encryptedData = Encryption().encrypt(
+            getContext().getDatabasePath(DB_NAME).readBytes(),
+            password
+        )
+        return doBackup(dataUri, encryptedData)
+    }
+
+    private fun doBackup(dataUri: Uri?, inputData: Any): Pair<Boolean, String> {
+        return try {
+            val outputStream =
+                dataUri?.let { getContext().contentResolver.openOutputStream(it) }
+                    ?: return Pair(false, "")
+
+            if (inputData is ByteArray) { //Plain Text
+                outputStream.use {
+                    it.write(inputData)
+                }
+            } else { //Encrypted
+                ObjectOutputStream(outputStream).use {
+                    it.writeObject(inputData)
+                }
+            }
+
+            Pair(true, getContext().getString(R.string.backup_successful))
+        } catch (exception: Exception) {
+            Log.e("Back up Exception", exception.message.toString())
+            Pair(false, getContext().getString(R.string.backup_failed))
+        }
+    }
+
+    suspend fun restorePlainData(dataUri: Uri?): Pair<Boolean?, String> {
+        val backupInputStream =
+            dataUri?.let { getContext().contentResolver.openInputStream(it) }
+                ?: return Pair(false, "")
+
+        return mutex.withLock {
+            doRestore(backupInputStream.readBytes())
+        }
+    }
+
+    suspend fun restoreEncryptedData(dataUri: Uri?, password: String): Pair<Boolean?, String> {
+        val backupInputStream =
+            dataUri?.let { getContext().contentResolver.openInputStream(it) }
+                ?: return Pair(false, "")
+
+        return withContext(Dispatchers.IO) {
+            mutex.withLock {
+                try {
+                    ObjectInputStream(backupInputStream).use {
+                        when (val data = it.readObject()) {
+                            is Map<*, *> -> {
+                                if (data.containsKey("iv") && data.containsKey("salt") && data.containsKey(
+                                        "encrypted"
+                                    )
+                                ) {
+                                    val iv = data["iv"]
+                                    val salt = data["salt"]
+                                    val encrypted = data["encrypted"]
+
+                                    val decrypted =
+                                        if (iv is ByteArray && salt is ByteArray && encrypted is ByteArray) {
+                                            Encryption().decrypt(
+                                                hashMapOf(
+                                                    "iv" to iv,
+                                                    "salt" to salt,
+                                                    "encrypted" to encrypted
+                                                ), password
+                                            )
+                                        } else
+                                            null
+                                    if (decrypted != null)
+                                        return@withContext doRestore(decrypted)
+
+
+                                }
+                            }
+                        }
+                    }
+                    return@withContext Pair(
+                        false,
+                        getContext().getString(R.string.restore_failed_invalid_file)
+                    )
+                } catch (exception: Exception) {
+                    Log.e("Decryption Exception", exception.toString())
+                    when (exception) {
+                        is BadPaddingException -> {
+                            return@withContext Pair(
+                                false,
+                                getContext().getString(R.string.restore_failed_incorrect_password)
+                            )
+                        }
+                        else -> return@withContext Pair(
+                            false,
+                            getContext().getString(R.string.restore_failed_invalid_file)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun doRestore(dataToRestore: ByteArray): Pair<Boolean?, String> {
+        return withContext(Dispatchers.IO) {
+            val existingDataTempFile = getContext().getDatabasePath(DB_NAME_TEMP)
+            val databaseFile = getContext().getDatabasePath(DB_NAME)
+            try {
+                mRepository.closeDB()
+
+                //Create a temp db file which will be used if restoring fails
+                val existingDBBytes = databaseFile.readBytes()
+                existingDataTempFile.writeBytes(existingDBBytes)
+                databaseFile.writeBytes(dataToRestore)
+                Pair(false, getContext().getString(R.string.restore_failed))
+            } catch (exception: Exception) {
+                Log.e("Restore Exception", exception.toString())
+                undoFailedRestore(databaseFile, existingDataTempFile)
+                Pair(false, getContext().getString(R.string.restore_failed))
+            } finally {
+                val appSettings = getAppSettingsValue()
+                if (appSettings == null) {
+                    undoFailedRestore(databaseFile, existingDataTempFile)
+                    return@withContext Pair(
+                        null,
+                        ""
+                    )
+                } else {
+                    appSettings.notificationToneUri =
+                        RingtoneManager.getActualDefaultRingtoneUri(
+                            getContext(), RingtoneManager.TYPE_NOTIFICATION
+                        )
+                    updateSettings(appSettings)
+                    existingDataTempFile.delete()
+                    return@withContext Pair(
+                        true,
+                        getContext().getString(R.string.restore_successful)
+                    )
+                }
+
+            }
+
+        }
+    }
+
+    private fun undoFailedRestore(databaseFile: File, existingDataFile: File) {
+        mRepository.closeDB()
+        databaseFile.writeBytes(existingDataFile.readBytes())
+        existingDataFile.delete()
+    }
 }

@@ -6,17 +6,23 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.prayerTimeRemindersId
+import com.thesunnahrevival.sunnahassistant.receivers.MARK_AS_COMPLETE
+import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
+import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.SHARE
 
 fun createNotification(
     context: Context,
+    id: Int?,
     title: String?,
     text: String?,
     priority: Int,
@@ -40,21 +46,22 @@ fun createNotification(
             category = "Developer"
     }
 
-    val res = context.resources
-
-    // This image is used as the notification's large icon (thumbnail).
-    val picture = BitmapFactory.decodeResource(res, R.drawable.logo)
     val intent = Intent(context, MainActivity::class.java)
 
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+
     val activity = if (priority != -1)
-        PendingIntent.getActivity(context, 0, intent, 0)
+        PendingIntent.getActivity(context, 0, intent, flag)
     else
         NavDeepLinkBuilder(context)
             .setGraph(R.navigation.navigation)
             .setDestination(R.id.notificationSettingsFragment)
             .createPendingIntent()
-    var builder: NotificationCompat.Builder
-    builder = NotificationCompat.Builder(context, category)
+    val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, category)
         .setSmallIcon(R.drawable.ic_alarm)
         .setContentTitle(title)
         .setContentText(text)
@@ -64,19 +71,69 @@ fun createNotification(
         .setStyle(
             NotificationCompat.BigTextStyle()
                 .bigText(text)
-                    .setBigContentTitle(title)
-                    .setSummaryText("Reminder"))
+                .setBigContentTitle(title)
+        )
             .setAutoCancel(true)
-    if (priority != -1) {
-        builder = builder.setLargeIcon(picture)
+    if (priority != -1 && id != null) {
         if (notificationToneUri != null) builder.setSound(notificationToneUri)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            builder.setCategory(Notification.CATEGORY_REMINDER)
+            //Important to set prayer time reminders to Notification.CATEGORY_ALARM so it triggers even when Sunnah Assistant initiated DND is on
+            builder.setCategory(if (id > prayerTimeRemindersId) Notification.CATEGORY_REMINDER else Notification.CATEGORY_ALARM)
         }
+        builder.addAction(
+            R.drawable.ic_check,
+            context.getString(R.string.mark_as_complete),
+            getMarkAsCompletePendingIntent(context, id)
+        )
+        builder.addAction(
+            R.drawable.ic_check,
+            context.getString(R.string.snooze),
+            snoozeNotification(context, id)
+        )
+        builder.addAction(
+            R.drawable.ic_check,
+            context.getString(R.string.share),
+            shareToDo(context, id)
+        )
     }
     if (isVibrate)
         builder.setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
     return builder.build()
+}
+
+fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
+    val markAsCompleteIntent = Intent(context, ToDoBroadcastReceiver::class.java).apply {
+        action = MARK_AS_COMPLETE
+        putExtra(TO_DO_ID, id)
+    }
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+    return PendingIntent.getBroadcast(context, id, markAsCompleteIntent, flag)
+
+}
+
+fun snoozeNotification(context: Context, id: Int): PendingIntent {
+    return NavDeepLinkBuilder(context)
+        .setGraph(R.navigation.navigation)
+        .setArguments(Bundle().apply { putInt(TO_DO_ID, id) })
+        .setDestination(R.id.snooze_options)
+        .createPendingIntent()
+}
+
+fun shareToDo(context: Context, id: Int): PendingIntent? {
+    val shareToDoIntent = Intent(context, MainActivity::class.java).apply {
+        action = SHARE
+        putExtra(TO_DO_ID, id)
+    }
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+    return PendingIntent.getActivity(context, id, shareToDoIntent, flag)
 }
 
 /**
@@ -86,18 +143,18 @@ fun createNotificationChannels(context: Context) {
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        deleteReminderNotificationChannel(context)
+        deleteToDoNotificationChannel(context)
         val notificationManager = context.getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
             "remindersDefault",
-            context.getString(R.string.reminders),
+            context.getString(R.string.to_dos),
             NotificationManager.IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(channel)
 
         val nextReminderChannel = NotificationChannel(
             "Next Reminder",
-            context.getString(R.string.next_reminder_sticky_notification),
+            context.getString(R.string.next_to_do_sticky_notification),
             NotificationManager.IMPORTANCE_LOW
         )
         nextReminderChannel.description =
@@ -125,7 +182,7 @@ fun getReminderNotificationChannel(context: Context): NotificationChannel? {
     return null
 }
 
-fun deleteReminderNotificationChannel(context: Context) {
+fun deleteToDoNotificationChannel(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val manager = context.getSystemService(NotificationManager::class.java)
         for (channel in manager.notificationChannels) {
@@ -135,16 +192,22 @@ fun deleteReminderNotificationChannel(context: Context) {
     }
 }
 
-fun createReminderNotificationChannel(context: Context, toneUri: Uri?, isVibrate: Boolean, priority: Int) {
+fun createToDoNotificationChannel(
+    context: Context,
+    toneUri: Uri?,
+    isVibrate: Boolean,
+    priority: Int
+) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(System.currentTimeMillis().toString(),
-                "Reminders",
-                priority
+        val channel = NotificationChannel(
+            System.currentTimeMillis().toString(),
+            "Reminders",
+            priority
         )
         val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                .build()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
         channel.setSound(toneUri, attributes)
         channel.enableVibration(isVibrate)
         val manager = context.getSystemService(NotificationManager::class.java)

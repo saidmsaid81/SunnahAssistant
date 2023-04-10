@@ -9,35 +9,39 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="90dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-    tools:context=".views.AboutAppFragment">
+    tools:context=".views.others.AboutAppFragment"
+    >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="@dimen/default_dimen"
-        android:text="@string/about_app"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textStyle="bold" />
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:paddingBottom="@dimen/default_dimen"
+      android:text="@string/about_app"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:textStyle="bold"
+      />
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center"
-        android:contentDescription="@string/icon"
-        android:paddingBottom="@dimen/default_dimen"
-        android:src="@drawable/logo" />
+  <ImageView
+      android:layout_width="64dp"
+      android:layout_height="64dp"
+      android:layout_gravity="center"
+      android:contentDescription="@string/icon"
+      android:paddingBottom="@dimen/default_dimen"
+      android:src="@mipmap/logo"
+      />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@color/fabColor"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:text="@string/app_name"
+      android:textColor="@color/fabColor"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      />
 
-    <TextView
+  <TextView
         android:id="@+id/version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +73,7 @@
 
     <TextView
         android:id="@+id/app_icon_credit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clickable="true"
@@ -77,6 +81,7 @@
         android:linksClickable="true"
         android:text="@string/app_icon_credit"
         android:textColorLink="@android:color/holo_blue_dark"
+        android:textAlignment="center"
         android:textSize="16sp" />
 
     <TextView
@@ -160,6 +165,7 @@
         android:padding="@dimen/margin_dimen"
         android:textAllCaps="false"
         app:backgroundTint="@color/fabColor"
+        android:textColor="@android:color/white"
         android:text="@string/contact_us" />
 
 </LinearLayout>

@@ -5,72 +5,46 @@ import androidx.room.TypeConverter
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import java.lang.Integer.parseInt
 import java.util.*
-import kotlin.collections.ArrayList
 
 class RoomTypeConverter {
     @TypeConverter
-    fun fromArray(numbers: ArrayList<Int?>): String {
-        return try {
-            val stringBuilder = StringBuilder()
-            for (s in numbers) {
-                stringBuilder.append(s.toString())
-                stringBuilder.append(",")
-
-            }
-            stringBuilder.toString()
-        } catch (e: NullPointerException) {
-            ""
-        }
+    fun fromTreeSetOfNumbers(numbers: TreeSet<Int>?): String {
+        return numbers?.joinToString(separator = ",") ?: ""
     }
 
     @TypeConverter
-    fun toArray(concatenatedStrings: String): ArrayList<Int> {
-        val list = ArrayList<Int>()
-        val array = concatenatedStrings.split(",").toTypedArray()
-        try{
-            for (index in 0..array.size)
-                list.add(parseInt(array[index]))
+    fun toTreeSetOfNumbers(concatenatedNumbersString: String?): TreeSet<Int> {
+        val treeSet = TreeSet<Int>()
+        concatenatedNumbersString?.split(",")?.forEach { string ->
+            string.toIntOrNull()?.let {
+                treeSet.add(it)
+            }
         }
-        catch(exception: NumberFormatException){
-            return list
-        }
-        return list
+        return treeSet
     }
 
-    
     @TypeConverter
     fun fromUri(uri: Uri?): String {
         return uri?.toString() ?: ""
     }
 
-    
     @TypeConverter
     fun toUri(stringUri: String?): Uri {
         return Uri.parse(stringUri)
     }
 
-    
     @TypeConverter
     fun fromTreeSet(strings: TreeSet<String?>): String {
-        return try {
-            val stringBuilder = StringBuilder()
-            for (s in strings) {
-                stringBuilder.append(s)
-                stringBuilder.append(",")
-            }
-            stringBuilder.toString()
-        } catch (e: NullPointerException) {
-            ""
-        }
+        return strings.joinToString(separator = ",")
     }
 
-    
     @TypeConverter
     fun toTreeSet(concatenatedStrings: String): TreeSet<String> {
-        val list = listOf(*concatenatedStrings.split(",").toTypedArray())
-        return TreeSet(list.filter { it.isNotBlank() })
+        val treeSet = TreeSet<String>()
+        treeSet.addAll(concatenatedStrings.split(","))
+        treeSet.remove("")
+        return treeSet
     }
 
     @TypeConverter
@@ -79,23 +53,15 @@ class RoomTypeConverter {
     }
 
     @TypeConverter
-    fun toFrequency(number: String): Frequency {
-        return try {
-            Frequency.values()[parseInt(number)]
-        }
-        catch(exception: NumberFormatException) {
-            Frequency.Daily
-        }
+    fun toFrequency(numberString: String): Frequency {
+        val number = numberString.toIntOrNull() ?: Frequency.Daily.ordinal
+        return Frequency.values().getOrElse(number) { Frequency.Daily }
     }
 
     @TypeConverter
     fun toCalculationMethod(number: Int): CalculationMethod {
-        return try {
-            CalculationMethod.values()[number]
-        }
-        catch (exception: ArrayIndexOutOfBoundsException){
-            CalculationMethod.MUSLIM_WORLD_LEAGUE
-        }
+        return CalculationMethod.values()
+            .getOrElse(number) { CalculationMethod.MUSLIM_WORLD_LEAGUE }
     }
 
     @TypeConverter
@@ -107,8 +73,7 @@ class RoomTypeConverter {
     fun toMadhab(number: Int): Madhab {
         return try {
             Madhab.values()[number]
-        }
-        catch (exception: ArrayIndexOutOfBoundsException){
+        } catch (exception: ArrayIndexOutOfBoundsException) {
             return Madhab.SHAFI
         }
     }
@@ -116,5 +81,46 @@ class RoomTypeConverter {
     @TypeConverter
     fun fromMadhab(madhab: Madhab): Int {
         return madhab.ordinal
+    }
+
+    @TypeConverter
+    fun fromDate(date: Date) = date.time
+
+    @TypeConverter
+    fun toDate(dateInMilliseconds: Long) = Date(dateInMilliseconds)
+
+    @TypeConverter
+    fun fromBooleanArray(array: BooleanArray): String {
+        return array.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toBooleanArray(string: String): BooleanArray {
+        val booleanArray = BooleanArray(5) { true }
+        if (string.isNotBlank()) {
+            val array = string.split(",")
+            booleanArray.forEachIndexed { index, _ ->
+                booleanArray[index] = array.getOrElse(index) { "true" } == "true"
+            }
+        }
+
+        return booleanArray
+    }
+
+    @TypeConverter
+    fun fromIntArray(array: IntArray): String {
+        return array.joinToString(separator = ",")
+    }
+
+    @TypeConverter
+    fun toIntArray(string: String): IntArray {
+        val intArray = IntArray(5) { 0 }
+        if (string.isNotBlank()) {
+            val array = string.split(",")
+            intArray.forEachIndexed { index, _ ->
+                intArray[index] = array.getOrElse(index) { "0" }.toIntOrNull() ?: 0
+            }
+        }
+        return intArray
     }
 }

@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import java.util.*
 
 class ReminderManager private constructor() {
@@ -15,29 +16,82 @@ class ReminderManager private constructor() {
     /**
      * Method for creating notification and PendingIntent
      */
-    private fun createNotificationPendingIntent(context: Context, title: String, text: String, category: String?, notificationUri: Uri, isVibrate: Boolean, doNotDisturbMinutes: Int, isOneShot: Boolean = false): PendingIntent {
-        val notificationIntent = Intent(context, ReminderBroadcastReceiver::class.java)
+    private fun createNotificationPendingIntent(
+        context: Context,
+        title: String,
+        text: Map<Int, String>,
+        category: Map<Int, String>,
+        notificationUri: Uri,
+        isVibrate: Boolean,
+        doNotDisturbMinutes: Int,
+        isOneShot: Boolean = false,
+        isSnooze: Boolean = false
+    ): PendingIntent {
+        val notificationIntent = Intent(context, ToDoBroadcastReceiver::class.java)
         notificationIntent.putExtra(NOTIFICATION_TITLE, title)
-        notificationIntent.putExtra(NOTIFICATION_TEXT, text)
+        notificationIntent.putExtra(NOTIFICATION_TEXT, text as java.io.Serializable)
         notificationIntent.putExtra(NOTIFICATION_TONE_URI, notificationUri.toString())
         notificationIntent.putExtra(NOTIFICATION_VIBRATE, isVibrate)
-        notificationIntent.putExtra(NOTIFICATION_CATEGORY, category)
+        notificationIntent.putExtra(NOTIFICATION_CATEGORY, category as java.io.Serializable)
         notificationIntent.putExtra(NOTIFICATION_DND_MINUTES, doNotDisturbMinutes)
-        return if (!isOneShot)
-            PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        else
-            PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT)
+        return when {
+            !isOneShot -> {
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+                PendingIntent.getBroadcast(
+                    context,
+                    if (isSnooze) System.currentTimeMillis().toInt() else -1,
+                    notificationIntent,
+                    flags
+                )
+            }
+            else -> {
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_ONE_SHOT
+                }
+                PendingIntent.getBroadcast(
+                    context,
+                    -2,
+                    notificationIntent,
+                    flags
+                )
+            }
+        }
     }
 
     /**
      * Schedule A reminder to fire at a later time
      */
-    fun scheduleReminder(context: Context, title: String, text: String, category: String?, timeInMilliseconds: Long,
-                         notificationUri: Uri, isVibrate: Boolean, doNotDisturbMinutes: Int,
-                         calculateDelayFromMidnight: Boolean = true, isOneShot: Boolean = false, useReliableAlarms: Boolean = false) {
+    fun scheduleReminder(
+        context: Context,
+        title: String,
+        texts: Map<Int, String>,
+        categories: Map<Int, String>,
+        timeInMilliseconds: Long,
+        notificationUri: Uri,
+        isVibrate: Boolean,
+        doNotDisturbMinutes: Int,
+        calculateDelayFromMidnight: Boolean = true,
+        isOneShot: Boolean = false,
+        useReliableAlarms: Boolean = false,
+        isSnooze: Boolean = false
+    ) {
 
         val pendingIntent = createNotificationPendingIntent(
-                context, title, text, category, notificationUri, isVibrate, doNotDisturbMinutes, isOneShot
+            context,
+            title,
+            texts,
+            categories,
+            notificationUri,
+            isVibrate,
+            doNotDisturbMinutes,
+            isOneShot,
+            isSnooze
         )
 
         val delay = if (calculateDelayFromMidnight)
@@ -45,15 +99,17 @@ class ReminderManager private constructor() {
         else
             timeInMilliseconds
 
+        if (delay - System.currentTimeMillis() < 0) //In the past
+            return
+
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarm = AlarmClockInfo(delay, null)
         if (useReliableAlarms)
             alarmManager.setAlarmClock(alarm, pendingIntent)
         else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(RTC_WAKEUP, delay, pendingIntent )
-            }
-            else
+                alarmManager.setExactAndAllowWhileIdle(RTC_WAKEUP, delay, pendingIntent)
+            } else
                 alarmManager.setExact(RTC_WAKEUP, delay, pendingIntent)
         }
     }
@@ -74,12 +130,18 @@ class ReminderManager private constructor() {
     }
 
     companion object {
-        val NOTIFICATION_TITLE = "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
-        val NOTIFICATION_TEXT = "com.thesunnahrevival.sunnahassistant.utilities.notificationText"
-        val NOTIFICATION_TONE_URI = "com.thesunnahrevival.sunnahassistant.utilities.notificationToneUri"
-        val NOTIFICATION_VIBRATE = "com.thesunnahrevival.sunnahassistant.utilities.notificationVibrate"
-        val NOTIFICATION_CATEGORY = "com.thesunnahrevival.sunnahassistant.utilities.notificationCategory"
-        val NOTIFICATION_DND_MINUTES = "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
+        const val NOTIFICATION_TITLE =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
+        const val NOTIFICATION_TEXT =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationText"
+        const val NOTIFICATION_TONE_URI =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationToneUri"
+        const val NOTIFICATION_VIBRATE =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationVibrate"
+        const val NOTIFICATION_CATEGORY =
+            "com.thesunnahrevival.sunnahassistant.utilities.notificationCategory"
+        const val NOTIFICATION_DND_MINUTES =
+            "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
 
         @Volatile
         private var mRemManagerInstance: ReminderManager? = null
@@ -88,9 +150,9 @@ class ReminderManager private constructor() {
          * Method for getting the instance of @ReminderManager
          */
         fun getInstance(): ReminderManager =
-                mRemManagerInstance ?: synchronized(this) {
-                    mRemManagerInstance
-                            ?: ReminderManager().also { mRemManagerInstance = it }
-                }
+            mRemManagerInstance ?: synchronized(this) {
+                mRemManagerInstance
+                    ?: ReminderManager().also { mRemManagerInstance = it }
+            }
     }
 }

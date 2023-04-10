@@ -10,7 +10,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.thesunnahrevival.sunnahassistant.R
-import kotlinx.android.synthetic.main.sunnah_assistant_configure_widget.*
+import kotlinx.android.synthetic.main.activity_sunnah_assistant_configure_widget.*
 
 abstract class SunnahAssistantConfigureWidgetActivity : AppCompatActivity(), View.OnClickListener,
     PopupMenu.OnMenuItemClickListener {
@@ -24,7 +24,7 @@ abstract class SunnahAssistantConfigureWidgetActivity : AppCompatActivity(), Vie
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED)
 
-        setContentView(R.layout.sunnah_assistant_configure_widget)
+        setContentView(R.layout.activity_sunnah_assistant_configure_widget)
         setSupportActionBar(findViewById(R.id.toolbar))
         add_button.setOnClickListener(this)
         theme_settings.setOnClickListener(this)

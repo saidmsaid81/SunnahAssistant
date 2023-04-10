@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
   <data>
     <import type="android.view.View" />
     <variable
         name="settings"
-        type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings" />
+        type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings"
+        />
 
   </data>
 
@@ -14,7 +16,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:padding="@dimen/default_dimen"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      >
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +32,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/default_dimen"
         android:button="@null"
-        android:checked="@{settings.shareAnonymousUsageData}" />
+        android:checked="@{settings.shareAnonymousUsageData}"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,8 +54,8 @@
         android:textAllCaps="false"
         app:backgroundTint="@color/fabColor"
         android:textColor="@android:color/white"
-        android:text="@string/read_privacy_policy" />
-
+        android:text="@string/read_privacy_policy"
+        />
 
 
   </LinearLayout>

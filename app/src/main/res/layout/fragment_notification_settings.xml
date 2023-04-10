@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+    <import type="android.view.View" />
+    <import type="android.os.Build" />
+    <import type="android.os.Build.VERSION" />
+    <import type="android.os.Build.VERSION_CODES" />
+    <variable
+        name="settings"
+        type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings"
+        />
+    <variable
+        name="notificationSettings"
+        type="com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings"
+        />
+
+  </data>
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="@dimen/default_dimen"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/notification_settings"
+          android:textColor="@color/colorAccent"
+          />
+
+      <LinearLayout
+          android:id="@+id/notification_tone_settings"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:background="?android:attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/separatorColor"
+            android:text="@string/notification_tone"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{notificationSettings.notificationTone}"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/notification_vibration_settings"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:background="?android:attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/separatorColor"
+            android:text="@string/vibrate"
+            />
+
+        <TextView
+            android:id="@+id/vibration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{notificationSettings.shouldVibrate ? @string/on : @string/off}"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/notification_priority_settings"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:background="?android:attr/selectableItemBackground"
+          android:clickable="true"
+          android:focusable="true"
+          android:visibility="@{Build.VERSION.SDK_INT > Build.VERSION_CODES.N ? View.VISIBLE : View.GONE  }"
+          android:orientation="vertical"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/separatorColor"
+            android:text="@string/importance"
+            />
+
+        <TextView
+            android:id="@+id/importance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{notificationSettings.notificationImportance}"
+            />
+
+      </LinearLayout>
+
+      <com.google.android.material.switchmaterial.SwitchMaterial
+          android:id="@+id/use_reliable_alarms"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:button="@null"
+          android:text="@string/use_reliable_alarms_for_notifications"
+          android:checked="@{settings.useReliableAlarms}"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawableStart="@drawable/ic_clock"
+          android:paddingTop="@dimen/default_dimen"
+          android:textSize="12sp"
+          android:drawablePadding="@dimen/default_dimen"
+          android:text="@string/enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_to_dos_are_scheduled"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/next_to_do_sticky_notification"
+          android:layout_marginTop="24dp"
+          android:textColor="@color/colorAccent"
+          />
+
+      <com.google.android.material.switchmaterial.SwitchMaterial
+          android:id="@+id/next_to_do_sticky_settings"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/default_dimen"
+          android:text="@string/next_to_do_notification"
+          android:button="@null"
+          android:checked="@{settings.showNextToDoNotification}"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawableStart="@drawable/ic_info"
+          android:paddingTop="@dimen/default_dimen"
+          android:textSize="12sp"
+          android:drawablePadding="@dimen/default_dimen"
+          android:text="@string/next_reminder_disclaimer"
+          />
+
+
+    </LinearLayout>
+  </ScrollView>
+</layout>

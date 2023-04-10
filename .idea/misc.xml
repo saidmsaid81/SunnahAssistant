@@ -3,11 +3,89 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.1962962962962963" />
+        <entry key="../../Sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.17119565217391305" />
+        <entry key="HorizontalDatePicker/horizontalPicker/src/main/res/layout/horizontal_picker.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/calendar_event_drawable.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/edit_text_background.xml" value="0.113" />
+        <entry key="app/src/main/res/drawable/ic_save.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/ic_star.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/ic_today.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/selected_date_bg.xml" value="0.106" />
+        <entry key="app/src/main/res/drawable/today_date_bg.xml" value="0.106" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/alt_reminder_card_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/calendar_day_layout.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/calendar_month_footer_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/calendar_month_header_layout.xml" value="0.1" />
         <entry key="app/src/main/res/layout/display_settings.xml" value="0.13051023950017354" />
         <entry key="app/src/main/res/layout/hijri_date_widget.xml" value="0.1" />
         <entry key="app/src/main/res/layout/hijri_date_widget_configure.xml" value="0.1" />
         <entry key="app/src/main/res/layout/prayer_time_settings.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/reminders_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/send_feedback_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/web_view_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.13055555555555556" />
+        <entry key="common/src/main/res/drawable-night/ic_done.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_facebook.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_filter_list.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_info.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_notifications_off.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_notifications_on.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/ic_web.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable-night/toggle_selector.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/calendar_event_drawable.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/edit_text_background.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_add_reminder.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_additional_details.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_alarm.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_arrow_left.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_arrow_right.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_baseline_arrow_left_24.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_calendar.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_category.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_check.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_check_box.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_clock.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_delete.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_delete_item.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_done.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_facebook.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_filter_list.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_info.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_instagram.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_mark_as_complete.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_name.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_notifications_off.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_notifications_on.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_notifications_on_alt.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_repeat.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_select_day.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_telegram.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_tip.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_today.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_twitter.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/ic_web.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/selected_date_bg.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/shake.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/test.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/today_date_bg.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/toggle_selector.xml" value="0.1215" />
+        <entry key="common/src/main/res/drawable/toggle_selector_alt.xml" value="0.1215" />
+        <entry key="common/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="common/src/main/res/layout/add_category_dialog_layout.xml" value="0.15864978902953586" />
+        <entry key="common/src/main/res/layout/add_location_layout.xml" value="0.17119565217391305" />
+        <entry key="common/src/main/res/layout/all_done_view.xml" value="0.25" />
+        <entry key="common/src/main/res/layout/calendar_day_layout.xml" value="0.1606837606837607" />
+        <entry key="common/src/main/res/layout/display_settings.xml" value="0.15864978902953586" />
+        <entry key="common/src/main/res/layout/reminder_card_view.xml" value="0.25" />
+        <entry key="common/src/main/res/layout/reminder_details.xml" value="0.22" />
+        <entry key="common/src/main/res/layout/reminder_details_bottom_sheet.xml" value="0.1" />
+        <entry key="common/src/main/res/layout/reminder_details_fragment.xml" value="0.40040241448692154" />
+        <entry key="common/src/main/res/layout/select_days_dialog_fragment.xml" value="0.15864978902953586" />
+        <entry key="common/src/main/res/layout/test.xml" value="0.1" />
+        <entry key="common/src/main/res/layout/today_fragment.xml" value="0.1" />
       </map>
     </option>
   </component>
