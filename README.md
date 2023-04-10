@@ -10,15 +10,22 @@ Link to app (Google Play Store)* :- https://play.google.com/store/apps/details?i
 
 <h4>Overview of the App</h4>
 
-- Set Reminders from various categories Sunnah, Prayer Times, other reminders such as meetings.
+Sunnah Assistant is your To-Do List manager that helps you plan your To-Dos with an option to get Prayer Time Alerts and Sunnah Reminders such as reading Suratul Kahf on Friday
 
-- Optionally get prayer time alerts based on your preferred settings
+- Plan your daily, weekly and monthly tasks or even a one time task
 
-- Widgets to display reminders and date.
+- Home screen widgets to display To-Dos and Hijri Date on the home screen
 
-- View Hijri (Islamic) date
+- Optionally get Prayer Time Alerts based on your preferred settings even when offline
 
-- Two themes are avialble (Light and Dark Theme).
+- View Hijri (Islamic) date even when offline
+
+- Share your To-Dos via your app of choice.
+
+- Beautiful User Interface
+
+- Select between two themes Light and Dark theme
+
 
 <h4>Contributing</h4>
 
@@ -42,10 +49,19 @@ Thanks 😀
 
 <h4>Screenshots</h4>
 
-![Screenshots](https://lh3.googleusercontent.com/iUbXNPec2EsaAvel_T4Wc489AmG-xZEH1GfZAQw6yHWSDcQFvRPXwve8KbFhuqz0sw=w720-h310)
-![Screenshots](https://lh3.googleusercontent.com/Rhd38Qz77qYXrcoGcLZt_5mLdTXkMS5wAaz5J2bL9wMmicL62jLftDXOpDAg3k_tjSxx=w720-h310)
-![Screenshots](https://lh3.googleusercontent.com/wsukzRjBsUTw5za5j_R7ZT5AEC79yC4_Yyhu8egAF_Cux8x-_Kz6cirBvVGCtOn7Q-Af=w720-h310)
-![Screenshots](https://lh3.googleusercontent.com/MVjChOHu7fNS5jUaZnLDcMaiHHXsx-02_Vbx629qwGrQdc2rofI_lTpvEzuSCr71qw=w720-h310)
+![Screenshots](https://play-lh.googleusercontent.com/VuGPUYURUGpy83tvwxUGL43gMSOXV4ho1EBW3xTBLSiW8GArZx-_PcBv5NSzhxJh0uU=w720-h310)
+![Screenshots](https://play-lh.googleusercontent.com/4Im0aP5PV4UY9kxpxQcMPSzJURvKnlC_tYQiYGRafjCpc30FfhSoa7t_GL7f075vTwLx=w720-h310) 
+![Screenshots](https://play-lh.googleusercontent.com/Tg9vEOeuYLuQaBae3a9rLEFul_QEX1NoY_mNNciGJaB6m7mVFQpdB9xK18WE0w3wU-g=w720-h310) 
+![Screenshots](https://play-lh.googleusercontent.com/_hQSafN7MBkbu66wlqP6sJsoqMM3g3B0IGDG3ODw3UpFnAoR_K5BjMr_Pn9RaDgGf8E=w720-h310)
+
+![Screenshots](https://tioccitt.sirv.com/photo1681134640.jpeg?w=720&h=310) 
+![Screenshots](https://play-lh.googleusercontent.com/PBMuxL6LSxLPAj1FDsaib6j0DL80rYmB0C6FjI0OJHwMkfkBdGTB4cFwzneYn_43J7w=w720-h310) 
+![Screenshots](https://play-lh.googleusercontent.com/9xmbrxLZPhyyFQKZH08UWaUFXBG7UR26BVp0NIZk7fhUvlJrn-jrqhvPnJi3hmOlWoM=w720-h310) 
+![Screenshots](https://play-lh.googleusercontent.com/tNVRVcJAkiBnyymnqPNVqO9ftvM6V-dzv5pg4fRsd_tjIkvLtQ6Ng2xw7r4XPTiJe34J=w720-h310) 
+
+![Screenshots](https://play-lh.googleusercontent.com/PuLlrz6mJFiP679bUqbySP_KcoOuLOcivTezYktsErY60Vz4p2tY2gsXrY6ebwkSLCzi=w720-h310) 
+
+
 
     Copyright (C) 2019  Said Mohamed
 
