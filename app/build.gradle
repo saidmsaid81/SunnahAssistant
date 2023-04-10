@@ -132,10 +132,6 @@ dependencies {
     //In app updates
     implementation("com.google.android.play:app-update:2.0.1")
 
-    //Admob
-    implementation("com.google.android.gms:play-services-ads:21.4.0")
-
-
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
