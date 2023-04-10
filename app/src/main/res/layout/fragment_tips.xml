@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/default_dimen"
+    android:orientation="vertical"
+    >
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/to_do_templates"
+      android:paddingBottom="@dimen/default_dimen"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      tools:listitem="@layout/tip_card_view"
+      />
+
+</LinearLayout>
+
+    <!--
+    TODO Credit Fasting icon: <a href="https://www.flaticon.com/free-icons/ramadan" title="ramadan icons">Ramadan icons created by BZZRINCANTATION - Flaticon</a>
+    DUa icon
+    <div> Icons made by <a href="https://www.flaticon.com/authors/shmai" title="shmai"> shmai </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div>
+    -->

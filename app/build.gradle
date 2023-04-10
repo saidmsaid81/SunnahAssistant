@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+apply plugin: 'com.google.gms.google-services'
 
 
 android {
@@ -11,24 +12,14 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 9
-        versionName "1.0.2"
+        versionCode 15
+        versionName "1.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
-        }
-
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            applicationIdSuffix ".debug"
         }
 
     }
@@ -40,19 +31,43 @@ android {
         //for view binding:
         viewBinding = true
     }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     compileOptions {
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
 
-    bundle {
-        language {
-            //Downloads all locales supported
-            //Temporary solution will be optimized in the next update to utilize Play Core On demand delivery
-            // thereby reducing the app size
-            enableSplit = false
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+        }
+
+    }
+    flavorDimensions "build"
+    productFlavors {
+        dev {
+            // The following configuration limits the "dev" flavor to using
+            // English string resources and xxhdpi screen-density resources.
+            resConfigs 'en', 'xxhdpi'
+
+        }
+
+        production {
+
         }
     }
+    namespace 'com.thesunnahrevival.sunnahassistant'
 }
 
 dependencies {
@@ -62,13 +77,10 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "com.google.android.material:material:$material_version"
-    implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
-    implementation "androidx.legacy:legacy-support-v4:$legacy_support_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.nex3z:toggle-button-group:1.2.3'
-
-    implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version:'1.1.9'
+    
+    //Adhan and Hijri Calendar
+    implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version: '1.1.9'
     implementation 'com.batoulapps.adhan:adhan:1.2.1'
 
     //Coroutines
@@ -79,9 +91,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
+    //Paging
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
     //Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-paging:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
     //Retrofit
@@ -92,17 +108,29 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    //Play Core
-    implementation 'com.google.android.play:core:1.10.0'
-    implementation 'com.google.android.play:core-ktx:1.8.1'
+    //Material Banner
+    implementation "com.sergivonavi:materialbanner:1.2.0"
+
+    //CalendarView
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation 'com.github.kizitonwose:CalendarView:1.0.4'
+
+    //In-app browser
+    implementation "androidx.browser:browser:1.4.0"
+
+    //OSS Licenses
+    implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:27.0.0')
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging'
 
-    //Material Banner
-    implementation "com.sergivonavi:materialbanner:1.2.0"
+    //In-app Review
+    implementation 'com.google.android.play:review:2.0.1'
+
+    //In app updates
+    implementation("com.google.android.play:app-update:2.0.1")
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"
@@ -112,5 +140,3 @@ dependencies {
 repositories {
     mavenCentral()
 }
-
-apply plugin: 'com.google.gms.google-services'

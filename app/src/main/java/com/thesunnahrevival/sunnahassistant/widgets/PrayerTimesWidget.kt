@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.TaskStackBuilder
 import com.thesunnahrevival.sunnahassistant.R
@@ -23,11 +24,11 @@ class PrayerTimesWidget : AppWidgetProvider() {
 
 internal fun updatePrayerAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, backgroundColor: Int, textColor :Int) {
 
-    val intent = Intent(context, PrayerRemindersRemoteViewsService::class.java)
+    val intent = Intent(context, PrayerToDosRemoteViewsService::class.java)
     intent.putExtra(TEXT_COLOR, textColor)
 
     // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.today_reminders_widget)
+    val views = RemoteViews(context.packageName, R.layout.widget_today_to_dos)
     views.setRemoteAdapter(R.id.widgetListView, intent)
     views.setInt(R.id.widget, "setBackgroundColor", backgroundColor)
     views.setInt(R.id.widgetTitleLabel, "setTextColor", textColor)
@@ -35,14 +36,26 @@ internal fun updatePrayerAppWidget(context: Context, appWidgetManager: AppWidget
 
 
     val titleIntent = Intent(context, MainActivity::class.java)
-    val titlePendingIntent = PendingIntent.getActivity(context, 0, titleIntent, 0)
+
+    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+
+    val titlePendingIntent = PendingIntent.getActivity(context, 0, titleIntent, flag)
     views.setOnClickPendingIntent(R.id.widgetTitleLabel, titlePendingIntent)
 
     // template to handle the click listener for each item
     val clickIntentTemplate = Intent(context, MainActivity::class.java)
+    val updateCurrentFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    } else {
+        PendingIntent.FLAG_UPDATE_CURRENT
+    }
     val clickPendingIntentTemplate: PendingIntent? = TaskStackBuilder.create(context)
-            .addNextIntentWithParentStack(clickIntentTemplate)
-            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        .addNextIntentWithParentStack(clickIntentTemplate)
+        .getPendingIntent(0, updateCurrentFlag)
     views.setPendingIntentTemplate(R.id.widgetListView, clickPendingIntentTemplate)
 
 

@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    >
+
+    <TextView
+        android:id="@+id/hijri_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:contentDescription=""
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="22sp"
+        />
+
+    <TextView
+        android:id="@+id/next_to_do_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/hijri_date_text"
+        android:layout_margin="8dp"
+        android:contentDescription=""
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        />
+
+</RelativeLayout>

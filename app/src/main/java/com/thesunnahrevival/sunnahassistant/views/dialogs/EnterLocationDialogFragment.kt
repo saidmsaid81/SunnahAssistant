@@ -7,11 +7,10 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
-import kotlinx.android.synthetic.main.add_location_layout.view.*
+import kotlinx.android.synthetic.main.fragment_add_location.view.*
 
 
 class EnterLocationDialogFragment :DialogFragment() {
@@ -19,11 +18,11 @@ class EnterLocationDialogFragment :DialogFragment() {
     private var mViewModel: SunnahAssistantViewModel? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        mViewModel = activity?.let { ViewModelProviders.of(it).get(SunnahAssistantViewModel::class.java) }
+        mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
 
         val builder = context?.let { AlertDialog.Builder(it) }
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.add_location_layout, null)
+        val view = inflater.inflate(R.layout.fragment_add_location, null)
         val settings = mViewModel?.settingsValue
         if (settings != null)
             view.location.setText(settings.formattedAddress)
@@ -52,12 +51,12 @@ class EnterLocationDialogFragment :DialogFragment() {
             if (viewModel?.isDeviceOffline == false) {
                 messagesTextView.text = getString(R.string.updating)
                 viewModel.getGeocodingData(location)
-                viewModel.messages.observe(this, Observer { message: String ->
+                viewModel.messages.observe(this) { message: String ->
                     if (message.matches("Successful".toRegex()))
                         dialog.dismiss()
                     else
                         messagesTextView.text = message
-                })
+                }
             }
             else {
                 messagesTextView.text = getString(R.string.error_updating_location)

@@ -36,34 +36,37 @@
         android:text="@string/quick_setup"
         android:textAllCaps="false"
         app:backgroundTint="@color/fabColor"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_below="@id/quick_setup_button"
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content"/>
+  <ProgressBar
+      android:id="@+id/progress_bar"
+      android:layout_width="wrap_content"
+      android:visibility="gone"
+      android:layout_below="@id/quick_setup_button"
+      android:layout_centerInParent="true"
+      android:layout_height="wrap_content"
+      />
 
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/quick_setup_button"
-        android:text="@string/share_anonymous_usage_data_string"
-        android:layout_centerInParent="true"
-        android:checked="true"
-       />
+  <CheckBox
+      android:id="@+id/checkbox"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/quick_setup_button"
+      android:text="@string/share_anonymous_usage_data_string"
+      android:layout_centerInParent="true"
+      android:checked="true"
+      />
 
-    <TextView
-        android:id="@+id/privacy_policy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_above="@id/read_privacy_policy"
-        android:textAlignment="center"
-        android:text="@string/by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy"
+
+  <TextView
+      android:id="@+id/privacy_policy"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:layout_above="@id/read_privacy_policy"
+      android:textAlignment="center"
+      android:text="@string/by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy"
        />
 
     <com.google.android.material.button.MaterialButton
