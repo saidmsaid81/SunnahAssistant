@@ -8,37 +8,44 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.thesunnahrevival.sunnahassistant.R
-import kotlinx.android.synthetic.main.fragment_web_view.*
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
 
 open class WebViewFragment : Fragment() {
+
+    private var _webViewFragmentBinding: FragmentWebViewBinding? = null
+    private val webViewFragmentBinding get() = _webViewFragmentBinding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        _webViewFragmentBinding = FragmentWebViewBinding.inflate(inflater)
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_web_view, container, false)
+        return webViewFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        webview.webViewClient = object : WebViewClient() {
+        webViewFragmentBinding.webview.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                progress_bar.visibility = View.VISIBLE
-                webview.visibility = View.GONE
+                webViewFragmentBinding.progressBar.visibility = View.VISIBLE
+                webViewFragmentBinding.webview.visibility = View.GONE
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                progress_bar.visibility = View.GONE
-                webview.visibility = View.VISIBLE
+                webViewFragmentBinding.progressBar.visibility = View.GONE
+                webViewFragmentBinding.webview.visibility = View.VISIBLE
             }
         }
-        webview.loadUrl(getLink().toString())
+        webViewFragmentBinding.webview.loadUrl(getLink().toString())
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.web_view_menu, menu)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.share_page -> {
@@ -65,5 +72,10 @@ open class WebViewFragment : Fragment() {
     }
 
     open fun getLink() = arguments?.get("link") ?: "https://thesunnahrevival.com"
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _webViewFragmentBinding = null
+    }
 
 }

@@ -11,13 +11,14 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.views.adapters.DayViewContainer
 import com.thesunnahrevival.sunnahassistant.views.customviews.CalendarView
-import kotlinx.android.synthetic.main.fragment_today.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.YearMonth
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
+import java.util.Locale
 
 
 class CalendarFragment : TodayFragment(), CalendarView.Listeners {
@@ -34,16 +35,16 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val selectedToDoDate = mViewModel.selectedToDoDate
-        calendar_view.setupWithListeners(
+        mBinding.calendarView.setupWithListeners(
             listeners = this,
             startMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
             endMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
             showHijriDate = mViewModel.settingsValue?.includeHijriDateInCalendar ?: true
         )
-        calendar_view.scrollToSpecificDate(selectedToDoDate)
+        mBinding.calendarView.scrollToSpecificDate(selectedToDoDate)
 
         mViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
-            calendar_view.notifyCalendarChanged()
+            mBinding.calendarView.notifyCalendarChanged()
         }
     }
 
@@ -78,8 +79,8 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             day.date.dayOfMonth
         )
 
-        selected_date.visibility = VISIBLE
-        selected_date.text = generateDateText(
+        mBinding.selectedDate.visibility = VISIBLE
+        mBinding.selectedDate.text = generateDateText(
             gregorianCalendar,
             mViewModel.settingsValue?.isDisplayHijriDate ?: true
         )
