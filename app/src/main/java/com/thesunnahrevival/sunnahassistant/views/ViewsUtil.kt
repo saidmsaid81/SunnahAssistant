@@ -9,8 +9,7 @@ import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
-import kotlinx.android.synthetic.main.fragment_today.*
-import java.util.*
+import java.util.Locale
 
 fun showHelpTranslateBanner(todayFragment: TodayFragment) {
     if (!supportedLocales.contains(Locale.getDefault().language)) {
@@ -18,7 +17,7 @@ fun showHelpTranslateBanner(todayFragment: TodayFragment) {
             translateLink(todayFragment)
         }
         showBanner(
-            todayFragment.banner,
+            todayFragment.view?.findViewById(R.id.banner),
             todayFragment.getString(
                 R.string.help_translate_app,
                 Locale.getDefault().displayLanguage
@@ -55,7 +54,7 @@ fun showSendFeedbackBanner(todayFragment: TodayFragment) {
         }
     }
     showBanner(
-        todayFragment.banner,
+        todayFragment.view?.findViewById(R.id.banner),
         todayFragment.getString(R.string.help_improve_app),
         R.drawable.feedback,
         todayFragment.getString(R.string.send_feedback),
@@ -74,7 +73,7 @@ fun showShareAppBanner(todayFragment: TodayFragment) {
         )
     }
     showBanner(
-        todayFragment.banner,
+        todayFragment.view?.findViewById(R.id.banner),
         todayFragment.getString(R.string.help_us_grow),
         R.drawable.social_media,
         todayFragment.getString(R.string.share_app),
@@ -93,7 +92,7 @@ fun shareAppIntent(): Intent {
 }
 
 private fun showBanner(
-    banner: Banner,
+    banner: Banner?,
     message: String,
     iconId: Int,
     rightButtonMessage: String,
@@ -101,6 +100,9 @@ private fun showBanner(
     leftButtonMessage: String? = null,
     leftButtonListener: BannerInterface.OnClickListener? = null
 ) {
+    if (banner == null) {
+        return
+    }
     banner.setMessage(message)
     banner.setIcon(iconId)
     banner.setRightButton(rightButtonMessage, rightButtonListener)

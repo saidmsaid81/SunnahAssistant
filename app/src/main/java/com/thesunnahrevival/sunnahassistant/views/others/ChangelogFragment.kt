@@ -8,22 +8,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentChangelogBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.translateLink
-import kotlinx.android.synthetic.main.fragment_changelog.*
 
 class ChangelogFragment : SunnahAssistantFragment() {
+
+    private var _changelogFragmentBinding: FragmentChangelogBinding? = null
+    private val changelogFragmentBinding get() = _changelogFragmentBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(R.layout.fragment_changelog, container, false)
+        _changelogFragmentBinding = FragmentChangelogBinding.inflate(inflater)
+        val view = changelogFragmentBinding.root
 
 
         mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
@@ -37,18 +41,23 @@ class ChangelogFragment : SunnahAssistantFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        help_translate_app.setOnClickListener {
+        changelogFragmentBinding.helpTranslateApp.setOnClickListener {
             translateLink(this)
         }
-        send_feedback.setOnClickListener {
+        changelogFragmentBinding.sendFeedback.setOnClickListener {
             startActivity(generateEmailIntent())
         }
-        rate_this_app.setOnClickListener {
+        changelogFragmentBinding.rateThisApp.setOnClickListener {
             openPlayStore(requireActivity(), requireActivity().packageName)
         }
-        privacy_policy.setOnClickListener {
+        changelogFragmentBinding.privacyPolicy.setOnClickListener {
             findNavController().navigate(R.id.privacyPolicyFragment)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _changelogFragmentBinding = null
     }
 
 }

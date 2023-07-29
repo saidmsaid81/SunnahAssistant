@@ -7,21 +7,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentBackupRestoreBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EncryptBackupFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterDecryptionPasswordFragment
-import kotlinx.android.synthetic.main.fragment_backup_restore.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 
 private const val WRITE_FILE = 0
@@ -33,6 +38,9 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
 
     private lateinit var mViewModel: SunnahAssistantViewModel
     private var password: String? = null
+    private var _backupRestoreFragmentBinding: FragmentBackupRestoreBinding? = null
+
+    private val backupRestoreFragmentBinding get() = _backupRestoreFragmentBinding!!
 
     private val writeFileActivityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -45,7 +53,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
                     mViewModel.backupPlainData(it.data?.data)
                 updateStatusMessage(backupMessage.second, backupMessage.first)
                 this.password = null
-                options_list.onItemClickListener = this
+                backupRestoreFragmentBinding.optionsList.onItemClickListener = this
             }
         }
 
@@ -67,7 +75,8 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
                         )
                     } else
                         updateStatusMessage(restoreMessage.second, restoreMessage.first)
-                    options_list.onItemClickListener = this@BackupRestoreFragment
+                    backupRestoreFragmentBinding.optionsList.onItemClickListener =
+                        this@BackupRestoreFragment
                 }
             }
         }
@@ -76,8 +85,10 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_backup_restore, container, false)
+    ): View {
+        _backupRestoreFragmentBinding =
+            FragmentBackupRestoreBinding.inflate(inflater, container, false)
+        val view = backupRestoreFragmentBinding.root
         view.findViewById<TextView>(R.id.title).text = getString(R.string.backup_restore_data)
         val listView = view.findViewById<ListView>(R.id.options_list)
         listView.adapter =
@@ -93,7 +104,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        options_list.setOnItemClickListener { _, _, _, _ ->
+        backupRestoreFragmentBinding.optionsList.setOnItemClickListener { _, _, _, _ ->
             Toast.makeText(
                 requireContext(),
                 getString(R.string.operation_ongoing),
@@ -118,7 +129,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
 
     private fun updateStatusMessage(statusMessage: String, status: Boolean?) {
         if (statusMessage.isBlank()) {
-            message.visibility = View.GONE
+            backupRestoreFragmentBinding.message.visibility = View.GONE
             return
         }
         val textColor = if (status == null)
@@ -127,9 +138,14 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
             android.R.color.holo_green_light
         else
             android.R.color.holo_red_light
-        message.text = statusMessage
-        message.setTextColor(ContextCompat.getColor(requireContext(), textColor))
-        message.visibility = View.VISIBLE
+        backupRestoreFragmentBinding.message.text = statusMessage
+        backupRestoreFragmentBinding.message.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                textColor
+            )
+        )
+        backupRestoreFragmentBinding.message.visibility = View.VISIBLE
     }
 
     override fun onRestoreEncryptedDataClick(uri: Uri?, password: String) {
@@ -147,7 +163,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     override fun onBackupDataClick(password: String?) {
         if (password?.isBlank() == true) {
             updateStatusMessage("", null)
-            options_list.onItemClickListener = this
+            backupRestoreFragmentBinding.optionsList.onItemClickListener = this
         } else {
             val timestamp = SimpleDateFormat("ddMMyyyy_HHmmss", Locale.ENGLISH).format(Date())
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -158,5 +174,10 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
             this.password = password
             writeFileActivityResult.launch(intent)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _backupRestoreFragmentBinding = null
     }
 }

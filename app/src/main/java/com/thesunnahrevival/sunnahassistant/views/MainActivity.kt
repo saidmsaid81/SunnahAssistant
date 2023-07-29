@@ -25,6 +25,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
 import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
@@ -36,7 +37,6 @@ import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
 import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,10 +54,12 @@ open class MainActivity : AppCompatActivity() {
     private lateinit var activity: MainActivity
     lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var mViewModel: SunnahAssistantViewModel
+    private lateinit var mainActivityBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainActivityBinding.root)
         mViewModel = ViewModelProvider(this)[SunnahAssistantViewModel::class.java]
         createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -80,27 +82,32 @@ open class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.todayFragment -> bottom_navigation_view.visibility = View.VISIBLE
+                R.id.todayFragment -> mainActivityBinding.bottomNavigationView.visibility =
+                    View.VISIBLE
+
                 R.id.calendarFragment, R.id.tipsFragment -> {
-                    bottom_navigation_view.visibility = View.VISIBLE
+                    mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
                 R.id.welcomeFragment, R.id.resolveMalformedToDosFragment -> {
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    bottom_navigation_view.visibility = View.GONE
+                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
                 }
+
                 R.id.changelogFragment, R.id.toDoDetailsFragment -> {
-                    bottom_navigation_view.visibility = View.GONE
+                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
                 }
-                else -> bottom_navigation_view.visibility = View.GONE
+
+                else -> mainActivityBinding.bottomNavigationView.visibility = View.GONE
             }
         }
 
-        bottom_navigation_view.setOnNavigationItemSelectedListener {
+        mainActivityBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.today -> findNavController(R.id.myNavHostFragment).navigate(R.id.todayFragment)
                 R.id.calendar ->
                     findNavController(R.id.myNavHostFragment).navigate(R.id.calendarFragment)
+
                 R.id.tips ->
                     findNavController(R.id.myNavHostFragment).navigate(R.id.tipsFragment)
             }
@@ -284,6 +291,7 @@ open class MainActivity : AppCompatActivity() {
         return true
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (getActiveFragment() is WelcomeFragment || getActiveFragment() is ResolveMalformedToDosFragment)
             finish()
@@ -325,7 +333,7 @@ open class MainActivity : AppCompatActivity() {
         listener: View.OnClickListener
     ) {
         Snackbar.make(
-            activity.coordinator_layout,
+            mainActivityBinding.coordinatorLayout,
             message,
             duration
         ).apply {

@@ -36,11 +36,11 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.TreeSet
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
-    private lateinit var mBinding: FragmentTodayBinding
+    lateinit var mBinding: FragmentTodayBinding
     private lateinit var concatAdapter: ConcatAdapter
     private var fabAnimator: ObjectAnimator? = null
 

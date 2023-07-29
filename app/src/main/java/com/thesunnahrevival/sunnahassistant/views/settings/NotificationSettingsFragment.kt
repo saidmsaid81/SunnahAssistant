@@ -113,6 +113,7 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             mViewModel.settingsValue?.notificationToneUri =
