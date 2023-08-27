@@ -5,10 +5,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface GeocodingInterface {
-    @GET("maps/api/geocode/json")
+    @GET("geocoding-data")
     suspend fun getGeocodingData(
             @Query("address") address: String,
-            @Query("key") apiKey: String,
             @Query("language") language: String
     ): GeocodingData?
 }

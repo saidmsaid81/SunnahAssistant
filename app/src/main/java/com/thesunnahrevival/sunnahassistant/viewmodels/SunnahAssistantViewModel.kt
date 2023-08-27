@@ -249,11 +249,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                     message = "Successful"
                 }
                 data != null -> {
-                    if (data.status == "ZERO_RESULTS")
-                        message = unavailableLocationString
+                    message = if (data.status == "ZERO_RESULTS")
+                        unavailableLocationString
                     else {
-                        message = serverError
-                        mRepository.reportGeocodingServerError(data.status)
+                        serverError
                     }
 
                 }
