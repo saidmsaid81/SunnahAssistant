@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
-import com.thesunnahrevival.sunnahassistant.ApiKey
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
+import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
-import com.thesunnahrevival.sunnahassistant.data.remote.SunnahAssistantApiInterface
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,28 +20,24 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
 
 class SunnahAssistantRepository private constructor(private val applicationContext: Context) {
     private val mToDoDao: ToDoDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
 
     private val mGeocodingRestApi: GeocodingInterface
-    private val mSunnahAssistantApi: SunnahAssistantApiInterface
     private val prayerNames: Array<String>
     private val prayerCategory: String
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://maps.googleapis.com/")
+            .baseUrl("https://sunnah-assistant-backend.up.railway.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         mGeocodingRestApi = retrofit.create(GeocodingInterface::class.java)
-
-        mSunnahAssistantApi = Retrofit.Builder()
-            .baseUrl("https://us-central1-sunnah-assistant.cloudfunctions.net/")
-            .build()
-            .create(SunnahAssistantApiInterface::class.java)
 
         prayerNames = applicationContext.resources.getStringArray(R.array.prayer_names)
         prayerCategory = applicationContext.resources.getStringArray(R.array.categories)[2]
@@ -340,11 +338,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         mToDoDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextToDo)
 
     suspend fun getGeocodingData(address: String, locale: String): GeocodingData? {
-        return mGeocodingRestApi.getGeocodingData(address, ApiKey.API_KEY, locale)
-    }
-
-    suspend fun reportGeocodingServerError(status: String) {
-        mSunnahAssistantApi.reportGeocodingError(status)
+        return mGeocodingRestApi.getGeocodingData(address, locale)
     }
 
     fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).closeDB()
