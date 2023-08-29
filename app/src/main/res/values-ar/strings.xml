@@ -334,6 +334,8 @@
   <string name="snooze">غفوة</string>
   <string name="share">شارك</string>
   <string name="reminder">تذكير</string>
+  <string name="too_many_requests">طلبات كثيرة جدا. يرجى المحاولة مرة أخرى بعد %s. إذا كنت تعتقد أن هذا خطأ، فاتصل بنا على contact@thesunnahrevival.com</string>
+
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>

@@ -329,6 +329,7 @@
   <string name="snooze">Snooze</string>
   <string name="share">Share</string>
   <string name="reminder">Reminder</string>
+  <string name="too_many_requests">Too many requests. Please try again after %s. If you think this is a mistake contact us at contact@thesunnahrevival.com</string>
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>

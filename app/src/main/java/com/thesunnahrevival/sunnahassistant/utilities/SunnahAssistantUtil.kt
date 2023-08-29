@@ -23,6 +23,8 @@ import java.util.*
 
 val supportedLocales = arrayOf("en", "ar")
 
+val retryAfterFlagKey = "Retry-After"
+
 fun generateEmailIntent(): Intent {
     val intent = Intent(Intent.ACTION_SENDTO)
     intent.data = Uri.parse("mailto:")

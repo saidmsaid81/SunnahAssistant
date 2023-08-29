@@ -35,7 +35,9 @@ import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.Encryption
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
+import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
+import com.thesunnahrevival.sunnahassistant.utilities.retryAfterFlagKey
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +51,7 @@ import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 import javax.crypto.BadPaddingException
+import kotlin.math.roundToLong
 
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
@@ -238,26 +241,60 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             getContext().getString(R.string.server_error_occured)
         val noNetworkString =
             getContext().getString(R.string.error_updating_location)
+        val tooManyRequestString = getContext().getString(R.string.too_many_requests)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val data = mRepository.getGeocodingData(address, settingsValue?.language ?: "en")
             val message: String
+            val clientRetryFromTimeMilliseconds = mRepository.getLongFlag(retryAfterFlagKey) ?: 0
 
-            when {
-                data != null && data.results.isNotEmpty() -> {
-                    updateLocationDetails(data)
-                    message = "Successful"
-                }
-                data != null -> {
-                    message = if (data.status == "ZERO_RESULTS")
-                        unavailableLocationString
-                    else {
-                        serverError
+            if (System.currentTimeMillis() < clientRetryFromTimeMilliseconds) {
+                message = String.format(
+                    tooManyRequestString,
+                    formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds)
+                )
+            } else {
+                val response =
+                    mRepository.getGeocodingData(address, settingsValue?.language ?: "en")
+                val data = response.body()
+
+                when {
+                    response.code() == 429 -> {
+                        //Too many requests. At the time of writing only 15 requests were allowed per hour.
+                        // Check the backend code here https://github.com/saidmsaid81/Sunnah-Assistant-Backend
+                        val oneHourInMilliseconds = (60 * 60 * 1000).toLong()
+                        var clientRetryFromTimeMilliseconds =
+                            System.currentTimeMillis() + oneHourInMilliseconds
+                        response.headers().get("Retry-After")?.let {
+                            val retryAfterMilliSecondsHeader =
+                                (it.toFloatOrNull()?.times(1000))?.roundToLong()
+                                    ?: oneHourInMilliseconds
+                            clientRetryFromTimeMilliseconds =
+                                System.currentTimeMillis() + retryAfterMilliSecondsHeader
+
+                            mRepository.setFlag(retryAfterFlagKey, clientRetryFromTimeMilliseconds)
+                        }
+                        message = String.format(
+                            tooManyRequestString,
+                            formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds)
+                        )
                     }
 
-                }
-                else -> {
-                    message = noNetworkString
+                    data != null && data.results.isNotEmpty() -> {
+                        updateLocationDetails(data)
+                        message = "Successful"
+                    }
+
+                    data != null -> {
+                        message = if (data.status == "ZERO_RESULTS") {
+                            unavailableLocationString
+                        } else {
+                            serverError
+                        }
+                    }
+
+                    else -> {
+                        message = noNetworkString
+                    }
                 }
             }
 

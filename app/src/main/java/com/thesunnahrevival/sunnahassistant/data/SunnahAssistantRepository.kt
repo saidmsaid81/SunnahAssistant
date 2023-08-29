@@ -1,6 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.data
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
@@ -16,7 +21,10 @@ import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
@@ -31,6 +39,9 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     private val mGeocodingRestApi: GeocodingInterface
     private val prayerNames: Array<String>
     private val prayerCategory: String
+
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "flags")
+
 
     init {
         val retrofit = Retrofit.Builder()
@@ -337,11 +348,25 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     ) =
         mToDoDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextToDo)
 
-    suspend fun getGeocodingData(address: String, locale: String): GeocodingData? {
+    suspend fun getGeocodingData(address: String, locale: String): Response<GeocodingData?> {
         return mGeocodingRestApi.getGeocodingData(address, locale)
     }
 
     fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).closeDB()
+
+    suspend fun setFlag(key: String, value: Long) {
+        val flagKey = longPreferencesKey(key)
+        applicationContext.dataStore.edit { flags ->
+            flags[flagKey] = value
+        }
+    }
+
+    suspend fun getLongFlag(key: String): Long? {
+        val flagKey = longPreferencesKey(key)
+        return applicationContext.dataStore.data
+            .map { flag -> flag[flagKey] }
+            .first()
+    }
 
     companion object {
         @Volatile
