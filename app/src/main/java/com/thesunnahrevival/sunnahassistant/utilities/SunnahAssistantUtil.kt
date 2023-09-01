@@ -28,7 +28,7 @@ val retryAfterFlagKey = "Retry-After"
 fun generateEmailIntent(): Intent {
     val intent = Intent(Intent.ACTION_SENDTO)
     intent.data = Uri.parse("mailto:")
-    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("contact@thesunnahrevival.com"))
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apps@thesunnahrevival.com"))
     intent.putExtra(
         Intent.EXTRA_SUBJECT,
         "Sunnah Assistant App - Version ${BuildConfig.VERSION_NAME}"
