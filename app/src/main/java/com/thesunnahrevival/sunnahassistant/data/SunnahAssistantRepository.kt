@@ -45,7 +45,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
 
     init {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://sunnah-assistant-backend.up.railway.app/")
+            .baseUrl("https://api.thesunnahrevival.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         mGeocodingRestApi = retrofit.create(GeocodingInterface::class.java)
