@@ -102,6 +102,8 @@ dependencies {
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
 
     //Navigation Components
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
+import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
@@ -18,12 +19,14 @@ import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
+import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -44,9 +47,14 @@ class SunnahAssistantRepository private constructor(private val applicationConte
 
 
     init {
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
+            .build()
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.thesunnahrevival.com/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
             .build()
         mGeocodingRestApi = retrofit.create(GeocodingInterface::class.java)
 

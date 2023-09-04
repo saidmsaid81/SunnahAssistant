@@ -329,7 +329,10 @@
   <string name="snooze">Snooze</string>
   <string name="share">Share</string>
   <string name="reminder">Reminder</string>
-  <string name="too_many_requests">Too many requests. Please try again after %s. If you think this is a mistake please contact us at apps@thesunnahrevival.com</string>
+  <string name="too_many_requests">Too many requests. Please try again after %s. If you think this is a mistake please contact us at %s</string>
+  <string name="an_error_occurred">An error occurred. Please try again. If this persists please contact us at %s</string>
+  <string name="update_app">Please update app to the latest version</string>
+  <string name="location_updated_successfully">Location updated successfully</string>
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>

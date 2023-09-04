@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -56,10 +57,16 @@ class EnterLocationDialogFragment :DialogFragment() {
                 messagesTextView.text = getString(R.string.updating)
                 viewModel.getGeocodingData(location)
                 viewModel.messages.observe(this) { message: String ->
-                    if (message.matches("Successful".toRegex()))
+                    if (message.matches("Successful".toRegex())) {
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.location_updated_successfully,
+                            Toast.LENGTH_LONG
+                        ).show()
                         dialog.dismiss()
-                    else
+                    } else {
                         messagesTextView.text = message
+                    }
                 }
             }
             else {

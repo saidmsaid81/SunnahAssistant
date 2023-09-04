@@ -22,13 +22,15 @@ import java.time.LocalDate
 import java.util.*
 
 val supportedLocales = arrayOf("en", "ar")
+const val retryAfterFlagKey = "Retry-After"
+const val supportEmail = "apps@thesunnahrevival.com"
+const val expectedUserAgent = "SunnahAssistant-Android-App"
 
-val retryAfterFlagKey = "Retry-After"
 
 fun generateEmailIntent(): Intent {
     val intent = Intent(Intent.ACTION_SENDTO)
     intent.data = Uri.parse("mailto:")
-    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("apps@thesunnahrevival.com"))
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(supportEmail))
     intent.putExtra(
         Intent.EXTRA_SUBJECT,
         "Sunnah Assistant App - Version ${BuildConfig.VERSION_NAME}"
