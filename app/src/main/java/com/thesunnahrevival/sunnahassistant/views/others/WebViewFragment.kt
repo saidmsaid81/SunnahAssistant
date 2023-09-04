@@ -2,13 +2,19 @@ package com.thesunnahrevival.sunnahassistant.views.others
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.MailTo
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 
 open class WebViewFragment : Fragment() {
 
@@ -35,6 +41,29 @@ open class WebViewFragment : Fragment() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 webViewFragmentBinding.progressBar.visibility = View.GONE
                 webViewFragmentBinding.webview.visibility = View.VISIBLE
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                val url = request?.url.toString() ?: ""
+                if (url.startsWith("mailto:")) {
+                    val mailTo = MailTo.parse(url)
+                    val intent = Intent(Intent.ACTION_SENDTO)
+                    intent.data = Uri.parse("mailto:")
+                    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(mailTo.to))
+                    view?.context?.startActivity(intent)
+                    return true
+                } else {
+                    InAppBrowser(requireContext(), lifecycleScope).launchInAppBrowser(
+                        url,
+                        findNavController(),
+                        false
+                    )
+                    return true
+                }
+                return false
             }
         }
         webViewFragmentBinding.webview.loadUrl(getLink().toString())

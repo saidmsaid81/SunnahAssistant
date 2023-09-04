@@ -38,6 +38,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import com.thesunnahrevival.sunnahassistant.utilities.retryAfterFlagKey
+import com.thesunnahrevival.sunnahassistant.utilities.supportEmail
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -242,6 +243,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val noNetworkString =
             getContext().getString(R.string.error_updating_location)
         val tooManyRequestString = getContext().getString(R.string.too_many_requests)
+        val anErrorOccurred = getContext().getString(R.string.an_error_occurred, supportEmail)
+        val pleaseUpdateApp = getContext().getString(R.string.update_app)
 
         viewModelScope.launch(Dispatchers.IO) {
             val message: String
@@ -258,6 +261,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 val data = response.body()
 
                 when {
+                    listOf(401, 404, 500).contains(response.code()) -> message = anErrorOccurred
                     response.code() == 429 -> {
                         //Too many requests. At the time of writing only 15 requests were allowed per hour.
                         // Check the backend code here https://github.com/saidmsaid81/Sunnah-Assistant-Backend
@@ -275,15 +279,16 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                         }
                         message = String.format(
                             tooManyRequestString,
-                            formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds)
+                            formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds),
+                            supportEmail
                         )
                     }
 
+                    response.code() == 426 -> message = pleaseUpdateApp
                     data != null && data.results.isNotEmpty() -> {
                         updateLocationDetails(data)
                         message = "Successful"
                     }
-
                     data != null -> {
                         message = if (data.status == "ZERO_RESULTS") {
                             unavailableLocationString
