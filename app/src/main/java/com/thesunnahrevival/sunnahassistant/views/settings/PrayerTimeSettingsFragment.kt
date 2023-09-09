@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -11,18 +12,20 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
+import com.thesunnahrevival.sunnahassistant.utilities.requestNotificationPermissionCode
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment.Companion.CURRENT_VALUE
 import java.lang.Integer.parseInt
-import java.util.*
+import java.util.Date
 
 open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener,
     EnterOffsetFragment.EnterOffsetFragmentListener {
@@ -65,9 +68,21 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                 binding.activatePrayerTimeAlerts.isChecked =
                     settingsValue.isAutomaticPrayerAlertsEnabled
                 settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
-                if (isChecked)
+                if (isChecked) {
                     settingsValue.generatePrayerToDosAfter =
                         Date(System.currentTimeMillis() - 86400000)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            android.Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_DENIED
+                    ) {
+                        mViewModel.incrementNotificationPermissionRequestsCount()
+                        requireActivity().requestPermissions(
+                            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                            requestNotificationPermissionCode
+                        )
+                    }
+                }
                 updateSettings()
             }
         }

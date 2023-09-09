@@ -21,7 +21,7 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
     private lateinit var browser: InAppBrowser
     private var templateToDos: Map<Int, Pair<Int, ToDo>>? = null
     private var _tipsFragmentBinding: FragmentTipsBinding? = null
-    private val tipsFragmentBinding = _tipsFragmentBinding!!
+    private val tipsFragmentBinding get() = _tipsFragmentBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,

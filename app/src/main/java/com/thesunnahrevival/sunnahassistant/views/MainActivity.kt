@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -27,10 +28,10 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
 import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
+import com.thesunnahrevival.sunnahassistant.utilities.requestNotificationPermissionCode
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
@@ -69,7 +70,7 @@ open class MainActivity : AppCompatActivity() {
         firebaseAnalytics = Firebase.analytics
         getSettings()
 
-        startService(Intent(this, NextToDoService::class.java))
+        mViewModel.startService()
 
         val link = intent.extras?.get("link")
         if (link != null) {
@@ -281,6 +282,25 @@ open class MainActivity : AppCompatActivity() {
         return navHostFragment?.childFragmentManager?.fragments?.get(0)
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            requestNotificationPermissionCode -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    val activeFragment = getActiveFragment()
+                    if (activeFragment is TodayFragment) {
+                        activeFragment.mBinding.banner.dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.myNavHostFragment)
         val homeFragments = listOf(R.id.todayFragment, R.id.calendarFragment)
@@ -322,7 +342,7 @@ open class MainActivity : AppCompatActivity() {
         super.onPause()
 
         //Start service to apply any changes done on scheduling notifications
-        startService(Intent(this, NextToDoService::class.java))
+        mViewModel.startService()
     }
 
     private fun popupSnackbar(

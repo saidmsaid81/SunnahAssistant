@@ -333,6 +333,8 @@
   <string name="an_error_occurred">An error occurred. Please try again. If this persists please contact us at %s</string>
   <string name="update_app">Please update app to the latest version</string>
   <string name="location_updated_successfully">Location updated successfully</string>
+  <string name="fix_notifications">To-Do notifications are disabled. Enable notification permission in system settings to receive notifications</string>
+  <string name="don_t_show_this">Don\'t Show This</string>
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>
