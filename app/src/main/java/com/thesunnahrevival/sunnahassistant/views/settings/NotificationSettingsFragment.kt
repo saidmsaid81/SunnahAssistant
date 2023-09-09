@@ -16,7 +16,6 @@ import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import com.thesunnahrevival.sunnahassistant.utilities.createToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.utilities.deleteToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
@@ -146,7 +145,7 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
             else if (buttonView.id == R.id.use_reliable_alarms)
                 mViewModel.settingsValue?.useReliableAlarms = isChecked
             mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-            requireContext().startService(Intent(requireContext(), NextToDoService::class.java))
+            mViewModel.startService()
         }
     }
 }

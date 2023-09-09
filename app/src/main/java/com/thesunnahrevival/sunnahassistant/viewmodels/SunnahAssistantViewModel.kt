@@ -37,6 +37,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
+import com.thesunnahrevival.sunnahassistant.utilities.notificationPermissionRequestsCountKey
 import com.thesunnahrevival.sunnahassistant.utilities.retryAfterFlagKey
 import com.thesunnahrevival.sunnahassistant.utilities.supportEmail
 import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
@@ -309,6 +310,31 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    suspend fun getNotificationPermissionRequestsCount(): Long {
+        return mRepository.getLongFlag(notificationPermissionRequestsCountKey) ?: 0;
+    }
+
+    fun incrementNotificationPermissionRequestsCount() {
+        viewModelScope.launch(Dispatchers.IO) {
+            var notificationPermissionRequestCount =
+                mRepository.getLongFlag(notificationPermissionRequestsCountKey) ?: 0
+            if (notificationPermissionRequestCount != -1L) {
+                mRepository.setFlag(
+                    notificationPermissionRequestsCountKey,
+                    ++notificationPermissionRequestCount
+                )
+            }
+        }
+    }
+
+    fun hideFixNotificationsBanner() {
+        viewModelScope.launch(Dispatchers.IO) {
+            var notificationPermissionRequestCount =
+                mRepository.getLongFlag(notificationPermissionRequestsCountKey) ?: 0
+            mRepository.setFlag(notificationPermissionRequestsCountKey, -1)
+        }
+    }
+
     fun snoozeNotification(id: Int, timeInMinutes: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val toDo = getToDoById(id) ?: return@launch
@@ -368,7 +394,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    private fun startService() {
+    fun startService() {
         getApplication<Application>().startService(
             Intent(
                 getApplication(),

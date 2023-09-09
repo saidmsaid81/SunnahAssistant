@@ -7,9 +7,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
+import java.util.TimeZone
 
 class ReminderManager private constructor() {
 
@@ -36,7 +39,7 @@ class ReminderManager private constructor() {
         notificationIntent.putExtra(NOTIFICATION_DND_MINUTES, doNotDisturbMinutes)
         return when {
             !isOneShot -> {
-                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val flags = if (VERSION.SDK_INT >= VERSION_CODES.M) {
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 } else {
                     PendingIntent.FLAG_UPDATE_CURRENT
@@ -49,7 +52,7 @@ class ReminderManager private constructor() {
                 )
             }
             else -> {
-                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val flags = if (VERSION.SDK_INT >= VERSION_CODES.M) {
                     PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
                 } else {
                     PendingIntent.FLAG_ONE_SHOT
@@ -104,13 +107,22 @@ class ReminderManager private constructor() {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarm = AlarmClockInfo(delay, null)
-        if (useReliableAlarms)
-            alarmManager.setAlarmClock(alarm, pendingIntent)
-        else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(RTC_WAKEUP, delay, pendingIntent)
-            } else
-                alarmManager.setExact(RTC_WAKEUP, delay, pendingIntent)
+        val canScheduleExactAlarms: Boolean = if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            alarmManager.canScheduleExactAlarms()
+        } else {
+            true
+        }
+
+        if (canScheduleExactAlarms) {
+            if (useReliableAlarms) {
+                alarmManager.setAlarmClock(alarm, pendingIntent)
+            } else {
+                if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(RTC_WAKEUP, delay, pendingIntent)
+                } else {
+                    alarmManager.setExact(RTC_WAKEUP, delay, pendingIntent)
+                }
+            }
         }
     }
 

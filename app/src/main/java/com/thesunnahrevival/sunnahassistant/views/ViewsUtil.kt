@@ -13,11 +13,13 @@ import java.util.Locale
 
 fun showHelpTranslateBanner(todayFragment: TodayFragment) {
     if (!supportedLocales.contains(Locale.getDefault().language)) {
+        val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
         val onClickListener = BannerInterface.OnClickListener {
             translateLink(todayFragment)
+            banner?.dismiss()
         }
         showBanner(
-            todayFragment.view?.findViewById(R.id.banner),
+            banner,
             todayFragment.getString(
                 R.string.help_translate_app,
                 Locale.getDefault().displayLanguage
@@ -44,6 +46,7 @@ fun translateLink(fragment: Fragment) {
 }
 
 fun showSendFeedbackBanner(todayFragment: TodayFragment) {
+    val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
     val onClickListener = BannerInterface.OnClickListener {
         val browserIntent = Intent(
             Intent.ACTION_VIEW,
@@ -52,9 +55,10 @@ fun showSendFeedbackBanner(todayFragment: TodayFragment) {
         if (todayFragment.activity?.packageManager?.let { it1 -> browserIntent.resolveActivity(it1) } != null) {
             todayFragment.startActivity(browserIntent)
         }
+        banner?.dismiss()
     }
     showBanner(
-        todayFragment.view?.findViewById(R.id.banner),
+        banner,
         todayFragment.getString(R.string.help_improve_app),
         R.drawable.feedback,
         todayFragment.getString(R.string.send_feedback),
@@ -63,6 +67,7 @@ fun showSendFeedbackBanner(todayFragment: TodayFragment) {
 }
 
 fun showShareAppBanner(todayFragment: TodayFragment) {
+    val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
     val onClickListener = BannerInterface.OnClickListener {
         val shareAppIntent = shareAppIntent()
         todayFragment.startActivity(
@@ -71,9 +76,10 @@ fun showShareAppBanner(todayFragment: TodayFragment) {
                 todayFragment.getString(R.string.share_app)
             )
         )
+        banner?.dismiss()
     }
     showBanner(
-        todayFragment.view?.findViewById(R.id.banner),
+        banner,
         todayFragment.getString(R.string.help_us_grow),
         R.drawable.social_media,
         todayFragment.getString(R.string.share_app),
@@ -91,7 +97,7 @@ fun shareAppIntent(): Intent {
     return intent
 }
 
-private fun showBanner(
+fun showBanner(
     banner: Banner?,
     message: String,
     iconId: Int,

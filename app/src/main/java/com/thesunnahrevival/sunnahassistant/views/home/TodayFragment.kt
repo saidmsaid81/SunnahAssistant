@@ -2,7 +2,11 @@ package com.thesunnahrevival.sunnahassistant.views.home
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
@@ -32,10 +37,12 @@ import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.sunnahassistant.views.dialogs.DeleteToDoFragment
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
+import com.thesunnahrevival.sunnahassistant.views.showBanner
 import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.TreeSet
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
@@ -59,6 +66,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         setupTheRecyclerView()
         getSettings()
         checkIfThereAreMalformedToDos()
+        checkIfNotificationPermissionIsGranted()
 
         return mBinding.root
     }
@@ -336,6 +344,43 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             mViewModel.getMalformedToDos().collectLatest {
                 if (it.isNotEmpty()) {
                     findNavController().navigate(R.id.resolveMalformedToDosFragment)
+                }
+            }
+        }
+    }
+
+    private fun checkIfNotificationPermissionIsGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                if (mViewModel.getNotificationPermissionRequestsCount() > 0) {
+                    withContext(Dispatchers.Main) {
+                        val openSettingsListener = BannerInterface.OnClickListener {
+                            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                                putExtra(Settings.EXTRA_APP_PACKAGE, requireActivity().packageName)
+                            }
+                            startActivity(intent)
+                            mBinding.banner.dismiss()
+                        }
+
+                        val hideBannerListener = BannerInterface.OnClickListener {
+                            mViewModel.hideFixNotificationsBanner()
+                            mBinding.banner.dismiss()
+                        }
+
+                        showBanner(
+                            mBinding.banner,
+                            getString(R.string.fix_notifications),
+                            R.drawable.ic_notifications_banner,
+                            getString(R.string.go_to_settings),
+                            openSettingsListener,
+                            getString(R.string.don_t_show_this),
+                            hideBannerListener
+                        )
+                    }
                 }
             }
         }

@@ -25,6 +25,8 @@ val supportedLocales = arrayOf("en", "ar")
 const val retryAfterFlagKey = "Retry-After"
 const val supportEmail = "apps@thesunnahrevival.com"
 const val expectedUserAgent = "SunnahAssistant-Android-App"
+const val requestNotificationPermissionCode = 100
+const val notificationPermissionRequestsCountKey = "notification-permission-requests-count"
 
 
 fun generateEmailIntent(): Intent {
