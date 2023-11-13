@@ -35,6 +35,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "flags")
+
 class SunnahAssistantRepository private constructor(private val applicationContext: Context) {
     private val mToDoDao: ToDoDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
@@ -42,9 +44,6 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     private val mGeocodingRestApi: GeocodingInterface
     private val prayerNames: Array<String>
     private val prayerCategory: String
-
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "flags")
-
 
     init {
         val okHttpClient = OkHttpClient.Builder()

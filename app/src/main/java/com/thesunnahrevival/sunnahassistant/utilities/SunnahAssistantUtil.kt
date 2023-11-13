@@ -19,20 +19,14 @@ import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget
 import java.net.URL
 import java.time.LocalDate
-import java.util.*
-
-val supportedLocales = arrayOf("en", "ar")
-const val retryAfterFlagKey = "Retry-After"
-const val supportEmail = "apps@thesunnahrevival.com"
-const val expectedUserAgent = "SunnahAssistant-Android-App"
-const val requestNotificationPermissionCode = 100
-const val notificationPermissionRequestsCountKey = "notification-permission-requests-count"
+import java.util.Locale
+import java.util.TreeSet
 
 
 fun generateEmailIntent(): Intent {
     val intent = Intent(Intent.ACTION_SENDTO)
     intent.data = Uri.parse("mailto:")
-    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(supportEmail))
+    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(SUPPORT_EMAIL))
     intent.putExtra(
         Intent.EXTRA_SUBJECT,
         "Sunnah Assistant App - Version ${BuildConfig.VERSION_NAME}"
@@ -158,7 +152,7 @@ private fun updatePrayerTimesWidgets(context: Context) {
 
 
 fun getLocale(): Locale {
-    return if (supportedLocales.contains(Locale.getDefault().language))
+    return if (SUPPORTED_LOCALES.contains(Locale.getDefault().language))
         Locale.getDefault()
     else
         Locale("en")

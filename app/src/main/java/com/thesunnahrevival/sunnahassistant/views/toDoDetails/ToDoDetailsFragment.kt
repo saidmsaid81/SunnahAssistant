@@ -29,12 +29,12 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getFormattedOffset
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
-import com.thesunnahrevival.sunnahassistant.utilities.requestNotificationPermissionCode
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
@@ -51,8 +51,6 @@ import java.time.LocalDate
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.TreeSet
-
-private const val i = 100
 
 open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
@@ -639,7 +637,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mViewModel.incrementNotificationPermissionRequestsCount()
                 requireActivity().requestPermissions(
                     arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                    requestNotificationPermissionCode
+                    REQUEST_NOTIFICATION_PERMISSION_CODE
                 )
             }
         }

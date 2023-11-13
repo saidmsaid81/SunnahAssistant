@@ -7,12 +7,12 @@ import androidx.fragment.app.Fragment
 import com.sergivonavi.materialbanner.Banner
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import java.util.Locale
 
 fun showHelpTranslateBanner(todayFragment: TodayFragment) {
-    if (!supportedLocales.contains(Locale.getDefault().language)) {
+    if (!SUPPORTED_LOCALES.contains(Locale.getDefault().language)) {
         val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
         val onClickListener = BannerInterface.OnClickListener {
             translateLink(todayFragment)

@@ -340,6 +340,8 @@
   <string name="location_updated_successfully">تم تحديث الموقع بنجاح</string>
   <string name="fix_notifications">تم تعطيل إشعارات المهام. قم بتمكين إذن الإشعارات في إعدادات النظام لتلقي الإشعارات</string>
   <string name="don_t_show_this">لا تعرض هذا</string>
+  <string name="fix_alarms_and_reminders">قام النظام بحظر تطبيق مساعد السنة من تشغيل إشعارات التذكيرات</string>
+  <string name="tap_to_fix_this">انقر لإصلاح هذا</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>
@@ -470,4 +472,5 @@
     <item>قبل</item>
     <item>بعد</item>
   </string-array>
+  <string name="refreshing_notifications">جارٍ تحديث الإشعارات…</string>
 </resources>

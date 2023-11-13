@@ -14,7 +14,6 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.receivers.InAppBrowserBroadcastReceiver
-import com.thesunnahrevival.sunnahassistant.receivers.LINK
 import com.thesunnahrevival.sunnahassistant.services.InAppBrowserConnection
 import kotlinx.coroutines.launch
 import java.net.MalformedURLException

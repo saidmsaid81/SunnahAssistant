@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.thesunnahrevival.sunnahassistant.utilities.FIREBASE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createNotification
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
@@ -41,7 +42,7 @@ class SAFirebaseMessagingService : FirebaseMessagingService() {
             }
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(-2, notification)
+            notificationManager.notify(FIREBASE_NOTIFICATION_ID, notification)
         }
 
     }

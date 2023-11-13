@@ -2,13 +2,19 @@ package com.thesunnahrevival.sunnahassistant.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
+import com.thesunnahrevival.sunnahassistant.utilities.PRAYER_TIMES_REMINDERS_ID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.util.*
+import java.util.TreeSet
 
 @Dao
 interface ToDoDao {
@@ -164,7 +170,7 @@ interface ToDoDao {
                 "((day >= :day AND month == :month AND year == :year) OR " +
                 "(day >= 1 AND month > :month AND year == :year) OR " +
                 "(day >= 1 AND month >= 1 AND year > :year)) " +
-                "AND id <= -1019700 "
+                "AND id <= $PRAYER_TIMES_REMINDERS_ID "
     )
     fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ToDoDate>
 
@@ -198,7 +204,7 @@ interface ToDoDao {
         offsetInMinutes: Int
     )
 
-    @Query("DELETE FROM reminders_table WHERE id < -1019700")
+    @Query("DELETE FROM reminders_table WHERE id < $PRAYER_TIMES_REMINDERS_ID")
     suspend fun deleteAllPrayerTimes()
 
     @Query("UPDATE reminders_table SET category =:newCategory WHERE category == :deletedCategory")

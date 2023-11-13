@@ -119,6 +119,15 @@
     </receiver>
     <receiver android:name="com.thesunnahrevival.sunnahassistant.receivers.InAppBrowserBroadcastReceiver" />
 
+    <receiver
+        android:name="com.thesunnahrevival.sunnahassistant.receivers.RequestAlarmPermissionBroadcastReceiver"
+        android:exported="false">
+      <intent-filter>
+        <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </receiver>
+
     <service
         android:name="com.thesunnahrevival.sunnahassistant.services.NextToDoService"
         android:exported="false" />

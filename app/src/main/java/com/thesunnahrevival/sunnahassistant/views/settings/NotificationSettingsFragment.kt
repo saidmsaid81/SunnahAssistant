@@ -145,7 +145,7 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
             else if (buttonView.id == R.id.use_reliable_alarms)
                 mViewModel.settingsValue?.useReliableAlarms = isChecked
             mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-            mViewModel.startService()
+            mViewModel.refreshScheduledReminders()
         }
     }
 }

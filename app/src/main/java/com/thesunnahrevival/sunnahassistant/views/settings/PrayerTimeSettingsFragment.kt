@@ -18,7 +18,7 @@ import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
-import com.thesunnahrevival.sunnahassistant.utilities.requestNotificationPermissionCode
+import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
@@ -79,7 +79,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                         mViewModel.incrementNotificationPermissionRequestsCount()
                         requireActivity().requestPermissions(
                             arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                            requestNotificationPermissionCode
+                            REQUEST_NOTIFICATION_PERMISSION_CODE
                         )
                     }
                 }

@@ -10,6 +10,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.TaskStackBuilder
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.utilities.TEXT_COLOR
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 class PrayerTimesWidget : AppWidgetProvider() {

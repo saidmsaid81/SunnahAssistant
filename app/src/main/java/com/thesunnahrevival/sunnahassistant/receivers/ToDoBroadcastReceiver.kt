@@ -4,27 +4,37 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_BOOT_COMPLETED
 import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.MARK_AS_COMPLETE
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_CATEGORY
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_DND_MINUTES
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_TEXT
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_TITLE
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_TONE_URI
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_VIBRATE
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
+import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createNotification
+import com.thesunnahrevival.sunnahassistant.workers.ReminderSchedulerWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-const val MARK_AS_COMPLETE = "com.thesunnahrevival.sunnahassitant.MARK_AS_COMPLETE"
-const val TO_DO_ID = "com.thesunnahrevival.sunnahassitant.TO_DO_ID"
 
 class ToDoBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
 
-        if (!(action != null && action.matches("android.intent.action.BOOT_COMPLETED".toRegex()))) {
+        if (!(action != null && action.matches(ACTION_BOOT_COMPLETED.toRegex()))) {
             if (action == MARK_AS_COMPLETE) {
                 val id = intent.getIntExtra(TO_DO_ID, 0)
                 markAsComplete(context, id)
@@ -32,11 +42,13 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                 showNotifications(context, intent)
         }
 
-        val service = Intent(context, NextToDoService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            context.startForegroundService(service)
-        else
-            context.startService(service)
+        val refreshRemindersRequest = OneTimeWorkRequestBuilder<ReminderSchedulerWorker>()
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
+
+        WorkManager.getInstance(context)
+            .enqueue(refreshRemindersRequest)
+
     }
 
     private fun markAsComplete(context: Context, id: Int) {
@@ -54,20 +66,20 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationTitle = intent.getStringExtra(ReminderManager.NOTIFICATION_TITLE)
+        val notificationTitle = intent.getStringExtra(NOTIFICATION_TITLE)
         val notificationText =
-            intent.getSerializableExtra(ReminderManager.NOTIFICATION_TEXT) as Map<Int, String>?
+            intent.getSerializableExtra(NOTIFICATION_TEXT) as Map<Int, String>?
         val category =
-            intent.getSerializableExtra(ReminderManager.NOTIFICATION_CATEGORY) as Map<Int, String>?
+            intent.getSerializableExtra(NOTIFICATION_CATEGORY) as Map<Int, String>?
         val doNotDisturbMinutes =
-            intent.getIntExtra(ReminderManager.NOTIFICATION_DND_MINUTES, 0)
+            intent.getIntExtra(NOTIFICATION_DND_MINUTES, 0)
         val notificationToneUri: Uri? =
-            if (intent.getStringExtra(ReminderManager.NOTIFICATION_TONE_URI) != null)
-                Uri.parse(intent.getStringExtra(ReminderManager.NOTIFICATION_TONE_URI))
+            if (intent.getStringExtra(NOTIFICATION_TONE_URI) != null)
+                Uri.parse(intent.getStringExtra(NOTIFICATION_TONE_URI))
             else
                 null
 
-        val isVibrate = intent.getBooleanExtra(ReminderManager.NOTIFICATION_VIBRATE, false)
+        val isVibrate = intent.getBooleanExtra(NOTIFICATION_VIBRATE, false)
         if (!TextUtils.isEmpty(notificationTitle)) {
             notificationText?.forEach { (id, text) ->
                 notificationManager.notify(
