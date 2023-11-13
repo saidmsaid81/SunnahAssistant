@@ -35,7 +35,6 @@ class ChangelogFragment : SunnahAssistantFragment() {
         mViewModel.settingsValue?.appVersionCode = BuildConfig.VERSION_CODE
         mViewModel.settingsValue?.categories?.addAll(requireContext().resources.getStringArray(R.array.categories))
         mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-        //viewModel.localeUpdate()
 
         return view
     }
