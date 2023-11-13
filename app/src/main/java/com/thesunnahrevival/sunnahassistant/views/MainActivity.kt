@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,39 +26,40 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
+import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.SHARE
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
 import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.util.*
+import java.util.Locale
 import kotlin.random.Random
 
-
-const val REQUESTCODEFORUPDATE: Int = 1
-const val SHARE = "SHARE"
 
 open class MainActivity : AppCompatActivity() {
 
     private lateinit var activity: MainActivity
     lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var mViewModel: SunnahAssistantViewModel
+    private lateinit var mainActivityBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainActivityBinding.root)
         mViewModel = ViewModelProvider(this)[SunnahAssistantViewModel::class.java]
         createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -67,9 +69,9 @@ open class MainActivity : AppCompatActivity() {
         firebaseAnalytics = Firebase.analytics
         getSettings()
 
-        startService(Intent(this, NextToDoService::class.java))
+        mViewModel.refreshScheduledReminders()
 
-        val link = intent.extras?.get("link")
+        val link = intent.extras?.getString("link")
         if (link != null) {
             launchInAppBrowser(link)
         }
@@ -80,27 +82,32 @@ open class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.todayFragment -> bottom_navigation_view.visibility = View.VISIBLE
+                R.id.todayFragment -> mainActivityBinding.bottomNavigationView.visibility =
+                    View.VISIBLE
+
                 R.id.calendarFragment, R.id.tipsFragment -> {
-                    bottom_navigation_view.visibility = View.VISIBLE
+                    mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
                 R.id.welcomeFragment, R.id.resolveMalformedToDosFragment -> {
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    bottom_navigation_view.visibility = View.GONE
+                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
                 }
+
                 R.id.changelogFragment, R.id.toDoDetailsFragment -> {
-                    bottom_navigation_view.visibility = View.GONE
+                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
                 }
-                else -> bottom_navigation_view.visibility = View.GONE
+
+                else -> mainActivityBinding.bottomNavigationView.visibility = View.GONE
             }
         }
 
-        bottom_navigation_view.setOnNavigationItemSelectedListener {
+        mainActivityBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.today -> findNavController(R.id.myNavHostFragment).navigate(R.id.todayFragment)
                 R.id.calendar ->
                     findNavController(R.id.myNavHostFragment).navigate(R.id.calendarFragment)
+
                 R.id.tips ->
                     findNavController(R.id.myNavHostFragment).navigate(R.id.tipsFragment)
             }
@@ -152,8 +159,8 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchInAppBrowser(link: Any?) {
-        if ((link as String).contains("market://details")) {
+    private fun launchInAppBrowser(link: String) {
+        if (link.contains("market://details")) {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_VIEW
             sendIntent.data = Uri.parse(link)
@@ -239,7 +246,7 @@ open class MainActivity : AppCompatActivity() {
             if (fragment is TodayFragment && fragment !is CalendarFragment) {
                 when (random) {
                     1 -> {
-                        if (!supportedLocales.contains(Locale.getDefault().language))
+                        if (!SUPPORTED_LOCALES.contains(Locale.getDefault().language))
                             showHelpTranslateBanner(fragment)
                         else
                             showShareAppBanner(fragment)
@@ -274,6 +281,25 @@ open class MainActivity : AppCompatActivity() {
         return navHostFragment?.childFragmentManager?.fragments?.get(0)
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_NOTIFICATION_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    val activeFragment = getActiveFragment()
+                    if (activeFragment is TodayFragment) {
+                        activeFragment.mBinding.banner.dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.myNavHostFragment)
         val homeFragments = listOf(R.id.todayFragment, R.id.calendarFragment)
@@ -284,6 +310,7 @@ open class MainActivity : AppCompatActivity() {
         return true
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (getActiveFragment() is WelcomeFragment || getActiveFragment() is ResolveMalformedToDosFragment)
             finish()
@@ -314,7 +341,7 @@ open class MainActivity : AppCompatActivity() {
         super.onPause()
 
         //Start service to apply any changes done on scheduling notifications
-        startService(Intent(this, NextToDoService::class.java))
+        mViewModel.refreshScheduledReminders()
     }
 
     private fun popupSnackbar(
@@ -325,7 +352,7 @@ open class MainActivity : AppCompatActivity() {
         listener: View.OnClickListener
     ) {
         Snackbar.make(
-            activity.coordinator_layout,
+            mainActivityBinding.coordinatorLayout,
             message,
             duration
         ).apply {

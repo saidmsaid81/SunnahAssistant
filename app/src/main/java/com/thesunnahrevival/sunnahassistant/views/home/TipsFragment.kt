@@ -11,24 +11,27 @@ import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Tip
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentTipsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.views.adapters.TipsAdapter
-import kotlinx.android.synthetic.main.fragment_tips.*
 import java.net.MalformedURLException
 
 class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener {
 
     private lateinit var browser: InAppBrowser
     private var templateToDos: Map<Int, Pair<Int, ToDo>>? = null
+    private var _tipsFragmentBinding: FragmentTipsBinding? = null
+    private val tipsFragmentBinding get() = _tipsFragmentBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        _tipsFragmentBinding = FragmentTipsBinding.inflate(inflater)
         browser = InAppBrowser(requireContext(), viewLifecycleOwner.lifecycleScope)
-        return inflater.inflate(R.layout.fragment_tips, container, false)
+        return tipsFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +64,7 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
             adapter.setData(adapterData)
         }
 
-        recycler_view.adapter = adapter
+        tipsFragmentBinding.recyclerView.adapter = adapter
     }
 
     private fun getTips(): ArrayList<Tip> {
@@ -101,6 +104,11 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
                 .show()
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _tipsFragmentBinding = null
     }
 
 }

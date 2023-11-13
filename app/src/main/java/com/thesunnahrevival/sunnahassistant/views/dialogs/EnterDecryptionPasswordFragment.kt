@@ -7,35 +7,41 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
-import kotlinx.android.synthetic.main.fragment_enter_decryption_password.*
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentEnterDecryptionPasswordBinding
 
 class EnterDecryptionPasswordFragment : BottomSheetDialogFragment() {
 
     private var mListener: EnterDecryptionPasswordFragmentListener? = null
     private var mUri: Uri? = null
+    private var _enterDecryptionPasswordFragmentBinding: FragmentEnterDecryptionPasswordBinding? =
+        null
+    private val enterDecryptionPasswordFragmentBinding get() = _enterDecryptionPasswordFragmentBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _enterDecryptionPasswordFragmentBinding =
+            FragmentEnterDecryptionPasswordBinding.inflate(inflater)
         isCancelable = false
-        return inflater.inflate(R.layout.fragment_enter_decryption_password, container, false)
+        return enterDecryptionPasswordFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (mListener == null || mUri == null)
             dismiss()
-        restore_data.setOnClickListener {
-            val passwordInput = password.text.toString()
+        enterDecryptionPasswordFragmentBinding.restoreData.setOnClickListener {
+            val passwordInput = enterDecryptionPasswordFragmentBinding.password.text.toString()
             if (passwordInput.isBlank())
-                password.error = getString(R.string.password_cannot_be_blank)
+                enterDecryptionPasswordFragmentBinding.password.error =
+                    getString(R.string.password_cannot_be_blank)
             else {
                 mListener?.onRestoreEncryptedDataClick(mUri, passwordInput)
                 dismiss()
             }
         }
-        cancel.setOnClickListener {
+        enterDecryptionPasswordFragmentBinding.cancel.setOnClickListener {
             mListener?.onRestoreEncryptedDataClick(null, "")
             dismiss()
         }
@@ -47,6 +53,11 @@ class EnterDecryptionPasswordFragment : BottomSheetDialogFragment() {
 
     fun setDataUri(uri: Uri?) {
         mUri = uri
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _enterDecryptionPasswordFragmentBinding = null
     }
 
     interface EnterDecryptionPasswordFragmentListener {

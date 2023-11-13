@@ -1,135 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    >
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/important"
-            android:textStyle="bold"
-            android:textColor="@android:color/holo_red_dark"
-            />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/important"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_dark"
+        />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:padding="16dp"
-          android:text="@string/important_changes"
-          />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/important_changes"
+        />
 
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/privacy_policy"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:backgroundTint="@color/fabColor"
-          android:layout_marginBottom="@dimen/default_dimen"
-          android:padding="@dimen/margin_dimen"
-          android:layout_gravity="center_horizontal"
-          android:textAllCaps="false"
-          android:textColor="@android:color/white"
-          android:text="@string/read_privacy_policy"
-          />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/privacy_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/fabColor"
+        android:layout_marginBottom="@dimen/default_dimen"
+        android:padding="@dimen/margin_dimen"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:text="@string/read_privacy_policy"
+        />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingTop="8dp"
-          android:paddingStart="16dp"
-          android:paddingEnd="16dp"
-          android:text="@string/new_features"
-          android:textStyle="bold"
-          />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/new_features"
+        android:visibility="gone"
+        android:textStyle="bold"
+        />
 
-      <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/new_features_details"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="@string/new_features_details"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/updated"
-            android:textStyle="bold"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/updated"
+        android:visibility="gone"
+        android:textStyle="bold"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/updated_details"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="@string/updated_details"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/fixes"
-            android:textStyle="bold"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/fixes"
+        android:textStyle="bold"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/fixes_details"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/fixes_details"
+        />
 
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/help_translate_app"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:backgroundTint="@color/fabColor"
-          android:layout_marginBottom="@dimen/default_dimen"
-          android:padding="@dimen/margin_dimen"
-          android:layout_gravity="center_horizontal"
-          android:textAllCaps="false"
-          android:textColor="@android:color/white"
-          android:text="@string/help_translate_app_button"
-          />
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/send_feedback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="@dimen/margin_dimen"
-            android:backgroundTint="@color/fabColor"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:text="@string/send_feedback"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/rate_this_app"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/fabColor"
-            android:layout_marginBottom="@dimen/default_dimen"
-            android:padding="@dimen/margin_dimen"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:text="@string/rate_this_app"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/help_translate_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/fabColor"
+        android:layout_marginBottom="@dimen/default_dimen"
+        android:padding="@dimen/margin_dimen"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:text="@string/help_translate_app_button"
+        />
 
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/send_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/margin_dimen"
+        android:backgroundTint="@color/fabColor"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:text="@string/send_feedback"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/rate_this_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/fabColor"
+        android:layout_marginBottom="@dimen/default_dimen"
+        android:padding="@dimen/margin_dimen"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:text="@string/rate_this_app"
+        />
 
 
-
-
-
-
-
-
-
-    </LinearLayout>
+  </LinearLayout>
 </ScrollView>

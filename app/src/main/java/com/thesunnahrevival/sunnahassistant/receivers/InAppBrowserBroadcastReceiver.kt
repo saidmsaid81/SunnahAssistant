@@ -5,8 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.thesunnahrevival.sunnahassistant.R
-
-const val LINK = "link"
+import com.thesunnahrevival.sunnahassistant.utilities.LINK
 
 class InAppBrowserBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

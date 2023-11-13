@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.settings
 
 import android.app.Activity
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
@@ -17,6 +18,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
 import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.STICKY_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.utilities.deleteToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
@@ -113,6 +115,7 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             mViewModel.settingsValue?.notificationToneUri =
@@ -140,12 +143,26 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (buttonView?.isPressed == true) {
-            if (buttonView.id == R.id.next_to_do_sticky_settings)
+            if (buttonView.id == R.id.next_to_do_sticky_settings) {
                 mViewModel.settingsValue?.showNextToDoNotification = isChecked
-            else if (buttonView.id == R.id.use_reliable_alarms)
+
+                if (!isChecked) {
+                    //Stop the service and clear the sticky notification
+                    requireContext().stopService(
+                        Intent(
+                            requireContext(),
+                            NextToDoService::class.java
+                        )
+                    )
+                    val notificationManager =
+                        requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.cancel(STICKY_NOTIFICATION_ID)
+                }
+
+            } else if (buttonView.id == R.id.use_reliable_alarms) {
                 mViewModel.settingsValue?.useReliableAlarms = isChecked
+            }
             mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
-            requireContext().startService(Intent(requireContext(), NextToDoService::class.java))
         }
     }
 }

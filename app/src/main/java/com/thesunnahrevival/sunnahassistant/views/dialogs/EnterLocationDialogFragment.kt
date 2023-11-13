@@ -5,31 +5,36 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentAddLocationBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
-import kotlinx.android.synthetic.main.fragment_add_location.view.*
 
 
 class EnterLocationDialogFragment :DialogFragment() {
 
     private var mViewModel: SunnahAssistantViewModel? = null
 
+    private var _enterLocationDialogFragmentBinding: FragmentAddLocationBinding? = null
+    private val enterLocationDialogFragmentBinding get() = _enterLocationDialogFragmentBinding!!
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
 
         val builder = context?.let { AlertDialog.Builder(it) }
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.fragment_add_location, null)
+        _enterLocationDialogFragmentBinding = FragmentAddLocationBinding.inflate(inflater)
+        val view = enterLocationDialogFragmentBinding.root
         val settings = mViewModel?.settingsValue
         if (settings != null)
-            view.location.setText(settings.formattedAddress)
+            enterLocationDialogFragmentBinding.location.setText(settings.formattedAddress)
         builder?.setView(view)
-                ?.setPositiveButton(R.string.save, null)
-                ?.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel()}
-                ?.setTitle(getString(R.string.location_hint))
+            ?.setPositiveButton(R.string.save, null)
+            ?.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
+            ?.setTitle(getString(R.string.location_hint))
         val dialog = builder?.create()
 
         dialog?.setOnShowListener {
@@ -52,10 +57,16 @@ class EnterLocationDialogFragment :DialogFragment() {
                 messagesTextView.text = getString(R.string.updating)
                 viewModel.getGeocodingData(location)
                 viewModel.messages.observe(this) { message: String ->
-                    if (message.matches("Successful".toRegex()))
+                    if (message.matches("Successful".toRegex())) {
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.location_updated_successfully,
+                            Toast.LENGTH_LONG
+                        ).show()
                         dialog.dismiss()
-                    else
+                    } else {
                         messagesTextView.text = message
+                    }
                 }
             }
             else {

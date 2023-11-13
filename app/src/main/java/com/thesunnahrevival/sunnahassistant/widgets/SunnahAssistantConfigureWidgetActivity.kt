@@ -10,12 +10,13 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.thesunnahrevival.sunnahassistant.R
-import kotlinx.android.synthetic.main.activity_sunnah_assistant_configure_widget.*
+import com.thesunnahrevival.sunnahassistant.databinding.ActivitySunnahAssistantConfigureWidgetBinding
 
 abstract class SunnahAssistantConfigureWidgetActivity : AppCompatActivity(), View.OnClickListener,
     PopupMenu.OnMenuItemClickListener {
     var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
+    private lateinit var sunnahAssistantConfigureWidgetActivityBinding: ActivitySunnahAssistantConfigureWidgetBinding
 
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
@@ -24,10 +25,12 @@ abstract class SunnahAssistantConfigureWidgetActivity : AppCompatActivity(), Vie
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED)
 
-        setContentView(R.layout.activity_sunnah_assistant_configure_widget)
+        sunnahAssistantConfigureWidgetActivityBinding =
+            ActivitySunnahAssistantConfigureWidgetBinding.inflate(layoutInflater)
+        setContentView(sunnahAssistantConfigureWidgetActivityBinding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
-        add_button.setOnClickListener(this)
-        theme_settings.setOnClickListener(this)
+        sunnahAssistantConfigureWidgetActivityBinding.addButton.setOnClickListener(this)
+        sunnahAssistantConfigureWidgetActivityBinding.themeSettings.setOnClickListener(this)
 
         // Find the widget id from the intent.
         val intent = intent
@@ -47,7 +50,7 @@ abstract class SunnahAssistantConfigureWidgetActivity : AppCompatActivity(), Vie
     override fun onClick(v: View?) {
         val context = this
         when (v) {
-            theme_settings -> {
+            sunnahAssistantConfigureWidgetActivityBinding.themeSettings -> {
                 val popupMenu = PopupMenu(context, findViewById(R.id.theme))
                 val options = resources.getStringArray(R.array.widget_theme_options)
                 for ((index, method) in options.withIndex()) {
@@ -56,7 +59,8 @@ abstract class SunnahAssistantConfigureWidgetActivity : AppCompatActivity(), Vie
                 popupMenu.setOnMenuItemClickListener(this)
                 popupMenu.show()
             }
-            add_button -> {
+
+            sunnahAssistantConfigureWidgetActivityBinding.addButton -> {
                 createWidget(context)
                 val resultValue = Intent()
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

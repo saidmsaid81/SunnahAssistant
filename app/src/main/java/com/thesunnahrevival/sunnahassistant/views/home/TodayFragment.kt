@@ -2,8 +2,11 @@ package com.thesunnahrevival.sunnahassistant.views.home
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
@@ -32,15 +36,17 @@ import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
 import com.thesunnahrevival.sunnahassistant.views.dialogs.DeleteToDoFragment
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
+import com.thesunnahrevival.sunnahassistant.views.showBanner
 import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.*
+import kotlinx.coroutines.withContext
+import java.util.TreeSet
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
-    private lateinit var mBinding: FragmentTodayBinding
+    lateinit var mBinding: FragmentTodayBinding
     private lateinit var concatAdapter: ConcatAdapter
     private var fabAnimator: ObjectAnimator? = null
 
@@ -58,7 +64,12 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         mBinding.toDoInteractionListener = this
         setupTheRecyclerView()
         getSettings()
-        checkIfThereAreMalformedToDos()
+
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            checkIfThereAreMalformedToDos()
+            showNotificationRequestBanner()
+        }
 
         return mBinding.root
     }
@@ -255,7 +266,6 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 )
             )
             setAction(getString(R.string.undo_delete)) {
-                Log.v("To-Do", toDo.toString())
                 val newToDo = toDo.copy()
                 mViewModel.insertToDo(newToDo)
             }
@@ -331,11 +341,47 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
     }
 
-    private fun checkIfThereAreMalformedToDos() {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            mViewModel.getMalformedToDos().collectLatest {
-                if (it.isNotEmpty()) {
-                    findNavController().navigate(R.id.resolveMalformedToDosFragment)
+    private suspend fun checkIfThereAreMalformedToDos() {
+        val malformedToDos = mViewModel.getMalformedToDos().firstOrNull()
+        if (!malformedToDos.isNullOrEmpty()) {
+            withContext(Dispatchers.Main) {
+                findNavController().navigate(R.id.resolveMalformedToDosFragment)
+            }
+        }
+    }
+
+    private suspend fun showNotificationRequestBanner() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            val notificationPermissionRequestsCount =
+                mViewModel.getNotificationPermissionRequestsCount()
+            if (notificationPermissionRequestsCount > 0) {
+                withContext(Dispatchers.Main) {
+                    val openSettingsListener = BannerInterface.OnClickListener {
+                        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                            putExtra(Settings.EXTRA_APP_PACKAGE, requireActivity().packageName)
+                        }
+                        startActivity(intent)
+                        mBinding.banner.dismiss()
+                    }
+
+                    val hideBannerListener = BannerInterface.OnClickListener {
+                        mViewModel.hideFixNotificationsBanner()
+                        mBinding.banner.dismiss()
+                    }
+
+                    showBanner(
+                        mBinding.banner,
+                        getString(R.string.fix_notifications),
+                        R.drawable.ic_notifications_banner,
+                        getString(R.string.go_to_settings),
+                        openSettingsListener,
+                        getString(R.string.don_t_show_this),
+                        hideBannerListener
+                    )
                 }
             }
         }

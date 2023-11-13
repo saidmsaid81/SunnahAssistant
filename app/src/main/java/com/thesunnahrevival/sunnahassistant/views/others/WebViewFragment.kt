@@ -2,43 +2,79 @@ package com.thesunnahrevival.sunnahassistant.views.others
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.MailTo
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import kotlinx.android.synthetic.main.fragment_web_view.*
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 
 open class WebViewFragment : Fragment() {
+
+    private var _webViewFragmentBinding: FragmentWebViewBinding? = null
+    private val webViewFragmentBinding get() = _webViewFragmentBinding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        _webViewFragmentBinding = FragmentWebViewBinding.inflate(inflater)
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_web_view, container, false)
+        return webViewFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        webview.webViewClient = object : WebViewClient() {
+        webViewFragmentBinding.webview.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                progress_bar.visibility = View.VISIBLE
-                webview.visibility = View.GONE
+                webViewFragmentBinding.progressBar.visibility = View.VISIBLE
+                webViewFragmentBinding.webview.visibility = View.GONE
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                progress_bar.visibility = View.GONE
-                webview.visibility = View.VISIBLE
+                webViewFragmentBinding.progressBar.visibility = View.GONE
+                webViewFragmentBinding.webview.visibility = View.VISIBLE
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                val url = request?.url.toString() ?: ""
+                if (url.startsWith("mailto:")) {
+                    val mailTo = MailTo.parse(url)
+                    val intent = Intent(Intent.ACTION_SENDTO)
+                    intent.data = Uri.parse("mailto:")
+                    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(mailTo.to))
+                    view?.context?.startActivity(intent)
+                    return true
+                } else {
+                    InAppBrowser(requireContext(), lifecycleScope).launchInAppBrowser(
+                        url,
+                        findNavController(),
+                        false
+                    )
+                    return true
+                }
+                return false
             }
         }
-        webview.loadUrl(getLink().toString())
+        webViewFragmentBinding.webview.loadUrl(getLink().toString())
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.web_view_menu, menu)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.share_page -> {
@@ -65,5 +101,10 @@ open class WebViewFragment : Fragment() {
     }
 
     open fun getLink() = arguments?.get("link") ?: "https://thesunnahrevival.com"
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _webViewFragmentBinding = null
+    }
 
 }
