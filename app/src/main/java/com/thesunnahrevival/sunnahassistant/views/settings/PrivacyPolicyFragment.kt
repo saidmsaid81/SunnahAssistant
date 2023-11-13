@@ -8,6 +8,7 @@ class PrivacyPolicyFragment : WebViewFragment() {
 
     override fun getLink() = "file:///android_asset/policy.html"
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
     }

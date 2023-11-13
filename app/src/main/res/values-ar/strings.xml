@@ -334,6 +334,14 @@
   <string name="snooze">غفوة</string>
   <string name="share">شارك</string>
   <string name="reminder">تذكير</string>
+  <string name="too_many_requests">طلبات كثيرة جدا. يرجى المحاولة مرة أخرى بعد %s. إذا كنت تعتقد أن هذا خطأ، يرجى الاتصال بنا على %s</string>
+  <string name="an_error_occurred">حدث خطأ. حاول مرة اخرى. إذا استمرت هذه المشكلة، يرجى الاتصال بنا على %s</string>
+  <string name="update_app">يرجى تحديث التطبيق إلى الإصدار الأحدث</string>
+  <string name="location_updated_successfully">تم تحديث الموقع بنجاح</string>
+  <string name="fix_notifications">تم تعطيل إشعارات المهام. قم بتمكين إذن الإشعارات في إعدادات النظام لتلقي الإشعارات</string>
+  <string name="don_t_show_this">لا تعرض هذا</string>
+  <string name="fix_alarms_and_reminders">قام النظام بحظر تطبيق مساعد السنة من تشغيل إشعارات التذكيرات</string>
+  <string name="tap_to_fix_this">انقر لإصلاح هذا</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>
@@ -464,4 +472,5 @@
     <item>قبل</item>
     <item>بعد</item>
   </string-array>
+  <string name="refreshing_notifications">جارٍ تحديث الإشعارات…</string>
 </resources>

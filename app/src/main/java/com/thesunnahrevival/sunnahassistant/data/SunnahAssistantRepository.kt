@@ -1,45 +1,61 @@
 package com.thesunnahrevival.sunnahassistant.data
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
-import com.thesunnahrevival.sunnahassistant.ApiKey
+import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
+import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
-import com.thesunnahrevival.sunnahassistant.data.remote.SunnahAssistantApiInterface
+import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "flags")
 
 class SunnahAssistantRepository private constructor(private val applicationContext: Context) {
     private val mToDoDao: ToDoDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
 
     private val mGeocodingRestApi: GeocodingInterface
-    private val mSunnahAssistantApi: SunnahAssistantApiInterface
     private val prayerNames: Array<String>
     private val prayerCategory: String
 
     init {
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
+            .build()
+
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://maps.googleapis.com/")
+            .baseUrl("https://api.thesunnahrevival.com/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
             .build()
         mGeocodingRestApi = retrofit.create(GeocodingInterface::class.java)
-
-        mSunnahAssistantApi = Retrofit.Builder()
-            .baseUrl("https://us-central1-sunnah-assistant.cloudfunctions.net/")
-            .build()
-            .create(SunnahAssistantApiInterface::class.java)
 
         prayerNames = applicationContext.resources.getStringArray(R.array.prayer_names)
         prayerCategory = applicationContext.resources.getStringArray(R.array.categories)[2]
@@ -339,15 +355,25 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     ) =
         mToDoDao.updateWidgetSettings(isShowHijriDateWidget, isDisplayNextToDo)
 
-    suspend fun getGeocodingData(address: String, locale: String): GeocodingData? {
-        return mGeocodingRestApi.getGeocodingData(address, ApiKey.API_KEY, locale)
-    }
-
-    suspend fun reportGeocodingServerError(status: String) {
-        mSunnahAssistantApi.reportGeocodingError(status)
+    suspend fun getGeocodingData(address: String, locale: String): Response<GeocodingData?> {
+        return mGeocodingRestApi.getGeocodingData(address, locale)
     }
 
     fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).closeDB()
+
+    suspend fun setFlag(key: String, value: Long) {
+        val flagKey = longPreferencesKey(key)
+        applicationContext.dataStore.edit { flags ->
+            flags[flagKey] = value
+        }
+    }
+
+    suspend fun getLongFlag(key: String): Long? {
+        val flagKey = longPreferencesKey(key)
+        return applicationContext.dataStore.data
+            .map { flag -> flag[flagKey] }
+            .first()
+    }
 
     companion object {
         @Volatile

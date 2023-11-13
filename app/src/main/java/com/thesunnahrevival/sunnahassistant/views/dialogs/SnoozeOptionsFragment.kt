@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
+import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
 class SnoozeOptionsFragment : DialogFragment(), AdapterView.OnItemClickListener {

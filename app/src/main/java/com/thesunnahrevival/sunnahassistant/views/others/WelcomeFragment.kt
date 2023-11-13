@@ -9,18 +9,22 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentWelcomeBinding
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
-import kotlinx.android.synthetic.main.fragment_welcome.*
-
 class WelcomeFragment : SunnahAssistantFragment() {
+
+    private var _welcomeFragmentBinding: FragmentWelcomeBinding? = null
+    private val welcomeFragmentBinding get() = _welcomeFragmentBinding!!
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_welcome, container, false)
+        _welcomeFragmentBinding = FragmentWelcomeBinding.inflate(inflater)
+        return welcomeFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,12 +34,12 @@ class WelcomeFragment : SunnahAssistantFragment() {
                 findNavController().navigate(R.id.todayFragment)
             }
 
-            quick_setup_button.setOnClickListener {
+            welcomeFragmentBinding.quickSetupButton.setOnClickListener {
                 if (settings != null) {
-                    checkbox.visibility = View.INVISIBLE
-                    privacy_policy.visibility = View.INVISIBLE
-                    read_privacy_policy.visibility = View.INVISIBLE
-                    progress_bar.visibility = View.VISIBLE
+                    welcomeFragmentBinding.checkbox.visibility = View.INVISIBLE
+                    welcomeFragmentBinding.privacyPolicy.visibility = View.INVISIBLE
+                    welcomeFragmentBinding.readPrivacyPolicy.visibility = View.INVISIBLE
+                    welcomeFragmentBinding.progressBar.visibility = View.VISIBLE
                     try {
                         settings.notificationToneUri =
                             RingtoneManager.getActualDefaultRingtoneUri(
@@ -46,18 +50,23 @@ class WelcomeFragment : SunnahAssistantFragment() {
                     }
 
                     settings.isFirstLaunch = false
-                    settings.shareAnonymousUsageData = checkbox.isChecked
+                    settings.shareAnonymousUsageData = welcomeFragmentBinding.checkbox.isChecked
                     (requireActivity() as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
-                        checkbox.isChecked
+                        welcomeFragmentBinding.checkbox.isChecked
                     )
                     mViewModel.updateSettings(settings)
                 }
             }
         }
 
-        read_privacy_policy.setOnClickListener {
+        welcomeFragmentBinding.readPrivacyPolicy.setOnClickListener {
             findNavController().navigate(R.id.privacyPolicyFragment)
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _welcomeFragmentBinding = null
     }
 }

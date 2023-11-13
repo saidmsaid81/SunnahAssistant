@@ -5,7 +5,8 @@ import androidx.room.TypeConverter
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import java.util.*
+import java.util.Date
+import java.util.TreeSet
 
 class RoomTypeConverter {
     @TypeConverter
@@ -35,7 +36,7 @@ class RoomTypeConverter {
     }
 
     @TypeConverter
-    fun fromTreeSet(strings: TreeSet<String?>): String {
+    fun fromTreeSet(strings: TreeSet<String>): String {
         return strings.joinToString(separator = ",")
     }
 

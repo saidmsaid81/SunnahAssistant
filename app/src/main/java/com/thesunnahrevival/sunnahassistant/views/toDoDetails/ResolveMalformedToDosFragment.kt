@@ -12,26 +12,30 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.databinding.FragmentResolveMalformedToDosBinding
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.MalformedToDosAdapter
-import kotlinx.android.synthetic.main.fragment_resolve_malformed_to_dos.*
-import kotlinx.coroutines.flow.collect
 
 class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
     MalformedToDosAdapter.MalformedToDoInteractionListener {
+
+    private var _resolveMalformedToDosFragmentBinding: FragmentResolveMalformedToDosBinding? = null
+    private val resolveMalformedToDosFragmentBinding get() = _resolveMalformedToDosFragmentBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_resolve_malformed_to_dos, container, false)
+        _resolveMalformedToDosFragmentBinding =
+            FragmentResolveMalformedToDosBinding.inflate(inflater)
+        return resolveMalformedToDosFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val adapter = MalformedToDosAdapter(this)
-        recycler_view.adapter = adapter
+        resolveMalformedToDosFragmentBinding.recyclerView.adapter = adapter
 
         mViewModel.getSettings().observe(viewLifecycleOwner) {
             mViewModel.settingsValue = it
@@ -41,7 +45,7 @@ class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
             mViewModel.getMalformedToDos().collect { toDos: List<ToDo> ->
                 if (toDos.isNotEmpty()) {
                     adapter.setData(toDos)
-                    delete_all.setOnClickListener {
+                    resolveMalformedToDosFragmentBinding.deleteAll.setOnClickListener {
                         showDeleteAllDialog(toDos)
                     }
                 } else
@@ -82,5 +86,10 @@ class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
                 show()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _resolveMalformedToDosFragmentBinding = null
     }
 }

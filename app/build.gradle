@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.devtools.ksp'
 
 
 android {
@@ -12,8 +11,8 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 15
-        versionName "1.0.4"
+        versionCode 16
+        versionName "1.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -78,7 +77,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "com.google.android.material:material:$material_version"
     implementation "com.getkeepsafe.taptargetview:taptargetview:$taptargetview_version"
-    
+
     //Adhan and Hijri Calendar
     implementation group: 'com.github.msarhan', name: 'ummalqura-calendar', version: '1.1.9'
     implementation 'com.batoulapps.adhan:adhan:1.2.1'
@@ -98,11 +97,13 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-paging:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
 
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
 
     //Navigation Components
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -112,11 +113,11 @@ dependencies {
     implementation "com.sergivonavi:materialbanner:1.2.0"
 
     //CalendarView
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'
 
     //In-app browser
-    implementation "androidx.browser:browser:1.4.0"
+    implementation "androidx.browser:browser:1.5.0"
 
     //OSS Licenses
     implementation "com.google.android.gms:play-services-oss-licenses:$oss_licenses_version"
@@ -130,7 +131,14 @@ dependencies {
     implementation 'com.google.android.play:review:2.0.1'
 
     //In app updates
-    implementation("com.google.android.play:app-update:2.0.1")
+    implementation("com.google.android.play:app-update:2.1.0")
+
+    //Data Store
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    //Work Manager
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"

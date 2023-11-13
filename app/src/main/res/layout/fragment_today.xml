@@ -64,7 +64,7 @@
             android:id="@+id/banner"
             app:backgroundColor="@color/fabColor"
             app:messageTextColor="@android:color/white"
-            app:buttonsTextColor="@android:color/holo_blue_bright"
+            app:buttonsTextColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"

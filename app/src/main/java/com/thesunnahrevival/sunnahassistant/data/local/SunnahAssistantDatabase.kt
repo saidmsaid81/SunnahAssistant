@@ -12,16 +12,15 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter
+import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
+import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.utilities.demoToDo
 import com.thesunnahrevival.sunnahassistant.utilities.initialSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.*
-
-const val DB_NAME = "SunnahAssistant.db"
-const val DB_NAME_TEMP = "SunnahAssistant_temp.db"
+import java.util.TreeSet
 
 @Database(entities = [ToDo::class, AppSettings::class], version = 7)
 @TypeConverters(RoomTypeConverter::class)
