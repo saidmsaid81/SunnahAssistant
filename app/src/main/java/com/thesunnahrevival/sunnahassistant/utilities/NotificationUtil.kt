@@ -6,19 +6,18 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.prayerTimeRemindersId
-import com.thesunnahrevival.sunnahassistant.receivers.MARK_AS_COMPLETE
-import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.SHARE
 
 fun createNotification(
     context: Context,
@@ -32,7 +31,7 @@ fun createNotification(
 ): Notification {
     var category = ""
 
-    if (priority == -1) {
+    if (priority == NotificationCompat.PRIORITY_LOW) {
         category = "Next Reminder"
     } else {
         if (!isFCMMessage) {
@@ -54,13 +53,19 @@ fun createNotification(
         0
     }
 
-    val activity = if (priority != -1)
+    val activity =
+        if (priority != NotificationCompat.PRIORITY_LOW && id != REQUEST_ALARM_PERMISSION_CODE) {
         PendingIntent.getActivity(context, 0, intent, flag)
-    else
-        NavDeepLinkBuilder(context)
-            .setGraph(R.navigation.navigation)
-            .setDestination(R.id.notificationSettingsFragment)
-            .createPendingIntent()
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && id == REQUEST_ALARM_PERMISSION_CODE) {
+            getOpenAlarmSettingsPendingIntent(context)
+        } else {
+            NavDeepLinkBuilder(context)
+                .setGraph(R.navigation.navigation)
+                .setDestination(R.id.notificationSettingsFragment)
+                .createPendingIntent()
+        }
+
+
     val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, category)
         .setSmallIcon(R.drawable.ic_alarm)
         .setContentTitle(title)
@@ -68,17 +73,18 @@ fun createNotification(
         .setContentIntent(activity)
         .setPriority(priority)
         .setTicker(title)
+        .setOnlyAlertOnce(id == REQUEST_ALARM_PERMISSION_CODE)
         .setStyle(
             NotificationCompat.BigTextStyle()
                 .bigText(text)
                 .setBigContentTitle(title)
         )
             .setAutoCancel(true)
-    if (priority != -1 && id != null) {
+    if (priority != -1 && id != null && id != REQUEST_ALARM_PERMISSION_CODE) {
         if (notificationToneUri != null) builder.setSound(notificationToneUri)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Important to set prayer time reminders to Notification.CATEGORY_ALARM so it triggers even when Sunnah Assistant initiated DND is on
-            builder.setCategory(if (id > prayerTimeRemindersId) Notification.CATEGORY_REMINDER else Notification.CATEGORY_ALARM)
+            builder.setCategory(if (id > PRAYER_TIMES_REMINDERS_ID) Notification.CATEGORY_REMINDER else Notification.CATEGORY_ALARM)
         }
         builder.addAction(
             R.drawable.ic_check,
@@ -101,7 +107,7 @@ fun createNotification(
     return builder.build()
 }
 
-fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
+private fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
     val markAsCompleteIntent = Intent(context, ToDoBroadcastReceiver::class.java).apply {
         action = MARK_AS_COMPLETE
         putExtra(TO_DO_ID, id)
@@ -115,7 +121,17 @@ fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
 
 }
 
-fun snoozeNotification(context: Context, id: Int): PendingIntent {
+@RequiresApi(Build.VERSION_CODES.S)
+private fun getOpenAlarmSettingsPendingIntent(context: Context): PendingIntent {
+    val openSettingsIntent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+        data = Uri.parse("package:${context.packageName}")
+        addFlags(FLAG_ACTIVITY_NEW_TASK)
+    }
+    return PendingIntent.getActivity(context, -3, openSettingsIntent, PendingIntent.FLAG_IMMUTABLE)
+}
+
+
+private fun snoozeNotification(context: Context, id: Int): PendingIntent {
     return NavDeepLinkBuilder(context)
         .setGraph(R.navigation.navigation)
         .setArguments(Bundle().apply { putInt(TO_DO_ID, id) })
@@ -123,7 +139,7 @@ fun snoozeNotification(context: Context, id: Int): PendingIntent {
         .createPendingIntent()
 }
 
-fun shareToDo(context: Context, id: Int): PendingIntent? {
+private fun shareToDo(context: Context, id: Int): PendingIntent? {
     val shareToDoIntent = Intent(context, MainActivity::class.java).apply {
         action = SHARE
         putExtra(TO_DO_ID, id)
@@ -171,7 +187,7 @@ fun createNotificationChannels(context: Context) {
     }
 }
 
-fun getReminderNotificationChannel(context: Context): NotificationChannel? {
+private fun getReminderNotificationChannel(context: Context): NotificationChannel? {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val manager = context.getSystemService(NotificationManager::class.java)
         for (channel in manager.notificationChannels) {

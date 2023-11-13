@@ -27,12 +27,14 @@ import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
-import com.thesunnahrevival.sunnahassistant.receivers.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
+import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.SHARE
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.sunnahassistant.utilities.requestNotificationPermissionCode
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
@@ -43,12 +45,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.util.*
+import java.util.Locale
 import kotlin.random.Random
 
-
-const val REQUESTCODEFORUPDATE: Int = 1
-const val SHARE = "SHARE"
 
 open class MainActivity : AppCompatActivity() {
 
@@ -70,9 +69,9 @@ open class MainActivity : AppCompatActivity() {
         firebaseAnalytics = Firebase.analytics
         getSettings()
 
-        mViewModel.startService()
+        mViewModel.refreshScheduledReminders()
 
-        val link = intent.extras?.get("link")
+        val link = intent.extras?.getString("link")
         if (link != null) {
             launchInAppBrowser(link)
         }
@@ -160,8 +159,8 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchInAppBrowser(link: Any?) {
-        if ((link as String).contains("market://details")) {
+    private fun launchInAppBrowser(link: String) {
+        if (link.contains("market://details")) {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_VIEW
             sendIntent.data = Uri.parse(link)
@@ -247,7 +246,7 @@ open class MainActivity : AppCompatActivity() {
             if (fragment is TodayFragment && fragment !is CalendarFragment) {
                 when (random) {
                     1 -> {
-                        if (!supportedLocales.contains(Locale.getDefault().language))
+                        if (!SUPPORTED_LOCALES.contains(Locale.getDefault().language))
                             showHelpTranslateBanner(fragment)
                         else
                             showShareAppBanner(fragment)
@@ -289,7 +288,7 @@ open class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            requestNotificationPermissionCode -> {
+            REQUEST_NOTIFICATION_PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     val activeFragment = getActiveFragment()
                     if (activeFragment is TodayFragment) {
@@ -342,7 +341,7 @@ open class MainActivity : AppCompatActivity() {
         super.onPause()
 
         //Start service to apply any changes done on scheduling notifications
-        mViewModel.startService()
+        mViewModel.refreshScheduledReminders()
     }
 
     private fun popupSnackbar(

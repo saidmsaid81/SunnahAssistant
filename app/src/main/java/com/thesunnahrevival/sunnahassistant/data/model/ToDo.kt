@@ -4,11 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.thesunnahrevival.sunnahassistant.utilities.PRAYER_TIMES_REMINDERS_ID
 import java.io.Serializable
 import java.time.LocalDate
-import java.util.*
+import java.util.TreeSet
 
-const val prayerTimeRemindersId = -1019700
 
 @Entity(tableName = "reminders_table")
 data class ToDo(
@@ -103,7 +103,7 @@ data class ToDo(
         }
     }
 
-    fun isAutomaticPrayerTime() = this.id <= prayerTimeRemindersId
+    fun isAutomaticPrayerTime() = this.id <= PRAYER_TIMES_REMINDERS_ID
 
     fun isComplete(date: LocalDate): Boolean {
         return completedDates.contains(date.toString())

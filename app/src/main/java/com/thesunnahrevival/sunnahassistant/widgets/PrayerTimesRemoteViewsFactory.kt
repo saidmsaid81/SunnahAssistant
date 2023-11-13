@@ -10,6 +10,7 @@ import android.widget.RemoteViewsService
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.utilities.TEXT_COLOR
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getDayDate
 import com.thesunnahrevival.sunnahassistant.utilities.getMonthNumber

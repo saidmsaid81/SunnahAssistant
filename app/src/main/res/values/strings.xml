@@ -335,6 +335,9 @@
   <string name="location_updated_successfully">Location updated successfully</string>
   <string name="fix_notifications">To-Do notifications are disabled. Enable notification permission in system settings to receive notifications</string>
   <string name="don_t_show_this">Don\'t Show This</string>
+  <string name="fix_alarms_and_reminders">Sunnah Assistant is blocked from scheduling reminders by the system</string>
+  <string name="tap_to_fix_this">Tap to fix this</string>
+  <string name="refreshing_notifications">Refreshing notifications…</string>
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>

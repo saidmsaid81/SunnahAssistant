@@ -3,7 +3,6 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
@@ -25,22 +24,21 @@ import androidx.paging.liveData
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
-import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME
-import com.thesunnahrevival.sunnahassistant.data.local.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
+import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
+import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.utilities.Encryption
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
+import com.thesunnahrevival.sunnahassistant.utilities.RETRY_AFTER_KEY
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
-import com.thesunnahrevival.sunnahassistant.utilities.notificationPermissionRequestsCountKey
-import com.thesunnahrevival.sunnahassistant.utilities.retryAfterFlagKey
-import com.thesunnahrevival.sunnahassistant.utilities.supportEmail
-import com.thesunnahrevival.sunnahassistant.utilities.supportedLocales
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -103,7 +101,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.insertToDo(toDo)
             withContext(Dispatchers.Main) {
-                startService()
+                refreshScheduledReminders()
                 triggerCalendarUpdate.value = true
             }
         }
@@ -119,7 +117,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.deleteToDo(toDo)
             withContext(Dispatchers.Main) {
-                startService()
+                refreshScheduledReminders()
                 triggerCalendarUpdate.value = true
             }
         }
@@ -129,7 +127,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.deleteListOfToDos(toDos)
             withContext(Dispatchers.Main) {
-                startService()
+                refreshScheduledReminders()
                 triggerCalendarUpdate.value = true
             }
         }
@@ -192,7 +190,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch(Dispatchers.IO) {
             mRepository.updatePrayerDetails(oldPrayerDetails, newPrayerDetails)
             withContext(Dispatchers.Main) {
-                startService()
+                refreshScheduledReminders()
             }
         }
     }
@@ -244,12 +242,12 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val noNetworkString =
             getContext().getString(R.string.error_updating_location)
         val tooManyRequestString = getContext().getString(R.string.too_many_requests)
-        val anErrorOccurred = getContext().getString(R.string.an_error_occurred, supportEmail)
+        val anErrorOccurred = getContext().getString(R.string.an_error_occurred, SUPPORT_EMAIL)
         val pleaseUpdateApp = getContext().getString(R.string.update_app)
 
         viewModelScope.launch(Dispatchers.IO) {
             val message: String
-            val clientRetryFromTimeMilliseconds = mRepository.getLongFlag(retryAfterFlagKey) ?: 0
+            val clientRetryFromTimeMilliseconds = mRepository.getLongFlag(RETRY_AFTER_KEY) ?: 0
 
             if (System.currentTimeMillis() < clientRetryFromTimeMilliseconds) {
                 message = String.format(
@@ -276,12 +274,12 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                             clientRetryFromTimeMilliseconds =
                                 System.currentTimeMillis() + retryAfterMilliSecondsHeader
 
-                            mRepository.setFlag(retryAfterFlagKey, clientRetryFromTimeMilliseconds)
+                            mRepository.setFlag(RETRY_AFTER_KEY, clientRetryFromTimeMilliseconds)
                         }
                         message = String.format(
                             tooManyRequestString,
                             formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds),
-                            supportEmail
+                            SUPPORT_EMAIL
                         )
                     }
 
@@ -311,16 +309,16 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     suspend fun getNotificationPermissionRequestsCount(): Long {
-        return mRepository.getLongFlag(notificationPermissionRequestsCountKey) ?: 0;
+        return mRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0;
     }
 
     fun incrementNotificationPermissionRequestsCount() {
         viewModelScope.launch(Dispatchers.IO) {
             var notificationPermissionRequestCount =
-                mRepository.getLongFlag(notificationPermissionRequestsCountKey) ?: 0
+                mRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
             if (notificationPermissionRequestCount != -1L) {
                 mRepository.setFlag(
-                    notificationPermissionRequestsCountKey,
+                    NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY,
                     ++notificationPermissionRequestCount
                 )
             }
@@ -329,9 +327,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun hideFixNotificationsBanner() {
         viewModelScope.launch(Dispatchers.IO) {
-            var notificationPermissionRequestCount =
-                mRepository.getLongFlag(notificationPermissionRequestsCountKey) ?: 0
-            mRepository.setFlag(notificationPermissionRequestsCountKey, -1)
+            mRepository.setFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY, -1)
         }
     }
 
@@ -350,27 +346,28 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 notificationManager.isNotificationPolicyAccessGranted
             ) {
-                //Disable the already enabled dnd will be re-enabled
+                //Disable the already enabled dnd. It will be re-enabled
                 // when snoozed notification triggers
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
             }
 
+            ReminderManager.getInstance().scheduleReminder(
+                getContext(),
+                getContext().getString(R.string.reminder),
+                mapOf(Pair(id, "${getContext().getString(R.string.snooze)}: ${toDo.name}")),
+                mapOf(Pair(id, toDo.category ?: "Uncategorized")),
+                System.currentTimeMillis() + (timeInMinutes * 60 * 1000),
+                settings.notificationToneUri ?: RingtoneManager.getActualDefaultRingtoneUri(
+                    getContext(), RingtoneManager.TYPE_NOTIFICATION
+                ),
+                settings.isVibrate,
+                settings.doNotDisturbMinutes,
+                useReliableAlarms = settings.useReliableAlarms,
+                calculateDelayFromMidnight = false,
+                isSnooze = true
+            )
+
             withContext(Dispatchers.Main) {
-                ReminderManager.getInstance().scheduleReminder(
-                    getContext(),
-                    getContext().getString(R.string.reminder),
-                    mapOf(Pair(id, "${getContext().getString(R.string.snooze)}: ${toDo.name}")),
-                    mapOf(Pair(id, toDo.category ?: "Uncategorized")),
-                    System.currentTimeMillis() + (timeInMinutes * 60 * 1000),
-                    settings.notificationToneUri ?: RingtoneManager.getActualDefaultRingtoneUri(
-                        getContext(), RingtoneManager.TYPE_NOTIFICATION
-                    ),
-                    settings.isVibrate,
-                    settings.doNotDisturbMinutes,
-                    useReliableAlarms = settings.useReliableAlarms,
-                    calculateDelayFromMidnight = false,
-                    isSnooze = true
-                )
                 Toast.makeText(
                     getContext(),
                     getContext().getString(R.string.notification_successfully_snoozed),
@@ -394,13 +391,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun startService() {
-        getApplication<Application>().startService(
-            Intent(
-                getApplication(),
-                NextToDoService::class.java
-            )
-        )
+    fun refreshScheduledReminders() {
+        viewModelScope.launch(Dispatchers.IO) {
+            ReminderManager.getInstance().refreshScheduledReminders(getContext())
+        }
     }
 
     private fun getContext() = getApplication<Application>().applicationContext
@@ -415,7 +409,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
 
     fun localeUpdate() {
-        if (supportedLocales.contains(Locale.getDefault().language)) {
+        if (SUPPORTED_LOCALES.contains(Locale.getDefault().language)) {
             val configuration =
                 Configuration(getContext().resources.configuration)
             configuration.setLocale(Locale(settingsValue?.language ?: "en"))
@@ -449,7 +443,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 }
 
                 withContext(Dispatchers.Main) {
-                    startService()
+                    refreshScheduledReminders()
                 }
             }
         }

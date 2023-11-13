@@ -10,6 +10,7 @@ import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.TaskStackBuilder
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.utilities.TEXT_COLOR
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 
@@ -30,7 +31,6 @@ class TodayToDosWidget : AppWidgetProvider() {
 
 }
 
-const val TEXT_COLOR = "text_color"
 internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, backgroundColor: Int, textColor :Int) {
 
     val intent = Intent(context, TodaysToDosRemoteViewsService::class.java)
