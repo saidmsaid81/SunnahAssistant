@@ -1,12 +1,17 @@
 package com.thesunnahrevival.sunnahassistant.data.model
 
-import com.batoulapps.adhan.*
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Coordinates
+import com.batoulapps.adhan.HighLatitudeRule
+import com.batoulapps.adhan.Madhab
+import com.batoulapps.adhan.PrayerTimes
 import com.batoulapps.adhan.data.DateComponents
 import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import java.lang.Integer.parseInt
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
+import java.util.GregorianCalendar
+import java.util.Locale
 
 
 class PrayerTimeCalculator(
@@ -95,7 +100,7 @@ class PrayerTimeCalculator(
 
         val params = calculationMethod.parameters
         params.madhab = asrCalculationMethod
-        params.highLatitudeRule = HighLatitudeRule.values()[latitudeAdjustmentMethod]
+        params.highLatitudeRule = HighLatitudeRule.entries.toTypedArray()[latitudeAdjustmentMethod]
 
         return PrayerTimes(coordinates, date, params)
     }
@@ -110,6 +115,8 @@ class PrayerTimeCalculator(
         offsetInMinutes: Int
     ): ToDo {
 
+        val prefixForAvoidingIdCollisions = if (day < 10) "4" else ""
+
         return ToDo(
             prayerNames[index],
             "",
@@ -120,7 +127,7 @@ class PrayerTimeCalculator(
             day,
             month,
             year,
-            id = parseInt("-$day$month$year$index"),
+            id = parseInt("-$prefixForAvoidingIdCollisions$day$month$year$index"),
             offsetInMinutes = offsetInMinutes
         )
     }

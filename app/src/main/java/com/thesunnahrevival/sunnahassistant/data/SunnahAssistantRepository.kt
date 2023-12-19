@@ -194,7 +194,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         if (settings != null && settings.isAutomaticPrayerAlertsEnabled && settings.formattedAddress?.isNotBlank() == true) {
             val (day, month, year) = getToDoDate(date)
             val therePrayerToDosOnDay =
-                mToDoDao.therePrayerToDosOnDay(prayerCategory, "$day$month$year")
+                mToDoDao.therePrayerToDosOnDay(prayerCategory, day, month, year)
             if (!therePrayerToDosOnDay && date.after(settings.generatePrayerToDosAfter)) {
                 val prayerTimes =
                     getPrayerRemindersList(
@@ -270,8 +270,8 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         year: Int
     ): Long {
         val prayerTimeCalculator = PrayerTimeCalculator(
-            latitude.toDouble(),
-            longitude.toDouble(),
+            latitude,
+            longitude,
             calculationMethod,
             asrCalculationMethod,
             latitudeAdjustmentMethod,

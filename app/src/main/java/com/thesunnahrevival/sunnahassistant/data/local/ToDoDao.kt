@@ -158,9 +158,15 @@ interface ToDoDao {
     @Query(
         "SELECT EXISTS " +
                 "(SELECT * FROM reminders_table WHERE category == :prayerCategory AND " +
-                "id LIKE '-' || :id || '%')"
+                "day = :day AND month = :month AND year = :year AND id <= :prayerTimesId )"
     )
-    fun therePrayerToDosOnDay(prayerCategory: String, id: String): Boolean
+    fun therePrayerToDosOnDay(
+        prayerCategory: String,
+        day: Int,
+        month: Int,
+        year: Int,
+        prayerTimesId: Int = PRAYER_TIMES_REMINDERS_ID
+    ): Boolean
 
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<ToDo>
