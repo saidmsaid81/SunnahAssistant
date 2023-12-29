@@ -85,7 +85,7 @@ open class MainActivity : AppCompatActivity() {
                 R.id.todayFragment -> mainActivityBinding.bottomNavigationView.visibility =
                     View.VISIBLE
 
-                R.id.calendarFragment, R.id.tipsFragment -> {
+                R.id.calendarFragment, R.id.tipsFragment, R.id.resourcesFragment -> {
                     mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
@@ -107,9 +107,11 @@ open class MainActivity : AppCompatActivity() {
                 R.id.today -> findNavController(R.id.myNavHostFragment).navigate(R.id.todayFragment)
                 R.id.calendar ->
                     findNavController(R.id.myNavHostFragment).navigate(R.id.calendarFragment)
-
                 R.id.tips ->
                     findNavController(R.id.myNavHostFragment).navigate(R.id.tipsFragment)
+
+                R.id.resources ->
+                    findNavController(R.id.myNavHostFragment).navigate(R.id.resourcesFragment)
             }
             return@setOnNavigationItemSelectedListener true
         }

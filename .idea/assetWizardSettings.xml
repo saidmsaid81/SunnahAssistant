@@ -365,7 +365,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialicons/cancel/baseline_cancel_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialsymbolssharp/book_5/sharp_book_5_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -377,7 +377,7 @@
                           <map>
                             <entry key="autoMirrored" value="true" />
                             <entry key="color" value="f30808" />
-                            <entry key="outputName" value="ic_delete_forever" />
+                            <entry key="outputName" value="resources" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/ic_toggle_theme.svg" />
                           </map>
                         </option>
