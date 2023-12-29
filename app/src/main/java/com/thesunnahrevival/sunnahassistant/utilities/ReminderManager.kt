@@ -7,10 +7,13 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
@@ -183,7 +186,10 @@ class ReminderManager private constructor() {
             }
         }
 
-        if (isForegroundEnabled) {
+        if (isForegroundEnabled && (VERSION.SDK_INT < VERSION_CODES.TIRAMISU || (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED))) {
             try {
                 val nextToDoServiceIntent = Intent(
                     context,
