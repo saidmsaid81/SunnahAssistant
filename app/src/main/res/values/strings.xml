@@ -278,7 +278,7 @@
   <string name="tips">Tips</string>
   <string name="to_do_templates">To-Do Templates (Random Order)</string>
   <string name="setup">Setup</string>
-  <string name="suratul_mulk">Reading Suratul Mulk and Al-Sajdah</string>
+  <string name="reading_suratul_mulk">Reading Suratul Mulk and Al-Sajdah</string>
   <string name="reading">Reading</string>
   <string name="sleeping">Sleeping Early</string>
   <string name="exercising">Exercising</string>
@@ -340,6 +340,20 @@
   <string name="fix_alarms_and_reminders">Sunnah Assistant is blocked from scheduling reminders by the system</string>
   <string name="tap_to_fix_this">Tap to fix this</string>
   <string name="refreshing_notifications">Refreshing notifications…</string>
+  <string name="resources">Resources</string>
+  <string name="selected_surahs">Selected Surahs</string>
+  <string name="suratul_baqarah">Suratul Baqarah</string>
+  <string name="suratul_kahf">Suratul Kahf</string>
+  <string name="suratul_sajdah">Suratul Sajdah</string>
+  <string name="suratulmulk">Suratul Mulk</string>
+  <string name="suratul_ikhlaas">Suratul Ikhlaas</string>
+  <string name="suratul_falaq">Suratul Falaq</string>
+  <string name="suratul_nas">Suratul Nas</string>
+  <string name="recommended_to_read_regularly">Recommended to read regularly</string>
+  <string name="recommended_to_read_every_friday">Recommended to read Every Friday</string>
+  <string name="recommended_to_read_before_sleeping">Recommended to read before sleeping (At-Tirmidhi, 3404)</string>
+  <string name="equivalent_in_reward_to_reciting_1_3_of_the_quran">Equivalent in reward to reciting 1/3 of the Quran</string>
+  <string name="for_protection_from_jinn_and_evil_eye">For protection from Jinn and Evil Eye</string>
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>

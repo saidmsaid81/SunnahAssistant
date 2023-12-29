@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="colorAccent">#D81B60</color>
+  <color name="colorAccent">#EC685B</color>
     <color name="fabColor">#EC685B</color>
     <color name="nextReminderCardColor">#EC685B</color>
     <color name="bottomSheetColor">#FFFFFF</color>

@@ -39,6 +39,14 @@
       tools:layout="@layout/fragment_tips">
 
   </fragment>
+
+  <fragment
+      android:id="@+id/resourcesFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.home.ResourcesFragment"
+      android:label="@string/app_name"
+      tools:layout="@layout/fragment_resources">
+
+  </fragment>
   <fragment
       android:id="@+id/settingsListFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.SettingsListFragment"
