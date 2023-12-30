@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -29,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentResourcesBinding
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
@@ -65,13 +70,15 @@ class ResourcesFragment : MenuBarFragment() {
 
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(start = 16.dp, end = 16.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(start = 16.dp, end = 16.dp)
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 ResourceSection(selectedSurahs, stringResource(R.string.selected_surahs))
-//                ResourceSection(hadith, "Hadith")
+                ResourceSection(hadith, stringResource(R.string.hadith))
+                val bottomNavViewHeight = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation_view).height
+                Spacer(modifier = Modifier.height(bottomNavViewHeight.dp))
             }
         }
     }
@@ -79,7 +86,7 @@ class ResourcesFragment : MenuBarFragment() {
 
     @Composable
     private fun selectedSurahs(): List<ResourceItem> {
-        return listOf<ResourceItem>(
+        return listOf(
             ResourceItem(
                 1,
                 stringResource(R.string.suratul_baqarah),
@@ -124,7 +131,7 @@ class ResourcesFragment : MenuBarFragment() {
     private fun hadith(): List<ResourceItem> {
         return listOf(
             ResourceItem(
-                1, "Daily Hadith", "From The Sunnah Revival Blog", ""
+                1, stringResource(R.string.daily_hadith), stringResource(R.string.from_the_sunnah_revival_blog), ""
             )
         )
     }
@@ -134,8 +141,8 @@ class ResourcesFragment : MenuBarFragment() {
         Text(
             text = sectionTitle,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp, top = 16.dp),
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, top = 16.dp),
             style = MaterialTheme.typography.body1.copy(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium
@@ -146,8 +153,8 @@ class ResourcesFragment : MenuBarFragment() {
             Card(
                 elevation = 4.dp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
             ) {
                 Row(modifier = Modifier.padding(16.dp)) {
                     Column(modifier = Modifier.weight(1F)) {
@@ -168,9 +175,9 @@ class ResourcesFragment : MenuBarFragment() {
                         imageVector = Icons.Default.KeyboardArrowRight,
                         contentDescription = "",
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .height(36.dp)
-                            .width(36.dp)
+                                .align(Alignment.CenterVertically)
+                                .height(36.dp)
+                                .width(36.dp)
                     )
                 }
             }

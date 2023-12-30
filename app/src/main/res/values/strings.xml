@@ -354,6 +354,9 @@
   <string name="recommended_to_read_before_sleeping">Recommended to read before sleeping (At-Tirmidhi, 3404)</string>
   <string name="equivalent_in_reward_to_reciting_1_3_of_the_quran">Equivalent in reward to reciting 1/3 of the Quran</string>
   <string name="for_protection_from_jinn_and_evil_eye">For protection from Jinn and Evil Eye</string>
+    <string name="hadith">Hadith</string>
+  <string name="daily_hadith">Daily Hadith</string>
+  <string name="from_the_sunnah_revival_blog">From The Sunnah Revival Blog</string>
   <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>
