@@ -129,9 +129,6 @@
     </receiver>
 
     <service
-        android:name="com.thesunnahrevival.sunnahassistant.services.NextToDoService"
-        android:exported="false" />
-    <service
         android:name="com.thesunnahrevival.sunnahassistant.widgets.TodaysToDosRemoteViewsService"
         android:permission="android.permission.BIND_REMOTEVIEWS" />
     <service

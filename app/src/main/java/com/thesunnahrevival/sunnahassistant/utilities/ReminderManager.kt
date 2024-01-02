@@ -7,19 +7,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.TimeZone
@@ -183,34 +179,6 @@ class ReminderManager private constructor() {
                     doNotDisturbMinutes = settings.doNotDisturbMinutes,
                     useReliableAlarms = settings.useReliableAlarms
                 )
-            }
-        }
-
-        if (isForegroundEnabled && (VERSION.SDK_INT < VERSION_CODES.TIRAMISU || (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
-                        context,
-                        android.Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED))) {
-            try {
-                val nextToDoServiceIntent = Intent(
-                    context,
-                    NextToDoService::class.java
-                )
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_TITLE, title)
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_TEXT, text)
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_TONE_URI, notificationToneUri)
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_VIBRATE, isVibrate)
-
-                    context.startForegroundService(
-                        nextToDoServiceIntent
-                    )
-                } else {
-                    context.startService(
-                        nextToDoServiceIntent
-                    )
-                }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
             }
         }
     }
