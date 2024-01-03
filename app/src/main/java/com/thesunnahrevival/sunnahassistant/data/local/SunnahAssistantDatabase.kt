@@ -34,6 +34,8 @@ import java.util.TreeSet
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun toDoDao(): ToDoDao
 
+    abstract fun dailyHadithDao(): DailyHadithDao
+
     fun closeDB() {
         INSTANCE?.close()
         INSTANCE = null

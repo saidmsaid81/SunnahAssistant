@@ -42,16 +42,16 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             inflater, R.layout.fragment_prayer_time_settings, container, false
         )
 
-        mViewModel.isPrayerSettingsUpdated = false
+        mainActivityViewModel.isPrayerSettingsUpdated = false
         binding.prayers = resources.getStringArray(R.array.prayer_names)
         binding.offsetOptions = resources.getStringArray(R.array.offset_options)
         binding.hoursLabel = getString(R.string.hours)
         binding.minutesLabel = getString(R.string.minutes)
         binding.onTimeLabel = resources.getStringArray(R.array.notify_options)[1]
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
             if (it != null) {
-                mViewModel.settingsValue = it
+                mainActivityViewModel.settingsValue = it
                 binding.settings = it
                 binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.calculationMethod.ordinal])
                 binding.setAsrCalculationMethod(
@@ -64,7 +64,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
         binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
-                val settingsValue = mViewModel.settingsValue ?: return@setOnCheckedChangeListener
+                val settingsValue = mainActivityViewModel.settingsValue ?: return@setOnCheckedChangeListener
                 binding.activatePrayerTimeAlerts.isChecked =
                     settingsValue.isAutomaticPrayerAlertsEnabled
                 settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
@@ -76,7 +76,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                             android.Manifest.permission.POST_NOTIFICATIONS
                         ) == PackageManager.PERMISSION_DENIED
                     ) {
-                        mViewModel.incrementNotificationPermissionRequestsCount()
+                        mainActivityViewModel.incrementNotificationPermissionRequestsCount()
                         requireActivity().requestPermissions(
                             arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
                             REQUEST_NOTIFICATION_PERMISSION_CODE
@@ -148,7 +148,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         enterOffsetFragment.arguments = Bundle().apply {
             putInt(
                 CURRENT_VALUE,
-                mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
+                mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
                     prayerOffsetIndex
                 ) ?: 0
             )
@@ -166,19 +166,19 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
         when (item?.groupId) {
             R.id.calculation_details -> {
-                mViewModel.settingsValue?.calculationMethod =
+                mainActivityViewModel.settingsValue?.calculationMethod =
                     CalculationMethod.values()[calculationMethodsStrings.indexOf(item.title.toString())]
             }
             R.id.asr_calculation_details -> {
-                mViewModel.settingsValue?.asrCalculationMethod =
+                mainActivityViewModel.settingsValue?.asrCalculationMethod =
                     Madhab.values()[asrMethods.indexOf(item.title.toString())]
             }
             R.id.higher_latitude_details -> {
-                mViewModel.settingsValue?.latitudeAdjustmentMethod =
+                mainActivityViewModel.settingsValue?.latitudeAdjustmentMethod =
                     latitudeMethods.indexOf(item.title.toString())
             }
             R.id.do_not_disturb -> {
-                mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
+                mainActivityViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
             }
             R.id.fajr_notification_settings -> setPrayerOffset(0, item)
             R.id.dhuhr_notification_settings -> setPrayerOffset(1, item)
@@ -192,22 +192,22 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
     private fun setPrayerOffset(prayerTimeIndex: Int, item: MenuItem) {
         val notifyOptions = resources.getStringArray(R.array.notify_options)
-        mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, true)
+        mainActivityViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, true)
 
         when (notifyOptions.indexOf(item.title)) {
-            0 -> mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, false)
-            1 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, 0)
-            2 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -5)
-            3 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -15)
-            4 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -30)
+            0 -> mainActivityViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, false)
+            1 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, 0)
+            2 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -5)
+            3 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -15)
+            4 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -30)
             else -> showEnterOffsetFragment(prayerTimeIndex)
         }
     }
 
     private fun updateSettings() {
-        mViewModel.settingsValue?.let {
-            mViewModel.updateSettings(it)
-            mViewModel.isPrayerSettingsUpdated = true
+        mainActivityViewModel.settingsValue?.let {
+            mainActivityViewModel.updateSettings(it)
+            mainActivityViewModel.isPrayerSettingsUpdated = true
         }
     }
 
@@ -248,18 +248,18 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
     override fun onPause() {
         super.onPause()
-        if (mViewModel.isPrayerSettingsUpdated)
-            mViewModel.updatePrayerTimesData()
+        if (mainActivityViewModel.isPrayerSettingsUpdated)
+            mainActivityViewModel.updatePrayerTimesData()
     }
 
     override fun onOffsetSave(offsetInMinutes: Int, index: Int) {
         val prayerTimeOffsetsInMinutes =
-            mViewModel.settingsValue?.prayerTimeOffsetsInMinutes ?: return
+            mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes ?: return
         if (index in prayerTimeOffsetsInMinutes.indices) {
-            mViewModel.settingsValue?.let {
+            mainActivityViewModel.settingsValue?.let {
                 prayerTimeOffsetsInMinutes[index] = offsetInMinutes
-                mViewModel.updateSettings(it)
-                mViewModel.isPrayerSettingsUpdated = true
+                mainActivityViewModel.updateSettings(it)
+                mainActivityViewModel.isPrayerSettingsUpdated = true
             }
         }
     }

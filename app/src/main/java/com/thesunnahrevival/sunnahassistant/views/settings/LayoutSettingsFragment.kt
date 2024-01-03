@@ -27,8 +27,8 @@ class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
             binding.themeSettings.setOnClickListener(this)
 
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
-            mViewModel.settingsValue = it
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
+            mainActivityViewModel.settingsValue = it
             binding.settings = it
         }
 
@@ -49,12 +49,12 @@ class LayoutSettingsFragment : FragmentWithPopups(), View.OnClickListener {
         return when (item?.groupId) {
             R.id.theme_settings -> {
                 if (item.title.toString().matches("Light".toRegex())) {
-                    mViewModel.settingsValue?.isLightMode = true
-                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                    mainActivityViewModel.settingsValue?.isLightMode = true
+                    mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 } else {
-                    mViewModel.settingsValue?.isLightMode = false
-                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                    mainActivityViewModel.settingsValue?.isLightMode = false
+                    mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
                 true

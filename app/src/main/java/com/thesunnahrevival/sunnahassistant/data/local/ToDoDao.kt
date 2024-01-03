@@ -232,15 +232,4 @@ interface ToDoDao {
 
     @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextToDo WHERE id = 1")
     suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextToDo: Boolean)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertDailyHadithList(hadithList : List<DailyHadith>)
-
-    @Query(
-        "SELECT * FROM daily_hadith ORDER BY pubDateMilliseconds DESC "
-    )
-    fun getDailyHadithList(): PagingSource<Int, DailyHadith>
-
-    @Query("SELECT EXISTS (SELECT id FROM daily_hadith WHERE pubDateMilliseconds = :todaysDateId )")
-    suspend fun isTodaysHadithLoaded(todaysDateId : Long): Boolean
 }

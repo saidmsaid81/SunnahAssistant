@@ -37,12 +37,12 @@ class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
         val adapter = MalformedToDosAdapter(this)
         resolveMalformedToDosFragmentBinding.recyclerView.adapter = adapter
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
-            mViewModel.settingsValue = it
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
+            mainActivityViewModel.settingsValue = it
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            mViewModel.getMalformedToDos().collect { toDos: List<ToDo> ->
+            mainActivityViewModel.getMalformedToDos().collect { toDos: List<ToDo> ->
                 if (toDos.isNotEmpty()) {
                     adapter.setData(toDos)
                     resolveMalformedToDosFragmentBinding.deleteAll.setOnClickListener {
@@ -59,7 +59,7 @@ class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
             .setTitle(getString(R.string.delete_all_malformed_todos))
             .setMessage(getString(R.string.confirm_deleting_malformed_to_dos))
             .setPositiveButton(R.string.yes) { _, _ ->
-                mViewModel.deleteListOfToDos(toDos)
+                mainActivityViewModel.deleteListOfToDos(toDos)
                 Toast.makeText(requireContext(), R.string.delete_to_do, Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
             }
@@ -68,20 +68,20 @@ class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
     }
 
     override fun onFixClickListener(toDo: ToDo) {
-        mViewModel.isToDoTemplate = true
-        mViewModel.selectedToDo = toDo
+        mainActivityViewModel.isToDoTemplate = true
+        mainActivityViewModel.selectedToDo = toDo
         findNavController().navigate(R.id.toDoDetailsFragment)
     }
 
     override fun onDeleteClickListener(toDo: ToDo) {
         view?.rootView?.let {
-            mViewModel.deleteToDo(toDo)
+            mainActivityViewModel.deleteToDo(toDo)
             Snackbar.make(
                 it, getString(R.string.delete_to_do),
                 Snackbar.LENGTH_LONG
             ).apply {
                 view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-                setAction(getString(R.string.undo_delete)) { mViewModel.insertToDo(toDo) }
+                setAction(getString(R.string.undo_delete)) { mainActivityViewModel.insertToDo(toDo) }
                 setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
                 show()
             }

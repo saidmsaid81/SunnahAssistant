@@ -38,9 +38,9 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
         val adapter = TipsAdapter(this)
         val tips = arrayListOf<Tip>()
 
-        templateToDos = mViewModel.getTemplateToDos()
+        templateToDos = mainActivityViewModel.getTemplateToDos()
 
-        mViewModel.getTemplateToDoIds().observe(viewLifecycleOwner) { toDoIdsInDB: List<Int> ->
+        mainActivityViewModel.getTemplateToDoIds().observe(viewLifecycleOwner) { toDoIdsInDB: List<Int> ->
             val templates = templateToDos
             templates?.let {
                 for (template in it.values) {
@@ -69,8 +69,8 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
 
     private fun getTips(): ArrayList<Tip> {
         val tips = arrayListOf<Tip>()
-        if (mViewModel.settingsValue?.isAutomaticPrayerAlertsEnabled == false ||
-            mViewModel.settingsValue?.formattedAddress?.isBlank() == true
+        if (mainActivityViewModel.settingsValue?.isAutomaticPrayerAlertsEnabled == false ||
+            mainActivityViewModel.settingsValue?.formattedAddress?.isBlank() == true
         )
             tips.add(
                 Tip(
@@ -88,8 +88,8 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
     override fun onSetupClickListener(launchFragment: Int, toDoId: Int?) {
         if (launchFragment == R.id.toDoDetailsFragment && toDoId != null) {
             templateToDos?.getOrDefault(toDoId, null)?.let {
-                mViewModel.selectedToDo = it.second
-                mViewModel.isToDoTemplate = true
+                mainActivityViewModel.selectedToDo = it.second
+                mainActivityViewModel.isToDoTemplate = true
             }
         }
         findNavController().navigate(launchFragment)
