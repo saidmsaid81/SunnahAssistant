@@ -30,11 +30,11 @@ class ChangelogFragment : SunnahAssistantFragment() {
         val view = changelogFragmentBinding.root
 
 
-        mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
-        mViewModel.settingsValue?.appVersion = BuildConfig.VERSION_NAME
-        mViewModel.settingsValue?.appVersionCode = BuildConfig.VERSION_CODE
-        mViewModel.settingsValue?.categories?.addAll(requireContext().resources.getStringArray(R.array.categories))
-        mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+        mainActivityViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
+        mainActivityViewModel.settingsValue?.appVersion = BuildConfig.VERSION_NAME
+        mainActivityViewModel.settingsValue?.appVersionCode = BuildConfig.VERSION_CODE
+        mainActivityViewModel.settingsValue?.categories?.addAll(requireContext().resources.getStringArray(R.array.categories))
+        mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
 
         return view
     }

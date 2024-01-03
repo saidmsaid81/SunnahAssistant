@@ -379,37 +379,6 @@ class SunnahAssistantRepository private constructor(private val applicationConte
             .first()
     }
 
-    fun getDailyHadithFromTheSunnahRevivalBlog(): PagingSource<Int, DailyHadith> {
-        return mToDoDao.getDailyHadithList()
-    }
-
-    suspend fun fetchHadith() {
-        try {
-            val idDateFormat = SimpleDateFormat("yyyyMMdd")
-
-            if (!mToDoDao.isTodaysHadithLoaded(idDateFormat.format(Date()).toLong())) {
-                val rssParser = RssParser()
-                val items =
-                    rssParser.getRssChannel(THE_SUNNAH_REVIVAL_RSS_FEED).items
-                val simpleDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z")
-                val dailyHadithList =
-                    items.filter { it.title != null && it.content != null && it.pubDate != null }
-                        .map {
-                            val publishDate = simpleDateFormat.parse(it.pubDate!!) ?: Date()
-                            DailyHadith(
-                                id = idDateFormat.format(publishDate).toLong(),
-                                title = it.title!!,
-                                pubDateMilliseconds = publishDate.time,
-                                content = it.content!!
-                            )
-                        }
-                mToDoDao.insertDailyHadithList(dailyHadithList)
-            }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
     companion object {
         @Volatile
         private var INSTANCE: SunnahAssistantRepository? = null

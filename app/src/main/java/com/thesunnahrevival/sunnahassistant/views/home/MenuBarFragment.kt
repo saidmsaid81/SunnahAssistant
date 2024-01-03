@@ -54,7 +54,7 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), MenuProvider {
                 }
                 val status = mAppSettings?.isLightMode ?: true
                 mAppSettings?.isLightMode = !status
-                mAppSettings?.let { mViewModel.updateSettings(it) }
+                mAppSettings?.let { mainActivityViewModel.updateSettings(it) }
                 return true
             }
             R.id.settings -> {

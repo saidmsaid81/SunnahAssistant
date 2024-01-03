@@ -78,7 +78,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             inflater, R.layout.fragment_to_do_details, container, false
         )
 
-        mToDo = mViewModel.selectedToDo
+        mToDo = mainActivityViewModel.selectedToDo
         (requireActivity() as MainActivity).supportActionBar?.setTitle(
             if (mToDo.id == 0)
                 R.string.add_new_to_do
@@ -134,7 +134,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.tip.setOnClickListener {
             findNavController().navigate(R.id.prayerTimeSettingsFragment)
         }
-        mViewModel.getToDoLiveData(mViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
+        mainActivityViewModel.getToDoLiveData(mainActivityViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
             if (it != null) {
                 val timeString = formatTimeInMilliseconds(requireContext(), it.timeInMilliseconds)
                 updateToDoTimeView(timeString)
@@ -160,7 +160,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateToDoCategoryView(mToDo.category)
         updateToDoTimeView(formatTimeInMilliseconds(context, mToDo.timeInMilliseconds))
         updateNotifyView()
-        updateMarkAsCompleteView(if (mToDo.isComplete(mViewModel.selectedToDoDate)) 1 else 0)
+        updateMarkAsCompleteView(if (mToDo.isComplete(mainActivityViewModel.selectedToDoDate)) 1 else 0)
         updateTipView()
     }
 
@@ -368,7 +368,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             }
             R.id.to_do_category -> {
                 if (!isAutomaticPrayerTime(R.string.category_cannot_be_changed))
-                    mViewModel.settingsValue?.categories?.let {
+                    mainActivityViewModel.settingsValue?.categories?.let {
                         mToDoCategories.clear()
                         mToDoCategories.addAll(it)
                         val createNewCategory = getString(R.string.create_new_categories)
@@ -393,7 +393,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     )
                     putBoolean(
                         DatePickerFragment.SHOWHIJRIDATE,
-                        mViewModel.settingsValue?.includeHijriDateInCalendar ?: true
+                        mainActivityViewModel.settingsValue?.includeHijriDateInCalendar ?: true
                     )
                 }
                 datePickerFragment.arguments = bundle
@@ -580,7 +580,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 .setTitle(R.string.delete_to_do_title)
                 .setMessage(R.string.delete_to_do_confirmation)
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    mViewModel.deleteToDo(mToDo)
+                    mainActivityViewModel.deleteToDo(mToDo)
                     Toast.makeText(requireContext(), R.string.delete_to_do, Toast.LENGTH_LONG)
                         .show()
                     findNavController().navigateUp()
@@ -610,16 +610,16 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mToDo.offsetInMinutes != newToDo.offsetInMinutes ||
                 mToDo.completedDates != newToDo.completedDates
             ) {
-                mViewModel.updatePrayerTimeDetails(mToDo, newToDo)
+                mainActivityViewModel.updatePrayerTimeDetails(mToDo, newToDo)
                 Toast.makeText(
                     requireContext(), R.string.successfully_updated, Toast.LENGTH_LONG
                 )
                     .show()
             }
-        } else if (mToDo != newToDo || mViewModel.isToDoTemplate) {
-            mViewModel.insertToDo(newToDo)
-            if (newToDo.id == 0 || mViewModel.isToDoTemplate) {
-                mViewModel.isToDoTemplate = false
+        } else if (mToDo != newToDo || mainActivityViewModel.isToDoTemplate) {
+            mainActivityViewModel.insertToDo(newToDo)
+            if (newToDo.id == 0 || mainActivityViewModel.isToDoTemplate) {
+                mainActivityViewModel.isToDoTemplate = false
                 Toast.makeText(
                     requireContext(), R.string.successfuly_added_sunnah_to_dos, Toast.LENGTH_LONG
                 ).show()
@@ -634,7 +634,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     android.Manifest.permission.POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_DENIED
             ) {
-                mViewModel.incrementNotificationPermissionRequestsCount()
+                mainActivityViewModel.incrementNotificationPermissionRequestsCount()
                 requireActivity().requestPermissions(
                     arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
                     REQUEST_NOTIFICATION_PERMISSION_CODE
@@ -664,9 +664,9 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 .indexOf(mBinding.markAsCompleteValue.text) == 1
         ) {
             //Marked as Yes
-            completedDates.add(mViewModel.selectedToDoDate.toString())
+            completedDates.add(mainActivityViewModel.selectedToDoDate.toString())
         } else
-            completedDates.remove(mViewModel.selectedToDoDate.toString())
+            completedDates.remove(mainActivityViewModel.selectedToDoDate.toString())
 
         try {
             return ToDo(

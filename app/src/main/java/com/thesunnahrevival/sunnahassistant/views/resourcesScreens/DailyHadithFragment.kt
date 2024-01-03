@@ -1,24 +1,19 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.Snackbar
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
-import com.prof18.rssparser.RssParser
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentDailyHadithBinding
+import com.thesunnahrevival.sunnahassistant.viewmodels.DailyHadithViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.DailyHadithAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DailyHadithFragment: SunnahAssistantFragment() {
     private var _dailyHadithFragmentBinding: FragmentDailyHadithBinding? = null
@@ -33,7 +28,8 @@ class DailyHadithFragment: SunnahAssistantFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         _dailyHadithFragmentBinding = FragmentDailyHadithBinding.inflate(inflater)
 
-        mViewModel.showDailyHadithLoadingIndicator.observe(viewLifecycleOwner) {
+        val viewModel = ViewModelProvider(this)[DailyHadithViewModel::class.java]
+        viewModel.showDailyHadithLoadingIndicator.observe(viewLifecycleOwner) {
             if (it == true) {
                 dailyHadithFragmentBinding.progressBar.visibility = View.VISIBLE
                 dailyHadithFragmentBinding.viewPager.visibility = View.GONE
@@ -43,7 +39,7 @@ class DailyHadithFragment: SunnahAssistantFragment() {
             }
         }
 
-        if (mViewModel.isDeviceOffline) {
+        if (mainActivityViewModel.isDeviceOffline) {
             val mainActivity = requireActivity() as MainActivity
             mainActivity.popupSnackbar(
                 mainActivity,
@@ -60,7 +56,7 @@ class DailyHadithFragment: SunnahAssistantFragment() {
         dailyHadithFragmentBinding.viewPager.adapter = dailyHadithAdapter
         dailyHadithFragmentBinding.viewPager.reduceDragSensitivity(4)
 
-        mViewModel.getDailyHadithList().observe(viewLifecycleOwner) {
+        viewModel.getDailyHadithList().observe(viewLifecycleOwner) {
             dailyHadithAdapter.submitData(lifecycle, it)
         }
         return dailyHadithFragmentBinding.root

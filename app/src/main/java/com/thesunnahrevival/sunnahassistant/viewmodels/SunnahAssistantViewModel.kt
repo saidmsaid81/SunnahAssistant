@@ -90,8 +90,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
 
-    val showDailyHadithLoadingIndicator = MutableLiveData(true)
-
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
             mutableReminderParameters.value?.first ?: System.currentTimeMillis()
@@ -610,20 +608,5 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         mRepository.closeDB()
         databaseFile.writeBytes(existingDataFile.readBytes())
         existingDataFile.delete()
-    }
-
-    fun getDailyHadithList(): LiveData<PagingData<DailyHadith>> {
-        viewModelScope.launch(Dispatchers.IO) {
-            mRepository.fetchHadith()
-            withContext(Dispatchers.Main) {
-                showDailyHadithLoadingIndicator.value = false
-            }
-        }
-        return Pager(
-            PagingConfig(3),
-            pagingSourceFactory = {
-                mRepository.getDailyHadithFromTheSunnahRevivalBlog()
-            }
-        ).liveData.cachedIn(viewModelScope)
     }
 }

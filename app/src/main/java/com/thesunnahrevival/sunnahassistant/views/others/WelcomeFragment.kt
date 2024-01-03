@@ -29,7 +29,7 @@ class WelcomeFragment : SunnahAssistantFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings?.isFirstLaunch == false) {
                 findNavController().navigate(R.id.todayFragment)
             }
@@ -54,7 +54,7 @@ class WelcomeFragment : SunnahAssistantFragment() {
                     (requireActivity() as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
                         welcomeFragmentBinding.checkbox.isChecked
                     )
-                    mViewModel.updateSettings(settings)
+                    mainActivityViewModel.updateSettings(settings)
                 }
             }
         }

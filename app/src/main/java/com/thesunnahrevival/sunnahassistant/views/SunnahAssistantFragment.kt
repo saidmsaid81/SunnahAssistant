@@ -11,7 +11,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
 open class SunnahAssistantFragment : Fragment() {
-    protected lateinit var mViewModel: SunnahAssistantViewModel
+    protected lateinit var mainActivityViewModel: SunnahAssistantViewModel
 
     @CallSuper
     override fun onCreateView(
@@ -19,7 +19,7 @@ open class SunnahAssistantFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
+        mainActivityViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
