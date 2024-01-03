@@ -346,7 +346,7 @@ open class MainActivity : AppCompatActivity() {
         mViewModel.refreshScheduledReminders()
     }
 
-    private fun popupSnackbar(
+    fun popupSnackbar(
         activity: MainActivity,
         message: String,
         duration: Int,
