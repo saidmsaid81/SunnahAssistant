@@ -358,7 +358,8 @@
   <string name="daily_hadith">Daily Hadith</string>
   <string name="from_the_sunnah_revival_blog">From The Sunnah Revival Blog</string>
   <string name="showing_cached_data_because_device_is_offline">Showing cached data because device is offline</string>
-  <string-array name="categories">
+    <string name="no_hadith_found">No Hadith Found</string>
+    <string-array name="categories">
     <item>Uncategorized</item>
     <item>Sunnah</item>
     <item>Prayer</item>

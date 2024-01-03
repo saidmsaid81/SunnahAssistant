@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentDailyHadithBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.DailyHadithViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.DailyHadithAdapter
+import okhttp3.internal.notify
 
 class DailyHadithFragment: SunnahAssistantFragment() {
     private var _dailyHadithFragmentBinding: FragmentDailyHadithBinding? = null
@@ -33,6 +37,7 @@ class DailyHadithFragment: SunnahAssistantFragment() {
             if (it == true) {
                 dailyHadithFragmentBinding.progressBar.visibility = View.VISIBLE
                 dailyHadithFragmentBinding.viewPager.visibility = View.GONE
+//                dailyHadithFragmentBinding.noHadithFound.visibility = View.GONE
             } else {
                 dailyHadithFragmentBinding.progressBar.visibility = View.GONE
                 dailyHadithFragmentBinding.viewPager.visibility = View.VISIBLE
@@ -56,8 +61,17 @@ class DailyHadithFragment: SunnahAssistantFragment() {
         dailyHadithFragmentBinding.viewPager.adapter = dailyHadithAdapter
         dailyHadithFragmentBinding.viewPager.reduceDragSensitivity(4)
 
-        viewModel.getDailyHadithList().observe(viewLifecycleOwner) {
-            dailyHadithAdapter.submitData(lifecycle, it)
+        dailyHadithAdapter.addLoadStateListener {
+            dailyHadithFragmentBinding.noHadithFound.visibility = View.GONE
+            if (it.append.endOfPaginationReached) {
+                if (dailyHadithAdapter.itemCount < 1) {
+                    dailyHadithFragmentBinding.noHadithFound.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        viewModel.getDailyHadithList().observe(viewLifecycleOwner) { pagingData: PagingData<DailyHadith> ->
+            dailyHadithAdapter.submitData(lifecycle, pagingData)
         }
         return dailyHadithFragmentBinding.root
     }
