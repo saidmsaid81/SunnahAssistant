@@ -11,6 +11,31 @@
         android:layout_centerInParent="true"
         android:visibility="visible"/>
 
+    <LinearLayout
+        android:id="@+id/no_hadith_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_data_found"
+            android:layout_gravity="center"
+            android:contentDescription="@string/no_hadith_found" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:layout_gravity="center"
+            android:text="@string/no_hadith_found"/>
+
+    </LinearLayout>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
