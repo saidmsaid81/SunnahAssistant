@@ -1,7 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.adapters
 
+import android.text.format.DateFormat.*
 import android.text.method.LinkMovementMethod
-import android.text.method.MovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +14,11 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
+import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.GregorianCalendar
 
-class DailyHadithAdapter: PagingDataAdapter<DailyHadith, DailyHadithAdapter.ViewHolder>(
+class DailyHadithAdapter(private val showHijriDate: Boolean) : PagingDataAdapter<DailyHadith, DailyHadithAdapter.ViewHolder>(
     dailyHadithComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyHadithAdapter.ViewHolder {
@@ -41,7 +42,8 @@ class DailyHadithAdapter: PagingDataAdapter<DailyHadith, DailyHadithAdapter.View
             view.findViewById<TextView>(R.id.published_date).text = generateDateText(
                 GregorianCalendar(getLocale()).apply {
                     time = Date(hadith.pubDateMilliseconds)
-                }
+                },
+                includeHijriDate = showHijriDate
             )
 
             val contentTextView = view.findViewById<TextView>(R.id.content)
