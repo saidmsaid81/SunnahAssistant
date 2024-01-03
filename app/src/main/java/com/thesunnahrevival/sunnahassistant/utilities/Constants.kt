@@ -25,6 +25,8 @@ const val NOTIFICATION_DND_MINUTES =
     "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
 const val TEXT_COLOR = "text_color"
 
+const val THE_SUNNAH_REVIVAL_RSS_FEED = "https://thesunnahrevival.com/category/daily-hadith/feed"
+
 const val PRAYER_TIMES_REMINDERS_ID = -1019700
 
 const val REQUEST_NOTIFICATION_PERMISSION_CODE = 100

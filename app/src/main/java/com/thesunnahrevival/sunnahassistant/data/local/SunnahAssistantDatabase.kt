@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -10,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
@@ -22,7 +24,12 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.TreeSet
 
-@Database(entities = [ToDo::class, AppSettings::class], version = 7)
+@Database(
+    entities = [ToDo::class, AppSettings::class, DailyHadith::class],
+    version = 8,
+    autoMigrations = [AutoMigration(from = 7, to = 8)],
+    exportSchema = true
+    )
 @TypeConverters(RoomTypeConverter::class)
 abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun toDoDao(): ToDoDao

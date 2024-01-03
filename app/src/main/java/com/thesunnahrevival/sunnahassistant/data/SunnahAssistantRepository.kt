@@ -9,17 +9,20 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
+import com.prof18.rssparser.RssParser
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
 import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
+import com.thesunnahrevival.sunnahassistant.utilities.THE_SUNNAH_REVIVAL_RSS_FEED
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +33,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
@@ -373,6 +377,37 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         return applicationContext.dataStore.data
             .map { flag -> flag[flagKey] }
             .first()
+    }
+
+    fun getDailyHadithFromTheSunnahRevivalBlog(): PagingSource<Int, DailyHadith> {
+        return mToDoDao.getDailyHadithList()
+    }
+
+    suspend fun fetchHadith() {
+        try {
+            val idDateFormat = SimpleDateFormat("yyyyMMdd")
+
+            if (!mToDoDao.isTodaysHadithLoaded(idDateFormat.format(Date()).toLong())) {
+                val rssParser = RssParser()
+                val items =
+                    rssParser.getRssChannel(THE_SUNNAH_REVIVAL_RSS_FEED).items
+                val simpleDateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z")
+                val dailyHadithList =
+                    items.filter { it.title != null && it.content != null && it.pubDate != null }
+                        .map {
+                            val publishDate = simpleDateFormat.parse(it.pubDate!!) ?: Date()
+                            DailyHadith(
+                                id = idDateFormat.format(publishDate).toLong(),
+                                title = it.title!!,
+                                pubDateMilliseconds = publishDate.time,
+                                content = it.content!!
+                            )
+                        }
+                mToDoDao.insertDailyHadithList(dailyHadithList)
+            }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     companion object {

@@ -42,9 +42,17 @@
 
   <fragment
       android:id="@+id/resourcesFragment"
-      android:name="com.thesunnahrevival.sunnahassistant.views.home.ResourcesFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourcesFragment"
       android:label="@string/app_name"
       tools:layout="@layout/fragment_resources">
+
+  </fragment>
+
+  <fragment
+      android:id="@+id/dailyHadithFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.DailyHadithFragment"
+      android:label="@string/daily_hadith"
+      tools:layout="@layout/fragment_daily_hadith">
 
   </fragment>
   <fragment
