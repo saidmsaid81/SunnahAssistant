@@ -30,6 +30,8 @@ import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getFormattedOffset
@@ -569,8 +571,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 "${getString(R.string.time_label)}: $time\n" +
                 "${getString(R.string.completed)}: $completed\n\n" +
                 "${getString(R.string.powered_by_sunnah_assistant)}\n" +
-                "Get Sunnah Assistant App at\n" +
-                "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+                "Get Sunnah Assistant App at\n$SUNNAH_ASSISTANT_APP_LINK"
 
     }
 
@@ -691,7 +692,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             Log.e("Exception", exception.toString())
             Toast.makeText(
                 requireContext(),
-                "An error occurred. Please try again.",
+                getString(R.string.an_error_occurred, SUPPORT_EMAIL),
                 Toast.LENGTH_LONG
             )
                 .show()

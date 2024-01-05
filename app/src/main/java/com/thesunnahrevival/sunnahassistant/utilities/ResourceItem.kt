@@ -4,5 +4,5 @@ data class ResourceItem(
     val id: Int,
     val title: String,
     val description: String,
-    val destination: String
+    val destination: Int
 )

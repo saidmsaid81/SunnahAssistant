@@ -9,7 +9,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 
 @Dao
 interface DailyHadithDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDailyHadithList(hadithList : List<DailyHadith>)
 
     @Query(

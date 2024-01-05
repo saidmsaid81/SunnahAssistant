@@ -1,6 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.views.adapters
 
-import android.text.format.DateFormat.*
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.GregorianCalendar
 

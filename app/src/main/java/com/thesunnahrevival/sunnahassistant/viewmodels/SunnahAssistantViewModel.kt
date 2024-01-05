@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -404,9 +405,17 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         get() {
             val connectivityManager = getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return connectivityManager.activeNetworkInfo == null ||
-                    !connectivityManager.activeNetworkInfo!!.isConnected
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val activeNetwork = connectivityManager.activeNetwork
+                val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+                activeNetwork == null || networkCapabilities == null ||
+                        !networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            } else {
+                connectivityManager.activeNetworkInfo == null ||
+                        !connectivityManager.activeNetworkInfo!!.isConnected
+            }
         }
+
 
 
     fun localeUpdate() {

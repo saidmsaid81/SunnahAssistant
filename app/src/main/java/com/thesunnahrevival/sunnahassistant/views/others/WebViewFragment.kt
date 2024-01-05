@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
 
 open class WebViewFragment : Fragment() {
 
@@ -86,7 +87,7 @@ open class WebViewFragment : Fragment() {
                         getString(
                             R.string.get_sunnah_assistant
                         )
-                    } https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+                    } $SUNNAH_ASSISTANT_APP_LINK "
                 )
                 startActivity(
                     Intent.createChooser(
