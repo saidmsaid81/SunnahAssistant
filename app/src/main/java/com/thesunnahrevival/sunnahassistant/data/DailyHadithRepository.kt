@@ -19,7 +19,7 @@ class DailyHadithRepository private constructor(private val applicationContext: 
         return mDailyHadithDao.getDailyHadithList()
     }
 
-    suspend fun fetchHadith() {
+    suspend fun fetchDailyHadith(): DailyHadithFetchingStatus {
         try {
             val idDateFormat = SimpleDateFormat("yyyyMMdd")
 
@@ -41,8 +41,11 @@ class DailyHadithRepository private constructor(private val applicationContext: 
                         }
                 mDailyHadithDao.insertDailyHadithList(dailyHadithList)
             }
+
+            return DailyHadithFetchingStatus.SUCCESSFUL
         } catch (exception: Exception) {
             exception.printStackTrace()
+            return DailyHadithFetchingStatus.FAILED
         }
     }
 
@@ -58,5 +61,9 @@ class DailyHadithRepository private constructor(private val applicationContext: 
 
         private fun buildRepository(context: Context) =
             DailyHadithRepository(context.applicationContext)
+    }
+
+    enum class DailyHadithFetchingStatus {
+        LOADING, SUCCESSFUL, FAILED
     }
 }

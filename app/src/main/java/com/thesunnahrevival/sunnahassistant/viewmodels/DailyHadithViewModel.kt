@@ -21,20 +21,29 @@ class DailyHadithViewModel(application: Application) : AndroidViewModel(applicat
     private val mRepository: DailyHadithRepository =
         DailyHadithRepository.getInstance(application)
 
-    val showDailyHadithLoadingIndicator = MutableLiveData(true)
+    val dailyHadithFetchingStatus = MutableLiveData<DailyHadithRepository.DailyHadithFetchingStatus?>(null)
 
     fun getDailyHadithList(): LiveData<PagingData<DailyHadith>> {
-        viewModelScope.launch(Dispatchers.IO) {
-            mRepository.fetchHadith()
-            withContext(Dispatchers.Main) {
-                showDailyHadithLoadingIndicator.value = false
-            }
-        }
         return Pager(
             PagingConfig(3),
             pagingSourceFactory = {
                 mRepository.getDailyHadithFromTheSunnahRevivalBlog()
             }
         ).liveData.cachedIn(viewModelScope)
+    }
+
+    fun fetchDailyHadith() {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            withContext(Dispatchers.Main) {
+                dailyHadithFetchingStatus.value = DailyHadithRepository.DailyHadithFetchingStatus.LOADING
+            }
+
+            val fetchDailyHadithSatus = mRepository.fetchDailyHadith()
+
+            withContext(Dispatchers.Main) {
+                dailyHadithFetchingStatus.value = fetchDailyHadithSatus
+            }
+        }
     }
 }
