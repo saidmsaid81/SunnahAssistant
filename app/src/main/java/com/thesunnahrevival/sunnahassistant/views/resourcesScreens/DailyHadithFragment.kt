@@ -18,17 +18,13 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.DailyHadithRepository
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentDailyHadithBinding
 import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
-import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.viewmodels.DailyHadithViewModel
-import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.DailyHadithAdapter
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
@@ -58,49 +54,8 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
         return dailyHadithFragmentBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        showDailyHadith()
-    }
-
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.web_view_menu, menu)
-    }
-
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        when (menuItem.itemId) {
-            R.id.share_page -> {
-
-                if (dailyHadithFragmentBinding.viewPager.adapter is DailyHadithAdapter) {
-                    val currentVisibleHadith =
-                        (dailyHadithFragmentBinding.viewPager.adapter as DailyHadithAdapter).peek(
-                            dailyHadithFragmentBinding.viewPager.currentItem
-                        )
-
-                    val title = currentVisibleHadith?.title ?: ""
-                    val content = currentVisibleHadith?.content ?: ""
-
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    intent.putExtra(
-                        Intent.EXTRA_TEXT,
-                        HtmlCompat.fromHtml(
-                            "$title \n\n$content\n\n$SUNNAH_ASSISTANT_APP_LINK",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        ).toString()
-                    )
-                    startActivity(
-                        Intent.createChooser(
-                            intent,
-                            getString(R.string.share_app)
-                        )
-                    )
-                    return true
-                }
-            }
-        }
-
-        return false
     }
 
     private fun showDailyHadith() {
@@ -112,6 +67,7 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
 
         dailyHadithAdapter.addLoadStateListener {
             dailyHadithFragmentBinding.noHadithFound.visibility = View.GONE
+            dailyHadithFragmentBinding.progressBar.visibility = View.GONE
             if (it.append.endOfPaginationReached) {
                 if (dailyHadithAdapter.itemCount < 1) {
                     dailyHadithFragmentBinding.noHadithFound.visibility = View.VISIBLE
@@ -138,29 +94,19 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
             }
         }
 
-        if (mainActivityViewModel.isDeviceOffline) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                networkUnavailableSnackbar.setAction(R.string.ok) {
-                    networkUnavailableSnackbar.dismiss()
-                }
-                networkUnavailableSnackbar.setActionTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        android.R.color.black
-                    )
-                )
-            }
-            networkUnavailableSnackbar.show()
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val connectivityManager =
                 requireActivity().getSystemService(ConnectivityManager::class.java)
             connectivityManager.registerDefaultNetworkCallback(networkCallback)
         }
 
-        mViewModel.dailyHadithFetchingStatus.observe(viewLifecycleOwner) {
-            if (it == null) {
+        if (mainActivityViewModel.isDeviceOffline) {
+            showDailyHadith()
+            networkUnavailableSnackbar.show()
+        }
+
+        mViewModel.dailyHadithFetchingStatus.observe(viewLifecycleOwner) { status ->
+            if (status == null) {
                 return@observe
             }
 
@@ -168,14 +114,17 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
             dailyHadithFragmentBinding.viewPager.visibility = View.VISIBLE
             networkUnavailableSnackbar.dismiss()
 
-            when (it) {
+            if (status != DailyHadithRepository.DailyHadithFetchingStatus.LOADING) {
+                showDailyHadith()
+            }
+
+            when (status) {
                 DailyHadithRepository.DailyHadithFetchingStatus.LOADING -> {
                     dailyHadithFragmentBinding.progressBar.visibility = View.VISIBLE
                     dailyHadithFragmentBinding.viewPager.visibility = View.GONE
                 }
 
                 DailyHadithRepository.DailyHadithFetchingStatus.SUCCESSFUL -> {
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         val connectivityManager =
                             requireActivity().getSystemService(ConnectivityManager::class.java)
@@ -186,10 +135,10 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
 
                 DailyHadithRepository.DailyHadithFetchingStatus.FAILED -> {
                     showAnErrorOccurredSnackbar()
-
                 }
             }
         }
+
     }
 
     private fun showAnErrorOccurredSnackbar() {
@@ -230,6 +179,51 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
                     R.color.fabColor
                 )
             )
+            this.setAction(R.string.ok) {
+                dismiss()
+            }
+            this.setActionTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    android.R.color.black
+                )
+            )
         }
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.share_page -> {
+
+                if (dailyHadithFragmentBinding.viewPager.adapter is DailyHadithAdapter) {
+                    val currentVisibleHadith =
+                        (dailyHadithFragmentBinding.viewPager.adapter as DailyHadithAdapter).peek(
+                            dailyHadithFragmentBinding.viewPager.currentItem
+                        )
+
+                    val title = currentVisibleHadith?.title ?: ""
+                    val content = currentVisibleHadith?.content ?: ""
+
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "text/plain"
+                    intent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        HtmlCompat.fromHtml(
+                            "$title \n\n$content\n\n$SUNNAH_ASSISTANT_APP_LINK",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        ).toString()
+                    )
+                    startActivity(
+                        Intent.createChooser(
+                            intent,
+                            getString(R.string.share_app)
+                        )
+                    )
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }
