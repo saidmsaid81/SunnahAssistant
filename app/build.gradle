@@ -118,7 +118,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //Material Banner
-    implementation "com.sergivonavi:materialbanner:1.2.0"
+    implementation 'com.github.saidmsaid81:MaterialBanner:2.0.1'
 
     //CalendarView
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
@@ -167,7 +167,4 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
-}
-repositories {
-    mavenCentral()
 }
