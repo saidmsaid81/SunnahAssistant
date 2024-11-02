@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.ResourceItem
@@ -71,8 +70,8 @@ fun ResourcesScreen(findNavController: NavController? = null) {
                             .clickable {
                                 if (item.destination == R.id.quranReaderFragment) {
                                     findNavController?.navigate(
-                                        R.id.quranReaderFragment, bundleOf(
-                                            "pageNumbers" to item.pageNumbers.toIntArray()
+                                        ResourcesFragmentDirections.toQuranReaderFragment(
+                                            item
                                         )
                                     )
                                 } else {

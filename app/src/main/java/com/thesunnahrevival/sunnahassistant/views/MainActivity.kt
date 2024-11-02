@@ -90,12 +90,9 @@ open class MainActivity : AppCompatActivity() {
                     mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 }
-                R.id.welcomeFragment, R.id.resolveMalformedToDosFragment -> {
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
-                }
 
-                R.id.changelogFragment, R.id.toDoDetailsFragment -> {
+                R.id.welcomeFragment, R.id.resolveMalformedToDosFragment, R.id.quranReaderFragment -> {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     mainActivityBinding.bottomNavigationView.visibility = View.GONE
                 }
 

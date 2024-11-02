@@ -9,8 +9,12 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 
-class QuranPageAdapter(private val pageNumbers: List<Int>) :
+class QuranPageAdapter(
+    private val pageNumbers: List<Int>,
+    private val listener: QuranPageClickListener
+) :
     RecyclerView.Adapter<QuranPageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,12 +31,15 @@ class QuranPageAdapter(private val pageNumbers: List<Int>) :
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(pageNumber: Int) {
-            val quranPage = view.findViewById<ImageView>(R.id.quran_page)
+            val quranPageView = view.findViewById<ImageView>(R.id.quran_page)
             try {
                 val inputStream = view.context.assets.open("$pageNumber.png")
                 val drawable = Drawable.createFromStream(inputStream, null)
-                quranPage.setImageDrawable(drawable)
-                setupDarkMode(quranPage)
+                quranPageView.setImageDrawable(drawable)
+                quranPageView.setOnClickListener {
+                    listener.onQuranPageClick()
+                }
+                setupDarkMode(quranPageView)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
