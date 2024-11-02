@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.ResourceItem
@@ -68,7 +69,15 @@ fun ResourcesScreen(findNavController: NavController? = null) {
                             .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                             .clickable {
-                                findNavController?.navigate(item.destination)
+                                if (item.destination == R.id.quranReaderFragment) {
+                                    findNavController?.navigate(
+                                        R.id.quranReaderFragment, bundleOf(
+                                            "pageNumbers" to item.pageNumbers.toIntArray()
+                                        )
+                                    )
+                                } else {
+                                    findNavController?.navigate(item.destination)
+                                }
                             }
                     ) {
                         Row(modifier = Modifier.padding(16.dp)) {
@@ -121,47 +130,63 @@ private fun resourceItems(): List<ResourceItem> {
     return listOf(
         ResourceItem(
             1,
+            stringResource(R.string.suratul_fatiha),
+            stringResource(R.string.recommended_to_read_regularly),
+            R.id.quranReaderFragment,
+            listOf(1)
+        ),
+        ResourceItem(
+            2,
             stringResource(R.string.suratul_baqarah),
-            stringResource(R.string.recommended_to_read_regularly), R.id.dailyHadithFragment
-
+            stringResource(R.string.recommended_to_read_regularly),
+            R.id.quranReaderFragment,
+            (2..49).toList()
         ),
         ResourceItem(
             18,
             stringResource(R.string.suratul_kahf),
-            stringResource(R.string.recommended_to_read_every_friday), R.id.dailyHadithFragment
+            stringResource(R.string.recommended_to_read_every_friday),
+            R.id.quranReaderFragment,
+            (293..304).toList()
 
         ),
         ResourceItem(
             32,
             stringResource(R.string.suratul_sajdah),
-            stringResource(R.string.recommended_to_read_before_sleeping), R.id.dailyHadithFragment
+            stringResource(R.string.recommended_to_read_before_sleeping),
+            R.id.quranReaderFragment,
+            (415..417).toList()
 
         ),
         ResourceItem(
             67,
             stringResource(R.string.suratulmulk),
             stringResource(R.string.recommended_to_read_before_sleeping),
-            R.id.dailyHadithFragment
+            R.id.quranReaderFragment,
+            (562..564).toList()
 
         ),
         ResourceItem(
             112,
             stringResource(R.string.suratul_ikhlaas),
             stringResource(R.string.equivalent_in_reward_to_reciting_1_3_of_the_quran),
-            R.id.dailyHadithFragment
+            R.id.quranReaderFragment,
+            listOf(604)
 
         ),
         ResourceItem(
             113,
             stringResource(R.string.suratul_falaq),
-            stringResource(R.string.for_protection_from_jinn_and_evil_eye), R.id.dailyHadithFragment
-
+            stringResource(R.string.for_protection_from_jinn_and_evil_eye),
+            R.id.quranReaderFragment,
+            listOf(604)
         ),
         ResourceItem(
             114,
             stringResource(R.string.suratul_nas),
             stringResource(R.string.for_protection_from_jinn_and_evil_eye),
-            R.id.dailyHadithFragment
+            R.id.quranReaderFragment,
+            listOf(604)
         ),
         ResourceItem(
             1,

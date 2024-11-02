@@ -55,6 +55,13 @@
       tools:layout="@layout/fragment_daily_hadith">
 
   </fragment>
+
+  <fragment
+      android:id="@+id/quranReaderFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.QuranReaderFragment"
+      android:label="@string/daily_hadith"
+      tools:layout="@layout/fragment_daily_hadith"></fragment>
+
   <fragment
       android:id="@+id/settingsListFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.SettingsListFragment"
