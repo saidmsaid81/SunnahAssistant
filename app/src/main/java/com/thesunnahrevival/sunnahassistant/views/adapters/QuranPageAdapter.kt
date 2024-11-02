@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
@@ -40,6 +41,8 @@ class QuranPageAdapter(
                     listener.onQuranPageClick()
                 }
                 setupDarkMode(quranPageView)
+
+                view.findViewById<TextView>(R.id.page_number).text = pageNumber.toString()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

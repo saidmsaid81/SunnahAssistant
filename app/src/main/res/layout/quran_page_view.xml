@@ -4,12 +4,29 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/quran_page"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/quran" />
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/quran_page"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/quran" />
+
+        <TextView
+            android:id="@+id/page_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
 
 </ScrollView>
 
