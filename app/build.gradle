@@ -56,9 +56,10 @@ android {
     flavorDimensions "build"
     productFlavors {
         dev {
+            resourceConfigurations += ['en', 'xxhdpi']
+
             // The following configuration limits the "dev" flavor to using
             // English string resources and xxhdpi screen-density resources.
-            resConfigs 'en', 'xxhdpi'
 
         }
 
