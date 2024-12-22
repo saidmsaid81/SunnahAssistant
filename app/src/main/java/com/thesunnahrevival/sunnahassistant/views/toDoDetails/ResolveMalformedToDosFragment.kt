@@ -34,6 +34,7 @@ class ResolveMalformedToDosFragment : SunnahAssistantFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val adapter = MalformedToDosAdapter(this)
         resolveMalformedToDosFragmentBinding.recyclerView.adapter = adapter
 
