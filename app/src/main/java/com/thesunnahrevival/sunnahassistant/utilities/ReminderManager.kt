@@ -16,7 +16,6 @@ import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.TimeZone
@@ -180,31 +179,6 @@ class ReminderManager private constructor() {
                     doNotDisturbMinutes = settings.doNotDisturbMinutes,
                     useReliableAlarms = settings.useReliableAlarms
                 )
-            }
-        }
-
-        if (isForegroundEnabled) {
-            try {
-                val nextToDoServiceIntent = Intent(
-                    context,
-                    NextToDoService::class.java
-                )
-                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_TITLE, title)
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_TEXT, text)
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_TONE_URI, notificationToneUri)
-                    nextToDoServiceIntent.putExtra(NOTIFICATION_VIBRATE, isVibrate)
-
-                    context.startForegroundService(
-                        nextToDoServiceIntent
-                    )
-                } else {
-                    context.startService(
-                        nextToDoServiceIntent
-                    )
-                }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
             }
         }
     }

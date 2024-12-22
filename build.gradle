@@ -40,8 +40,8 @@ task clean(type: Delete) {
 // Define versions in a single place
 ext {
     minSdkVersion = 21
-    targetSdkVersion = 33
-    compileSdkVersion = 33
+    targetSdkVersion = 35
+    compileSdkVersion = 35
 
     //App dependencies
     lifecycle_version = "2.2.0"
