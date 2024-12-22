@@ -5,18 +5,23 @@ import android.graphics.Bitmap
 import android.net.MailTo
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
-open class WebViewFragment : Fragment() {
+open class WebViewFragment : SunnahAssistantFragment() {
 
     private var _webViewFragmentBinding: FragmentWebViewBinding? = null
     private val webViewFragmentBinding get() = _webViewFragmentBinding!!
@@ -25,6 +30,7 @@ open class WebViewFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         _webViewFragmentBinding = FragmentWebViewBinding.inflate(inflater)
         setHasOptionsMenu(true)
         // Inflate the layout for this fragment
@@ -32,6 +38,7 @@ open class WebViewFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         webViewFragmentBinding.webview.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 webViewFragmentBinding.progressBar.visibility = View.VISIBLE

@@ -14,12 +14,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentBackupRestoreBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EncryptBackupFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterDecryptionPasswordFragment
 import kotlinx.coroutines.Dispatchers
@@ -32,11 +32,10 @@ import java.util.Locale
 private const val WRITE_FILE = 0
 private const val READ_FILE = 1
 
-class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
+class BackupRestoreFragment : SunnahAssistantFragment(), AdapterView.OnItemClickListener,
     EnterDecryptionPasswordFragment.EnterDecryptionPasswordFragmentListener,
     EncryptBackupFragment.EncryptBackupFragmentListener {
 
-    private lateinit var mViewModel: SunnahAssistantViewModel
     private var password: String? = null
     private var _backupRestoreFragmentBinding: FragmentBackupRestoreBinding? = null
 

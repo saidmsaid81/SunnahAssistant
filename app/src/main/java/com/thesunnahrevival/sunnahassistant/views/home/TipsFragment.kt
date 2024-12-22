@@ -35,6 +35,7 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val adapter = TipsAdapter(this)
         val tips = arrayListOf<Tip>()
 

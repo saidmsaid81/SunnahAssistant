@@ -28,7 +28,7 @@ class WelcomeFragment : SunnahAssistantFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        super.onViewCreated(view, savedInstanceState)
         mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings?.isFirstLaunch == false) {
                 findNavController().navigate(R.id.todayFragment)

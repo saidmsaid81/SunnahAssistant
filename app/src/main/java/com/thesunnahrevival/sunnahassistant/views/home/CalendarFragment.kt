@@ -34,6 +34,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val selectedToDoDate = mViewModel.selectedToDoDate
         mBinding.calendarView.setupWithListeners(
             listeners = this,

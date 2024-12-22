@@ -40,6 +40,7 @@ class ChangelogFragment : SunnahAssistantFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         changelogFragmentBinding.helpTranslateApp.setOnClickListener {
             translateLink(this)
         }
