@@ -12,7 +12,6 @@
         android:text="@string/general_settings"
         android:paddingStart="@dimen/default_dimen"
         android:paddingEnd="@dimen/default_dimen"
-        android:paddingTop="@dimen/default_dimen"
         android:textStyle="bold" />
 
     <ListView
