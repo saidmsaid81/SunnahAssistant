@@ -26,7 +26,6 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
@@ -90,6 +89,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
 
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
+    val statusBarHeight = MutableLiveData<Int>(0)
+    val navBarHeight = MutableLiveData<Int>(0)
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =

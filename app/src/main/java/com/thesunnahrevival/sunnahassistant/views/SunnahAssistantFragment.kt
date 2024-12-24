@@ -56,7 +56,7 @@ open class SunnahAssistantFragment : Fragment() {
 
     }
 
-    protected fun handleEdgeToEdge() {
+    protected open fun handleEdgeToEdge() {
         val actionBarHeight = getActionBarSize()
         val bottomNavigationView =
             (requireActivity() as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation_view)

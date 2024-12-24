@@ -1,23 +1,24 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens
 
-import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.appbar.AppBarLayout
+import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
-
-private const val defaultPadding = 16
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
@@ -61,17 +62,12 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
                             or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     )
         }
-        quranReaderBinding.top.layoutParams.height = (activity.supportActionBar?.height)?.plus(
-            defaultPadding
-        ) ?: 0
-        quranReaderBinding.bottom.layoutParams.height = getNavigationBarHeight(quranReaderBinding.root)
     }
 
     private fun leaveImmersiveMode() {
         val activity = activity as MainActivity
-        quranReaderBinding.top.layoutParams.height = 0
-        quranReaderBinding.bottom.layoutParams.height = 0
         activity.supportActionBar?.show()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val controller = activity.window.insetsController
             if (controller != null) {
@@ -80,26 +76,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
             }
         } else {
             activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-        }
-    }
-
-    fun getNavigationBarHeight(view: View): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val windowInsets = ViewCompat.getRootWindowInsets(view)
-            val insets = windowInsets?.getInsets(WindowInsetsCompat.Type.navigationBars())
-            return insets?.bottom ?: 0
-        } else {
-            return getNavigationBarHeightLegacy(view.context)
-        }
-    }
-
-    fun getNavigationBarHeightLegacy(context: android.content.Context): Int {
-        val resources: Resources = context.resources
-        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else {
-            0
         }
     }
 
@@ -114,7 +90,50 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        val mainActivity = activity as MainActivity
+
+        val toolbar = mainActivity.findViewById<Toolbar>(R.id.toolbar)
+        toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            topMargin = 0
+        }
+
+        val appBarLayout = mainActivity.findViewById<AppBarLayout>(R.id.app_bar)
+        appBarLayout.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                android.R.color.transparent
+            )
+        )
+        appBarLayout.elevation = 0f
+
         (activity as? MainActivity)?.supportActionBar?.show()
         _quranReaderBinding = null
+    }
+
+    override fun handleEdgeToEdge() {
+        val mainActivity = activity as MainActivity
+
+        val appBarLayout = mainActivity.findViewById<AppBarLayout>(R.id.app_bar)
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+        appBarLayout.setBackgroundColor(typedValue.data)
+        appBarLayout.elevation = 4f
+
+        mainActivityViewModel.statusBarHeight.observe(viewLifecycleOwner) { statusBarHeight ->
+            val toolbar = mainActivity.findViewById<Toolbar>(R.id.toolbar)
+            toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                if (mainActivity.supportActionBar?.isShowing == true) {
+                    topMargin = statusBarHeight
+                }
+            }
+        }
+
+        mainActivityViewModel.navBarHeight.observe(viewLifecycleOwner) { navBarHeight ->
+            quranReaderBinding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                if (mainActivity.supportActionBar?.isShowing == true) {
+                    bottomMargin = navBarHeight
+                }
+            }
+        }
     }
 }
