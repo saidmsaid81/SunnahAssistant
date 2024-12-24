@@ -9,14 +9,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/quran_page"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:contentDescription="@string/quran" />
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/quran_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
+                android:contentDescription="@string/quran" />
+
+            <com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
+                android:id="@+id/highlight_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/page_number"
@@ -27,6 +38,4 @@
 
     </LinearLayout>
 
-
 </ScrollView>
-

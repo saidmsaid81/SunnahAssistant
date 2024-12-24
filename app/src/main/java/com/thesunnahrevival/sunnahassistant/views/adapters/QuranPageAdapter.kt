@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.adapters
 
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 
 class QuranPageAdapter(
@@ -33,10 +35,51 @@ class QuranPageAdapter(
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(pageNumber: Int) {
             val quranPageView = view.findViewById<ImageView>(R.id.quran_page)
+            val highlightOverlay = view.findViewById<HighlightOverlayView>(R.id.highlight_overlay)
+
             try {
                 val inputStream = view.context.assets.open("$pageNumber.png")
+
+                val options = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                BitmapFactory.decodeStream(inputStream, null, options)
+                inputStream.reset()
+
+                val actualWidth = options.outWidth
+                val actualHeight = options.outHeight
+
                 val drawable = Drawable.createFromStream(inputStream, null)
                 quranPageView.setImageDrawable(drawable)
+
+                quranPageView.post {
+                    val displayedWidth = quranPageView.width
+                    val displayedHeight = quranPageView.height
+
+                    highlightOverlay.setImageDimensions(
+                        actualWidth,
+                        actualHeight,
+                        displayedWidth,
+                        displayedHeight
+                    )
+
+                    val multiLineCoordinates = listOf(
+                        HighlightOverlayView.Coordinates(
+                            minX = 73f,
+                            minY = 299f,
+                            maxX = 1235f,
+                            maxY = 418f
+                        ),
+                        HighlightOverlayView.Coordinates(
+                            minX = 600f,
+                            minY = 440f,
+                            maxX = 1237f,
+                            maxY = 554f
+                        )
+                    )
+                    highlightOverlay.setHighlightCoordinates(multiLineCoordinates)
+                }
+
                 quranPageView.setOnClickListener {
                     listener.onQuranPageClick()
                 }
