@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
+const val SUNNAH_ASSISTANT_APP_LINK =
+    "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
 val SUPPORTED_LOCALES = arrayOf("en", "ar")
 const val RETRY_AFTER_KEY = "Retry-After"
 const val SUPPORT_EMAIL = "apps@thesunnahrevival.com"
