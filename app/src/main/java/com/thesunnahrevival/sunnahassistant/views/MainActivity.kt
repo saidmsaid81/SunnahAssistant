@@ -49,6 +49,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.QuranReaderFragment
 import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -112,6 +113,7 @@ open class MainActivity : AppCompatActivity() {
                 R.id.today -> navController.navigate(R.id.todayFragment)
                 R.id.calendar -> navController.navigate(R.id.calendarFragment)
                 R.id.tips -> navController.navigate(R.id.tipsFragment)
+                R.id.resources -> navController.navigate(R.id.resourcesFragment)
             }
             true
         }
@@ -121,13 +123,15 @@ open class MainActivity : AppCompatActivity() {
         when (destination.id) {
             R.id.todayFragment,
             R.id.calendarFragment,
-            R.id.tipsFragment -> {
+            R.id.tipsFragment,
+            R.id.resourcesFragment -> {
                 mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
 
             R.id.welcomeFragment,
-            R.id.resolveMalformedToDosFragment -> {
+            R.id.resolveMalformedToDosFragment,
+            R.id.quranReaderFragment -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 mainActivityBinding.bottomNavigationView.visibility = View.GONE
             }
@@ -135,7 +139,6 @@ open class MainActivity : AppCompatActivity() {
             else -> mainActivityBinding.bottomNavigationView.visibility = View.GONE
         }
     }
-
     private fun registerBackPressCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -144,7 +147,6 @@ open class MainActivity : AppCompatActivity() {
                     currentFragment is WelcomeFragment || currentFragment is ResolveMalformedToDosFragment -> {
                         finish()
                     }
-
                     else -> {
                         isEnabled = false
                         onSupportNavigateUp()
@@ -158,14 +160,26 @@ open class MainActivity : AppCompatActivity() {
     private fun handleEdgeToEdge() {
         ViewCompat.setOnApplyWindowInsetsListener(mainActivityBinding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            getActiveFragment()
-            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                bottomMargin = insets.bottom
-                rightMargin = insets.right
-                topMargin = insets.top
-            }
 
+            mViewModel.statusBarHeight.value = insets.top
+            mViewModel.navBarHeight.value = insets.bottom
+
+            val activeFragment = getActiveFragment()
+            if (activeFragment !is QuranReaderFragment) {
+                v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    leftMargin = insets.left
+                    bottomMargin = insets.bottom
+                    rightMargin = insets.right
+                    topMargin = insets.top
+                }
+            } else {
+                v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    leftMargin = 0
+                    bottomMargin = 0
+                    rightMargin = 0
+                    topMargin = 0
+                }
+            }
 
             WindowInsetsCompat.CONSUMED
         }

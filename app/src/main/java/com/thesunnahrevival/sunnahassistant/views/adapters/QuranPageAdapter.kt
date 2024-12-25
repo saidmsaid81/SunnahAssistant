@@ -15,7 +15,7 @@ import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayVi
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 
 class QuranPageAdapter(
-    private val pageNumbers: List<Int>,
+    val pageNumbers: List<QuranPage>,
     private val listener: QuranPageClickListener
 ) :
     RecyclerView.Adapter<QuranPageAdapter.ViewHolder>() {
@@ -29,13 +29,14 @@ class QuranPageAdapter(
     override fun getItemCount(): Int = pageNumbers.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(pageNumbers[position])
+        holder.bind(pageNumbers[position].number)
     }
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(pageNumber: Int) {
             val quranPageView = view.findViewById<ImageView>(R.id.quran_page)
             val highlightOverlay = view.findViewById<HighlightOverlayView>(R.id.highlight_overlay)
+            highlightOverlay.tag = "overlay_$pageNumber"
 
             try {
                 val inputStream = view.context.assets.open("$pageNumber.png")
@@ -63,26 +64,46 @@ class QuranPageAdapter(
                         displayedHeight
                     )
 
-                    val multiLineCoordinates = listOf(
-                        HighlightOverlayView.Coordinates(
-                            minX = 73f,
-                            minY = 299f,
-                            maxX = 1235f,
-                            maxY = 418f
-                        ),
-                        HighlightOverlayView.Coordinates(
-                            minX = 600f,
-                            minY = 440f,
-                            maxX = 1237f,
-                            maxY = 554f
-                        )
-                    )
-                    highlightOverlay.setHighlightCoordinates(multiLineCoordinates)
+//                    val multiLineCoordinates = listOf(
+//                        HighlightOverlayView.Coordinates(
+//                            minX = 174f,
+//                            minY = 30f,
+//                            maxX = 1239f,
+//                            maxY = 149f
+//                        )
+//                    )
+//                    highlightOverlay.setHighlightCoordinates(multiLineCoordinates)
                 }
 
                 quranPageView.setOnClickListener {
-                    listener.onQuranPageClick()
+                    listener.onQuranPageClick(it)
                 }
+
+                quranPageView.setOnLongClickListener { view ->
+                    println("Long clicked")
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    val location = IntArray(2)
+                    view.getLocationOnScreen(location)
+
+                    val rawX = lastTouchX - location[0]
+                    val rawY = lastTouchY - location[1]
+
+//                    highlightOverlay.clearHighlights()
+
+                    val unscaledX = rawX / highlightOverlay.getScaleX()
+                    val unscaledY =
+                        (rawY - highlightOverlay.getOffsetY()) / highlightOverlay.getScaleY()
+
+                    listener.onQuranPageLongClick(view, unscaledX, unscaledY)
+                    true
+                }
+
+                quranPageView.setOnTouchListener { v, event ->
+                    lastTouchX = event.rawX
+                    lastTouchY = event.rawY
+                    false
+                }
+
                 setupDarkMode(quranPageView)
 
                 view.findViewById<TextView>(R.id.page_number).text = pageNumber.toString()
@@ -110,4 +131,29 @@ class QuranPageAdapter(
             }
         }
     }
+
+    companion object {
+        private var lastTouchX: Float = 0f
+        private var lastTouchY: Float = 0f
+    }
 }
+
+data class QuranPage(
+    val number: Int,
+    val ayahs: List<Ayah>
+)
+
+data class Ayah(
+    val number: Int,
+    val lines: List<Line>
+)
+
+data class Line(
+    val number: Int,
+    val minX: Float,
+    val minY: Float,
+    val maxX: Float,
+    val maxY: Float
+)
+
+

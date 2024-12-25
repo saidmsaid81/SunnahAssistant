@@ -29,8 +29,6 @@ const val TEXT_COLOR = "text_color"
 
 const val THE_SUNNAH_REVIVAL_RSS_FEED = "https://thesunnahrevival.com/category/daily-hadith/feed"
 
-const val SUNNAH_ASSISTANT_APP_LINK = "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant"
-
 const val PRAYER_TIMES_REMINDERS_ID = -1019700
 
 const val REQUEST_NOTIFICATION_PERMISSION_CODE = 100

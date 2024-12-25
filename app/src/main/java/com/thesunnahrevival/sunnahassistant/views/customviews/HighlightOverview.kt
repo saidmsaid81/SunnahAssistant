@@ -16,7 +16,7 @@ class HighlightOverlayView @JvmOverloads constructor(
 
     private val highlightPaint = Paint().apply {
         color = Color.YELLOW
-        alpha = 80
+        alpha = 30
         style = Paint.Style.FILL
     }
 
@@ -29,6 +29,12 @@ class HighlightOverlayView @JvmOverloads constructor(
     private var scaleY: Float = 1f
     private var offsetX: Float = 0f
     private var offsetY: Float = 0f
+
+    fun clearHighlights() {
+        highlights.clear()
+        invalidate()
+    }
+
 
     fun setImageDimensions(
         originalWidth: Int,
@@ -67,11 +73,8 @@ class HighlightOverlayView @JvmOverloads constructor(
 
             if (index > 0) {
                 val previousRect = connectedRects.last()
-                val gap = scaledRect.top - previousRect.bottom
-                if (gap < 5f) {
-                    previousRect.bottom = (previousRect.bottom + scaledRect.top) / 2
-                    scaledRect.top = previousRect.bottom
-                }
+                previousRect.bottom = (previousRect.bottom + scaledRect.top) / 2
+                scaledRect.top = previousRect.bottom
             }
 
             connectedRects.add(scaledRect)
@@ -89,6 +92,11 @@ class HighlightOverlayView @JvmOverloads constructor(
             }
         }
     }
+
+    override fun getScaleX(): Float = scaleX
+    override fun getScaleY(): Float = scaleY
+    fun getOffsetX(): Float = offsetX
+    fun getOffsetY(): Float = offsetY
 
     data class Coordinates(
         val minX: Float,

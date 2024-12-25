@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
@@ -16,7 +17,11 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.adapters.Ayah
+import com.thesunnahrevival.sunnahassistant.views.adapters.Line
+import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPage
 import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
+import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 
@@ -26,6 +31,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
 
     private val args: QuranReaderFragmentArgs by navArgs()
 
+    private var stayInImmersiveMode = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,17 +41,55 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
         super.onCreateView(inflater, container, savedInstanceState)
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
         val pageNumbers = args.resourceItem.pageNumbers
-        val quranPageAdapter = QuranPageAdapter(pageNumbers, this)
+
+        val list = mutableListOf<QuranPage>()
+        pageNumbers.forEach {
+            list.add(
+                QuranPage(
+                    it,
+                    listOf(
+                        Ayah(1, listOf(Line(1, 174f, 30f, 1239f, 149f))),
+                        Ayah(2, listOf(Line(2, 60f, 181f, 1234f, 281f))),
+                        Ayah(
+                            3, listOf(
+                                Line(3, 73f, 299f, 1235f, 418f),
+                                Line(3, 701f, 440f, 1237f, 554f)
+                            )
+                        )
+                    )
+                )
+            )
+        }
+
+        val quranPageAdapter = QuranPageAdapter(list, this)
         quranReaderBinding.viewPager.adapter = quranPageAdapter
         quranReaderBinding.viewPager.reduceDragSensitivity(4)
+
+        handleBackPressed()
+
         return quranReaderBinding.root
+    }
+
+    private fun handleBackPressed() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (stayInImmersiveMode) {
+                    leaveImmersiveMode()
+                    stayInImmersiveMode = false
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     override fun onResume() {
         super.onResume()
         (activity as? MainActivity)?.supportActionBar?.title = args.resourceItem.title
     }
-
 
     private fun enterImmersiveMode() {
         val activity = activity as MainActivity
@@ -68,6 +113,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
         val activity = activity as MainActivity
         activity.supportActionBar?.show()
 
+        clearHighlights()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val controller = activity.window.insetsController
             if (controller != null) {
@@ -79,12 +126,74 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
         }
     }
 
-    override fun onQuranPageClick() {
+    private fun clearHighlights() {
+        val currentPage = quranReaderBinding.viewPager.currentItem
+        val page =
+            (quranReaderBinding.viewPager.adapter as QuranPageAdapter).pageNumbers[currentPage]
+        val highlightOverlay = quranReaderBinding.viewPager
+            .findViewWithTag<HighlightOverlayView>("overlay_${page.number}")
+            ?: return
+
+        highlightOverlay.clearHighlights()
+    }
+
+    override fun onQuranPageClick(view: View) {
+        if (stayInImmersiveMode) {
+            view.performLongClick()
+            return
+        }
         val activity = activity as MainActivity
         if (activity.supportActionBar?.isShowing == true) {
             enterImmersiveMode()
         } else {
             leaveImmersiveMode()
+        }
+    }
+
+    override fun onQuranPageLongClick(view: View, x: Float, y: Float) {
+        if (!stayInImmersiveMode) {
+            val activity = activity as MainActivity
+            activity.supportActionBar?.show()
+            if (activity.supportActionBar?.isShowing == true) {
+                view.performClick()
+            }
+            stayInImmersiveMode = true
+        }
+        val currentPage = quranReaderBinding.viewPager.currentItem
+        val page =
+            (quranReaderBinding.viewPager.adapter as QuranPageAdapter).pageNumbers[currentPage]
+
+        // Find the line that contains the touch coordinates
+        page.ayahs.forEach { ayah ->
+            ayah.lines.forEach { line ->
+                // Now we're comparing in the original image coordinate space
+                if (x >= line.minX && x <= line.maxX &&
+                    y >= line.minY && y <= line.maxY
+                ) {
+
+                    val highlightOverlay = quranReaderBinding.viewPager
+                        .findViewWithTag<HighlightOverlayView>("overlay_${page.number}")
+                        ?: return
+
+                    highlightOverlay.clearHighlights()
+
+                    val coordinates = mutableListOf<HighlightOverlayView.Coordinates>()
+
+                    ayah.lines.forEach {
+                        coordinates.add(
+                            HighlightOverlayView.Coordinates(
+                                it.minX,
+                                it.minY,
+                                it.maxX,
+                                it.maxY
+                            )
+                        )
+                    }
+
+                    highlightOverlay.setHighlightCoordinates(coordinates)
+                    return
+                }
+            }
         }
     }
 
