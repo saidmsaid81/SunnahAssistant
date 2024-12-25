@@ -8,16 +8,20 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.snackbar.Snackbar
@@ -36,6 +40,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.SHARE
+import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
 import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
@@ -53,13 +58,13 @@ import java.time.LocalDate
 import java.util.Locale
 import kotlin.random.Random
 
-
 open class MainActivity : AppCompatActivity() {
 
     private lateinit var activity: MainActivity
     lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var mViewModel: SunnahAssistantViewModel
     private lateinit var mainActivityBinding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -69,69 +74,98 @@ open class MainActivity : AppCompatActivity() {
         mViewModel = ViewModelProvider(this)[SunnahAssistantViewModel::class.java]
         createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
-        val navController = this.findNavController(R.id.myNavHostFragment)
+
+        navController = findNavController(R.id.myNavHostFragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
+
         activity = this
         firebaseAnalytics = Firebase.analytics
         getSettings()
 
         mViewModel.refreshScheduledReminders()
 
-        val link = intent.extras?.getString("link")
+        handleIntents(intent)
+
+        setupNavigation()
+        handleEdgeToEdge()
+        registerBackPressCallback()
+    }
+
+    private fun handleIntents(intent: Intent?) {
+        val link = intent?.extras?.getString("link")
         if (link != null) {
             launchInAppBrowser(link)
         }
 
-        if (intent.action == SHARE) {
+        if (intent?.action == SHARE) {
             showShareToDo()
         }
+    }
 
+    private fun setupNavigation() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.todayFragment -> mainActivityBinding.bottomNavigationView.visibility =
-                    View.VISIBLE
-
-                R.id.calendarFragment, R.id.tipsFragment -> {
-                    mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                }
-                R.id.welcomeFragment, R.id.resolveMalformedToDosFragment -> {
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
-                }
-
-                R.id.changelogFragment, R.id.toDoDetailsFragment -> {
-                    mainActivityBinding.bottomNavigationView.visibility = View.GONE
-                }
-
-                else -> mainActivityBinding.bottomNavigationView.visibility = View.GONE
-            }
+            onDestinationChanged(destination)
         }
 
-        mainActivityBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
+        mainActivityBinding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.today -> findNavController(R.id.myNavHostFragment).navigate(R.id.todayFragment)
-                R.id.calendar ->
-                    findNavController(R.id.myNavHostFragment).navigate(R.id.calendarFragment)
-
-                R.id.tips ->
-                    findNavController(R.id.myNavHostFragment).navigate(R.id.tipsFragment)
+                R.id.today -> navController.navigate(R.id.todayFragment)
+                R.id.calendar -> navController.navigate(R.id.calendarFragment)
+                R.id.tips -> navController.navigate(R.id.tipsFragment)
             }
-            return@setOnNavigationItemSelectedListener true
+            true
         }
+    }
 
-        handleEdgeToEdge()
+    private fun onDestinationChanged(destination: NavDestination) {
+        when (destination.id) {
+            R.id.todayFragment,
+            R.id.calendarFragment,
+            R.id.tipsFragment -> {
+                mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
+
+            R.id.welcomeFragment,
+            R.id.resolveMalformedToDosFragment -> {
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                mainActivityBinding.bottomNavigationView.visibility = View.GONE
+            }
+
+            else -> mainActivityBinding.bottomNavigationView.visibility = View.GONE
+        }
+    }
+
+    private fun registerBackPressCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentFragment = getActiveFragment()
+                when {
+                    currentFragment is WelcomeFragment || currentFragment is ResolveMalformedToDosFragment -> {
+                        finish()
+                    }
+
+                    else -> {
+                        isEnabled = false
+                        onSupportNavigateUp()
+                    }
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun handleEdgeToEdge() {
         ViewCompat.setOnApplyWindowInsetsListener(mainActivityBinding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            getActiveFragment()
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 bottomMargin = insets.bottom
                 rightMargin = insets.right
                 topMargin = insets.top
             }
+
 
             WindowInsetsCompat.CONSUMED
         }
@@ -168,8 +202,7 @@ open class MainActivity : AppCompatActivity() {
                                     )
                                 }\n" +
                                 "${getString(R.string.powered_by_sunnah_assistant)}\n\n" +
-                                "Get Sunnah Assistant App at\n" +
-                                "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+                                "Get Sunnah Assistant App at\n$SUNNAH_ASSISTANT_APP_LINK"
                     )
                     val chooserIntent = Intent.createChooser(
                         shareIntent,
@@ -321,23 +354,14 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.myNavHostFragment)
-        val homeFragments = listOf(R.id.todayFragment, R.id.calendarFragment)
-        if (!homeFragments.contains(navController.currentDestination?.id))
-            return navController.navigateUp()
-        else
+        listOf(R.id.todayFragment, R.id.calendarFragment)
+        return if (!mainActivityBinding.bottomNavigationView.isVisible) {
+            navController.navigateUp()
+        } else {
             finish()
-        return true
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (getActiveFragment() is WelcomeFragment || getActiveFragment() is ResolveMalformedToDosFragment)
-            finish()
-        else
-            onSupportNavigateUp()
+            true
+        }
     }
 
     // Checks that the in app update is not stalled during 'onResume()'.
