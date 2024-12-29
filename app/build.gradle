@@ -152,10 +152,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:$activity_version")
 
     // Compose
-    def composeBom = platform('androidx.compose:compose-bom:2023.10.01')
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-
+    implementation(platform('androidx.compose:compose-bom:2024.12.01'))
     implementation "androidx.compose.runtime:runtime"
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.foundation:foundation"
@@ -163,9 +160,9 @@ dependencies {
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.ui:ui-tooling"
+    implementation "androidx.compose.material:material-icons-extended"
 
     implementation "com.prof18.rssparser:rssparser:$rss_parser_version"
-
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"

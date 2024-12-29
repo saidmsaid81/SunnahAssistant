@@ -131,7 +131,45 @@
     ‣ لقد قمنا بتحديث سياسة الخصوصية الخاصة بنا للإشارة إلى أن التطبيق لا يحتوي على إعلانات. \n\n من خلال الاستمرار في استخدام هذا التطبيق ، فإنك توافق على سياسة الخصوصية الجديدة. اضغط على زر \"سياسة الخصوصية\" أدناه لقراءتها
   </string>
   <string name="new_features">ميزات جديدة</string>
-  <string name="new_features_details">
+
+    <string name="resources">المصادر</string>
+    <string name="selected_surahs">السور المختارة</string>
+    <string name="suratul_fatiha">سورة الفاتحة</string>
+    <string name="suratul_baqarah">سورة البقرة</string>
+    <string name="suratul_kahf">سورة الكهف</string>
+    <string name="suratul_sajdah">سورة السجدة</string>
+    <string name="suratulmulk">سورة الملك</string>
+    <string name="suratul_ikhlaas">سورة الإخلاص</string>
+    <string name="suratul_falaq">سورة الفلق</string>
+    <string name="suratul_nas">سورة الناس</string>
+    <string name="recommended_to_read_regularly">يوصى بقراءتها بانتظام</string>
+    <string name="recommended_to_read_every_friday">يوصى بقراءتها كل يوم جمعة</string>
+    <string name="recommended_to_read_before_sleeping">يوصى بقراءتها قبل النوم (الترمذي ، 3404)</string>
+    <string name="equivalent_in_reward_to_reciting_1_3_of_the_quran">أي ما يعادل أجر تلاوة ثلث القرآن</string>
+    <string name="for_protection_from_jinn_and_evil_eye">للحماية من الجن والعين</string>
+    <string name="hadith">حديث</string>
+    <string name="daily_hadith">الحديث اليومي</string>
+    <string name="quran">قرآن</string>
+    <string name="from_the_sunnah_revival_blog">من مدونة إحياء السنة</string>
+    <string name="showing_cached_data_because_device_is_offline">عرض البيانات المخزنة مؤقتًا لأن الجهاز غير متصل بالإنترنت</string>
+    <string name="no_hadith_found">لم يتم العثور على أي حديث</string>
+    <string name="try_again">حاول مرة أخرى</string>
+    <string name="an_error_occurred_while_fetching_hadith">حدث خطأ أثناء جلب الحديث</string>
+    <string name="next">التالي</string>
+    <string name="previous">السابق</string>
+    <string name="bookmark">إشارة مرجعية</string>
+    <string name="copy">نسخ</string>
+    <string name="copy_label">آية</string>
+    <string name="copy_message">تم النسخ إلى الحافظة</string>
+    <string name="share_via">شارك عبر</string>
+    <string name="select_translation">اختر الترجمة</string>
+    <string name="translation">الترجمة: %s</string>
+    <string name="translations_selected">تم تحديد %d ترجمة</string>
+    <string name="ayah_number">آية %d</string>
+    <string name="dropdown_arrow">سهم القائمة المنسدلة</string>
+    <string name="surah_number">رقم السورة %d</string>
+
+    <string name="new_features_details">
     ‣ إعادة تصميم رئيسية للتطبيق.\n
     ‣
         تقديم قسم تقويم يدعم التقويم الميلادي والتقويم الهجري (حسب تقويم أم القرى).\n

@@ -23,6 +23,7 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPage
 import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
+import com.thesunnahrevival.sunnahassistant.views.others.AyahTranslationFragment
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
@@ -48,10 +49,10 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
                 QuranPage(
                     it,
                     listOf(
-                        Ayah(1, listOf(Line(1, 174f, 30f, 1239f, 149f))),
-                        Ayah(2, listOf(Line(2, 60f, 181f, 1234f, 281f))),
+                        Ayah(number = 1, lines = listOf(Line(1, 174f, 30f, 1239f, 149f))),
+                        Ayah(number = 2, lines = listOf(Line(2, 60f, 181f, 1234f, 281f))),
                         Ayah(
-                            3, listOf(
+                            number = 3, lines = listOf(
                                 Line(3, 73f, 299f, 1235f, 418f),
                                 Line(3, 701f, 440f, 1237f, 554f)
                             )
@@ -159,26 +160,24 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
             }
             stayInImmersiveMode = true
         }
+
         val currentPage = quranReaderBinding.viewPager.currentItem
         val page =
             (quranReaderBinding.viewPager.adapter as QuranPageAdapter).pageNumbers[currentPage]
 
-        // Find the line that contains the touch coordinates
+        val highlightOverlay = quranReaderBinding.viewPager
+            .findViewWithTag<HighlightOverlayView>("overlay_${page.number}")
+            ?: return
+
+        val coordinates = mutableListOf<HighlightOverlayView.Coordinates>()
+        var selectedAyah: Ayah? = null
+
         page.ayahs.forEach { ayah ->
             ayah.lines.forEach { line ->
-                // Now we're comparing in the original image coordinate space
                 if (x >= line.minX && x <= line.maxX &&
                     y >= line.minY && y <= line.maxY
                 ) {
-
-                    val highlightOverlay = quranReaderBinding.viewPager
-                        .findViewWithTag<HighlightOverlayView>("overlay_${page.number}")
-                        ?: return
-
-                    highlightOverlay.clearHighlights()
-
-                    val coordinates = mutableListOf<HighlightOverlayView.Coordinates>()
-
+                    selectedAyah = ayah
                     ayah.lines.forEach {
                         coordinates.add(
                             HighlightOverlayView.Coordinates(
@@ -189,12 +188,17 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
                             )
                         )
                     }
-
-                    highlightOverlay.setHighlightCoordinates(coordinates)
-                    return
                 }
             }
         }
+
+        if (coordinates.isNotEmpty()) {
+            highlightOverlay.clearHighlights()
+            highlightOverlay.setHighlightCoordinates(coordinates)
+        }
+
+        val fragment = AyahTranslationFragment()
+        fragment.show(requireActivity().supportFragmentManager, "ayah_translation")
     }
 
     override fun onDestroyView() {

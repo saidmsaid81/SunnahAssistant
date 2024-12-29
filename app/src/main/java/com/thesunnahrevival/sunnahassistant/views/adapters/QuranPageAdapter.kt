@@ -63,16 +63,6 @@ class QuranPageAdapter(
                         displayedWidth,
                         displayedHeight
                     )
-
-//                    val multiLineCoordinates = listOf(
-//                        HighlightOverlayView.Coordinates(
-//                            minX = 174f,
-//                            minY = 30f,
-//                            maxX = 1239f,
-//                            maxY = 149f
-//                        )
-//                    )
-//                    highlightOverlay.setHighlightCoordinates(multiLineCoordinates)
                 }
 
                 quranPageView.setOnClickListener {
@@ -80,15 +70,12 @@ class QuranPageAdapter(
                 }
 
                 quranPageView.setOnLongClickListener { view ->
-                    println("Long clicked")
                     view.parent.requestDisallowInterceptTouchEvent(true)
                     val location = IntArray(2)
                     view.getLocationOnScreen(location)
 
                     val rawX = lastTouchX - location[0]
                     val rawY = lastTouchY - location[1]
-
-//                    highlightOverlay.clearHighlights()
 
                     val unscaledX = rawX / highlightOverlay.getScaleX()
                     val unscaledY =
@@ -143,9 +130,17 @@ data class QuranPage(
     val ayahs: List<Ayah>
 )
 
+data class Surah(
+    val number: Int,
+    val name: String
+)
+
 data class Ayah(
     val number: Int,
-    val lines: List<Line>
+    val surah: Surah? = null,
+    val lines: List<Line> = listOf(),
+    val arabicText: String = "",
+    val ayahTranslations: List<AyahTranslation> = listOf()
 )
 
 data class Line(
@@ -154,6 +149,12 @@ data class Line(
     val minY: Float,
     val maxX: Float,
     val maxY: Float
+)
+
+data class AyahTranslation(
+    val id: Int,
+    val source: String,
+    val text: String
 )
 
 
