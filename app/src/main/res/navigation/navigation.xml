@@ -61,7 +61,7 @@
 
   <fragment
       android:id="@+id/quranReaderFragment"
-      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.QuranReaderFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranReaderFragment"
       android:label="@string/quran"
       tools:layout="@layout/fragment_quran_reader">
     <argument

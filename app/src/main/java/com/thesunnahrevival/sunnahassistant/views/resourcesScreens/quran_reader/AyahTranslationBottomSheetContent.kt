@@ -102,7 +102,7 @@ fun SheetContent(
             val ayahTexts = getAyahText(
                 selectedAyah,
                 selectedTranslations,
-                stringResource(R.string.surah_number, selectedAyah.surah?.number ?: "")
+                stringResource(R.string.surah_number, selectedAyah.surah?.number ?: 0)
             )
 
             ShareIcon(
@@ -412,6 +412,7 @@ private fun getAyahText(
 @Composable
 private fun SheetContentPreview() {
     val selectedAyah = Ayah(
+        id = 1,
         number = 105,
         surah = Surah(17, "Suratul Isra"),
         arabicText = "وَبِٱلْحَقِّ أَنزَلْنَـٰهُ وَبِٱلْحَقِّ نَزَلَ ۗ وَمَآ أَرْسَلْنَـٰكَ إِلَّا مُبَشِّرًۭا وَنَذِيرًۭا",

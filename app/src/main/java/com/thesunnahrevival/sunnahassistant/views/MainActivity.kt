@@ -49,7 +49,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
-import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.QuranReaderFragment
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranReaderFragment
 import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

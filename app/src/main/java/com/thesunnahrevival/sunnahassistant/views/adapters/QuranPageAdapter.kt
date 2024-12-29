@@ -70,24 +70,12 @@ class QuranPageAdapter(
                 }
 
                 quranPageView.setOnLongClickListener { view ->
-                    view.parent.requestDisallowInterceptTouchEvent(true)
-                    val location = IntArray(2)
-                    view.getLocationOnScreen(location)
-
-                    val rawX = lastTouchX - location[0]
-                    val rawY = lastTouchY - location[1]
-
-                    val unscaledX = rawX / highlightOverlay.getScaleX()
-                    val unscaledY =
-                        (rawY - highlightOverlay.getOffsetY()) / highlightOverlay.getScaleY()
-
-                    listener.onQuranPageLongClick(view, unscaledX, unscaledY)
+                    listener.onQuranPageLongClick(view, highlightOverlay)
                     true
                 }
 
                 quranPageView.setOnTouchListener { v, event ->
-                    lastTouchX = event.rawX
-                    lastTouchY = event.rawY
+                    listener.setLastTouchCoordinates(event.rawX, event.rawY)
                     false
                 }
 
@@ -118,11 +106,6 @@ class QuranPageAdapter(
             }
         }
     }
-
-    companion object {
-        private var lastTouchX: Float = 0f
-        private var lastTouchY: Float = 0f
-    }
 }
 
 data class QuranPage(
@@ -136,6 +119,7 @@ data class Surah(
 )
 
 data class Ayah(
+    val id: Int,
     val number: Int,
     val surah: Surah? = null,
     val lines: List<Line> = listOf(),
