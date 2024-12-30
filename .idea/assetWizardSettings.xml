@@ -97,7 +97,7 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="$USER_HOME$/Downloads/logo.png" />
-                                                <entry key="scalingPercent" value="75" />
+                                                <entry key="scalingPercent" value="99" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -132,7 +132,9 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
+                                      <entry key="generateWebpIcons" value="false" />
                                       <entry key="outputName" value="logo" />
+                                      <entry key="previewDensity" value="mdpi" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -335,6 +337,11 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="previewDensity" value="mdpi" />
                                     </map>
                                   </option>
                                 </PersistentState>
