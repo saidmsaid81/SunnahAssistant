@@ -377,6 +377,8 @@
     <string name="ayah_number">Ayah %d</string>
     <string name="dropdown_arrow">Dropdown Arrow</string>
     <string name="surah_number">Surah Number %d</string>
+    <string name="translations">Translations</string>
+    <string name="bookmark_page">Bookmark page</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

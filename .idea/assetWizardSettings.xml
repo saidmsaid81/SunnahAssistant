@@ -36,6 +36,21 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="/tmp/ic_android_black_24dp.xml" />
+                                                <entry key="opacityPercent" value="80" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
+                                                <entry key="imagePath" value="$USER_HOME$/Downloads/translation(1).png" />
+                                                <entry key="opacityPercent" value="80" />
+                                                <entry key="paddingPercent" value="10" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -67,6 +82,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/translation(1).png" />
+                                      <entry key="outputName" value="ic_translations_dark" />
                                       <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>
@@ -96,8 +114,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="$USER_HOME$/Downloads/logo.png" />
-                                                <entry key="scalingPercent" value="99" />
+                                                <entry key="imagePath" value="$USER_HOME$/Downloads/translation.png" />
+                                                <entry key="scalingPercent" value="63" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -132,7 +150,6 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="generateWebpIcons" value="false" />
                                       <entry key="outputName" value="logo" />
                                       <entry key="previewDensity" value="mdpi" />
                                     </map>
@@ -349,6 +366,11 @@
                             </entry>
                           </map>
                         </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="ACTIONBAR" />
+                          </map>
+                        </option>
                       </PersistentState>
                     </value>
                   </entry>
@@ -372,7 +394,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialsymbolssharp/book_5/sharp_book_5_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Android/Sdk/icons/material/materialicons/bookmark/baseline_bookmark_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -383,8 +405,8 @@
                         <option name="values">
                           <map>
                             <entry key="autoMirrored" value="true" />
-                            <entry key="color" value="f30808" />
-                            <entry key="outputName" value="resources" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="outputName" value="ic_bookmark" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/ic_toggle_theme.svg" />
                           </map>
                         </option>

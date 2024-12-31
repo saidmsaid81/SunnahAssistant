@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,12 +40,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
@@ -54,6 +52,8 @@ import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.views.adapters.Ayah
 import com.thesunnahrevival.sunnahassistant.views.adapters.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.views.adapters.Surah
+import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextUtils
+import com.thesunnahrevival.sunnahassistant.views.utilities.FontLoader
 
 @Composable
 fun SheetContent(
@@ -85,48 +85,17 @@ fun SheetContent(
 
         TranslationDropdown(selectedTranslations, allTranslations, onSelection)
 
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            AyahTranslations(
-                selectedAyah,
-                selectedTranslations
-            )
-        }
-        // Share, Copy, and Bookmark Buttons (Centered)
-        Row(
-            modifier = Modifier
+        AyahTranslations(
+            selectedAyah,
+            selectedTranslations,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        AyahInteractionRow(
+            selectedAyah, selectedTranslations, context, Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.Center // Center the icons
-        ) {
-
-            val ayahTexts = getAyahText(
-                selectedAyah,
-                selectedTranslations,
-                stringResource(R.string.surah_number, selectedAyah.surah?.number ?: 0)
-            )
-
-            ShareIcon(
-                context = context,
-                textToShare = ayahTexts,
-                modifier = Modifier.size(24.dp)
-            )
-
-            Spacer(modifier = Modifier.width(32.dp)) // Space between icons
-
-            CopyIcon(
-                context,
-                ayahTexts,
-                stringResource(R.string.copy_label),
-                stringResource(R.string.copy_message),
-                Modifier.size(24.dp)
-            )
-
-            Spacer(modifier = Modifier.width(32.dp)) // Space between icons
-
-            BookmarkIcon(modifier = Modifier.size(24.dp)) {
-
-            }
-        }
+                .padding(bottom = 16.dp)
+        )
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Next {
@@ -138,6 +107,48 @@ fun SheetContent(
             Previous {
                 previousAyah()
             }
+
+        }
+    }
+}
+
+@Composable
+fun AyahInteractionRow(
+    selectedAyah: Ayah,
+    selectedTranslations: List<AyahTranslation>,
+    context: Context,
+    modifier: Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center // Center the icons
+    ) {
+
+        val ayahTexts = getAyahText(
+            selectedAyah,
+            selectedTranslations,
+            stringResource(R.string.surah_number, selectedAyah.surah?.number ?: 0)
+        )
+
+        ShareIcon(
+            context = context,
+            textToShare = ayahTexts,
+            modifier = Modifier.size(24.dp)
+        )
+
+        Spacer(modifier = Modifier.width(32.dp)) // Space between icons
+
+        CopyIcon(
+            context,
+            ayahTexts,
+            stringResource(R.string.copy_label),
+            stringResource(R.string.copy_message),
+            Modifier.size(24.dp)
+        )
+
+        Spacer(modifier = Modifier.width(32.dp)) // Space between icons
+
+        BookmarkIcon(modifier = Modifier.size(24.dp)) {
 
         }
     }
@@ -221,31 +232,40 @@ fun AyahTranslations(
     selectedTranslations: List<AyahTranslation>,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = selectedAyah.arabicText,
-        fontSize = 18.sp,
-        modifier = modifier
-            .padding(bottom = 16.dp)
+    val uthmaniFont = FontLoader.loadUthmaniFont()
+    val baseTextSize = 24.sp
+    val arabicTextScale = 1.4f
 
-    )
-
-    // Translations List
-    selectedAyah.ayahTranslations.filter {
-        selectedTranslations.any { selectedTranslation -> selectedTranslation.id == it.id }
-    }.forEach {
+    Column(modifier = modifier) {
         Text(
-            text = it.source,
-            fontSize = 14.sp,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+            text = ArabicTextUtils.formatArabicText(selectedAyah.arabicText),
+            fontSize = baseTextSize * arabicTextScale,
+            fontFamily = uthmaniFont,
+            textAlign = TextAlign.Right,
+            letterSpacing = 1.sp,
+            lineHeight = (baseTextSize * arabicTextScale * 1.6f),
+            modifier = modifier
+                .padding(bottom = 16.dp, start = 8.dp, end = 8.dp)
+                .fillMaxWidth()
         )
 
-        Text(
-            text = it.text,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        selectedAyah.ayahTranslations
+            .filter { translation ->
+                selectedTranslations.any { it.id == translation.id }
+            }
+            .forEach { translation ->
+                Text(
+                    text = translation.source,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                )
+                Text(
+                    text = translation.text,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
     }
 }
 

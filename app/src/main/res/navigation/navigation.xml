@@ -169,6 +169,10 @@
       android:name="com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment"
       android:label="@string/resolve_malformed_to_dos" />
 
+  <fragment
+      android:id="@+id/pageTranslationFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.PageTranslationFragment" />
+
   <dialog
       android:id="@+id/snooze_options"
       android:name="com.thesunnahrevival.sunnahassistant.views.dialogs.SnoozeOptionsFragment" />

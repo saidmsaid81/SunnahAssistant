@@ -4,17 +4,23 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.appbar.AppBarLayout
 import com.thesunnahrevival.sunnahassistant.R
@@ -28,7 +34,7 @@ import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListen
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 import kotlinx.coroutines.launch
 
-class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
+class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
     private val quranReaderBinding get() = _quranReaderBinding!!
 
@@ -48,6 +54,9 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
+
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
         val pageNumbers = args.resourceItem.pageNumbers
 
@@ -66,6 +75,17 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener {
     override fun onResume() {
         super.onResume()
         (activity as? MainActivity)?.supportActionBar?.title = args.resourceItem.title
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.quran_reader_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.translations -> findNavController().navigate(R.id.pageTranslationFragment, null)
+        }
+        return true
     }
 
     override fun onQuranPageClick(view: View) {

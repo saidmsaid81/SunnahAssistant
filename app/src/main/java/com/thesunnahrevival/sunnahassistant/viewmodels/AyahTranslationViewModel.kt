@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 
 class AyahTranslationViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val ayahs = listOf(
+    val ayahs = listOf(
         Ayah(
             id = 1,
             number = 105,
@@ -36,7 +36,7 @@ class AyahTranslationViewModel(application: Application) : AndroidViewModel(appl
             id = 2,
             number = 106,
             surah = Surah(17, "Suratul Isra"),
-            arabicText = "وَقُرْءَانًۭا فَرَقْنَـٰهُ لِتَقْرَأَهُۥ عَلَى ٱلنَّاسِ عَلَىٰ مُكْثٍۢ وَنَزَّلْنَـٰهُ تَنزِيلًۭا",
+            arabicText = "وَقُرۡءَانٗا فَرَقۡنَٰهُ لِتَقۡرَأَهُۥ عَلَى ٱلنَّاسِ عَلَىٰ مُكۡثٖ وَنَزَّلۡنَٰهُ تَنزِيلٗا",
             ayahTranslations = listOf(
                 AyahTranslation(
                     1,
@@ -63,7 +63,7 @@ class AyahTranslationViewModel(application: Application) : AndroidViewModel(appl
         )
     )
 
-    private val _selectedTranslations = MutableStateFlow<List<AyahTranslation>>(listOf())
+    private val _selectedTranslations = MutableStateFlow(_translations.value.subList(0, 2))
 
 
     val translations = _translations.asStateFlow()
