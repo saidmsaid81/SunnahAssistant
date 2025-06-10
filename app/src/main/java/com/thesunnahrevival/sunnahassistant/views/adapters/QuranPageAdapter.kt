@@ -15,7 +15,7 @@ import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayVi
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 
 class QuranPageAdapter(
-    val pageNumbers: List<QuranPage>,
+    var pageNumbers: List<Int>,
     private val listener: QuranPageClickListener
 ) :
     RecyclerView.Adapter<QuranPageAdapter.ViewHolder>() {
@@ -29,7 +29,7 @@ class QuranPageAdapter(
     override fun getItemCount(): Int = pageNumbers.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(pageNumbers[position].number)
+        holder.bind(pageNumbers[position])
     }
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {

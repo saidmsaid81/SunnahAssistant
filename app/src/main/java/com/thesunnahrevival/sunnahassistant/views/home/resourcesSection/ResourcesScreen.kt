@@ -132,21 +132,21 @@ private fun resourceItems(): List<ResourceItem> {
             stringResource(R.string.suratul_fatiha),
             stringResource(R.string.recommended_to_read_regularly),
             R.id.quranReaderFragment,
-            listOf(1)
+            1
         ),
         ResourceItem(
             2,
             stringResource(R.string.suratul_baqarah),
             stringResource(R.string.recommended_to_read_regularly),
             R.id.quranReaderFragment,
-            (2..49).toList()
+            2
         ),
         ResourceItem(
             18,
             stringResource(R.string.suratul_kahf),
             stringResource(R.string.recommended_to_read_every_friday),
             R.id.quranReaderFragment,
-            (293..304).toList()
+            293
 
         ),
         ResourceItem(
@@ -154,7 +154,7 @@ private fun resourceItems(): List<ResourceItem> {
             stringResource(R.string.suratul_sajdah),
             stringResource(R.string.recommended_to_read_before_sleeping),
             R.id.quranReaderFragment,
-            (415..417).toList()
+            415
 
         ),
         ResourceItem(
@@ -162,7 +162,7 @@ private fun resourceItems(): List<ResourceItem> {
             stringResource(R.string.suratulmulk),
             stringResource(R.string.recommended_to_read_before_sleeping),
             R.id.quranReaderFragment,
-            (562..564).toList()
+            562
 
         ),
         ResourceItem(
@@ -170,7 +170,7 @@ private fun resourceItems(): List<ResourceItem> {
             stringResource(R.string.suratul_ikhlaas),
             stringResource(R.string.equivalent_in_reward_to_reciting_1_3_of_the_quran),
             R.id.quranReaderFragment,
-            listOf(604)
+            604
 
         ),
         ResourceItem(
@@ -178,14 +178,14 @@ private fun resourceItems(): List<ResourceItem> {
             stringResource(R.string.suratul_falaq),
             stringResource(R.string.for_protection_from_jinn_and_evil_eye),
             R.id.quranReaderFragment,
-            listOf(604)
+            604
         ),
         ResourceItem(
             114,
             stringResource(R.string.suratul_nas),
             stringResource(R.string.for_protection_from_jinn_and_evil_eye),
             R.id.quranReaderFragment,
-            listOf(604)
+            604
         ),
         ResourceItem(
             1,

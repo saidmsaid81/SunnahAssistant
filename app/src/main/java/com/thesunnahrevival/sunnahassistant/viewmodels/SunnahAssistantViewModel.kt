@@ -40,14 +40,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
-import com.thesunnahrevival.sunnahassistant.views.adapters.Ayah
-import com.thesunnahrevival.sunnahassistant.views.adapters.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.views.adapters.Line
-import com.thesunnahrevival.sunnahassistant.views.adapters.Surah
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -96,8 +89,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
 
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
-    val statusBarHeight = MutableLiveData<Int>(0)
-    val navBarHeight = MutableLiveData<Int>(0)
+    val statusBarHeight = MutableLiveData(0)
+    val navBarHeight = MutableLiveData(0)
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
@@ -627,68 +620,25 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         existingDataFile.delete()
     }
 
-    private val _selectedAyah = MutableStateFlow<Ayah?>(null)
-    val selectedAyah = _selectedAyah.asStateFlow()
-    private val ayahs = listOf(
-        Ayah(
-            id = 1,
-            number = 105,
-            surah = Surah(17, "Suratul Isra"),
-            arabicText = "وَبِٱلْحَقِّ أَنزَلْنَـٰهُ وَبِٱلْحَقِّ نَزَلَ ۗ وَمَآ أَرْسَلْنَـٰكَ إِلَّا مُبَشِّرًۭا وَنَذِيرًۭا",
-            ayahTranslations = listOf(
-                AyahTranslation(
-                    1,
-                    "Sahih International",
-                    "And with the truth We have sent it [i.e., the Qur’ān] down, and with the truth it has descended. And We have not sent you, [O Muḥammad], except as a bringer of good tidings and a warner."
-                ),
-                AyahTranslation(
-                    2,
-                    "Mohsin Khan & Muhammad al-Hilali",
-                    "And with truth We have sent it down (i.e. the Qur’ân), and with truth it has descended. And We have sent you (O Muhammad صلى الله عليه و سلم) as nothing but a bearer of glad tidings (of Paradise for those who follow your Message of Islâmic Monotheism), and a warner (of Hell-fire for those who refuse to follow your Message of Islâmic Monotheism)"
-                )
-            ),
-            lines = listOf(Line(1, 174f, 30f, 1239f, 149f))
-        ),
-        Ayah(
-            id = 2,
-            number = 106,
-            surah = Surah(17, "Suratul Isra"),
-            arabicText = "وَقُرْءَانًۭا فَرَقْنَـٰهُ لِتَقْرَأَهُۥ عَلَى ٱلنَّاسِ عَلَىٰ مُكْثٍۢ وَنَزَّلْنَـٰهُ تَنزِيلًۭا",
-            ayahTranslations = listOf(
-                AyahTranslation(
-                    1,
-                    "Sahih International",
-                    "And [it is] a Qur’ān which We have separated [by intervals] that you might recite it to the people over a prolonged period. And We have sent it down progressively."
-                ),
-                AyahTranslation(
-                    2,
-                    "Mohsin Khan & Muhammad al-Hilali",
-                    "And (it is) a Qur’ân which We have divided (into parts), in order that you might recite it to men at intervals. And We have revealed it by stages (in 23 years)."
-                )
-            ),
-            lines = listOf(Line(2, 60f, 181f, 1234f, 281f))
-        )
-    )
+    private val _selectedAyahId: MutableLiveData<Int?> = MutableLiveData()
+    val selectedAyahId = _selectedAyahId
 
-    fun setSelectedAyah(ayah: Ayah) {
-        _selectedAyah.update { ayah }
+    fun setSelectedAyahId(ayahId: Int?) {
+        _selectedAyahId.value = ayahId
     }
 
     fun nextAyah() {
-        val nextAyahNumber = selectedAyah.value?.number?.plus(1)
-        val nextAyah = ayahs.find { it.number == nextAyahNumber }
-        nextAyah?.let {
-            _selectedAyah.update { nextAyah }
+        val nextAyahId = selectedAyahId.value?.plus(1)
+
+        nextAyahId?.let {
+            _selectedAyahId.value = it
         }
     }
 
     fun previousAyah() {
-        val previousAyahNumber = selectedAyah.value?.number?.minus(1)
-        val previousAyah = ayahs.find {
-            it.number == previousAyahNumber
-        }
-        previousAyah?.let {
-            _selectedAyah.update { previousAyah }
+        val previousAyahId = selectedAyahId.value?.minus(1)
+        previousAyahId?.let {
+            _selectedAyahId.value = it
         }
     }
 }

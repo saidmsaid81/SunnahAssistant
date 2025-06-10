@@ -2,15 +2,26 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.thesunnahrevival.sunnahassistant.data.QuranRepository
+import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.views.adapters.Ayah
 import com.thesunnahrevival.sunnahassistant.views.adapters.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.views.adapters.Line
 import com.thesunnahrevival.sunnahassistant.views.adapters.Surah
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class AyahTranslationViewModel(application: Application) : AndroidViewModel(application) {
+open class AyahTranslationViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val mQuranRepository = QuranRepository.getInstance(getApplication())
 
     val ayahs = listOf(
         Ayah(
@@ -53,34 +64,30 @@ class AyahTranslationViewModel(application: Application) : AndroidViewModel(appl
         )
     )
 
-    private val _translations = MutableStateFlow(
-        listOf(
-            AyahTranslation(1, "Sahih International", ""),
-            AyahTranslation(2, "Mohsin Khan & Muhammad al-Hilali", ""),
-            AyahTranslation(3, "Mufti Taqi Usmani", ""),
-            AyahTranslation(4, "Dr. Mustafa Khattab, the Clear Quran", ""),
-            AyahTranslation(5, "Abdul Haleem", "")
-        )
-    )
 
-    private val _selectedTranslations = MutableStateFlow(_translations.value.subList(0, 2))
-
-
-    val translations = _translations.asStateFlow()
-
-    val selectedTranslations = _selectedTranslations.asStateFlow()
-
-    fun toggleTranslationSelection(translation: AyahTranslation) {
-        _selectedTranslations.update { currentTranslations ->
-            if (currentTranslations.contains(translation)) {
-                currentTranslations - translation
-            } else {
-                currentTranslations + translation
-            }
+    fun toggleTranslationSelection(translation: Translation) {
+        translation.selected = !translation.selected
+        viewModelScope.launch(Dispatchers.IO) {
+            mQuranRepository.updateTranslation(translation)
         }
     }
 
-    fun getAyah(ayahId: Int): Ayah? {
-        return ayahs.find { it.id == ayahId }
+    private val _selectedAyah = MutableStateFlow<FullAyahDetails?>(null)
+    val selectedAyah = _selectedAyah.asStateFlow()
+    val translations = mQuranRepository.getTranslations()
+
+    val selectedTranslations = translations.map { translationsList ->
+        translationsList.filter { it.selected }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    fun setSelectedAyah(ayah: FullAyahDetails) {
+        _selectedAyah.update { ayah }
     }
+
+    suspend fun getAyahById(ayahId: Int) = mQuranRepository.getFullAyahDetailsById(ayahId)
+
 }

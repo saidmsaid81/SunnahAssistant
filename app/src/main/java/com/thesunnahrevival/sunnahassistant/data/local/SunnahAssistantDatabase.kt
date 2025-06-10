@@ -11,8 +11,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.Ayah
+import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
+import com.thesunnahrevival.sunnahassistant.data.model.Footnote
+import com.thesunnahrevival.sunnahassistant.data.model.Language
+import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
@@ -25,9 +32,9 @@ import java.time.LocalDate
 import java.util.TreeSet
 
 @Database(
-    entities = [ToDo::class, AppSettings::class, DailyHadith::class],
-    version = 8,
-    autoMigrations = [AutoMigration(from = 7, to = 8)],
+    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class],
+    version = 9,
+    autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
     )
 @TypeConverters(RoomTypeConverter::class)
@@ -35,6 +42,19 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun toDoDao(): ToDoDao
 
     abstract fun dailyHadithDao(): DailyHadithDao
+
+    abstract fun surahDao(): SurahDao
+    abstract fun ayahDao(): AyahDao
+
+    abstract fun lineDao(): LineDao
+
+    abstract fun ayahTranslationDao(): AyahTranslationDao
+
+    abstract fun footnoteDao(): FootnoteDao
+
+    abstract fun languageDao(): LanguageDao
+
+    abstract fun translationDao(): TranslationDao
 
     fun closeDB() {
         INSTANCE?.close()

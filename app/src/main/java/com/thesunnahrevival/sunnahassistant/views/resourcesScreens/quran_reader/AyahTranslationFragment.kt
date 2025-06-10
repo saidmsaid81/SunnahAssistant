@@ -7,17 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AyahTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
-import com.thesunnahrevival.sunnahassistant.views.adapters.AyahTranslation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AyahTranslationFragment : BottomSheetDialogFragment() {
 
@@ -29,25 +31,31 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val ayahId = mainActivityViewModel.selectedAyah.value?.id
-        if (ayahId != null) {
-            viewModel.getAyah(ayahId)
-                ?.let { mainActivityViewModel.setSelectedAyah(it) }
-        }
         return ComposeView(requireContext()).apply {
+            mainActivityViewModel.selectedAyahId.observe(viewLifecycleOwner) { ayahId ->
+                if (ayahId != null) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val ayah = viewModel.getAyahById(ayahId)
+                        ayah?.let {
+                            viewModel.setSelectedAyah(it)
+                        }
+                    }
+                }
+            }
+
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 SunnahAssistantTheme {
                     Surface {
-                        val selectedAyah by mainActivityViewModel.selectedAyah.collectAsState()
-                        selectedAyah?.let { ayah ->
+                        val selectedAyah = viewModel.selectedAyah.collectAsState()
+                        selectedAyah.value?.let {
                             SheetContent(
-                                ayah,
-                                viewModel.translations.collectAsState().value,
+                                it,
+                                viewModel.translations.collectAsState(initial = emptyList()).value,
                                 viewModel.selectedTranslations.collectAsState().value,
                                 { mainActivityViewModel.nextAyah() },
                                 { mainActivityViewModel.previousAyah() },
-                                { translation: AyahTranslation ->
+                                { translation: Translation ->
                                     viewModel.toggleTranslationSelection(
                                         translation
                                     )

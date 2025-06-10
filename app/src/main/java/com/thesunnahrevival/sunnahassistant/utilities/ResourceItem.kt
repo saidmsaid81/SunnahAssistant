@@ -9,5 +9,5 @@ data class ResourceItem(
     val title: String,
     val description: String,
     val destination: Int,
-    val pageNumbers: List<Int> = emptyList()
+    val startPage: Int = 1
 ) : Parcelable

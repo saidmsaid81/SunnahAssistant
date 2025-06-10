@@ -68,6 +68,14 @@
         android:name="resourceItem"
         app:argType="com.thesunnahrevival.sunnahassistant.utilities.ResourceItem"
         app:nullable="false" />
+      <action
+          android:id="@+id/toPageTranslationsFragment"
+          app:destination="@id/pageTranslationFragment">
+          <argument
+              android:name="pageNumber"
+              app:argType="integer"
+              android:defaultValue="1" />
+      </action>
   </fragment>
 
 
@@ -171,7 +179,12 @@
 
   <fragment
       android:id="@+id/pageTranslationFragment"
-      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.PageTranslationFragment" />
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.PageTranslationFragment">
+      <argument
+          android:name="pageNumber"
+          app:argType="integer"
+          android:defaultValue="1" />
+  </fragment>
 
   <dialog
       android:id="@+id/snooze_options"

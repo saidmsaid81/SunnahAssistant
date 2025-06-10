@@ -99,9 +99,9 @@ class HighlightOverlayView @JvmOverloads constructor(
     fun getOffsetY(): Float = offsetY
 
     data class Coordinates(
-        val minX: Float,
-        val minY: Float,
-        val maxX: Float,
-        val maxY: Float
+        val minX: Int,
+        val minY: Int,
+        val maxX: Int,
+        val maxY: Int
     )
 }

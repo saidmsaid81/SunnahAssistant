@@ -23,7 +23,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -44,25 +43,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
-import com.thesunnahrevival.sunnahassistant.views.adapters.Ayah
-import com.thesunnahrevival.sunnahassistant.views.adapters.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.views.adapters.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextUtils
 import com.thesunnahrevival.sunnahassistant.views.utilities.FontLoader
 
 @Composable
 fun SheetContent(
-    selectedAyah: Ayah,
-    allTranslations: List<AyahTranslation>,
-    selectedTranslations: List<AyahTranslation>,
+    selectedAyah: FullAyahDetails,
+    translations: List<Translation>,
+    selectedTranslations: List<Translation>,
     nextAyah: () -> Unit,
     previousAyah: () -> Unit,
-    onSelection: (AyahTranslation) -> Unit
+    onSelection: (Translation) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -77,13 +73,13 @@ fun SheetContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         AyahTitle(
-            selectedAyah.surah?.name ?: "",
-            stringResource(R.string.ayah_number, selectedAyah.number),
+            selectedAyah.surah.transliteratedName,
+            stringResource(R.string.ayah_number, selectedAyah.ayah.number),
             modifier = Modifier.fillMaxWidth(),
             Alignment.CenterHorizontally
         )
 
-        TranslationDropdown(selectedTranslations, allTranslations, onSelection)
+        TranslationDropdown(translations, selectedTranslations, onSelection)
 
         AyahTranslations(
             selectedAyah,
@@ -107,27 +103,25 @@ fun SheetContent(
             Previous {
                 previousAyah()
             }
-
         }
     }
 }
 
 @Composable
 fun AyahInteractionRow(
-    selectedAyah: Ayah,
-    selectedTranslations: List<AyahTranslation>,
+    selectedAyah: FullAyahDetails,
+    selectedTranslations: List<Translation>,
     context: Context,
     modifier: Modifier
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.Center // Center the icons
+        horizontalArrangement = Arrangement.Center
     ) {
-
         val ayahTexts = getAyahText(
             selectedAyah,
             selectedTranslations,
-            stringResource(R.string.surah_number, selectedAyah.surah?.number ?: 0)
+            stringResource(R.string.surah_number, selectedAyah.surah.id ?: 0)
         )
 
         ShareIcon(
@@ -136,7 +130,7 @@ fun AyahInteractionRow(
             modifier = Modifier.size(24.dp)
         )
 
-        Spacer(modifier = Modifier.width(32.dp)) // Space between icons
+        Spacer(modifier = Modifier.width(32.dp))
 
         CopyIcon(
             context,
@@ -146,7 +140,7 @@ fun AyahInteractionRow(
             Modifier.size(24.dp)
         )
 
-        Spacer(modifier = Modifier.width(32.dp)) // Space between icons
+        Spacer(modifier = Modifier.width(32.dp))
 
         BookmarkIcon(modifier = Modifier.size(24.dp)) {
 
@@ -228,17 +222,17 @@ fun ShareIcon(
 
 @Composable
 fun AyahTranslations(
-    selectedAyah: Ayah,
-    selectedTranslations: List<AyahTranslation>,
+    selectedAyah: FullAyahDetails,
+    selectedTranslations: List<Translation>,
     modifier: Modifier = Modifier
 ) {
     val uthmaniFont = FontLoader.loadUthmaniFont()
-    val baseTextSize = 24.sp
+    val baseTextSize = 18.sp
     val arabicTextScale = 1.4f
 
     Column(modifier = modifier) {
         Text(
-            text = ArabicTextUtils.formatArabicText(selectedAyah.arabicText),
+            text = ArabicTextUtils.formatArabicText(selectedAyah.ayah.arabicText),
             fontSize = baseTextSize * arabicTextScale,
             fontFamily = uthmaniFont,
             textAlign = TextAlign.Right,
@@ -249,18 +243,20 @@ fun AyahTranslations(
                 .fillMaxWidth()
         )
 
+        val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
+
         selectedAyah.ayahTranslations
-            .filter { translation ->
-                selectedTranslations.any { it.id == translation.id }
+            .filter { ayahTranslation ->
+                ayahTranslation.translation.id in selectedTranslationIds
             }
             .forEach { translation ->
                 Text(
-                    text = translation.source,
+                    text = translation.translation.name,
                     fontSize = 14.sp,
                     color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                 )
                 Text(
-                    text = translation.text,
+                    text = translation.ayahTranslation.text,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -271,9 +267,9 @@ fun AyahTranslations(
 
 @Composable
 fun TranslationDropdown(
-    selectedTranslations: List<AyahTranslation>,
-    allTranslations: List<AyahTranslation>,
-    onSelection: (AyahTranslation) -> Unit
+    translations: List<Translation>,
+    selectedTranslations: List<Translation>,
+    onSelection: (Translation) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -288,11 +284,7 @@ fun TranslationDropdown(
             Text(
                 text = when {
                     selectedTranslations.isEmpty() -> stringResource(R.string.select_translation)
-                    selectedTranslations.size == 1 -> stringResource(
-                        R.string.translation,
-                        allTranslations.find { it == selectedTranslations[0] }?.source ?: ""
-                    )
-
+                    selectedTranslations.size == 1 -> selectedTranslations.firstOrNull()?.name ?: ""
                     else -> stringResource(
                         R.string.translations_selected,
                         selectedTranslations.size
@@ -313,19 +305,19 @@ fun TranslationDropdown(
             onDismissRequest = { expanded = false },
             modifier = Modifier.fillMaxWidth()
         ) {
-            allTranslations.forEach { translation ->
+            translations.forEach { translation ->
                 DropdownMenuItem(onClick = {
                     onSelection(translation)
                 }) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(
-                            checked = selectedTranslations.contains(translation),
+                            checked = translation.selected,
                             onCheckedChange = {
                                 onSelection(translation)
                             },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = translation.source, maxLines = 1)
+                        Text(text = translation.name, maxLines = 1)
                     }
                 }
             }
@@ -405,88 +397,21 @@ private fun copyToClipboard(
 }
 
 private fun getAyahText(
-    ayah: Ayah,
-    selectedTranslations: List<AyahTranslation>,
+    ayah: FullAyahDetails,
+    selectedTranslations: List<Translation>,
     surahNumber: String
 ): String {
-    val translations = ayah.ayahTranslations.filter {
-        selectedTranslations.any { selectedTranslation -> selectedTranslation.id == it.id }
-    }
+    val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
+
+    val translations = ayah.ayahTranslations
+        .filter { it.translation.id in selectedTranslationIds }
         .joinToString(separator = "") {
-            "${it.source} \n" +
-                    "${it.text} \n\n"
+            "${it.translation.name} \n" +
+                    "${it.ayahTranslation.text} \n\n"
         }
 
-    return "${ayah.surah?.name} ($surahNumber)\n\n" +
-            "Ayah ${ayah.number}\n" +
-            "${ayah.arabicText}\n\n" +
+    return "${ayah.surah.transliteratedName} ($surahNumber)\n\n" +
+            "Ayah ${ayah.ayah.number}\n" +
+            "${ayah.ayah.arabicText}\n\n" +
             translations
-}
-
-@Preview(
-    name = "Dark Mode",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(name = "Light Mode", showBackground = true)
-@Composable
-private fun SheetContentPreview() {
-    val selectedAyah = Ayah(
-        id = 1,
-        number = 105,
-        surah = Surah(17, "Suratul Isra"),
-        arabicText = "وَبِٱلْحَقِّ أَنزَلْنَـٰهُ وَبِٱلْحَقِّ نَزَلَ ۗ وَمَآ أَرْسَلْنَـٰكَ إِلَّا مُبَشِّرًۭا وَنَذِيرًۭا",
-        ayahTranslations = listOf(
-            AyahTranslation(
-                1,
-                "Sahih International",
-                "And with the truth We have sent it [i.e., the Qur’ān] down, and with the truth it has descended. And We have not sent you, [O Muḥammad], except as a bringer of good tidings and a warner."
-            ),
-            AyahTranslation(
-                2,
-                "Mohsin Khan & Muhammad al-Hilali",
-                "And with truth We have sent it down (i.e. the Qur’ân), and with truth it has descended. And We have sent you (O Muhammad صلى الله عليه و سلم) as nothing but a bearer of glad tidings (of Paradise for those who follow your Message of Islâmic Monotheism), and a warner (of Hell-fire for those who refuse to follow your Message of Islâmic Monotheism)"
-            )
-        )
-    )
-
-    val allTranslations = listOf(
-        AyahTranslation(
-            1,
-            "Sahih International",
-            ""
-        ),
-        AyahTranslation(
-            2,
-            "Mohsin Khan & Muhammad al-Hilali",
-            ""
-        ),
-        AyahTranslation(
-            3,
-            "Mufti Taqi Usmani",
-            ""
-        ),
-        AyahTranslation(
-            4,
-            "Dr. Mustafa Khattab, the Clear Quran",
-            ""
-        ),
-        AyahTranslation(
-            5,
-            "Abdul Haleem",
-            ""
-        )
-    )
-
-    SunnahAssistantTheme {
-        Surface {
-            SheetContent(
-                selectedAyah,
-                allTranslations,
-                allTranslations.filter { it.id <= 2 },
-                {},
-                {},
-                {})
-        }
-    }
 }

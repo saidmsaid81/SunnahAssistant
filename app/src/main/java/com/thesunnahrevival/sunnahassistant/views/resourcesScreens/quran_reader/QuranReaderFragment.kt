@@ -19,11 +19,12 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
 import com.thesunnahrevival.sunnahassistant.viewmodels.QuranReaderViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -32,7 +33,9 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
@@ -47,6 +50,9 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
 
     private val viewmodel by viewModels<QuranReaderViewModel>()
 
+    private lateinit var quranPageAdapter: QuranPageAdapter
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,32 +64,45 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
 
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
-        val pageNumbers = args.resourceItem.pageNumbers
+        val currentPage = args.resourceItem.startPage
 
-        val quranPageAdapter = QuranPageAdapter(viewmodel.getQuranPages(pageNumbers), this)
+        quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
         quranReaderBinding.viewPager.adapter = quranPageAdapter
         quranReaderBinding.viewPager.reduceDragSensitivity(4)
-
+        quranReaderBinding.viewPager.registerOnPageChangeCallback(pageChangeCallback)
+        quranReaderBinding.viewPager.setCurrentItem((currentPage - 1), false)
         handleAyahSelection()
-
         handleBackPressed()
 
         return quranReaderBinding.root
     }
 
+    private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            viewmodel.getLinesByPageNumber(position + 1)
+            val highlightOverlay: HighlightOverlayView? = quranReaderBinding.viewPager
+                .findViewWithTag("overlay_$position")
+            highlightOverlay?.clearHighlights()
+        }
+    }
 
     override fun onResume() {
         super.onResume()
         (activity as? MainActivity)?.supportActionBar?.title = args.resourceItem.title
     }
-
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.quran_reader_menu, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.translations -> findNavController().navigate(R.id.pageTranslationFragment, null)
+            R.id.translations -> {
+                val pageNumber = quranReaderBinding.viewPager.currentItem + 1
+                val action =
+                    QuranReaderFragmentDirections.toPageTranslationsFragment(pageNumber)
+                findNavController().navigate(action)
+            }
         }
         return true
     }
@@ -100,7 +119,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
             leaveImmersiveMode()
         }
     }
-
     override fun onQuranPageLongClick(
         view: View,
         highlightOverlay: HighlightOverlayView
@@ -116,14 +134,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
             stayInImmersiveMode = true
         }
 
-        val currentPage = quranReaderBinding.viewPager.currentItem
-        val page =
-            (quranReaderBinding.viewPager.adapter as QuranPageAdapter).pageNumbers[currentPage]
-
-//        val highlightOverlay = quranReaderBinding.viewPager
-//            .findViewWithTag<HighlightOverlayView>("overlay_${page.number}")
-//            ?: return
-
         val location = IntArray(2)
         view.getLocationOnScreen(location)
 
@@ -133,15 +143,12 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
         val x = rawX / highlightOverlay.getScaleX()
         val y = (rawY - highlightOverlay.getOffsetY()) / highlightOverlay.getScaleY()
 
-        page.ayahs.forEach { ayah ->
-            ayah.lines.forEach { line ->
-                if (x >= line.minX && x <= line.maxX &&
-                    y >= line.minY && y <= line.maxY
-                ) {
-                    mainActivityViewModel.setSelectedAyah(ayah)
-                }
-            }
+        val lines = viewmodel.lines
+        val selectedLine = lines.find { line ->
+            (x >= line.minX) && (x <= line.maxX) &&
+                    (y >= line.minY) && (y <= line.maxY)
         }
+        selectedLine?.let { mainActivityViewModel.setSelectedAyahId(it.ayahId) }
     }
 
     override fun setLastTouchCoordinates(x: Float, y: Float) {
@@ -151,6 +158,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mainActivityViewModel.setSelectedAyahId(null)
+        quranReaderBinding.viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
         val mainActivity = activity as MainActivity
 
         val toolbar = mainActivity.findViewById<Toolbar>(R.id.toolbar)
@@ -170,7 +179,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
         (activity as? MainActivity)?.supportActionBar?.show()
         _quranReaderBinding = null
     }
-
     override fun handleEdgeToEdge() {
         val mainActivity = activity as MainActivity
 
@@ -197,7 +205,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
             }
         }
     }
-
     private fun handleBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -250,38 +257,63 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
     }
 
     private fun getHighlightOverlay(): HighlightOverlayView? {
-        val currentPage = quranReaderBinding.viewPager.currentItem
-        val page =
-            (quranReaderBinding.viewPager.adapter as QuranPageAdapter).pageNumbers[currentPage]
+        val pageNumber = quranPageAdapter.pageNumbers[quranReaderBinding.viewPager.currentItem]
         return quranReaderBinding.viewPager
-            .findViewWithTag("overlay_${page.number}")
+            .findViewWithTag("overlay_$pageNumber")
     }
 
     private fun handleAyahSelection() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainActivityViewModel.selectedAyah.collect { ayah ->
-                    if (ayah != null) {
-                        val coordinates = ayah.lines.map {
-                            HighlightOverlayView.Coordinates(it.minX, it.minY, it.maxX, it.maxY)
-                        }.toList()
-                        if (coordinates.isEmpty()) {
-                            return@collect
-                        }
-                        val highlightOverlay = getHighlightOverlay()
-                        println(highlightOverlay)
-                        highlightOverlay?.clearHighlights()
-                        highlightOverlay?.setHighlightCoordinates(coordinates)
+        mainActivityViewModel.selectedAyahId.observe(viewLifecycleOwner) { ayahId ->
+            if (ayahId == null) {
+                return@observe
+            }
+            lifecycleScope.launch(Dispatchers.IO) {
+                val linesToHighlight = viewmodel.getLinesByAyahId(ayahId)
 
-                        if (requireActivity().supportFragmentManager.findFragmentByTag("ayah_translation") == null) {
-                            val fragment = AyahTranslationFragment()
-                            fragment.show(
-                                requireActivity().supportFragmentManager,
-                                "ayah_translation"
-                            )
+                if (linesToHighlight.isEmpty()) {
+                    return@launch
+                }
+
+                val pageNumber = linesToHighlight.first().pageNumber
+
+                withContext(Dispatchers.Main) {
+                    if (quranReaderBinding.viewPager.currentItem == pageNumber - 1) {
+                        highlightAyah(linesToHighlight)
+                    } else {
+                        val callback = object : ViewPager2.OnPageChangeCallback() {
+                            override fun onPageScrollStateChanged(state: Int) {
+                                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                                    quranReaderBinding.viewPager.unregisterOnPageChangeCallback(this)
+                                    view?.post {
+                                        highlightAyah(linesToHighlight)
+                                    }
+                                }
+                            }
                         }
+                        quranReaderBinding.viewPager.registerOnPageChangeCallback(callback)
+                        quranReaderBinding.viewPager.setCurrentItem(pageNumber - 1, true)
                     }
                 }
+            }
+        }
+    }
+
+    private fun highlightAyah(linesToHighlight: List<Line>) {
+        val coordinates = linesToHighlight.map {
+            HighlightOverlayView.Coordinates(it.minX, it.minY, it.maxX, it.maxY)
+        }.toList()
+
+        if (coordinates.isNotEmpty()) {
+            val highlightOverlay = getHighlightOverlay()
+            highlightOverlay?.clearHighlights()
+            highlightOverlay?.setHighlightCoordinates(coordinates)
+
+            if (requireActivity().supportFragmentManager.findFragmentByTag("ayah_translation") == null) {
+                val fragment = AyahTranslationFragment()
+                fragment.show(
+                    requireActivity().supportFragmentManager,
+                    "ayah_translation"
+                )
             }
         }
     }
