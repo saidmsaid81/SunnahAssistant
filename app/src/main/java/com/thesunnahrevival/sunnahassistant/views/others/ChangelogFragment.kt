@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentChangelogBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.translateLink
 
@@ -30,7 +28,6 @@ class ChangelogFragment : SunnahAssistantFragment() {
         val view = changelogFragmentBinding.root
 
 
-        mainActivityViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
         mainActivityViewModel.settingsValue?.appVersion = BuildConfig.VERSION_NAME
         mainActivityViewModel.settingsValue?.appVersionCode = BuildConfig.VERSION_CODE
         mainActivityViewModel.settingsValue?.categories?.addAll(requireContext().resources.getStringArray(R.array.categories))

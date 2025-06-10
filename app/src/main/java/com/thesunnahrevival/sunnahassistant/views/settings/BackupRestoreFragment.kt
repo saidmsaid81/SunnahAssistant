@@ -14,11 +14,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentBackupRestoreBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EncryptBackupFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterDecryptionPasswordFragment
@@ -99,8 +97,6 @@ class BackupRestoreFragment : SunnahAssistantFragment(), AdapterView.OnItemClick
             )
         listView.onItemClickListener = this
 
-        mainActivityViewModel =
-            ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
         return view
     }
 
