@@ -3,13 +3,18 @@ package com.thesunnahrevival.sunnahassistant.data.model
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class AyahTranslationWithTranslation(
+data class AyahTranslationWithFootnotes(
     @Embedded val ayahTranslation: AyahTranslation,
     @Relation(
         parentColumn = "translation_id",
         entityColumn = "id"
     )
-    val translation: Translation
+    val translation: Translation,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "ayah_translation_id"
+    )
+    val footnotes: List<Footnote>
 )
 
 data class FullAyahDetails(
@@ -24,5 +29,5 @@ data class FullAyahDetails(
         entityColumn = "ayah_id",
         entity = AyahTranslation::class
     )
-    val ayahTranslations: List<AyahTranslationWithTranslation>
+    val ayahTranslations: List<AyahTranslationWithFootnotes>
 )

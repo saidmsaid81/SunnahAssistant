@@ -92,6 +92,13 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                     AyahTranslations(
                                         ayahFullDetail,
                                         selectedTranslations,
+                                        viewModel.visibleFootnotes,
+                                        { ayahTranslationId, footnoteNumber ->
+                                            viewModel.toggleFootnote(
+                                                ayahTranslationId,
+                                                footnoteNumber
+                                            )
+                                        },
                                         modifier = Modifier.fillMaxWidth()
                                     )
 
