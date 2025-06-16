@@ -240,7 +240,10 @@ fun AyahTranslations(
             lineHeight = (baseTextSize * arabicTextScale * 1.6f),
             modifier = modifier
                 .padding(bottom = 16.dp, start = 8.dp, end = 8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            style = MaterialTheme.typography.body1.copy(
+                fontFeatureSettings = "liga"
+            )
         )
 
         val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
