@@ -73,6 +73,9 @@ class QuranRepository private constructor(
 
     fun getTranslations() = translationDao.getTranslations()
 
+    suspend fun getFootnote(ayahTranslationId: Int, number: Int) =
+        footnoteDao.getFootnote(ayahTranslationId, number)
+
     suspend fun updateTranslation(translation: Translation) =
         translationDao.updateTranslation(translation)
 

@@ -2,9 +2,11 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.QuranRepository
+import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import kotlinx.coroutines.Dispatchers
@@ -32,9 +34,14 @@ open class AyahTranslationViewModel(application: Application) : AndroidViewModel
         initialValue = emptyList()
     )
 
-    private val _visibleFootnotes = mutableStateMapOf<String, Boolean>()
-    val visibleFootnotes: Map<String, Boolean> = _visibleFootnotes
+    private val _visibleFootnotes = mutableStateMapOf<String, Footnote>()
+    val visibleFootnotes: SnapshotStateMap<String, Footnote> = _visibleFootnotes
 
+    fun setSelectedAyah(ayah: FullAyahDetails) {
+        _selectedAyah.update { ayah }
+    }
+
+    suspend fun getAyahById(ayahId: Int) = mQuranRepository.getFullAyahDetailsById(ayahId)
 
     fun toggleTranslationSelection(translation: Translation) {
         translation.selected = !translation.selected
@@ -43,15 +50,16 @@ open class AyahTranslationViewModel(application: Application) : AndroidViewModel
         }
     }
 
-    fun setSelectedAyah(ayah: FullAyahDetails) {
-        _selectedAyah.update { ayah }
-    }
-
-    suspend fun getAyahById(ayahId: Int) = mQuranRepository.getFullAyahDetailsById(ayahId)
-
     fun toggleFootnote(ayahTranslationId: Int, footnoteNumber: Int) {
         val footnoteKey = "$ayahTranslationId-$footnoteNumber"
-        _visibleFootnotes[footnoteKey] = !(_visibleFootnotes[footnoteKey] ?: false)
+
+        if (_visibleFootnotes.remove(footnoteKey) == null) {
+            viewModelScope.launch {
+                mQuranRepository.getFootnote(ayahTranslationId, footnoteNumber)?.let { footnote ->
+                    _visibleFootnotes[footnoteKey] = footnote
+                }
+            }
+        }
     }
 
 }

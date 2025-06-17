@@ -52,6 +52,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextUtils
@@ -65,7 +66,7 @@ fun SheetContent(
     nextAyah: () -> Unit,
     previousAyah: () -> Unit,
     onSelection: (Translation) -> Unit,
-    visibleFootnotes: Map<String, Boolean>,
+    visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -234,7 +235,7 @@ fun ShareIcon(
 fun AyahTranslations(
     selectedAyah: FullAyahDetails,
     selectedTranslations: List<Translation>,
-    visibleFootnotes: Map<String, Boolean>,
+    visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -329,12 +330,8 @@ fun AyahTranslations(
                         val footnoteKey =
                             "${translationWithFootnotes.ayahTranslation.id}-$footnoteNumber"
 
-                        if (visibleFootnotes[footnoteKey] == true) {
-                            translationWithFootnotes.footnotes
-                                .find { it.number == footnoteNumber }
-                                ?.let { footnote ->
-                                    FootnoteText(footnote.number, footnote.text)
-                                }
+                        visibleFootnotes[footnoteKey]?.let { footnote ->
+                            FootnoteText(footnote.number, footnote.text)
                         }
                     }
                 }

@@ -9,12 +9,7 @@ data class AyahTranslationWithFootnotes(
         parentColumn = "translation_id",
         entityColumn = "id"
     )
-    val translation: Translation,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "ayah_translation_id"
-    )
-    val footnotes: List<Footnote>
+    val translation: Translation
 )
 
 data class FullAyahDetails(
