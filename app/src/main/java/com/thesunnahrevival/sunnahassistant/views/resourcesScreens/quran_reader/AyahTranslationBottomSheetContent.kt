@@ -333,7 +333,7 @@ fun AyahTranslations(
                             translationWithFootnotes.footnotes
                                 .find { it.number == footnoteNumber }
                                 ?.let { footnote ->
-                                    FootnoteText("${footnote.number}: ${footnote.text}")
+                                    FootnoteText(footnote.number, footnote.text)
                                 }
                         }
                     }
@@ -345,18 +345,32 @@ fun AyahTranslations(
 }
 
 @Composable
-private fun FootnoteText(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.caption,
+private fun FootnoteText(number: Int, text: String) {
+    Row(
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             .background(
                 color = MaterialTheme.colors.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .padding(8.dp)
-    )
+            .padding(8.dp),
+    ) {
+        Text(
+            text = number.toString(),
+            style = MaterialTheme.typography.caption.copy(
+                baselineShift = BaselineShift.Superscript,
+                fontSize = 12.sp,
+                color = MaterialTheme.colors.primary
+            ),
+            modifier = Modifier.padding(end = 4.dp)
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.caption,
+            color = MaterialTheme.colors.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+    }
 }
 
 @Composable
