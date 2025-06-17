@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -41,12 +40,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -283,21 +284,25 @@ fun AyahTranslations(
                                 )
                             )
 
-                            // Add clickable footnote number
-                            pushStringAnnotation(
-                                tag = "footnote",
-                                annotation = "${translationWithFootnotes.ayahTranslation.id}-${matchResult.groupValues[1]}"
-                            )
-                            withStyle(
-                                style = SpanStyle(
-                                    baselineShift = BaselineShift.Superscript,
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colors.primary
-                                )
-                            ) {
-                                append(matchResult.groupValues[1])
+                            withLink(
+                                LinkAnnotation.Clickable(
+                                    tag = "footnote",
+                                    linkInteractionListener = {
+                                        onFootnoteClick(
+                                            translationWithFootnotes.ayahTranslation.id,
+                                            matchResult.groupValues[1].toInt()
+                                        )
+                                    })) {
+                                withStyle(
+                                    style = SpanStyle(
+                                        baselineShift = BaselineShift.Superscript,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colors.primary
+                                    )
+                                ) {
+                                    append(matchResult.groupValues[1])
+                                }
                             }
-                            pop()
 
                             lastIndex = matchResult.range.last + 1
                         }
@@ -308,23 +313,13 @@ fun AyahTranslations(
                         }
                     }
 
-                    ClickableText(
+                    Text(
                         text = annotatedText,
                         style = MaterialTheme.typography.body1.copy(
                             fontSize = 16.sp,
                             color = MaterialTheme.colors.onSurface
                         ),
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        onClick = { offset ->
-                            annotatedText.getStringAnnotations(
-                                tag = "footnote",
-                                start = offset,
-                                end = offset
-                            ).firstOrNull()?.let { annotation ->
-                                val (ayahTranslationId, footnoteNumber) = annotation.item.split("-")
-                                onFootnoteClick(ayahTranslationId.toInt(), footnoteNumber.toInt())
-                            }
-                        }
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
 
                     // Display footnotes if visible
