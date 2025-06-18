@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
@@ -76,14 +77,20 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
         dialog.setOnShowListener {
-            val bottomSheetDialog = dialog as BottomSheetDialog
             val bottomSheet =
-                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let {
-                bottomSheetDialog.window?.setDimAmount(0f)
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.isDraggable = false
+
+                // Set the height to 60% of screen height
+                val displayMetrics = requireContext().resources.displayMetrics
+                val height = (displayMetrics.heightPixels * 0.6).toInt()
+                it.layoutParams.height = height
+                dialog.window?.setDimAmount(0f)
             }
         }
 

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Checkbox
 import androidx.compose.material.DropdownMenu
@@ -69,14 +70,11 @@ fun SheetContent(
     visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-
         GrayLine(modifier = Modifier.align(Alignment.CenterHorizontally))
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -90,16 +88,29 @@ fun SheetContent(
 
         TranslationDropdown(translations, selectedTranslations, onSelection)
 
-        AyahTranslations(
-            selectedAyah,
-            selectedTranslations,
-            visibleFootnotes,
-            onFootnoteClick,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            item {
+                AyahTranslations(
+                    selectedAyah,
+                    selectedTranslations,
+                    visibleFootnotes,
+                    onFootnoteClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         AyahInteractionRow(
-            selectedAyah, selectedTranslations, context, Modifier
+            selectedAyah,
+            selectedTranslations,
+            LocalContext.current,
+            Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         )
@@ -293,7 +304,8 @@ fun AyahTranslations(
                                             translationWithFootnotes.ayahTranslation.id,
                                             matchResult.groupValues[1].toInt()
                                         )
-                                    })) {
+                                    })
+                            ) {
                                 withStyle(
                                     style = SpanStyle(
                                         baselineShift = BaselineShift.Superscript,
