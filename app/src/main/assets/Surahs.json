@@ -4,797 +4,911 @@
     "arabicName": "سورة الفاتحة",
     "transliteratedName": "Suratul Fatiha",
     "isMakki": 1,
-    "verseCount": 7
+    "verseCount": 7,
+    "startPage": 1
   },
   {
     "id": 2,
     "arabicName": "سورة البقرة",
     "transliteratedName": "Suratul Baqarah",
     "isMakki": 0,
-    "verseCount": 286
+    "verseCount": 286,
+    "startPage": 2
   },
   {
     "id": 3,
     "arabicName": "سورة آل عمران",
     "transliteratedName": "Suratul Aal-Imran",
     "isMakki": 0,
-    "verseCount": 200
+    "verseCount": 200,
+    "startPage": 50
   },
   {
     "id": 4,
     "arabicName": "سورة النساء",
     "transliteratedName": "Suratul Nisa",
     "isMakki": 0,
-    "verseCount": 176
+    "verseCount": 176,
+    "startPage": 77
   },
   {
     "id": 5,
     "arabicName": "سورة المائدة",
     "transliteratedName": "Suratul Maida",
     "isMakki": 0,
-    "verseCount": 120
+    "verseCount": 120,
+    "startPage": 106
   },
   {
     "id": 6,
     "arabicName": "سورة الأنعام",
     "transliteratedName": "Suratul Anaam",
     "isMakki": 1,
-    "verseCount": 165
+    "verseCount": 165,
+    "startPage": 128
   },
   {
     "id": 7,
     "arabicName": "سورة الأعراف",
     "transliteratedName": "Suratul Aaraf",
     "isMakki": 1,
-    "verseCount": 206
+    "verseCount": 206,
+    "startPage": 151
   },
   {
     "id": 8,
     "arabicName": "سورة الأنفال",
     "transliteratedName": "Suratul Anfal",
     "isMakki": 0,
-    "verseCount": 75
+    "verseCount": 75,
+    "startPage": 177
   },
   {
     "id": 9,
     "arabicName": "سورة التوبة",
     "transliteratedName": "Suratul Tawba",
     "isMakki": 0,
-    "verseCount": 129
+    "verseCount": 129,
+    "startPage": 187
   },
   {
     "id": 10,
     "arabicName": "سورة يونس",
     "transliteratedName": "Suratul Yunus",
     "isMakki": 1,
-    "verseCount": 109
+    "verseCount": 109,
+    "startPage": 208
   },
   {
     "id": 11,
     "arabicName": "سورة هود",
     "transliteratedName": "Suratul Hud",
     "isMakki": 1,
-    "verseCount": 123
+    "verseCount": 123,
+    "startPage": 221
   },
   {
     "id": 12,
     "arabicName": "سورة يوسف",
     "transliteratedName": "Suratul Yusuf",
     "isMakki": 1,
-    "verseCount": 111
+    "verseCount": 111,
+    "startPage": 235
   },
   {
     "id": 13,
     "arabicName": "سورة الرعد",
     "transliteratedName": "Suratul Rad",
     "isMakki": 0,
-    "verseCount": 43
+    "verseCount": 43,
+    "startPage": 249
   },
   {
     "id": 14,
     "arabicName": "سورة إبراهيم",
     "transliteratedName": "Suratu Ibrahim",
     "isMakki": 1,
-    "verseCount": 52
+    "verseCount": 52,
+    "startPage": 255
   },
   {
     "id": 15,
     "arabicName": "سورة الحجر",
     "transliteratedName": "Suratul Hijr",
     "isMakki": 1,
-    "verseCount": 99
+    "verseCount": 99,
+    "startPage": 262
   },
   {
     "id": 16,
     "arabicName": "سورة النحل",
     "transliteratedName": "Suratul Nahl",
     "isMakki": 1,
-    "verseCount": 128
+    "verseCount": 128,
+    "startPage": 267
   },
   {
     "id": 17,
     "arabicName": "سورة الإسراء",
     "transliteratedName": "Suratul Isra",
     "isMakki": 1,
-    "verseCount": 111
+    "verseCount": 111,
+    "startPage": 282
   },
   {
     "id": 18,
     "arabicName": "سورة الكهف",
     "transliteratedName": "Suratul Kahf",
     "isMakki": 1,
-    "verseCount": 110
+    "verseCount": 110,
+    "startPage": 293
   },
   {
     "id": 19,
     "arabicName": "سورة مريم",
     "transliteratedName": "Suratul Maryam",
     "isMakki": 1,
-    "verseCount": 98
+    "verseCount": 98,
+    "startPage": 305
   },
   {
     "id": 20,
     "arabicName": "سورة طه",
     "transliteratedName": "Suratul Ta-Ha",
     "isMakki": 1,
-    "verseCount": 135
+    "verseCount": 135,
+    "startPage": 312
   },
   {
     "id": 21,
     "arabicName": "سورة الأنبياء",
     "transliteratedName": "Suratul Anbiya",
     "isMakki": 1,
-    "verseCount": 112
+    "verseCount": 112,
+    "startPage": 322
   },
   {
     "id": 22,
     "arabicName": "سورة الحج",
     "transliteratedName": "Suratul Hajj",
     "isMakki": 0,
-    "verseCount": 78
+    "verseCount": 78,
+    "startPage": 332
   },
   {
     "id": 23,
     "arabicName": "سورة المؤمنون",
     "transliteratedName": "Suratul Mumenoon",
     "isMakki": 1,
-    "verseCount": 118
+    "verseCount": 118,
+    "startPage": 342
   },
   {
     "id": 24,
     "arabicName": "سورة النور",
     "transliteratedName": "Suratul Noor",
     "isMakki": 0,
-    "verseCount": 64
+    "verseCount": 64,
+    "startPage": 350
   },
   {
     "id": 25,
     "arabicName": "سورة الفرقان",
     "transliteratedName": "Suratul Furqan",
     "isMakki": 1,
-    "verseCount": 77
+    "verseCount": 77,
+    "startPage": 359
   },
   {
     "id": 26,
     "arabicName": "سورة الشعراء",
     "transliteratedName": "Suratul Shuara",
     "isMakki": 1,
-    "verseCount": 227
+    "verseCount": 227,
+    "startPage": 367
   },
   {
     "id": 27,
     "arabicName": "سورة النمل",
     "transliteratedName": "Suratul Naml",
     "isMakki": 1,
-    "verseCount": 93
+    "verseCount": 93,
+    "startPage": 377
   },
   {
     "id": 28,
     "arabicName": "سورة القصص",
     "transliteratedName": "Suratul Qasas",
     "isMakki": 1,
-    "verseCount": 88
+    "verseCount": 88,
+    "startPage": 385
   },
   {
     "id": 29,
     "arabicName": "سورة العنكبوت",
     "transliteratedName": "Suratul Ankaboot",
     "isMakki": 1,
-    "verseCount": 69
+    "verseCount": 69,
+    "startPage": 396
   },
   {
     "id": 30,
     "arabicName": "سورة الروم",
     "transliteratedName": "Suratul Room",
     "isMakki": 1,
-    "verseCount": 60
+    "verseCount": 60,
+    "startPage": 404
   },
   {
     "id": 31,
     "arabicName": "سورة لقمان",
     "transliteratedName": "Suratul Luqman",
     "isMakki": 1,
-    "verseCount": 34
+    "verseCount": 34,
+    "startPage": 411
   },
   {
     "id": 32,
     "arabicName": "سورة السجدة",
     "transliteratedName": "Suratul Sajdah",
     "isMakki": 1,
-    "verseCount": 30
+    "verseCount": 30,
+    "startPage": 415
   },
   {
     "id": 33,
     "arabicName": "سورة الأحزاب",
     "transliteratedName": "Suratul Ahzab",
     "isMakki": 0,
-    "verseCount": 73
+    "verseCount": 73,
+    "startPage": 418
   },
   {
     "id": 34,
     "arabicName": "سورة سبإ",
     "transliteratedName": "Suratul Saba",
     "isMakki": 1,
-    "verseCount": 54
+    "verseCount": 54,
+    "startPage": 428
   },
   {
     "id": 35,
     "arabicName": "سورة فاطر",
     "transliteratedName": "Suratu Fatir",
     "isMakki": 1,
-    "verseCount": 45
+    "verseCount": 45,
+    "startPage": 434
   },
   {
     "id": 36,
     "arabicName": "سورة يس",
     "transliteratedName": "Suratu Ya-Seen",
     "isMakki": 1,
-    "verseCount": 83
+    "verseCount": 83,
+    "startPage": 440
   },
   {
     "id": 37,
     "arabicName": "سورة الصافات",
     "transliteratedName": "Suratul Saaffat",
     "isMakki": 1,
-    "verseCount": 182
+    "verseCount": 182,
+    "startPage": 446
   },
   {
     "id": 38,
     "arabicName": "سورة ص",
     "transliteratedName": "Suratu Sad",
     "isMakki": 1,
-    "verseCount": 88
+    "verseCount": 88,
+    "startPage": 453
   },
   {
     "id": 39,
     "arabicName": "سورة الزمر",
     "transliteratedName": "Suratul Zumar",
     "isMakki": 1,
-    "verseCount": 75
+    "verseCount": 75,
+    "startPage": 458
   },
   {
     "id": 40,
     "arabicName": "سورة غافر",
     "transliteratedName": "Suratu Ghafir",
     "isMakki": 1,
-    "verseCount": 85
+    "verseCount": 85,
+    "startPage": 467
   },
   {
     "id": 41,
     "arabicName": "سورة فصلت",
     "transliteratedName": "Suratu Fussilat",
     "isMakki": 1,
-    "verseCount": 54
+    "verseCount": 54,
+    "startPage": 477
   },
   {
     "id": 42,
     "arabicName": "سورة الشورى",
     "transliteratedName": "Suratul Ash-Shura",
     "isMakki": 1,
-    "verseCount": 53
+    "verseCount": 53,
+    "startPage": 483
   },
   {
     "id": 43,
     "arabicName": "سورة الزخرف",
     "transliteratedName": "Suratul Zukhruf",
     "isMakki": 1,
-    "verseCount": 89
+    "verseCount": 89,
+    "startPage": 489
   },
   {
     "id": 44,
     "arabicName": "سورة الدخان",
     "transliteratedName": "Suratul Dukhan",
     "isMakki": 1,
-    "verseCount": 59
+    "verseCount": 59,
+    "startPage": 496
   },
   {
     "id": 45,
     "arabicName": "سورة الجاثية",
     "transliteratedName": "Suratul Jathiya",
     "isMakki": 1,
-    "verseCount": 37
+    "verseCount": 37,
+    "startPage": 499
   },
   {
     "id": 46,
     "arabicName": "سورة الأحقاف",
     "transliteratedName": "Suratul Ahqaf",
     "isMakki": 1,
-    "verseCount": 35
+    "verseCount": 35,
+    "startPage": 502
   },
   {
     "id": 47,
     "arabicName": "سورة محمد",
     "transliteratedName": "Suratu Muhammad",
     "isMakki": 0,
-    "verseCount": 38
+    "verseCount": 38,
+    "startPage": 507
   },
   {
     "id": 48,
     "arabicName": "سورة الفتح",
     "transliteratedName": "Suratul Fath",
     "isMakki": 0,
-    "verseCount": 29
+    "verseCount": 29,
+    "startPage": 511
   },
   {
     "id": 49,
     "arabicName": "سورة الحجرات",
     "transliteratedName": "Suratul Hujraat",
     "isMakki": 0,
-    "verseCount": 18
+    "verseCount": 18,
+    "startPage": 515
   },
   {
     "id": 50,
     "arabicName": "سورة ق",
     "transliteratedName": "Suratu Qaf",
     "isMakki": 1,
-    "verseCount": 45
+    "verseCount": 45,
+    "startPage": 518
   },
   {
     "id": 51,
     "arabicName": "سورة الذاريات",
     "transliteratedName": "Suratul Dhariyat",
     "isMakki": 1,
-    "verseCount": 60
+    "verseCount": 60,
+    "startPage": 520
   },
   {
     "id": 52,
     "arabicName": "سورة الطور",
     "transliteratedName": "Suratul Tur",
     "isMakki": 1,
-    "verseCount": 49
+    "verseCount": 49,
+    "startPage": 523
   },
   {
     "id": 53,
     "arabicName": "سورة النجم",
     "transliteratedName": "Suratul Najm",
     "isMakki": 1,
-    "verseCount": 62
+    "verseCount": 62,
+    "startPage": 526
   },
   {
     "id": 54,
     "arabicName": "سورة القمر",
     "transliteratedName": "Suratul Qamar",
     "isMakki": 1,
-    "verseCount": 55
+    "verseCount": 55,
+    "startPage": 528
   },
   {
     "id": 55,
     "arabicName": "سورة الرحمن",
     "transliteratedName": "Suratul Rahman",
     "isMakki": 0,
-    "verseCount": 78
+    "verseCount": 78,
+    "startPage": 531
   },
   {
     "id": 56,
     "arabicName": "سورة الواقعة",
     "transliteratedName": "Suratul Waqiah",
     "isMakki": 1,
-    "verseCount": 96
+    "verseCount": 96,
+    "startPage": 534
   },
   {
     "id": 57,
     "arabicName": "سورة الحديد",
     "transliteratedName": "Suratul Hadid",
     "isMakki": 0,
-    "verseCount": 29
+    "verseCount": 29,
+    "startPage": 537
   },
   {
     "id": 58,
     "arabicName": "سورة المجادلة",
     "transliteratedName": "Suratul Mujadala",
     "isMakki": 0,
-    "verseCount": 22
+    "verseCount": 22,
+    "startPage": 542
   },
   {
     "id": 59,
     "arabicName": "سورة الحشر",
     "transliteratedName": "Suratul Hashr",
     "isMakki": 0,
-    "verseCount": 24
+    "verseCount": 24,
+    "startPage": 545
   },
   {
     "id": 60,
     "arabicName": "سورة الممتحنة",
     "transliteratedName": "Suratul Mumtahina",
     "isMakki": 0,
-    "verseCount": 13
+    "verseCount": 13,
+    "startPage": 549
   },
   {
     "id": 61,
     "arabicName": "سورة الصف",
     "transliteratedName": "Suratul Saff",
     "isMakki": 0,
-    "verseCount": 14
+    "verseCount": 14,
+    "startPage": 551
   },
   {
     "id": 62,
     "arabicName": "سورة الجمعة",
     "transliteratedName": "Suratul Juma",
     "isMakki": 0,
-    "verseCount": 11
+    "verseCount": 11,
+    "startPage": 553
   },
   {
     "id": 63,
     "arabicName": "سورة المنافقون",
     "transliteratedName": "Suratul Munafiqoon",
     "isMakki": 0,
-    "verseCount": 11
+    "verseCount": 11,
+    "startPage": 554
   },
   {
     "id": 64,
     "arabicName": "سورة التغابن",
     "transliteratedName": "Suratul Taghabun",
     "isMakki": 0,
-    "verseCount": 18
+    "verseCount": 18,
+    "startPage": 556
   },
   {
     "id": 65,
     "arabicName": "سورة الطلاق",
     "transliteratedName": "Suratul Talaq",
     "isMakki": 0,
-    "verseCount": 12
+    "verseCount": 12,
+    "startPage": 558
   },
   {
     "id": 66,
     "arabicName": "سورة التحريم",
     "transliteratedName": "Suratul Tahrim",
     "isMakki": 0,
-    "verseCount": 12
+    "verseCount": 12,
+    "startPage": 560
   },
   {
     "id": 67,
     "arabicName": "سورة الملك",
     "transliteratedName": "Suratul Mulk",
     "isMakki": 1,
-    "verseCount": 30
+    "verseCount": 30,
+    "startPage": 562
   },
   {
     "id": 68,
     "arabicName": "سورة القلم",
     "transliteratedName": "Suratul Qalam",
     "isMakki": 1,
-    "verseCount": 52
+    "verseCount": 52,
+    "startPage": 564
   },
   {
     "id": 69,
     "arabicName": "سورة الحاقة",
     "transliteratedName": "Suratul Haqqa",
     "isMakki": 1,
-    "verseCount": 52
+    "verseCount": 52,
+    "startPage": 566
   },
   {
     "id": 70,
     "arabicName": "سورة المعارج",
     "transliteratedName": "Suratul Maarij",
     "isMakki": 1,
-    "verseCount": 44
+    "verseCount": 44,
+    "startPage": 568
   },
   {
     "id": 71,
     "arabicName": "سورة نوح",
     "transliteratedName": "Suratu Nooh",
     "isMakki": 1,
-    "verseCount": 28
+    "verseCount": 28,
+    "startPage": 570
   },
   {
     "id": 72,
     "arabicName": "سورة الجن",
     "transliteratedName": "Suratul Jinn",
     "isMakki": 1,
-    "verseCount": 28
+    "verseCount": 28,
+    "startPage": 572
   },
   {
     "id": 73,
     "arabicName": "سورة المزمل",
     "transliteratedName": "Suratul Muzzammil",
     "isMakki": 1,
-    "verseCount": 20
+    "verseCount": 20,
+    "startPage": 574
   },
   {
     "id": 74,
     "arabicName": "سورة المدثر",
     "transliteratedName": "Suratul Muddaththir",
     "isMakki": 1,
-    "verseCount": 56
+    "verseCount": 56,
+    "startPage": 575
   },
   {
     "id": 75,
     "arabicName": "سورة القيامة",
     "transliteratedName": "Suratul Qiyama",
     "isMakki": 1,
-    "verseCount": 40
+    "verseCount": 40,
+    "startPage": 577
   },
   {
     "id": 76,
     "arabicName": "سورة الإنسان",
     "transliteratedName": "Suratul Insan",
     "isMakki": 0,
-    "verseCount": 31
+    "verseCount": 31,
+    "startPage": 578
   },
   {
     "id": 77,
     "arabicName": "سورة المرسلات",
     "transliteratedName": "Suratul Mursalat",
     "isMakki": 1,
-    "verseCount": 50
+    "verseCount": 50,
+    "startPage": 580
   },
   {
     "id": 78,
     "arabicName": "سورة النبإ",
     "transliteratedName": "Suratul Naba",
     "isMakki": 1,
-    "verseCount": 40
+    "verseCount": 40,
+    "startPage": 582
   },
   {
     "id": 79,
     "arabicName": "سورة النازعات",
     "transliteratedName": "Suratul Naziat",
     "isMakki": 1,
-    "verseCount": 46
+    "verseCount": 46,
+    "startPage": 583
   },
   {
     "id": 80,
     "arabicName": "سورة عبس",
     "transliteratedName": "Suratu Abasa",
     "isMakki": 1,
-    "verseCount": 42
+    "verseCount": 42,
+    "startPage": 585
   },
   {
     "id": 81,
     "arabicName": "سورة التكوير",
     "transliteratedName": "Suratul Takwir",
     "isMakki": 1,
-    "verseCount": 29
+    "verseCount": 29,
+    "startPage": 586
   },
   {
     "id": 82,
     "arabicName": "سورة الانفطار",
     "transliteratedName": "Suratul Infitar",
     "isMakki": 1,
-    "verseCount": 19
+    "verseCount": 19,
+    "startPage": 587
   },
   {
     "id": 83,
     "arabicName": "سورة المطففين",
     "transliteratedName": "Suratul Mutwaffifin",
     "isMakki": 1,
-    "verseCount": 36
+    "verseCount": 36,
+    "startPage": 587
   },
   {
     "id": 84,
     "arabicName": "سورة الانشقاق",
     "transliteratedName": "Suratul Inshiqaq",
     "isMakki": 1,
-    "verseCount": 25
+    "verseCount": 25,
+    "startPage": 589
   },
   {
     "id": 85,
     "arabicName": "سورة البروج",
     "transliteratedName": "Suratul Burooj",
     "isMakki": 1,
-    "verseCount": 22
+    "verseCount": 22,
+    "startPage": 590
   },
   {
     "id": 86,
     "arabicName": "سورة الطارق",
     "transliteratedName": "Suratul Tariq",
     "isMakki": 1,
-    "verseCount": 17
+    "verseCount": 17,
+    "startPage": 591
   },
   {
     "id": 87,
     "arabicName": "سورة الأعلى",
     "transliteratedName": "Suratul Ala",
     "isMakki": 1,
-    "verseCount": 19
+    "verseCount": 19,
+    "startPage": 591
   },
   {
     "id": 88,
     "arabicName": "سورة الغاشية",
     "transliteratedName": "Suratul Ghashiya",
     "isMakki": 1,
-    "verseCount": 26
+    "verseCount": 26,
+    "startPage": 592
   },
   {
     "id": 89,
     "arabicName": "سورة الفجر",
     "transliteratedName": "Suratul Fajr",
     "isMakki": 1,
-    "verseCount": 30
+    "verseCount": 30,
+    "startPage": 593
   },
   {
     "id": 90,
     "arabicName": "سورة البلد",
     "transliteratedName": "Suratul Balad",
     "isMakki": 1,
-    "verseCount": 20
+    "verseCount": 20,
+    "startPage": 594
   },
   {
     "id": 91,
     "arabicName": "سورة الشمس",
     "transliteratedName": "Suratul Shams",
     "isMakki": 1,
-    "verseCount": 15
+    "verseCount": 15,
+    "startPage": 595
   },
   {
     "id": 92,
     "arabicName": "سورة الليل",
     "transliteratedName": "Suratul Lail",
     "isMakki": 1,
-    "verseCount": 21
+    "verseCount": 21,
+    "startPage": 595
   },
   {
     "id": 93,
     "arabicName": "سورة الضحى",
     "transliteratedName": "Suratul Duha",
     "isMakki": 1,
-    "verseCount": 11
+    "verseCount": 11,
+    "startPage": 596
   },
   {
     "id": 94,
     "arabicName": "سورة الشرح",
     "transliteratedName": "Suratul Sharh",
     "isMakki": 1,
-    "verseCount": 8
+    "verseCount": 8,
+    "startPage": 596
   },
   {
     "id": 95,
     "arabicName": "سورة التين",
     "transliteratedName": "Suratul Tin",
     "isMakki": 1,
-    "verseCount": 8
+    "verseCount": 8,
+    "startPage": 597
   },
   {
     "id": 96,
     "arabicName": "سورة العلق",
     "transliteratedName": "Suratul Alaq",
     "isMakki": 1,
-    "verseCount": 19
+    "verseCount": 19,
+    "startPage": 597
   },
   {
     "id": 97,
     "arabicName": "سورة القدر",
     "transliteratedName": "Suratul Qadr",
     "isMakki": 1,
-    "verseCount": 5
+    "verseCount": 5,
+    "startPage": 598
   },
   {
     "id": 98,
     "arabicName": "سورة البينة",
     "transliteratedName": "Suratul Bayyina",
     "isMakki": 0,
-    "verseCount": 8
+    "verseCount": 8,
+    "startPage": 598
   },
   {
     "id": 99,
     "arabicName": "سورة الزلزلة",
     "transliteratedName": "Suratul Zilzala",
     "isMakki": 0,
-    "verseCount": 8
+    "verseCount": 8,
+    "startPage": 599
   },
   {
     "id": 100,
     "arabicName": "سورة العاديات",
     "transliteratedName": "Suratul Adiyat",
     "isMakki": 1,
-    "verseCount": 11
+    "verseCount": 11,
+    "startPage": 599
   },
   {
     "id": 101,
     "arabicName": "سورة القارعة",
     "transliteratedName": "Suratul Qaria",
     "isMakki": 1,
-    "verseCount": 11
+    "verseCount": 11,
+    "startPage": 600
   },
   {
     "id": 102,
     "arabicName": "سورة التكاثر",
     "transliteratedName": "Suratul Takathur",
     "isMakki": 1,
-    "verseCount": 8
+    "verseCount": 8,
+    "startPage": 600
   },
   {
     "id": 103,
     "arabicName": "سورة العصر",
     "transliteratedName": "Suratul Asr",
     "isMakki": 1,
-    "verseCount": 3
+    "verseCount": 3,
+    "startPage": 601
   },
   {
     "id": 104,
     "arabicName": "سورة الهمزة",
     "transliteratedName": "Suratul Humaza",
     "isMakki": 1,
-    "verseCount": 9
+    "verseCount": 9,
+    "startPage": 601
   },
   {
     "id": 105,
     "arabicName": "سورة الفيل",
     "transliteratedName": "Suratul Fil",
     "isMakki": 1,
-    "verseCount": 5
+    "verseCount": 5,
+    "startPage": 601
   },
   {
     "id": 106,
     "arabicName": "سورة قريش",
     "transliteratedName": "Suratu Quraish",
     "isMakki": 1,
-    "verseCount": 4
+    "verseCount": 4,
+    "startPage": 602
   },
   {
     "id": 107,
     "arabicName": "سورة الماعون",
     "transliteratedName": "Suratul Maun",
     "isMakki": 1,
-    "verseCount": 7
+    "verseCount": 7,
+    "startPage": 602
   },
   {
     "id": 108,
     "arabicName": "سورة الكوثر",
     "transliteratedName": "Suratul Kawthar",
     "isMakki": 1,
-    "verseCount": 3
+    "verseCount": 3,
+    "startPage": 602
   },
   {
     "id": 109,
     "arabicName": "سورة الكافرون",
     "transliteratedName": "Suratul Kafiroon",
     "isMakki": 1,
-    "verseCount": 6
+    "verseCount": 6,
+    "startPage": 603
   },
   {
     "id": 110,
     "arabicName": "سورة النصر",
     "transliteratedName": "Suratul Nasr",
     "isMakki": 0,
-    "verseCount": 3
+    "verseCount": 3,
+    "startPage": 603
   },
   {
     "id": 111,
     "arabicName": "سورة المسد",
     "transliteratedName": "Suratul Masad",
     "isMakki": 1,
-    "verseCount": 5
+    "verseCount": 5,
+    "startPage": 603
   },
   {
     "id": 112,
     "arabicName": "سورة الإخلاص",
     "transliteratedName": "Suratul Ikhlas",
     "isMakki": 1,
-    "verseCount": 4
+    "verseCount": 4,
+    "startPage": 604
   },
   {
     "id": 113,
     "arabicName": "سورة الفلق",
     "transliteratedName": "Suratul Falaq",
     "isMakki": 1,
-    "verseCount": 5
+    "verseCount": 5,
+    "startPage": 604
   },
   {
     "id": 114,
     "arabicName": "سورة الناس",
     "transliteratedName": "Suratul Nas",
     "isMakki": 1,
-    "verseCount": 6
+    "verseCount": 6,
+    "startPage": 604
   }
 ]

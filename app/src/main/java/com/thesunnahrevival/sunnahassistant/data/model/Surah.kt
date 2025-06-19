@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "surahs")
 data class Surah(
@@ -18,5 +19,8 @@ data class Surah(
     val isMakki: Boolean,
 
     @ColumnInfo(name = "verse_count")
-    val verseCount: Int
-)
+    val verseCount: Int,
+
+    @ColumnInfo(name = "start_page")
+    val startPage: Int
+) : Serializable
