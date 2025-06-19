@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,13 +29,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.ResourceItem
 
 
 @Composable
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun ResourcesScreenPreviewDark() {
+    SunnahAssistantTheme {
+        ResourcesScreen()
+    }
+}
+
+@Composable
+@Preview()
 fun ResourcesScreenPreview() {
-    ResourcesScreen()
+    SunnahAssistantTheme {
+        ResourcesScreen()
+    }
 }
 
 @Composable
@@ -43,22 +55,13 @@ fun ResourcesScreen(findNavController: NavController? = null) {
     val resourceItemList = resourceItems()
 
     Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(start = 16.dp, end = 16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(start = 16.dp, end = 16.dp)
     ) {
         Column {
-            Text(
-                text = stringResource(R.string.selected_surahs),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp, top = 16.dp),
-                style = MaterialTheme.typography.body1.copy(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-            )
+            ResourceTitle(title = stringResource(R.string.selected_surahs))
 
             LazyColumn {
                 itemsIndexed(resourceItemList) { index, item ->
@@ -66,7 +69,7 @@ fun ResourcesScreen(findNavController: NavController? = null) {
                         elevation = 4.dp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp)
                             .clickable {
                                 if (item.destination == R.id.quranReaderFragment) {
                                     findNavController?.navigate(
@@ -79,7 +82,14 @@ fun ResourcesScreen(findNavController: NavController? = null) {
                                 }
                             }
                     ) {
-                        Row(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.padding(
+                                top = 8.dp,
+                                bottom = 8.dp,
+                                start = 16.dp,
+                                end = 16.dp
+                            )
+                        ) {
                             Column(modifier = Modifier.weight(1F)) {
                                 Text(
                                     text = item.title,
@@ -103,24 +113,31 @@ fun ResourcesScreen(findNavController: NavController? = null) {
                                     .width(36.dp)
                             )
                         }
+
+
                     }
 
                     if (index == (resourceItemList.size - 2)) {
-                        Text(
-                            text = stringResource(R.string.hadith),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp, top = 16.dp),
-                            style = MaterialTheme.typography.body1.copy(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
-                            ),
-                        )
+                        ResourceTitle(title = stringResource(R.string.hadith))
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
+    Text(
+        text = title,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp, top = 16.dp, start = 8.dp, end = 8.dp),
+        style = MaterialTheme.typography.body1.copy(
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium
+        ),
+    )
 }
 
 
