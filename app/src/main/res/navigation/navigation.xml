@@ -43,8 +43,7 @@
   <fragment
       android:id="@+id/resourcesFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourcesFragment"
-      android:label="@string/app_name"
-      tools:layout="@layout/fragment_resources">
+      android:label="@string/app_name">
 
     <action
         android:id="@+id/to_quran_reader_fragment"
