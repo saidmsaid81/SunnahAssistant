@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SurahDao {
@@ -16,6 +17,9 @@ interface SurahDao {
 
     @Query("SELECT * FROM surahs WHERE id = :id ")
     suspend fun getSurahById(id: Int): Surah
+
+    @Query("SELECT * FROM surahs ORDER BY id ASC LIMIT 5")
+    fun getFirst5Surahs(): Flow<List<Surah>>
 
 
 }

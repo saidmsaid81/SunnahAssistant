@@ -166,3 +166,10 @@ fun isValidUrl(link: String): Boolean {
         false
     }
 }
+
+fun Int.toArabicNumbers(): String {
+    val arabicChars = charArrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+    return this.toString().map { char ->
+        if (char.isDigit()) arabicChars[char.digitToInt()] else char
+    }.joinToString("")
+}

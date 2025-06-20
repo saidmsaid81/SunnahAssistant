@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "f8d7e37d1c6de00a7b6c3bff23147863",
+    "identityHash": "0568014812059e79204fa526a954131a",
     "entities": [
       {
         "tableName": "reminders_table",
@@ -390,7 +390,7 @@
       },
       {
         "tableName": "surahs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `arabic_name` TEXT NOT NULL, `transliterated_name` TEXT NOT NULL, `is_makki` INTEGER NOT NULL, `verse_count` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `arabic_name` TEXT NOT NULL, `transliterated_name` TEXT NOT NULL, `is_makki` INTEGER NOT NULL, `verse_count` INTEGER NOT NULL, `start_page` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -419,6 +419,12 @@
           {
             "fieldPath": "verseCount",
             "columnName": "verse_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startPage",
+            "columnName": "start_page",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -759,7 +765,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8d7e37d1c6de00a7b6c3bff23147863')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0568014812059e79204fa526a954131a')"
     ]
   }
 }

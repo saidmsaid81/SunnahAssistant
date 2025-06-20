@@ -64,7 +64,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
 
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
-        val currentPage = args.resourceItem.startPage
+        val currentPage = args.surah.startPage
 
         quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
         quranReaderBinding.viewPager.adapter = quranPageAdapter
@@ -89,7 +89,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
 
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.supportActionBar?.title = args.resourceItem.title
+        (activity as? MainActivity)?.supportActionBar?.title = args.surah.transliteratedName
     }
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.quran_reader_menu, menu)

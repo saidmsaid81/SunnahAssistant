@@ -64,8 +64,8 @@
       android:label="@string/quran"
       tools:layout="@layout/fragment_quran_reader">
     <argument
-        android:name="resourceItem"
-        app:argType="com.thesunnahrevival.sunnahassistant.utilities.ResourceItem"
+        android:name="surah"
+        app:argType="com.thesunnahrevival.sunnahassistant.data.model.Surah"
         app:nullable="false" />
       <action
           android:id="@+id/toPageTranslationsFragment"
