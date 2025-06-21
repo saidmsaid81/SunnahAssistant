@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -20,6 +21,9 @@ interface SurahDao {
 
     @Query("SELECT * FROM surahs ORDER BY id ASC LIMIT 5")
     fun getFirst5Surahs(): Flow<List<Surah>>
+
+    @Query("SELECT * FROM surahs ORDER BY id ASC")
+    fun getAllSurahs(): PagingSource<Int, Surah>
 
 
 }

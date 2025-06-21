@@ -108,15 +108,7 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
 
             Column {
                 surahs.value.forEachIndexed { index, surah ->
-                    val verseCount =
-                        if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
-                    ResourceCard(
-                        title = if (isArabic) surah.arabicName else surah.transliteratedName,
-                        subtitle = if (surah.isMakki) stringResource(
-                            R.string.makki_verse_count,
-                            verseCount
-                        ) else stringResource(R.string.madani_verse_count, verseCount),
-                        ) {
+                    SurahItem(surah, isArabic) {
                         findNavController?.navigate(
                             ResourcesFragmentDirections.toQuranReaderFragment(
                                 surah
@@ -128,7 +120,9 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
                         ResourceCard(
                             title = stringResource(R.string.more),
                             subtitle = stringResource(R.string.tap_to_view_all_surahs)
-                        ) { }
+                        ) {
+                            findNavController?.navigate(R.id.surahList)
+                        }
                     }
                 }
             }
@@ -147,7 +141,19 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
 }
 
 @Composable
-private fun ResourceCard(
+fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
+    val verseCount = if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
+    ResourceCard(
+        title = if (isArabic) surah.arabicName else surah.transliteratedName,
+        subtitle = if (surah.isMakki) stringResource(
+            R.string.makki_verse_count,
+            verseCount
+        ) else stringResource(R.string.madani_verse_count, verseCount),
+    ) { onClick() }
+}
+
+@Composable
+fun ResourceCard(
     title: String,
     subtitle: String,
     onClick: () -> Unit
@@ -196,7 +202,7 @@ private fun ResourceCard(
 }
 
 @Composable
-private fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
+fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
         modifier = modifier

@@ -185,6 +185,15 @@
           android:defaultValue="1" />
   </fragment>
 
+  <fragment
+      android:id="@+id/surahList"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.SurahListFragment"
+      android:label="@string/quran">
+    <action
+        android:id="@+id/to_quran_reader_fragment"
+        app:destination="@id/quranReaderFragment" />
+  </fragment>
+
   <dialog
       android:id="@+id/snooze_options"
       android:name="com.thesunnahrevival.sunnahassistant.views.dialogs.SnoozeOptionsFragment" />

@@ -84,6 +84,8 @@ class QuranRepository private constructor(
 
     fun getFirst5Surahs() = surahDao.getFirst5Surahs()
 
+    fun getAllSurahs() = surahDao.getAllSurahs()
+
     private suspend fun prepopulateSurahData() {
         try {
             val jsonString = applicationContext.assets.open("Surahs.json")
