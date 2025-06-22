@@ -18,12 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.SurahItem
+import kotlinx.coroutines.flow.flowOf
 
 class SurahListFragment : SunnahAssistantFragment() {
     private val viewModel: SurahListViewModel by viewModels()
@@ -36,81 +39,69 @@ class SurahListFragment : SunnahAssistantFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return ComposeView(requireContext()).apply {
             setContent {
-                val configuration = LocalConfiguration.current
-                val isArabic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    configuration.locales[0].language == "ar"
-                } else {
-                    configuration.locale.language == "ar"
-                }
                 SunnahAssistantTheme {
-                    Surface {
-                        Column(modifier = Modifier.padding(top = 16.dp)) {
-                            val surahs =
-                                viewModel.getAllSurahs().collectAsLazyPagingItems()
-                            LazyColumn {
-                                items(
-                                    count = surahs.itemCount,
-                                    key = { index ->
-                                        val surah = surahs[index]
-                                        "surah_${surah?.id ?: "null"}_$index"
-                                    }) { index ->
-                                    val surah = surahs[index]
-
-                                    surah?.let {
-                                        SurahItem(surah, isArabic) {
-                                            findNavController().navigate(
-                                                SurahListFragmentDirections.toQuranReaderFragment(
-                                                    surah
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                    SurahListScreen(
+                        surahs = viewModel.getAllSurahs().collectAsLazyPagingItems(),
+                        onSurahClick = { surah ->
+                            findNavController().navigate(
+                                SurahListFragmentDirections.toQuranReaderFragment(surah)
+                            )
                         }
-                    }
+                    )
                 }
             }
         }
     }
 
+    @Preview
     @Composable
+    fun SurahListPreview() {
+        PreviewSurahListScreen()
+    }
+
     @Preview(
         uiMode = Configuration.UI_MODE_NIGHT_YES,
         locale = "en"
     )
+    @Composable
     fun SurahListPreviewDark() {
-        val previewSurahs = previewSurahs()
-
-
-        SunnahAssistantTheme {
-            Surface {
-                Column(modifier = Modifier.padding(top = 16.dp)) {
-                    LazyColumn {
-                        items(previewSurahs.size) { index ->
-                            SurahItem(previewSurahs[index], false) { }
-                        }
-                    }
-                }
-            }
-        }
+        PreviewSurahListScreen()
     }
 
-    @Composable
     @Preview(
         name = "Arabic Dark Mode",
         uiMode = Configuration.UI_MODE_NIGHT_YES,
         locale = "ar"
     )
+    @Composable
     fun SurahListPreviewDarkArabic() {
-        val previewSurahs = previewSurahs()
+        PreviewSurahListScreen()
+    }
 
-        SunnahAssistantTheme {
-            Surface {
-                Column(modifier = Modifier.padding(top = 16.dp)) {
-                    LazyColumn {
-                        items(previewSurahs.size) { index ->
-                            SurahItem(previewSurahs[index], true) { }
+    @Composable
+    private fun SurahListScreen(
+        surahs: LazyPagingItems<Surah>,
+        onSurahClick: (Surah) -> Unit
+    ) {
+        val configuration = LocalConfiguration.current
+        val isArabic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            configuration.locales[0].language == "ar"
+        } else {
+            configuration.locale.language == "ar"
+        }
+        Surface {
+            Column(modifier = Modifier.padding(top = 16.dp)) {
+                LazyColumn {
+                    items(
+                        count = surahs.itemCount,
+                        key = { index ->
+                            val surah = surahs[index]
+                            "surah_${surah?.id ?: "null"}_$index"
+                        }
+                    ) { index ->
+                        val surah = surahs[index]
+                        surah?.let {
+                            SurahItem(surah, isArabic) { onSurahClick(surah) }
                         }
                     }
                 }
@@ -119,20 +110,12 @@ class SurahListFragment : SunnahAssistantFragment() {
     }
 
     @Composable
-    @Preview
-    fun SurahListPreview() {
-        val previewSurahs = previewSurahs()
-
+    private fun PreviewSurahListScreen() {
         SunnahAssistantTheme {
-            Surface {
-                Column(modifier = Modifier.padding(top = 16.dp)) {
-                    LazyColumn {
-                        items(previewSurahs.size) { index ->
-                            SurahItem(previewSurahs[index], false) { }
-                        }
-                    }
-                }
-            }
+            SurahListScreen(
+                surahs = flowOf(PagingData.from(previewSurahs())).collectAsLazyPagingItems(),
+                onSurahClick = {}
+            )
         }
     }
 
