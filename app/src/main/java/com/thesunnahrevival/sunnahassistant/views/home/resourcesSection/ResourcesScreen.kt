@@ -47,24 +47,13 @@ import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
     locale = "en"
 )
 fun ResourcesScreenPreviewDark() {
-    val previewSurahs = remember {
-        previewSurahs()
-    }
-
-    SunnahAssistantTheme {
-        ResourcesScreen(surahs = previewSurahs)
-    }
+    ResourcesScreenPreview()
 }
 
 @Composable
 @Preview
-fun ResourcesScreenPreview() {
-    val previewSurahs = remember {
-        previewSurahs()
-    }
-    SunnahAssistantTheme {
-        ResourcesScreen(surahs = previewSurahs)
-    }
+fun ResourcesScreenPreviewLight() {
+    ResourcesScreenPreview()
 }
 
 @Composable
@@ -74,10 +63,14 @@ fun ResourcesScreenPreview() {
     locale = "ar"
 )
 fun ResourcesScreenPreviewDarkArabic() {
+    ResourcesScreenPreview()
+}
+
+@Composable
+private fun ResourcesScreenPreview() {
     val previewSurahs = remember {
         previewSurahs()
     }
-
     SunnahAssistantTheme {
         ResourcesScreen(surahs = previewSurahs)
     }
