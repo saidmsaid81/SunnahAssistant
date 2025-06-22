@@ -107,38 +107,3 @@ class QuranPageAdapter(
         }
     }
 }
-
-data class QuranPage(
-    val number: Int,
-    val ayahs: List<Ayah>
-)
-
-data class Surah(
-    val number: Int,
-    val name: String
-)
-
-data class Ayah(
-    val id: Int,
-    val number: Int,
-    val surah: Surah? = null,
-    val lines: List<Line> = listOf(),
-    val arabicText: String = "",
-    val ayahTranslations: List<AyahTranslation> = listOf()
-)
-
-data class Line(
-    val number: Int,
-    val minX: Float,
-    val minY: Float,
-    val maxX: Float,
-    val maxY: Float
-)
-
-data class AyahTranslation(
-    val id: Int,
-    val source: String,
-    val text: String
-)
-
-
