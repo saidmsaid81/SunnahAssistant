@@ -119,7 +119,8 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
                     if (index == surahs.value.lastIndex) {
                         ResourceCard(
                             title = stringResource(R.string.more),
-                            subtitle = stringResource(R.string.tap_to_view_all_surahs)
+                            subtitle = stringResource(R.string.tap_to_view_all_surahs),
+                            resourceNumber = ""
                         ) {
                             findNavController?.navigate(R.id.surahList)
                         }
@@ -149,6 +150,8 @@ fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
             R.string.makki_verse_count,
             verseCount
         ) else stringResource(R.string.madani_verse_count, verseCount),
+        resourceNumber = if (isArabic) surah.id.toArabicNumbers() else surah.id.toString(),
+        pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString()
     ) { onClick() }
 }
 
@@ -156,6 +159,8 @@ fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
 fun ResourceCard(
     title: String,
     subtitle: String,
+    resourceNumber: String? = null,
+    pageNumber: String? = null,
     onClick: () -> Unit
 ) {
     Card(
@@ -175,7 +180,16 @@ fun ResourceCard(
                 end = 16.dp
             )
         ) {
-            Column(modifier = Modifier.weight(1F)) {
+            if (resourceNumber != null) {
+                Text(
+                    text = resourceNumber,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                )
+            }
+            Column(modifier = Modifier.weight(4F)) {
                 Text(
                     text = title,
                     fontSize = 16.sp,
@@ -187,6 +201,14 @@ fun ResourceCard(
                     fontSize = 13.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
+                )
+            }
+            if (pageNumber != null) {
+                Text(
+                    text = pageNumber,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
                 )
             }
             Icon(
