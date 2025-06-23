@@ -386,6 +386,12 @@
   <string name="madani_verse_count">مدنية - %s آية</string>
   <string name="more">المزيد</string>
   <string name="tap_to_view_all_surahs">اضغط لعرض جميع السور</string>
+  <string name="download_file_info">لقراءة القرآن، يحتاج هذا التطبيق إلى تحميل بعض الملفات المطلوبة.\n\n</string>
+  <string name="download_file_warning_message">يرجى الملاحظة: استخدام بيانات الهاتف المحمول قد يؤدي إلى رسوم إضافية.</string>
+  <string name="select_resources_to_download">اختر الموارد للتحميل</string>
+  <string name="_604_quran_pages">604 صفحات القرآن</string>
+  <string name="translations_optional">الترجمات (اختيارية)</string>
+  <string name="download">تحميل</string>
 
   <string-array name="categories">
     <item>غير مصنف</item>

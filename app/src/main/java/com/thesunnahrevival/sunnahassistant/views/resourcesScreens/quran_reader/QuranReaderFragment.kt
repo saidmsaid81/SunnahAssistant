@@ -31,13 +31,13 @@ import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
-import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
+import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, MenuProvider {
+class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
     private val quranReaderBinding get() = _quranReaderBinding!!
 
@@ -154,6 +154,14 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageClickListener, M
     override fun setLastTouchCoordinates(x: Float, y: Float) {
         lastTouchX = x
         lastTouchY = y
+    }
+
+    override fun onPageNotFound(pageNumber: Int) {
+        val fragment = DownloadFileBottomSheetFragment()
+        fragment.show(
+            requireActivity().supportFragmentManager,
+            "download_files"
+        )
     }
 
     override fun onDestroyView() {

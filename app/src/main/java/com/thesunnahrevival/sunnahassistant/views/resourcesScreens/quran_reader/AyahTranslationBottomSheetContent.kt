@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Checkbox
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -58,6 +57,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextUtils
 import com.thesunnahrevival.sunnahassistant.views.utilities.FontLoader
+import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 @Composable
 fun SheetContent(
@@ -426,15 +426,11 @@ fun TranslationDropdown(
                 DropdownMenuItem(onClick = {
                     onSelection(translation)
                 }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = translation.selected,
-                            onCheckedChange = {
-                                onSelection(translation)
-                            },
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = translation.name, maxLines = 1)
+                    SunnahAssistantCheckbox(
+                        text = translation.name,
+                        checked = translation.selected
+                    ) {
+                        onSelection(translation)
                     }
                 }
             }

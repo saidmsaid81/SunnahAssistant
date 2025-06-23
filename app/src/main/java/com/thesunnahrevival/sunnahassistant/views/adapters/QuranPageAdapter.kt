@@ -12,11 +12,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
-import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageClickListener
+import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
+import java.io.FileNotFoundException
 
 class QuranPageAdapter(
     var pageNumbers: List<Int>,
-    private val listener: QuranPageClickListener
+    private val listener: QuranPageInteractionListener
 ) :
     RecyclerView.Adapter<QuranPageAdapter.ViewHolder>() {
 
@@ -82,6 +83,8 @@ class QuranPageAdapter(
                 setupDarkMode(quranPageView)
 
                 view.findViewById<TextView>(R.id.page_number).text = pageNumber.toString()
+            } catch (e: FileNotFoundException) {
+                listener.onPageNotFound(pageNumber)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
