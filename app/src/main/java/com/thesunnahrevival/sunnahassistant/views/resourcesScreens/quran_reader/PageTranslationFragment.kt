@@ -28,6 +28,7 @@ import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel
+import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
 class PageTranslationFragment : SunnahAssistantFragment() {
@@ -58,8 +59,10 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                             state = pagerState,
                             modifier = Modifier.fillMaxSize()
                         ) { _ ->
-                            val allTranslations by viewModel.translations.collectAsState(initial = listOf())
-                            val selectedTranslations by viewModel.selectedTranslations.collectAsState()
+                            val translationUiState =
+                                viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
+                            val allTranslations = translationUiState.value.allTranslations
+                            val selectedTranslations = translationUiState.value.selectedTranslations
                             val ayahFullDetailsList by viewModel.ayahDetails.collectAsState()
 
                             LazyColumn(modifier = Modifier.padding(16.dp)) {

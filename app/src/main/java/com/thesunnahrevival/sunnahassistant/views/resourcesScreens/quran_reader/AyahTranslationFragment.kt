@@ -19,6 +19,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AyahTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -50,10 +51,12 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                     Surface {
                         val selectedAyah = viewModel.selectedAyah.collectAsState()
                         selectedAyah.value?.let {
+                            val translationUiState =
+                                viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                             SheetContent(
                                 it,
-                                viewModel.translations.collectAsState(initial = emptyList()).value,
-                                viewModel.selectedTranslations.collectAsState().value,
+                                translationUiState.value.allTranslations,
+                                translationUiState.value.selectedTranslations,
                                 { mainActivityViewModel.nextAyah() },
                                 { mainActivityViewModel.previousAyah() },
                                 { translation: Translation ->

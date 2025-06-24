@@ -1,10 +1,14 @@
 package com.thesunnahrevival.sunnahassistant.views.utilities
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
 @Composable
 fun SunnahAssistantCheckbox(
@@ -22,6 +26,12 @@ fun SunnahAssistantCheckbox(
                 onSelection()
             },
         )
-        Text(text = text, maxLines = maxLines)
+        Text(
+            text = text,
+            maxLines = maxLines,
+            modifier = Modifier
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }) { onSelection() })
     }
 }

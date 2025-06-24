@@ -18,20 +18,15 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -40,6 +35,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
+import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -54,10 +50,11 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return ComposeView(requireContext()).apply {
             setContent {
-                val translations by viewModel.translations.collectAsState(initial = listOf())
-                val selectedTranslations by viewModel.selectedTranslations.collectAsState(initial = listOf())
-
                 SunnahAssistantTheme {
+                    val translationUiState =
+                        viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
+                    val translations = translationUiState.value.allTranslations
+                    val selectedTranslations = translationUiState.value.selectedTranslations
                     DownloadFileScreen(
                         translations = translations,
                         selectedTranslations = selectedTranslations
@@ -92,33 +89,24 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(start = 16.dp, end = 16.dp)
             ) {
 
                 GrayLine(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 16.dp, top = 16.dp)
                 )
 
                 Text(
-                    text = buildAnnotatedString {
-                        append(stringResource(R.string.download_file_info))
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp
-                            )
-                        ) {
-                            append(stringResource(R.string.download_file_warning_message))
-                        }
-                    },
+                    text = stringResource(R.string.download_file_info),
                     style = MaterialTheme.typography.subtitle1
                 )
 
                 Text(
-                    text = stringResource(R.string.select_resources_to_download),
+                    text = stringResource(R.string.select_files_to_download),
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                    fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.subtitle1
                 )
 
@@ -142,30 +130,41 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     ) { translation -> viewModel.toggleTranslationSelection(translation) }
                 }
 
-                // Action Buttons
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                 ) {
-                    Spacer(modifier = Modifier.weight(1f))
 
-                    OutlinedButton(
-                        onClick = { dismiss() },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 16.dp)
-                    ) {
-                        Text(stringResource(R.string.cancel))
-                    }
+                    // Mobile data usage note
+                    Text(
+                        text = stringResource(R.string.download_file_warning_message),
+                        style = MaterialTheme.typography.caption,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    // Action Buttons
+                    Row(modifier = Modifier.padding(top = 16.dp)) {
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        OutlinedButton(
+                            onClick = { dismiss() },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 16.dp)
+                        ) {
+                            Text(stringResource(R.string.cancel))
+                        }
 
 
-                    Button(
-                        onClick = {
-                            dismiss()
-                        },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(stringResource(R.string.download))
+                        Button(
+                            onClick = {
+                                dismiss()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(stringResource(R.string.download))
+                        }
                     }
                 }
             }

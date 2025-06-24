@@ -19,8 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -390,7 +388,11 @@ fun TranslationDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(bottom = 16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -417,20 +419,27 @@ fun TranslationDropdown(
             )
         }
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            translations.forEach { translation ->
-                DropdownMenuItem(onClick = {
-                    onSelection(translation)
-                }) {
-                    SunnahAssistantCheckbox(
-                        text = translation.name,
-                        checked = translation.selected
+        if (expanded) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+            ) {
+                translations.forEach { translation ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onSelection(translation)
+                            }
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        onSelection(translation)
+                        SunnahAssistantCheckbox(
+                            text = translation.name,
+                            checked = translation.selected,
+                            onSelection = { onSelection(translation) }
+                        )
                     }
                 }
             }
