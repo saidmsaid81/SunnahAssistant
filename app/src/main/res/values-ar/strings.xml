@@ -386,13 +386,13 @@
   <string name="madani_verse_count">مدنية - %s آية</string>
   <string name="more">المزيد</string>
   <string name="tap_to_view_all_surahs">اضغط لعرض جميع السور</string>
-  <string name="download_file_info">لقراءة القرآن، يحتاج هذا التطبيق إلى تحميل بعض الملفات المطلوبة.</string>
   <string name="download_file_warning_message">يرجى الملاحظة: استخدام بيانات الهاتف المحمول قد يؤدي إلى رسوم إضافية.</string>
   <string name="select_files_to_download">حدد الملفات للتحميل</string>
   <string name="_604_quran_pages">604 صفحات القرآن</string>
   <string name="translations_optional">الترجمات (اختيارية)</string>
+  <string name="download_file_info">لأفضل تجربة، قم بتنزيل جميع ملفات القرآن الآن لتسهيل القراءة وتشغيل الوضع دون اتصال. أو تابع بدون تنزيل.</string>
   <string name="download">تحميل</string>
-
+  <string name="continue_label">متابعة</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>

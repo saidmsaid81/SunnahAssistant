@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -146,18 +145,16 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
 
                     // Action Buttons
                     Row(modifier = Modifier.padding(top = 16.dp)) {
-                        Spacer(modifier = Modifier.weight(1f))
-
                         OutlinedButton(
                             onClick = { dismiss() },
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 16.dp)
                         ) {
-                            Text(stringResource(R.string.cancel))
+                            Text(
+                                text = stringResource(R.string.continue_label)
+                            )
                         }
-
-
                         Button(
                             onClick = {
                                 dismiss()
