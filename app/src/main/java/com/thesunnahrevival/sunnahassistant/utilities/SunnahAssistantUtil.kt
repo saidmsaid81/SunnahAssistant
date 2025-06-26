@@ -14,9 +14,13 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URL
 import java.time.LocalDate
 import java.util.Locale
@@ -173,3 +177,13 @@ fun Int.toArabicNumbers(): String {
         if (char.isDigit()) arabicChars[char.digitToInt()] else char
     }.joinToString("")
 }
+
+private val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
+    .build()
+
+val retrofit: Retrofit = Retrofit.Builder()
+    .baseUrl("https://api.thesunnahrevival.com/")
+    .addConverterFactory(GsonConverterFactory.create())
+    .client(okHttpClient)
+    .build()

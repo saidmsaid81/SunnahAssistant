@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
-import java.io.FileNotFoundException
 
 class QuranPageAdapter(
     var pageNumbers: List<Int>,
@@ -30,28 +29,42 @@ class QuranPageAdapter(
     override fun getItemCount(): Int = pageNumbers.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(pageNumbers[position])
+        holder.bind(pageNumbers[position], true)
     }
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(pageNumber: Int) {
+        fun bind(pageNumber: Int, fallbackIfFileNotExists: Boolean) {
             val quranPageView = view.findViewById<ImageView>(R.id.quran_page)
             val highlightOverlay = view.findViewById<HighlightOverlayView>(R.id.highlight_overlay)
             highlightOverlay.tag = "overlay_$pageNumber"
 
             try {
-                val inputStream = view.context.assets.open("$pageNumber.png")
+                val file = java.io.File(view.context.filesDir, "$pageNumber.png")
+
+                if (!file.exists() && fallbackIfFileNotExists) {
+                    listener.onPageNotFound(pageNumber) { pageNum, fallback ->
+                        bind(pageNum, fallback)
+                    }
+                    return
+                } else if (!file.exists()) {
+                    return
+                }
+
+                val inputStream = java.io.FileInputStream(file)
 
                 val options = BitmapFactory.Options().apply {
                     inJustDecodeBounds = true
                 }
                 BitmapFactory.decodeStream(inputStream, null, options)
-                inputStream.reset()
+                inputStream.close()
 
                 val actualWidth = options.outWidth
                 val actualHeight = options.outHeight
 
-                val drawable = Drawable.createFromStream(inputStream, null)
+                val imageInputStream = java.io.FileInputStream(file)
+                val drawable = Drawable.createFromStream(imageInputStream, null)
+                imageInputStream.close()
+
                 quranPageView.setImageDrawable(drawable)
 
                 quranPageView.post {
@@ -83,8 +96,6 @@ class QuranPageAdapter(
                 setupDarkMode(quranPageView)
 
                 view.findViewById<TextView>(R.id.page_number).text = pageNumber.toString()
-            } catch (e: FileNotFoundException) {
-                listener.onPageNotFound(pageNumber)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

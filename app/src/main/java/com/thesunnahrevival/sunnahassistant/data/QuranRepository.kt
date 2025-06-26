@@ -17,9 +17,12 @@ import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.Language
 import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.model.ResourceLinks
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.remote.ResourceLinksInterface
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
+import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,6 +53,8 @@ class QuranRepository private constructor(
     private val translationDao: TranslationDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).translationDao()
 
+    private val resourceLinksRestApi: ResourceLinksInterface
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             if (surahDao.countSurah() == 0) {
@@ -62,6 +67,8 @@ class QuranRepository private constructor(
                 prepopulateFootnoteData()
             }
         }
+
+        resourceLinksRestApi = retrofit.create(ResourceLinksInterface::class.java)
     }
 
     suspend fun getLinesByPageNumber(pageNumber: Int) = lineDao.getLineByPageNumber(pageNumber)
@@ -85,6 +92,13 @@ class QuranRepository private constructor(
     fun getFirst5Surahs() = surahDao.getFirst5Surahs()
 
     fun getAllSurahs() = surahDao.getAllSurahs()
+
+    suspend fun getResourceLinks(): ResourceLinks? {
+        val response = resourceLinksRestApi.getResourceLinks()
+        return response.body()
+    }
+
+    suspend fun downloadFile(url: String) = resourceLinksRestApi.downloadFile(url)
 
     private suspend fun prepopulateSurahData() {
         try {

@@ -33,7 +33,7 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
         }
     }
 
-    private data class TranslationUiState(
+    data class TranslationUiState(
         val allTranslations: List<Translation> = listOf(),
         val selectedTranslations: List<Translation> = listOf()
     )

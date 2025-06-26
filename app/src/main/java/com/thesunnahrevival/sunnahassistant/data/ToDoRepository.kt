@@ -9,31 +9,23 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
-import com.prof18.rssparser.RssParser
-import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
-import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
-import com.thesunnahrevival.sunnahassistant.utilities.THE_SUNNAH_REVIVAL_RSS_FEED
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
+import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
@@ -45,22 +37,12 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     private val mToDoDao: ToDoDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
 
-    private val mGeocodingRestApi: GeocodingInterface
+    private val mGeocodingRestApi: GeocodingInterface =
+        retrofit.create(GeocodingInterface::class.java)
     private val prayerNames: Array<String>
     private val prayerCategory: String
 
     init {
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.thesunnahrevival.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-        mGeocodingRestApi = retrofit.create(GeocodingInterface::class.java)
-
         prayerNames = applicationContext.resources.getStringArray(R.array.prayer_names)
         prayerCategory = applicationContext.resources.getStringArray(R.array.categories)[2]
 

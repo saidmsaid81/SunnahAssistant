@@ -74,6 +74,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 val behavior = BottomSheetBehavior.from(it)
                 behavior.isDraggable = false
             }
+            dialog.window?.setDimAmount(0f)
         }
 
         return dialog

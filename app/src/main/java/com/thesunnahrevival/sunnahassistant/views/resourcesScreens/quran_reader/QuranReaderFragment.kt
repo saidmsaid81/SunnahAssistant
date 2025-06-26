@@ -156,12 +156,25 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         lastTouchY = y
     }
 
-    override fun onPageNotFound(pageNumber: Int) {
-        val fragment = DownloadFileBottomSheetFragment()
-        fragment.show(
-            requireActivity().supportFragmentManager,
-            "download_files"
-        )
+    override fun onPageNotFound(
+        pageNumber: Int,
+        callback: (pageNumber: Int, fallbackIfFileNotExists: Boolean) -> Unit
+    ) {
+        if (!viewmodel.hasSeenDownloadFilesDialog) {
+            val fragment = DownloadFileBottomSheetFragment()
+            fragment.show(
+                requireActivity().supportFragmentManager,
+                "download_files"
+            )
+            viewmodel.hasSeenDownloadFilesDialog = true
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewmodel.downloadQuranPage(pageNumber)
+            withContext(Dispatchers.Main) {
+                callback(pageNumber, false)
+            }
+        }
     }
 
     override fun onDestroyView() {
