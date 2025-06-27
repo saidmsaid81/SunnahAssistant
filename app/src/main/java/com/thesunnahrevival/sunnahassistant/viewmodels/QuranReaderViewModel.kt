@@ -39,7 +39,11 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
             if (response.isSuccessful) {
                 val fileName = url.substringAfterLast("/")
 
-                val file = File(getApplication<Application>().filesDir, fileName)
+                val quranPagesDir = File(getApplication<Application>().filesDir, "quran_pages")
+                if (!quranPagesDir.exists()) {
+                    quranPagesDir.mkdir()
+                }
+                val file = File(quranPagesDir, fileName)
 
                 response.body()?.let { responseBody ->
                     FileOutputStream(file).use { output ->

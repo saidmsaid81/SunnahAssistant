@@ -39,7 +39,7 @@ class QuranPageAdapter(
             highlightOverlay.tag = "overlay_$pageNumber"
 
             try {
-                val file = java.io.File(view.context.filesDir, "$pageNumber.png")
+                val file = java.io.File(view.context.filesDir, "quran_pages/$pageNumber.png")
 
                 if (!file.exists() && fallbackIfFileNotExists) {
                     listener.onPageNotFound(pageNumber) { pageNum, fallback ->
