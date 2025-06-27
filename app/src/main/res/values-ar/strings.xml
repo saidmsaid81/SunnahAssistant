@@ -390,9 +390,14 @@
   <string name="select_files_to_download">حدد الملفات للتحميل</string>
   <string name="_604_quran_pages">604 صفحات القرآن</string>
   <string name="translations_optional">الترجمات (اختيارية)</string>
-  <string name="download_file_info">لأفضل تجربة، قم بتنزيل جميع ملفات القرآن الآن لتسهيل القراءة وتشغيل الوضع دون اتصال. أو تابع بدون تنزيل.</string>
+  <string name="download_file_info_part1">لأفضل تجربة، قم</string>
+  <string name="download_file_info_part2">بتنزيل</string>
+  <string name="download_file_info_part3">جميع ملفات القرآن الآن لتسهيل القراءة وتشغيل الوضع دون اتصال. أو</string>
+  <string name="download_file_info_part4">تابع</string>
+  <string name="download_file_info_part5">بدون تنزيل.</string>
   <string name="download">تحميل</string>
   <string name="continue_label">متابعة</string>
+  <string name="don_t_show_this_again">لا تظهر هذا مرة أخرى</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>

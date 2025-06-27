@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.BuildConfig
-import java.util.*
+import java.util.Date
+import java.util.TreeSet
 
 @Entity(tableName = "app_settings")
 data class AppSettings(
@@ -45,7 +46,9 @@ data class AppSettings(
     var numberOfLaunches: Int = 0,
     var shareAnonymousUsageData: Boolean = true,
     @ColumnInfo(name = "generatePrayerRemindersAfter") var generatePrayerToDosAfter: Date = Date(),
-    var includeHijriDateInCalendar: Boolean = true
+    var includeHijriDateInCalendar: Boolean = true,
+    @ColumnInfo(defaultValue = "0")
+    var hideDownloadFilePrompt: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

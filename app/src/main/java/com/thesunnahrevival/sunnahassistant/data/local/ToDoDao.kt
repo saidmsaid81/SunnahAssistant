@@ -9,12 +9,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
 import com.thesunnahrevival.sunnahassistant.utilities.PRAYER_TIMES_REMINDERS_ID
 import kotlinx.coroutines.flow.Flow
-import java.nio.charset.CodingErrorAction.IGNORE
 import java.time.LocalDate
 import java.util.TreeSet
 
@@ -232,4 +230,10 @@ interface ToDoDao {
 
     @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextToDo WHERE id = 1")
     suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextToDo: Boolean)
+
+    @Query("SELECT hideDownloadFilePrompt FROM app_settings WHERE id = 1 ")
+    suspend fun isHideDownloadFilePrompt(): Boolean
+
+    @Query("UPDATE app_settings SET hideDownloadFilePrompt = :value WHERE id = 1")
+    suspend fun updateHideDownloadFilePrompt(value: Boolean)
 }

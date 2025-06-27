@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "0568014812059e79204fa526a954131a",
+    "identityHash": "71fe88f1320624981786212fd29c006e",
     "entities": [
       {
         "tableName": "reminders_table",
@@ -128,7 +128,7 @@
       },
       {
         "tableName": "app_settings",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `formattedAddress` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `enablePrayerTimeAlertsFor` TEXT NOT NULL, `prayerTimeOffsetsInMinutes` TEXT NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `appVersionCode` INTEGER NOT NULL, `appVersion` TEXT NOT NULL, `categories` TEXT, `language` TEXT NOT NULL, `doNotDisturbMinutes` INTEGER NOT NULL, `useReliableAlarms` INTEGER NOT NULL, `numberOfLaunches` INTEGER NOT NULL, `shareAnonymousUsageData` INTEGER NOT NULL, `generatePrayerRemindersAfter` INTEGER NOT NULL, `includeHijriDateInCalendar` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `formattedAddress` TEXT, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `method` INTEGER NOT NULL, `asrCalculationMethod` INTEGER NOT NULL, `isAutomatic` INTEGER NOT NULL, `enablePrayerTimeAlertsFor` TEXT NOT NULL, `prayerTimeOffsetsInMinutes` TEXT NOT NULL, `month` INTEGER NOT NULL, `hijriOffSet` INTEGER NOT NULL, `isLightMode` INTEGER NOT NULL, `isFirstLaunch` INTEGER NOT NULL, `showNextReminderNotification` INTEGER NOT NULL, `showOnBoardingTutorial` INTEGER NOT NULL, `isDisplayHijriDate` INTEGER NOT NULL, `savedSpinnerPosition` INTEGER NOT NULL, `isExpandedLayout` INTEGER NOT NULL, `notificationToneUri` TEXT, `isVibrate` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `latitudeAdjustmentMethod` INTEGER NOT NULL, `isShowHijriDateWidget` INTEGER NOT NULL, `isShowNextReminderWidget` INTEGER NOT NULL, `isAfterUpdate` INTEGER NOT NULL, `appVersionCode` INTEGER NOT NULL, `appVersion` TEXT NOT NULL, `categories` TEXT, `language` TEXT NOT NULL, `doNotDisturbMinutes` INTEGER NOT NULL, `useReliableAlarms` INTEGER NOT NULL, `numberOfLaunches` INTEGER NOT NULL, `shareAnonymousUsageData` INTEGER NOT NULL, `generatePrayerRemindersAfter` INTEGER NOT NULL, `includeHijriDateInCalendar` INTEGER NOT NULL, `hideDownloadFilePrompt` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
             "fieldPath": "id",
@@ -339,6 +339,13 @@
             "columnName": "includeHijriDateInCalendar",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "hideDownloadFilePrompt",
+            "columnName": "hideDownloadFilePrompt",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -765,7 +772,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0568014812059e79204fa526a954131a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '71fe88f1320624981786212fd29c006e')"
     ]
   }
 }

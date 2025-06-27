@@ -13,12 +13,16 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SunnahAssistantCheckbox(
     text: String,
+    modifier: Modifier = Modifier,
     checked: Boolean = false,
     maxLines: Int = 1,
     enabled: Boolean = true,
     onSelection: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
         Checkbox(
             enabled = enabled,
             checked = checked,

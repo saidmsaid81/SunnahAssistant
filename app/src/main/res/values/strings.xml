@@ -370,13 +370,18 @@
     <string name="madani_verse_count">Madani - %s Verses</string>
     <string name="more">More</string>
     <string name="tap_to_view_all_surahs">Tap to view all Surahs</string>
-    <string name="download_file_info">For the best experience, download all Quran files now to enable smoother and offline reading. Or continue without downloading</string>
+    <string name="download_file_info_part1">For the best experience,</string>
+    <string name="download_file_info_part2">download</string>
+    <string name="download_file_info_part3">all Quran files now to enable smoother and offline reading. Or</string>
+    <string name="download_file_info_part4">continue</string>
+    <string name="download_file_info_part5">without downloading</string>
     <string name="download_file_warning_message">Please note: Using mobile data may incur additional charges.</string>
     <string name="select_files_to_download">Select Files to Download</string>
     <string name="_604_quran_pages">604 Quran Pages</string>
     <string name="translations_optional">Translations (Optional)</string>
     <string name="download">Download</string>
     <string name="continue_label">Continue</string>
+    <string name="don_t_show_this_again">Don\'t show this again</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

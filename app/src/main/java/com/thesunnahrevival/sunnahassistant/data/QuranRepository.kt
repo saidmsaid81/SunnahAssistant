@@ -11,6 +11,7 @@ import com.thesunnahrevival.sunnahassistant.data.local.LanguageDao
 import com.thesunnahrevival.sunnahassistant.data.local.LineDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
+import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
 import com.thesunnahrevival.sunnahassistant.data.local.TranslationDao
 import com.thesunnahrevival.sunnahassistant.data.model.Ayah
 import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
@@ -52,6 +53,9 @@ class QuranRepository private constructor(
 
     private val translationDao: TranslationDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).translationDao()
+
+    private val toDoDao: ToDoDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
 
     private val resourceLinksRestApi: ResourceLinksInterface
 
@@ -99,6 +103,12 @@ class QuranRepository private constructor(
     }
 
     suspend fun downloadFile(url: String) = resourceLinksRestApi.downloadFile(url)
+
+    suspend fun isHideDownloadFilePrompt() = toDoDao.isHideDownloadFilePrompt()
+
+    suspend fun updateHideDownloadFilePrompt(value: Boolean) =
+        toDoDao.updateHideDownloadFilePrompt(value)
+
 
     private suspend fun prepopulateSurahData() {
         try {

@@ -160,16 +160,18 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         pageNumber: Int,
         callback: (pageNumber: Int, fallbackIfFileNotExists: Boolean) -> Unit
     ) {
-        if (!viewmodel.hasSeenDownloadFilesDialog) {
-            val fragment = DownloadFileBottomSheetFragment()
-            fragment.show(
-                requireActivity().supportFragmentManager,
-                "download_files"
-            )
-            viewmodel.hasSeenDownloadFilesDialog = true
-        }
-
         lifecycleScope.launch(Dispatchers.IO) {
+            if (!viewmodel.hasSeenDownloadFilesDialog && !viewmodel.isHideDownloadFilePrompt()) {
+                withContext(Dispatchers.Main) {
+                    val fragment = DownloadFileBottomSheetFragment()
+                    fragment.show(
+                        requireActivity().supportFragmentManager,
+                        "download_files"
+                    )
+                    viewmodel.hasSeenDownloadFilesDialog = true
+                }
+            }
+
             viewmodel.downloadQuranPage(pageNumber)
             withContext(Dispatchers.Main) {
                 callback(pageNumber, false)

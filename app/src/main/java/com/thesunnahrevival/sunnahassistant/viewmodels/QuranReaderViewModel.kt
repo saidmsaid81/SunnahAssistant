@@ -58,4 +58,6 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
 
         return null
     }
+
+    suspend fun isHideDownloadFilePrompt() = mQuranRepository.isHideDownloadFilePrompt()
 }

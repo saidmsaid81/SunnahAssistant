@@ -1,6 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
-import android.app.Dialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,25 +15,25 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
-import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -50,40 +49,17 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SunnahAssistantTheme {
-                    val translationUiState =
-                        viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
-                    val translations = translationUiState.value.allTranslations
-                    val selectedTranslations = translationUiState.value.selectedTranslations
-                    DownloadFileScreen(
-                        translations = translations,
-                        selectedTranslations = selectedTranslations
-                    )
+                    DownloadFileScreen()
                 }
             }
         }
     }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-
-        dialog.setOnShowListener {
-            val bottomSheet =
-                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let {
-                val behavior = BottomSheetBehavior.from(it)
-                behavior.isDraggable = false
-            }
-            dialog.window?.setDimAmount(0f)
-        }
-
-        return dialog
-    }
-
     @Composable
-    private fun DownloadFileScreen(
-        translations: List<Translation>, selectedTranslations: List<Translation>
-    ) {
-        val (translationSelected, setTranslationSelected) = rememberSaveable { mutableStateOf(false) }
+    private fun DownloadFileScreen() {
+
+        var hideDownloadFilesPrompt by rememberSaveable {
+            mutableStateOf(false)
+        }
 
         Surface {
             Column(
@@ -99,35 +75,40 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 )
 
                 Text(
-                    text = stringResource(R.string.download_file_info),
+                    text = buildAnnotatedString {
+                        append(stringResource(R.string.download_file_info_part1))
+                        append(" ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(R.string.download_file_info_part2))
+                        }
+                        append(" ")
+                        append(stringResource(R.string.download_file_info_part3))
+                        append(" ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(R.string.download_file_info_part4))
+                        }
+                        append(" ")
+                        append(stringResource(R.string.download_file_info_part5))
+                    },
                     style = MaterialTheme.typography.subtitle1
                 )
 
+                // Mobile data usage note
                 Text(
-                    text = stringResource(R.string.select_files_to_download),
-                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                    text = stringResource(R.string.download_file_warning_message),
+                    style = MaterialTheme.typography.caption,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.subtitle1
+                    modifier = Modifier.padding(top = 16.dp)
                 )
 
+                // Don's show this again checkbox
                 SunnahAssistantCheckbox(
-                    text = stringResource(R.string._604_quran_pages),
-                    checked = true,
-                    enabled = false,
-                    onSelection = {})
-                SunnahAssistantCheckbox(
-                    text = stringResource(R.string.translations_optional),
-                    checked = translationSelected
+                    text = stringResource(R.string.don_t_show_this_again),
+                    modifier = Modifier.padding(top = 16.dp),
+                    checked = hideDownloadFilesPrompt
                 ) {
-                    setTranslationSelected(!translationSelected)
-                }
-
-                // Translation Selection List
-                if (translationSelected) {
-                    TranslationDropdown(
-                        translations = translations,
-                        selectedTranslations = selectedTranslations
-                    ) { translation -> viewModel.toggleTranslationSelection(translation) }
+                    viewModel.disableDownloadFilesPrompt()
+                    hideDownloadFilesPrompt = true
                 }
 
                 Column(
@@ -135,13 +116,6 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 ) {
-
-                    // Mobile data usage note
-                    Text(
-                        text = stringResource(R.string.download_file_warning_message),
-                        style = MaterialTheme.typography.caption,
-                        fontWeight = FontWeight.Bold
-                    )
 
                     // Action Buttons
                     Row(modifier = Modifier.padding(top = 16.dp)) {
@@ -182,7 +156,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     @Composable
     private fun DownloadFileScreenPreview() {
         SunnahAssistantTheme {
-            DownloadFileScreen(translations = listOf(), selectedTranslations = listOf())
+            DownloadFileScreen()
         }
     }
 
