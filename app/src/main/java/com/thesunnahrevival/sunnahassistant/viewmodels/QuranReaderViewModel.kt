@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.model.ResourceLinks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -28,10 +29,12 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
 
     suspend fun getLinesByAyahId(ayahId: Int) = mQuranRepository.getLinesByAyahId(ayahId)
 
-    suspend fun getResourceLinks() = mQuranRepository.getResourceLinks()
+    private var resourceLinks: ResourceLinks? = null
 
     suspend fun downloadQuranPage(pageNumber: Int): String? {
-        val resourceLinks = getResourceLinks()
+        if (resourceLinks == null) {
+            resourceLinks = mQuranRepository.getResourceLinks()
+        }
         resourceLinks?.let {
             val url = "${it.quranPagesLink}/${pageNumber}.png"
             val response = mQuranRepository.downloadFile(url)
