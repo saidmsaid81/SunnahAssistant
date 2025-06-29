@@ -22,6 +22,7 @@ fun SunnahAssistantTheme(
     val darkColors = darkColors()
         .copy(
             primary = BrandColor,
+            onPrimary = Color.White,
             surface = Color(48, 48, 48),
             onBackground = Color.White
         )

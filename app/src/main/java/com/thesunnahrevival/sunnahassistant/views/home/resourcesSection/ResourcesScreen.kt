@@ -1,7 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 
 import android.content.res.Configuration
-import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,7 +25,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,6 +37,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.ResourceItem
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
+import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 
 
 @Composable
@@ -80,12 +79,6 @@ private fun ResourcesScreenPreview() {
 fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List<Surah>>) {
 
     val resourceItemList = resourceItems()
-    val configuration = LocalConfiguration.current
-    val isArabic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        configuration.locales[0].language == "ar"
-    } else {
-        configuration.locale.language == "ar"
-    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,7 +94,7 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
 
             Column {
                 surahs.value.forEachIndexed { index, surah ->
-                    SurahItem(surah, isArabic) {
+                    SurahItem(surah, isArabic()) {
                         findNavController?.navigate(
                             ResourcesFragmentDirections.toQuranReaderFragment(
                                 surah

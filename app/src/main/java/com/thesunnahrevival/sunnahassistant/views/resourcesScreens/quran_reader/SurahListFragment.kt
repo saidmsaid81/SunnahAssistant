@@ -1,7 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
@@ -26,6 +24,7 @@ import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.SurahItem
+import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import kotlinx.coroutines.flow.flowOf
 
 class SurahListFragment : SunnahAssistantFragment() {
@@ -83,12 +82,6 @@ class SurahListFragment : SunnahAssistantFragment() {
         surahs: LazyPagingItems<Surah>,
         onSurahClick: (Surah) -> Unit
     ) {
-        val configuration = LocalConfiguration.current
-        val isArabic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            configuration.locales[0].language == "ar"
-        } else {
-            configuration.locale.language == "ar"
-        }
         Surface {
             Column(modifier = Modifier.padding(top = 16.dp)) {
                 LazyColumn {
@@ -101,7 +94,7 @@ class SurahListFragment : SunnahAssistantFragment() {
                     ) { index ->
                         val surah = surahs[index]
                         surah?.let {
-                            SurahItem(surah, isArabic) { onSurahClick(surah) }
+                            SurahItem(surah, isArabic()) { onSurahClick(surah) }
                         }
                     }
                 }

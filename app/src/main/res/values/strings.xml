@@ -382,6 +382,11 @@
     <string name="download">Download</string>
     <string name="continue_label">Continue</string>
     <string name="don_t_show_this_again">Don\'t show this again</string>
+    <string name="background">Background</string>
+    <string name="downloading_quran_files_please_wait">Downloading Quran files. Please wait…</string>
+    <string name="downloaded">Downloaded: %1$s/%2$s %3$s</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="calculating">Calculating…</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

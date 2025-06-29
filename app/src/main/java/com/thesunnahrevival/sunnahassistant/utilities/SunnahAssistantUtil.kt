@@ -25,6 +25,8 @@ import java.net.URL
 import java.time.LocalDate
 import java.util.Locale
 import java.util.TreeSet
+import kotlin.math.pow
+import kotlin.math.round
 
 
 fun generateEmailIntent(): Intent {
@@ -176,6 +178,11 @@ fun Int.toArabicNumbers(): String {
     return this.toString().map { char ->
         if (char.isDigit()) arabicChars[char.digitToInt()] else char
     }.joinToString("")
+}
+
+fun Float.roundTo(decimals: Int): Float {
+    val multiplier = 10.0.pow(decimals).toFloat()
+    return round(this * multiplier) / multiplier
 }
 
 private val okHttpClient = OkHttpClient.Builder()

@@ -5,22 +5,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -49,14 +59,31 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SunnahAssistantTheme {
-                    DownloadFileScreen()
+                    val downloadStep by viewModel.downloadStep.collectAsState()
+                    val fileSize by viewModel.totalFileSize.collectAsState()
+                    val totalDownloaded by viewModel.totalMegaBytesDownloaded.collectAsState()
+                    val fileSizeUnit by viewModel.fileSizeUnit.collectAsState()
+
+                    when (downloadStep) {
+                        DownloadFileViewModel.DownloadStep.DOWNLOAD_PROMPT -> {
+                            PromptScreen()
+                        }
+
+                        DownloadFileViewModel.DownloadStep.DOWNLOAD_IN_PROGRESS -> {
+                            DownloadScreen(fileSize, totalDownloaded, fileSizeUnit)
+                        }
+
+                        DownloadFileViewModel.DownloadStep.DOWNLOAD_COMPLETE -> {
+                            CompletionScreen()
+                        }
+                    }
                 }
             }
         }
     }
-    @Composable
-    private fun DownloadFileScreen() {
 
+    @Composable
+    private fun PromptScreen() {
         var hideDownloadFilesPrompt by rememberSaveable {
             mutableStateOf(false)
         }
@@ -131,7 +158,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         }
                         Button(
                             onClick = {
-                                dismiss()
+                                viewModel.showDownloadInProgressUI()
                             },
                             modifier = Modifier.weight(1f)
                         ) {
@@ -143,30 +170,230 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @Preview(
-        uiMode = Configuration.UI_MODE_NIGHT_YES,
-        locale = "en"
-    )
     @Composable
-    private fun DownloadFileScreenPreviewDark() {
-        DownloadFileScreenPreview()
+    private fun DownloadScreen(fileSize: Float, totalDownloaded: Float, fileSizeUnit: String) {
+
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.downloading_quran_files_please_wait),
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                val progress = if (fileSize != 0f) {
+                    (totalDownloaded / fileSize)
+                } else {
+                    0f
+                }
+
+                LinearProgressIndicator(
+                    progress = progress, strokeCap = StrokeCap.Round, modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp)
+                )
+
+                if (fileSize != 0f) {
+                    // Download progress
+                    Text(
+                        text = stringResource(
+                            R.string.downloaded,
+                            totalDownloaded,
+                            fileSize,
+                            fileSizeUnit
+                        ),
+                        style = MaterialTheme.typography.overline,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                } else {
+                    //Calculating file size
+                    Text(
+                        text = stringResource(
+                            R.string.calculating,
+                            totalDownloaded,
+                            fileSize,
+                            fileSizeUnit
+                        ),
+                        style = MaterialTheme.typography.overline,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+
+                    // Action Buttons
+                    Row(modifier = Modifier.padding(top = 16.dp)) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        OutlinedButton(
+                            onClick = { dismiss() },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 16.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.cancel)
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                dismiss()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(text = stringResource(R.string.background))
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    @Preview
     @Composable
-    private fun DownloadFileScreenPreview() {
-        SunnahAssistantTheme {
-            DownloadFileScreen()
+    private fun CompletionScreen() {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = stringResource(R.string.download_complete),
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.download_complete),
+                    style = MaterialTheme.typography.h6,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+
+                Button(
+                    onClick = { dismiss() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
         }
     }
 
     @Preview(
-        name = "Arabic Dark Mode",
+        name = "Prompt Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun PromptScreenPreviewDark() {
+        PromptScreenPreview()
+    }
+
+    @Preview(name = "Prompt Screen - Light Mode")
+    @Composable
+    private fun PromptScreenPreview() {
+        SunnahAssistantTheme {
+            PromptScreen()
+        }
+    }
+
+    @Preview(
+        name = "Prompt Screen - Arabic Dark Mode",
         uiMode = Configuration.UI_MODE_NIGHT_YES,
         locale = "ar"
     )
     @Composable
-    private fun DownloadFileScreenPreviewArabic() {
-        DownloadFileScreenPreview()
+    private fun PromptScreenPreviewArabic() {
+        PromptScreenPreview()
+    }
+
+    @Preview(
+        name = "Download Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun DownloadScreenPreviewDark() {
+        DownloadScreenPreview()
+    }
+
+    @Preview(name = "Download Screen - Light Mode")
+    @Composable
+    private fun DownloadScreenPreview() {
+        SunnahAssistantTheme {
+            DownloadScreen(100f, 50f, "MB")
+        }
+    }
+
+    @Preview(
+        name = "Download Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun DownloadScreenPreviewArabic() {
+        DownloadScreenPreview()
+    }
+
+    @Preview(
+        name = "Completion Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun CompletionScreenPreviewDark() {
+        CompletionScreenPreview()
+    }
+
+    @Preview(name = "Completion Screen - Light Mode")
+    @Composable
+    private fun CompletionScreenPreview() {
+        SunnahAssistantTheme {
+            CompletionScreen()
+        }
+    }
+
+    @Preview(
+        name = "Completion Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun CompletionScreenPreviewArabic() {
+        CompletionScreenPreview()
     }
 }

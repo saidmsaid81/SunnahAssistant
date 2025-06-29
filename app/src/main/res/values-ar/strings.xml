@@ -398,6 +398,11 @@
   <string name="download">تحميل</string>
   <string name="continue_label">متابعة</string>
   <string name="don_t_show_this_again">لا تظهر هذا مرة أخرى</string>
+  <string name="background">الخلفية</string>
+  <string name="downloading_quran_files_please_wait">يتم تنزيل ملفات القرآن. الرجاء الانتظار…</string>
+  <string name="downloaded">تم التنزيل: %1$s/%2$s %3$s</string>
+  <string name="download_complete">اكتمل التنزيل</string>
+  <string name="calculating">جاري الحساب…</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>
