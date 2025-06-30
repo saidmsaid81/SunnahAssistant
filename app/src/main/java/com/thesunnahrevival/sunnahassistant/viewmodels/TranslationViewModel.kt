@@ -15,10 +15,10 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
     private val mQuranRepository: QuranRepository =
         QuranRepository.getInstance(application)
 
-    val translationUiState = mQuranRepository.getTranslations().map {
+    val translationUiState = mQuranRepository.getTranslations().map { translations ->
         TranslationUiState(
-            allTranslations = it,
-            selectedTranslations = it.filter { it.selected }
+            allTranslations = translations,
+            selectedTranslations = translations.filter { it.selected }
         )
     }.stateIn(
         scope = viewModelScope,

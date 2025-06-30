@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Streaming
 import retrofit2.http.Url
 
-interface ResourceLinksInterface {
+interface ResourceApiInterface {
     @GET("resources/links")
     suspend fun getResourceLinks(): Response<ResourceLinks?>
 

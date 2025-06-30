@@ -56,6 +56,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
     abstract fun translationDao(): TranslationDao
 
+    abstract fun appSettingsDao(): AppSettingsDao
+
     fun closeDB() {
         INSTANCE?.close()
         INSTANCE = null

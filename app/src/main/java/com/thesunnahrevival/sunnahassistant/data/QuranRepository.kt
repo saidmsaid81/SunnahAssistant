@@ -21,7 +21,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.Line
 import com.thesunnahrevival.sunnahassistant.data.model.ResourceLinks
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
-import com.thesunnahrevival.sunnahassistant.data.remote.ResourceLinksInterface
+import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +57,7 @@ class QuranRepository private constructor(
     private val toDoDao: ToDoDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
 
-    private val resourceLinksRestApi: ResourceLinksInterface
+    private val resourceLinksRestApi: ResourceApiInterface
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -72,7 +72,7 @@ class QuranRepository private constructor(
             }
         }
 
-        resourceLinksRestApi = retrofit.create(ResourceLinksInterface::class.java)
+        resourceLinksRestApi = retrofit.create(ResourceApiInterface::class.java)
     }
 
     suspend fun getLinesByPageNumber(pageNumber: Int) = lineDao.getLineByPageNumber(pageNumber)
@@ -105,9 +105,6 @@ class QuranRepository private constructor(
     suspend fun downloadFile(url: String) = resourceLinksRestApi.downloadFile(url)
 
     suspend fun isHideDownloadFilePrompt() = toDoDao.isHideDownloadFilePrompt()
-
-    suspend fun updateHideDownloadFilePrompt(value: Boolean) =
-        toDoDao.updateHideDownloadFilePrompt(value)
 
 
     private suspend fun prepopulateSurahData() {

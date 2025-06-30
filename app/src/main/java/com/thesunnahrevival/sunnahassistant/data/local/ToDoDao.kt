@@ -233,7 +233,4 @@ interface ToDoDao {
 
     @Query("SELECT hideDownloadFilePrompt FROM app_settings WHERE id = 1 ")
     suspend fun isHideDownloadFilePrompt(): Boolean
-
-    @Query("UPDATE app_settings SET hideDownloadFilePrompt = :value WHERE id = 1")
-    suspend fun updateHideDownloadFilePrompt(value: Boolean)
 }

@@ -42,8 +42,14 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
+import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository.DownloadStatus
+import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository.Downloading
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCompleteState
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadInProgressState
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadPromptState
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -59,23 +65,12 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SunnahAssistantTheme {
-                    val downloadStep by viewModel.downloadStep.collectAsState()
-                    val fileSize by viewModel.totalFileSize.collectAsState()
-                    val totalDownloaded by viewModel.totalMegaBytesDownloaded.collectAsState()
-                    val fileSizeUnit by viewModel.fileSizeUnit.collectAsState()
+                    val downloadUIState by viewModel.downloadUIState.collectAsState()
 
-                    when (downloadStep) {
-                        DownloadFileViewModel.DownloadStep.DOWNLOAD_PROMPT -> {
-                            PromptScreen()
-                        }
-
-                        DownloadFileViewModel.DownloadStep.DOWNLOAD_IN_PROGRESS -> {
-                            DownloadScreen(fileSize, totalDownloaded, fileSizeUnit)
-                        }
-
-                        DownloadFileViewModel.DownloadStep.DOWNLOAD_COMPLETE -> {
-                            CompletionScreen()
-                        }
+                    when (downloadUIState) {
+                        DownloadPromptState -> PromptScreen()
+                        is DownloadInProgressState -> DownloadScreen((downloadUIState as DownloadInProgressState).downloadStatus)
+                        DownloadCompleteState -> CompletionScreen()
                     }
                 }
             }
@@ -134,8 +129,13 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     modifier = Modifier.padding(top = 16.dp),
                     checked = hideDownloadFilesPrompt
                 ) {
-                    viewModel.disableDownloadFilesPrompt()
-                    hideDownloadFilesPrompt = true
+                    if (!hideDownloadFilesPrompt) {
+                        viewModel.disableDownloadFilesPrompt()
+                        hideDownloadFilesPrompt = true
+                    } else {
+                        viewModel.enableDownloadFilesPrompt()
+                        hideDownloadFilesPrompt = false
+                    }
                 }
 
                 Column(
@@ -158,7 +158,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         }
                         Button(
                             onClick = {
-                                viewModel.showDownloadInProgressUI()
+                                viewModel.downloadAndExtractZip()
                             },
                             modifier = Modifier.weight(1f)
                         ) {
@@ -171,8 +171,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     @Composable
-    private fun DownloadScreen(fileSize: Float, totalDownloaded: Float, fileSizeUnit: String) {
-
+    private fun DownloadScreen(downloadStatus: DownloadStatus) {
         Surface {
             Column(
                 modifier = Modifier
@@ -193,10 +192,18 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                val progress = if (fileSize != 0f) {
-                    (totalDownloaded / fileSize)
-                } else {
-                    0f
+                val progress = when (downloadStatus) {
+                    is Downloading -> {
+                        (downloadStatus.totalDownloadedSize / downloadStatus.totalFileSize)
+                    }
+
+                    is DownloadFileRepository.Extracting -> {
+                        100f
+                    }
+
+                    else -> {
+                        0f
+                    }
                 }
 
                 LinearProgressIndicator(
@@ -205,30 +212,38 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         .height(16.dp)
                 )
 
-                if (fileSize != 0f) {
-                    // Download progress
-                    Text(
-                        text = stringResource(
-                            R.string.downloaded,
-                            totalDownloaded,
-                            fileSize,
-                            fileSizeUnit
-                        ),
-                        style = MaterialTheme.typography.overline,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
-                } else {
-                    //Calculating file size
-                    Text(
-                        text = stringResource(
-                            R.string.calculating,
-                            totalDownloaded,
-                            fileSize,
-                            fileSizeUnit
-                        ),
-                        style = MaterialTheme.typography.overline,
-                        modifier = Modifier.padding(top = 16.dp)
-                    )
+                when (downloadStatus) {
+                    is DownloadFileRepository.Preparing -> {
+                        //Calculating file size
+                        Text(
+                            text = stringResource(R.string.calculating),
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+
+                    is Downloading -> {
+                        // Download progress
+                        Text(
+                            text = stringResource(
+                                R.string.downloaded,
+                                downloadStatus.totalDownloadedSize,
+                                downloadStatus.totalFileSize,
+                                downloadStatus.unit
+                            ),
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+
+                    else -> {
+                        // Extracting
+                        Text(
+                            text = stringResource(R.string.extracting),
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
                 }
 
                 Column(
@@ -355,7 +370,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     @Composable
     private fun DownloadScreenPreview() {
         SunnahAssistantTheme {
-            DownloadScreen(100f, 50f, "MB")
+            DownloadScreen(Downloading(50f, 100f, "MB"))
         }
     }
 

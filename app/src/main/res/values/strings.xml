@@ -387,6 +387,7 @@
     <string name="downloaded">Downloaded: %1$s/%2$s %3$s</string>
     <string name="download_complete">Download Complete</string>
     <string name="calculating">Calculating…</string>
+    <string name="extracting">Extracting…</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
