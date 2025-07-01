@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,14 +43,16 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
-import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository.DownloadStatus
-import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository.Downloading
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCancelled
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCompleteState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadInProgressState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadPromptState
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadStatus
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.Downloading
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.Extracting
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.Preparing
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -71,6 +74,11 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         DownloadPromptState -> PromptScreen()
                         is DownloadInProgressState -> DownloadScreen((downloadUIState as DownloadInProgressState).downloadStatus)
                         DownloadCompleteState -> CompletionScreen()
+                        DownloadCancelled -> {
+                            LaunchedEffect(Unit) {
+                                dismiss()
+                            }
+                        }
                     }
                 }
             }
@@ -158,7 +166,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         }
                         Button(
                             onClick = {
-                                viewModel.downloadAndExtractZip()
+                                viewModel.downloadQuranFiles()
                             },
                             modifier = Modifier.weight(1f)
                         ) {
@@ -197,7 +205,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         (downloadStatus.totalDownloadedSize / downloadStatus.totalFileSize)
                     }
 
-                    is DownloadFileRepository.Extracting -> {
+                    is Extracting -> {
                         100f
                     }
 
@@ -213,7 +221,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 )
 
                 when (downloadStatus) {
-                    is DownloadFileRepository.Preparing -> {
+                    is Preparing -> {
                         //Calculating file size
                         Text(
                             text = stringResource(R.string.calculating),
@@ -256,7 +264,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     Row(modifier = Modifier.padding(top = 16.dp)) {
                         Spacer(modifier = Modifier.weight(1f))
                         OutlinedButton(
-                            onClick = { dismiss() },
+                            onClick = { viewModel.cancelDownload() },
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 16.dp)
