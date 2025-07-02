@@ -54,10 +54,10 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
                 launch {
                     try {
                         _downloadUIState.value = DownloadInProgressState(Preparing)
-                        val response = downloadFileRepository.downloadFile() ?: return@launch
+                        val response = downloadFileRepository.downloadFile()
 
-                        if (response.isSuccessful) {
-                            response.body()?.let { responseBody ->
+                        if (response?.isSuccessful == true) {
+                            response.body()?.let { responseBody: ResponseBody ->
                                 tempZipFile = generateTempZipFile(responseBody)
 
                                 tempZipFile?.let {
