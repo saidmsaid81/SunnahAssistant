@@ -44,15 +44,16 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.DownloadProgress
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Downloading
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCancelled
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCancelledState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCompleteState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadInProgressState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadPromptState
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadStatus
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.Downloading
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.Extracting
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.Preparing
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -72,9 +73,15 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
 
                     when (downloadUIState) {
                         DownloadPromptState -> PromptScreen()
-                        is DownloadInProgressState -> DownloadScreen((downloadUIState as DownloadInProgressState).downloadStatus)
+                        is DownloadInProgressState -> {
+                            if ((downloadUIState as DownloadInProgressState).downloadProgress == DownloadManager.NotInitiated) {
+                                PromptScreen()
+                            } else {
+                                DownloadScreen((downloadUIState as DownloadInProgressState).downloadProgress)
+                            }
+                        }
                         DownloadCompleteState -> CompletionScreen()
-                        DownloadCancelled -> {
+                        DownloadCancelledState -> {
                             LaunchedEffect(Unit) {
                                 dismiss()
                             }
@@ -179,7 +186,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     @Composable
-    private fun DownloadScreen(downloadStatus: DownloadStatus) {
+    private fun DownloadScreen(downloadProgress: DownloadProgress) {
         Surface {
             Column(
                 modifier = Modifier
@@ -200,9 +207,9 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                val progress = when (downloadStatus) {
+                val progress = when (downloadProgress) {
                     is Downloading -> {
-                        (downloadStatus.totalDownloadedSize / downloadStatus.totalFileSize)
+                        (downloadProgress.totalDownloadedSize / downloadProgress.totalFileSize)
                     }
 
                     is Extracting -> {
@@ -220,7 +227,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         .height(16.dp)
                 )
 
-                when (downloadStatus) {
+                when (downloadProgress) {
                     is Preparing -> {
                         //Calculating file size
                         Text(
@@ -235,9 +242,9 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         Text(
                             text = stringResource(
                                 R.string.downloaded,
-                                downloadStatus.totalDownloadedSize,
-                                downloadStatus.totalFileSize,
-                                downloadStatus.unit
+                                downloadProgress.totalDownloadedSize,
+                                downloadProgress.totalFileSize,
+                                downloadProgress.unit
                             ),
                             style = MaterialTheme.typography.overline,
                             modifier = Modifier.padding(top = 16.dp)
