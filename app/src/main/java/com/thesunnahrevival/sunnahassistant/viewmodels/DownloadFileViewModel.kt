@@ -3,12 +3,15 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.DownloadProgress
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NotInitiated
+import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,10 +19,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+private const val DOWNLOAD_WORK_TAG = "download_work"
+
 class DownloadFileViewModel(application: Application) : AndroidViewModel(application) {
     private val downloadFileRepository = DownloadFileRepository.getInstance(application)
 
-    private val downloadManager = DownloadManager()
+    private val downloadManager = DownloadManager.getInstance()
 
     val downloadUIState: StateFlow<DownloadUIState> =
         downloadManager.downloadProgress.map { downloadProgress ->
@@ -59,10 +64,15 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun downloadQuranFiles() {
-        downloadManager.downloadFile(getApplication(), viewModelScope)
+        val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
+            .addTag(DOWNLOAD_WORK_TAG)
+            .build()
+
+        WorkManager.getInstance(getApplication()).enqueue(downloadRequest)
     }
 
     fun cancelDownload() {
+        WorkManager.getInstance(getApplication()).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
         viewModelScope.launch {
             downloadManager.cancelDownload()
         }
@@ -77,11 +87,5 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     data object DownloadCompleteState : DownloadUIState()
 
     data object DownloadCancelledState : DownloadUIState()
-
-//    val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-//        .addTag("download_work")
-//        .build()
-//
-//    WorkManager.getInstance(getApplication()).enqueue(downloadRequest)
 
 }

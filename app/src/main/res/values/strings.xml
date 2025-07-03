@@ -388,6 +388,7 @@
     <string name="download_complete">Download Complete</string>
     <string name="calculating">Calculating…</string>
     <string name="extracting">Extracting…</string>
+    <string name="file_downloads_notification_channel">File Downloads</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
