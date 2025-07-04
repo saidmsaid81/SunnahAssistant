@@ -221,7 +221,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
 
                 val progress = when (downloadProgress) {
                     is Downloading -> {
-                        (downloadProgress.totalDownloadedSize / downloadProgress.totalFileSize)
+                        (downloadProgress.totalDownloadedSize / downloadProgress.fileSize)
                     }
 
                     is Extracting -> {
@@ -255,7 +255,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                             text = stringResource(
                                 R.string.downloaded,
                                 downloadProgress.totalDownloadedSize,
-                                downloadProgress.totalFileSize,
+                                downloadProgress.fileSize,
                                 downloadProgress.unit
                             ),
                             style = MaterialTheme.typography.overline,

@@ -31,22 +31,55 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     private val downloadManager = DownloadManager.getInstance()
 
     override suspend fun doWork(): Result {
-        setForeground(createForegroundInfo(0, 0, true))
+        setForeground(
+            createForegroundInfo(
+                0,
+                0,
+                true,
+                applicationContext.getString(R.string.calculating)
+            )
+        )
 
         CoroutineScope(Dispatchers.Main).launch {
             downloadManager.downloadProgress.takeWhile { downloadProgress ->
                 !isStopped && downloadProgress !is Completed && downloadProgress !is Cancelled
             }.collect { downloadProgress ->
                 when (downloadProgress) {
-                    Preparing -> setForeground(createForegroundInfo(0, 0, true))
+                    Preparing -> setForeground(
+                        createForegroundInfo(
+                            0,
+                            0,
+                            true,
+                            applicationContext.getString(R.string.calculating)
+                        )
+                    )
                     is Downloading -> {
-                        val totalFileSize = downloadProgress.totalFileSize
+                        val fileSize = downloadProgress.fileSize
                         val totalDownloadedSize = downloadProgress.totalDownloadedSize
-                        val progress = Math.round((totalDownloadedSize / totalFileSize) * 100)
-                        setForeground(createForegroundInfo(100, progress, false))
+                        val progress = Math.round((totalDownloadedSize / fileSize) * 100)
+                        setForeground(
+                            createForegroundInfo(
+                                100,
+                                progress,
+                                false,
+                                applicationContext.getString(
+                                    R.string.downloaded,
+                                    totalDownloadedSize.toString(),
+                                    fileSize.toString(),
+                                    downloadProgress.unit
+                                )
+                            )
+                        )
                     }
 
-                    Extracting -> setForeground(createForegroundInfo(0, 0, true))
+                    Extracting -> setForeground(
+                        createForegroundInfo(
+                            0,
+                            0,
+                            true,
+                            applicationContext.getString(R.string.extracting)
+                        )
+                    )
                     else -> {}
                 }
             }
@@ -73,7 +106,8 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     private fun createForegroundInfo(
         max: Int,
         progress: Int,
-        indeterminate: Boolean
+        indeterminate: Boolean,
+        message: String
     ): ForegroundInfo {
         val intent = WorkManager.getInstance(applicationContext)
             .createCancelPendingIntent(id)
@@ -94,17 +128,18 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
         val notification =
             NotificationCompat.Builder(applicationContext, DOWNLOADS_NOTIFICATION_CHANNEL_ID)
-            .setContentTitle(applicationContext.getString(R.string.downloading_quran_files_please_wait))
-            .setTicker(applicationContext.getString(R.string.app_name))
-            .setProgress(max, progress, indeterminate)
-            .setSmallIcon(R.drawable.ic_info)
-            .setOngoing(true)
+                .setContentTitle(applicationContext.getString(R.string.downloading_quran_files_please_wait))
+                .setContentText(message)
+                .setTicker(applicationContext.getString(R.string.app_name))
+                .setProgress(max, progress, indeterminate)
+                .setSmallIcon(R.drawable.ic_downloading)
+                .setOngoing(true)
                 .addAction(
                     android.R.drawable.ic_delete,
                     applicationContext.getString(R.string.cancel),
                     intent
                 )
-            .build()
+                .build()
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(

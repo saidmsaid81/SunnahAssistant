@@ -187,7 +187,7 @@ class DownloadManager private constructor() {
 
     data class Downloading(
         val totalDownloadedSize: Float,
-        val totalFileSize: Float,
+        val fileSize: Float,
         val unit: String
     ) : DownloadProgress()
 
