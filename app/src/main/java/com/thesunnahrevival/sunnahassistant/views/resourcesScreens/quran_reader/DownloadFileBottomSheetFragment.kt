@@ -1,10 +1,14 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
@@ -59,6 +64,12 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheck
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
 
     private val viewModel: DownloadFileViewModel by viewModels()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -173,6 +184,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         }
                         Button(
                             onClick = {
+                                requestNotificationPermission()
                                 viewModel.downloadQuranFiles()
                             },
                             modifier = Modifier.weight(1f)
@@ -280,13 +292,20 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                                 text = stringResource(R.string.cancel)
                             )
                         }
-                        Button(
-                            onClick = {
-                                dismiss()
-                            },
-                            modifier = Modifier.weight(1f)
+
+                        if (ContextCompat.checkSelfPermission(
+                                requireContext(),
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
                         ) {
-                            Text(text = stringResource(R.string.background))
+                            Button(
+                                onClick = {
+                                    dismiss()
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(text = stringResource(R.string.background))
+                            }
                         }
                     }
                 }
@@ -339,6 +358,21 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 ) {
                     Text(stringResource(R.string.ok))
                 }
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                viewModel.incrementNotificationRequestCount()
+                requestPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
             }
         }
     }

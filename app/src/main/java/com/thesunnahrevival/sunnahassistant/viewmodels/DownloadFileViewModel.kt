@@ -6,11 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
+import com.thesunnahrevival.sunnahassistant.data.FlagRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.DownloadProgress
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NotInitiated
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
 import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +25,7 @@ private const val DOWNLOAD_WORK_TAG = "download_work"
 
 class DownloadFileViewModel(application: Application) : AndroidViewModel(application) {
     private val downloadFileRepository = DownloadFileRepository.getInstance(application)
+    private val flagRepository = FlagRepository.getInstance(application)
 
     private val downloadManager = DownloadManager.getInstance()
 
@@ -75,6 +78,19 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
         WorkManager.getInstance(getApplication()).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
         viewModelScope.launch {
             downloadManager.cancelDownload()
+        }
+    }
+
+    fun incrementNotificationRequestCount() {
+        viewModelScope.launch(Dispatchers.IO) {
+            var notificationPermissionRequestCount =
+                flagRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
+            if (notificationPermissionRequestCount != -1L) {
+                flagRepository.setFlag(
+                    NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY,
+                    ++notificationPermissionRequestCount
+                )
+            }
         }
     }
 

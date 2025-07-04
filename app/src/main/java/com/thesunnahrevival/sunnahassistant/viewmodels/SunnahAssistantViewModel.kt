@@ -23,6 +23,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.FlagRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
@@ -57,6 +58,7 @@ import kotlin.math.roundToLong
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
+    private val flagRepository: FlagRepository = FlagRepository.getInstance(application)
     private val mutex = Mutex()
 
     var selectedToDo =
@@ -250,7 +252,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
         viewModelScope.launch(Dispatchers.IO) {
             val message: String
-            val clientRetryFromTimeMilliseconds = mRepository.getLongFlag(RETRY_AFTER_KEY) ?: 0
+            val clientRetryFromTimeMilliseconds = flagRepository.getLongFlag(RETRY_AFTER_KEY) ?: 0
 
             if (System.currentTimeMillis() < clientRetryFromTimeMilliseconds) {
                 message = String.format(
@@ -277,7 +279,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                             clientRetryFromTimeMilliseconds =
                                 System.currentTimeMillis() + retryAfterMilliSecondsHeader
 
-                            mRepository.setFlag(RETRY_AFTER_KEY, clientRetryFromTimeMilliseconds)
+                            flagRepository.setFlag(RETRY_AFTER_KEY, clientRetryFromTimeMilliseconds)
                         }
                         message = String.format(
                             tooManyRequestString,
@@ -312,15 +314,15 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     suspend fun getNotificationPermissionRequestsCount(): Long {
-        return mRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0;
+        return flagRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0;
     }
 
     fun incrementNotificationPermissionRequestsCount() {
         viewModelScope.launch(Dispatchers.IO) {
             var notificationPermissionRequestCount =
-                mRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
+                flagRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
             if (notificationPermissionRequestCount != -1L) {
-                mRepository.setFlag(
+                flagRepository.setFlag(
                     NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY,
                     ++notificationPermissionRequestCount
                 )
@@ -330,7 +332,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun hideFixNotificationsBanner() {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.setFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY, -1)
+            flagRepository.setFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY, -1)
         }
     }
 

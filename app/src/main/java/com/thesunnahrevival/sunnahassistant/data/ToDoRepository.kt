@@ -1,11 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.PagingSource
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
@@ -22,8 +17,6 @@ import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.time.LocalDate
@@ -31,7 +24,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "flags")
 
 class SunnahAssistantRepository private constructor(private val applicationContext: Context) {
     private val mToDoDao: ToDoDao
@@ -346,20 +338,6 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     }
 
     fun closeDB() = SunnahAssistantDatabase.getInstance(applicationContext).closeDB()
-
-    suspend fun setFlag(key: String, value: Long) {
-        val flagKey = longPreferencesKey(key)
-        applicationContext.dataStore.edit { flags ->
-            flags[flagKey] = value
-        }
-    }
-
-    suspend fun getLongFlag(key: String): Long? {
-        val flagKey = longPreferencesKey(key)
-        return applicationContext.dataStore.data
-            .map { flag -> flag[flagKey] }
-            .first()
-    }
 
     companion object {
         @Volatile
