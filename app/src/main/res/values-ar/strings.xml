@@ -403,6 +403,9 @@
   <string name="downloaded">تم التنزيل: %1$s/%2$s %3$s</string>
   <string name="download_complete">اكتمل التنزيل</string>
   <string name="calculating">جاري الحساب…</string>
+  <string name="extracting">جاري الاستخراج…</string>
+  <string name="file_downloads_notification_channel">تنزيلات الملفات</string>
+  <string name="used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant">يستخدم لإظهار تقدم التنزيل عند تحميل الملفات في مساعد السنة</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>

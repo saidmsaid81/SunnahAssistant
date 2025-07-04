@@ -11,6 +11,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOADS_NOTIFICATION_CHANNEL_ID
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
@@ -78,35 +80,40 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val downloadsChannel = NotificationChannel(
-                "Downloads",
+                DOWNLOADS_NOTIFICATION_CHANNEL_ID,
                 applicationContext.getString(R.string.file_downloads_notification_channel),
                 NotificationManager.IMPORTANCE_LOW
             )
             downloadsChannel.description =
-                "Used in showing download progress when downloading files in Sunnah Assistant"
+                applicationContext.getString(R.string.used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant)
 
             val notificationManager =
                 applicationContext.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(downloadsChannel)
         }
 
-        val notification = NotificationCompat.Builder(applicationContext, "Downloads")
+        val notification =
+            NotificationCompat.Builder(applicationContext, DOWNLOADS_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(applicationContext.getString(R.string.downloading_quran_files_please_wait))
             .setTicker(applicationContext.getString(R.string.app_name))
             .setProgress(max, progress, indeterminate)
             .setSmallIcon(R.drawable.ic_info)
             .setOngoing(true)
-            .addAction(android.R.drawable.ic_delete, "Cancel", intent)
+                .addAction(
+                    android.R.drawable.ic_delete,
+                    applicationContext.getString(R.string.cancel),
+                    intent
+                )
             .build()
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(
-                -6,
+                DOWNLOAD_NOTIFICATION_ID,
                 notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
             )
         } else {
-            ForegroundInfo(-6, notification)
+            ForegroundInfo(DOWNLOAD_NOTIFICATION_ID, notification)
         }
     }
 }
