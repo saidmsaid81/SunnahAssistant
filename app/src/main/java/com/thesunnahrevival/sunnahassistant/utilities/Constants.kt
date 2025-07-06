@@ -30,6 +30,7 @@ const val TEXT_COLOR = "text_color"
 const val THE_SUNNAH_REVIVAL_RSS_FEED = "https://thesunnahrevival.com/category/daily-hadith/feed"
 
 const val DOWNLOADS_NOTIFICATION_CHANNEL_ID = "Downloads"
+const val DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID = "DownloadComplete"
 
 const val PRAYER_TIMES_REMINDERS_ID = -1019700
 
@@ -41,3 +42,4 @@ const val REQUEST_ALARM_PERMISSION_CODE = -3
 const val STICKY_NOTIFICATION_ID = -4
 const val REFRESHING_NOTIFICATIONS_ID = -5
 const val DOWNLOAD_NOTIFICATION_ID = -6
+const val DOWNLOAD_COMPLETE_NOTIFICATION_ID = -7

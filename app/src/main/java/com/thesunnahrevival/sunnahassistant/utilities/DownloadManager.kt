@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.content.Context
+import android.util.Log
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
@@ -37,8 +38,8 @@ class DownloadManager private constructor() {
     val downloadProgress: Flow<DownloadProgress> = _downloadProgress
 
     suspend fun downloadFile(context: Context) {
-        val downloadFileRepository = DownloadFileRepository.getInstance(context)
         try {
+            val downloadFileRepository = DownloadFileRepository.getInstance(context)
             updateProgress(Preparing)
             val response = downloadFileRepository.downloadFile()
 
@@ -54,10 +55,13 @@ class DownloadManager private constructor() {
 
                     updateProgress(Completed)
                 }
+            } else {
+                updateProgress(Error)
             }
         } catch (e: Exception) {
             tempZipFile?.delete()
             e.printStackTrace()
+            updateProgress(Error)
         }
     }
 
@@ -69,6 +73,7 @@ class DownloadManager private constructor() {
     suspend fun cancelDownload() {
         tempZipFile?.delete()
         updateProgress(Cancelled)
+        instance = null
     }
 
     private suspend fun generateTempZipFile(
@@ -195,5 +200,6 @@ class DownloadManager private constructor() {
 
     data object Completed : DownloadProgress()
     data object Cancelled : DownloadProgress()
+    data object Error : DownloadProgress()
 
 }

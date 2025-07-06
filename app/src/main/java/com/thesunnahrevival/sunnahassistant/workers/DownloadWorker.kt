@@ -1,29 +1,36 @@
 package com.thesunnahrevival.sunnahassistant.workers
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.receivers.DownloadRetryReceiver
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOADS_NOTIFICATION_CHANNEL_ID
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Downloading
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Error
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class DownloadWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
@@ -31,115 +38,136 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     private val downloadManager = DownloadManager.getInstance()
 
     override suspend fun doWork(): Result {
-        setForeground(
-            createForegroundInfo(
-                0,
-                0,
-                true,
-                applicationContext.getString(R.string.calculating)
-            )
-        )
+        setForeground(createForegroundInfo(Preparing))
+
+        val downloadCompletion = CompletableDeferred<Result>()
 
         CoroutineScope(Dispatchers.Main).launch {
-            downloadManager.downloadProgress.takeWhile { downloadProgress ->
-                !isStopped && downloadProgress !is Completed && downloadProgress !is Cancelled
-            }.collect { downloadProgress ->
+            downloadManager.downloadProgress.collect { downloadProgress ->
                 when (downloadProgress) {
-                    Preparing -> setForeground(
-                        createForegroundInfo(
-                            0,
-                            0,
-                            true,
-                            applicationContext.getString(R.string.calculating)
+                    Completed -> {
+                        val notification = getNotification(
+                            title = applicationContext.getString(R.string.download_complete),
+                            content = applicationContext.getString(R.string.tap_to_read_quran),
+                            channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+                            smallIconRes = R.drawable.ic_alarm,
+                            pendingIntent = NavDeepLinkBuilder(applicationContext)
+                                .setGraph(R.navigation.navigation)
+                                .setDestination(R.id.resourcesFragment)
+                                .createPendingIntent()
                         )
-                    )
-                    is Downloading -> {
-                        val fileSize = downloadProgress.fileSize
-                        val totalDownloadedSize = downloadProgress.totalDownloadedSize
-                        val progress = Math.round((totalDownloadedSize / fileSize) * 100)
-                        setForeground(
-                            createForegroundInfo(
-                                100,
-                                progress,
-                                false,
-                                applicationContext.getString(
-                                    R.string.downloaded,
-                                    totalDownloadedSize.toString(),
-                                    fileSize.toString(),
-                                    downloadProgress.unit
-                                )
-                            )
+
+                        val notificationManager =
+                            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+                        downloadCompletion.complete(Result.success())
+                    }
+                    Error -> {
+                        val retryIntent = android.content.Intent(applicationContext, DownloadRetryReceiver::class.java)
+                        val retryPendingIntent = PendingIntent.getBroadcast(
+                            applicationContext,
+                            0,
+                            retryIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                         )
+
+                        val retryAction = NotificationCompat.Action(
+                            R.drawable.ic_retry,
+                            applicationContext.getString(R.string.try_again),
+                            retryPendingIntent
+                        )
+
+                        val notification = getNotification(
+                            title = applicationContext.getString(R.string.downloading_failed),
+                            content = applicationContext.getString(R.string.an_error_occurred,
+                                SUPPORT_EMAIL
+                            ),
+                            channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+                            smallIconRes = R.drawable.ic_alarm,
+                            pendingIntent = NavDeepLinkBuilder(applicationContext)
+                                .setGraph(R.navigation.navigation)
+                                .setDestination(R.id.resourcesFragment)
+                                .createPendingIntent(),
+                            actions = listOf(retryAction)
+                        )
+
+                        val notificationManager =
+                            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+                        downloadCompletion.complete(Result.failure())
                     }
 
-                    Extracting -> setForeground(
-                        createForegroundInfo(
-                            0,
-                            0,
-                            true,
-                            applicationContext.getString(R.string.extracting)
-                        )
-                    )
-                    else -> {}
+                    else -> {
+                        setForeground(createForegroundInfo(downloadProgress))
+                    }
+
                 }
             }
         }
 
         downloadManager.downloadFile(applicationContext)
-
-
-        CoroutineScope(Dispatchers.Main).launch {
-            val finalStatus = downloadManager.downloadProgress.first { downloadProgress ->
-                downloadProgress is Completed || downloadProgress is Cancelled
-            }
-
-            when (finalStatus) {
-                Completed -> Result.success()
-                Cancelled -> Result.failure()
-                else -> Result.failure()
-            }
-        }
-
-        return Result.success()
+        return downloadCompletion.await()
     }
 
-    private fun createForegroundInfo(
-        max: Int,
-        progress: Int,
-        indeterminate: Boolean,
-        message: String
-    ): ForegroundInfo {
-        val intent = WorkManager.getInstance(applicationContext)
-            .createCancelPendingIntent(id)
+    private fun createForegroundInfo(downloadProgress: DownloadManager.DownloadProgress): ForegroundInfo {
+        createNotificationChannel()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val downloadsChannel = NotificationChannel(
-                DOWNLOADS_NOTIFICATION_CHANNEL_ID,
-                applicationContext.getString(R.string.file_downloads_notification_channel),
-                NotificationManager.IMPORTANCE_LOW
-            )
-            downloadsChannel.description =
-                applicationContext.getString(R.string.used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant)
+        val action = getAction()
+        val notification: Notification = when (downloadProgress) {
+            is Downloading -> {
+                val fileSize = downloadProgress.fileSize
+                val totalDownloadedSize = downloadProgress.totalDownloadedSize
+                val progress = ((totalDownloadedSize / fileSize) * 100).roundToInt()
 
-            val notificationManager =
-                applicationContext.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(downloadsChannel)
-        }
-
-        val notification =
-            NotificationCompat.Builder(applicationContext, DOWNLOADS_NOTIFICATION_CHANNEL_ID)
-                .setContentTitle(applicationContext.getString(R.string.downloading_quran_files_please_wait))
-                .setContentText(message)
-                .setTicker(applicationContext.getString(R.string.app_name))
-                .setProgress(max, progress, indeterminate)
-                .setSmallIcon(R.drawable.ic_downloading)
-                .setOngoing(true)
-                .addAction(
-                    android.R.drawable.ic_delete,
-                    applicationContext.getString(R.string.cancel),
-                    intent
+                getNotification(
+                    title = applicationContext.getString(R.string.downloading_quran_files_please_wait),
+                    content = applicationContext.getString(
+                        R.string.downloaded,
+                        totalDownloadedSize.toString(),
+                        fileSize.toString(),
+                        downloadProgress.unit
+                    ),
+                    channelId = DOWNLOADS_NOTIFICATION_CHANNEL_ID,
+                    smallIconRes = R.drawable.ic_downloading,
+                    notificationProgress = NotificationProgress(
+                        max = 100,
+                        progress = progress,
+                        indeterminate = false,
+                        ongoing = true
+                    ),
+                    actions = listOf(action)
                 )
-                .build()
+            }
+
+            Extracting -> getNotification(
+                title = applicationContext.getString(R.string.downloading_quran_files_please_wait),
+                content = applicationContext.getString(R.string.extracting),
+                channelId = DOWNLOADS_NOTIFICATION_CHANNEL_ID,
+                smallIconRes = R.drawable.ic_downloading,
+                notificationProgress = NotificationProgress(
+                    100,
+                    0,
+                    indeterminate = true,
+                    ongoing = true
+                ),
+                actions = listOf(action)
+            )
+
+            else -> getNotification(
+                title = applicationContext.getString(R.string.downloading_quran_files_please_wait),
+                content = applicationContext.getString(R.string.calculating),
+                channelId = DOWNLOADS_NOTIFICATION_CHANNEL_ID,
+                smallIconRes = R.drawable.ic_downloading,
+                notificationProgress = NotificationProgress(
+                    100,
+                    0,
+                    indeterminate = true,
+                    ongoing = true
+                ),
+                actions = listOf(action)
+            )
+
+        }
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(
@@ -151,4 +179,83 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
             ForegroundInfo(DOWNLOAD_NOTIFICATION_ID, notification)
         }
     }
+
+    private fun getAction(): NotificationCompat.Action {
+        val intent = WorkManager.getInstance(applicationContext)
+            .createCancelPendingIntent(id)
+
+        val action = NotificationCompat.Action(
+            android.R.drawable.ic_delete,
+            applicationContext.getString(R.string.cancel),
+            intent
+        )
+        return action
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val downloadsChannel = NotificationChannel(
+                DOWNLOADS_NOTIFICATION_CHANNEL_ID,
+                applicationContext.getString(R.string.file_downloads_notification_channel),
+                NotificationManager.IMPORTANCE_LOW
+            )
+            downloadsChannel.description =
+                applicationContext.getString(R.string.used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant)
+
+            val downloadCompleteChannel = NotificationChannel(
+                DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+                applicationContext.getString(R.string.download_complete),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            downloadCompleteChannel.description =
+                applicationContext.getString(R.string.notifications_for_download_completion_and_errors)
+
+            val notificationManager =
+                applicationContext.getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(downloadsChannel)
+            notificationManager.createNotificationChannel(downloadCompleteChannel)
+        }
+    }
+
+    private fun getNotification(
+        title: String,
+        content: String,
+        channelId: String,
+        smallIconRes: Int,
+        notificationProgress: NotificationProgress? = null,
+        pendingIntent: PendingIntent? = null,
+        actions: List<NotificationCompat.Action> = listOf()
+    ): Notification {
+        val notification =
+            NotificationCompat.Builder(applicationContext, channelId)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setTicker(applicationContext.getString(R.string.app_name))
+                .setSmallIcon(smallIconRes)
+                .setContentIntent(pendingIntent)
+
+        if (notificationProgress != null) {
+            notification.setProgress(
+                notificationProgress.max,
+                notificationProgress.progress,
+                notificationProgress.indeterminate
+            )
+            notification.setOngoing(notificationProgress.ongoing)
+        }
+
+        for (action in actions) {
+            notification.addAction(action)
+        }
+
+        return notification.build()
+    }
+
+    private data class NotificationProgress(
+        val max: Int,
+        val progress: Int,
+        val indeterminate: Boolean,
+        val ongoing: Boolean
+    )
+
+
 }

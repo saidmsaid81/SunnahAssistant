@@ -390,6 +390,9 @@
     <string name="extracting">Extracting…</string>
     <string name="file_downloads_notification_channel">File Downloads</string>
     <string name="used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant">Used in showing download progress when downloading files in Sunnah Assistant</string>
+    <string name="tap_to_read_quran">Tap to read Quran</string>
+    <string name="downloading_failed">Downloading Quran files failed</string>
+    <string name="notifications_for_download_completion_and_errors">Notifications for download completion and errors</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

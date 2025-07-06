@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-private const val DOWNLOAD_WORK_TAG = "download_work"
+const val DOWNLOAD_WORK_TAG = "download_work"
 
 class DownloadFileViewModel(application: Application) : AndroidViewModel(application) {
     private val downloadFileRepository = DownloadFileRepository.getInstance(application)
