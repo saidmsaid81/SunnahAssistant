@@ -12,14 +12,11 @@ import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 
 class DownloadRetryReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        // Clear the error notification
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(DOWNLOAD_COMPLETE_NOTIFICATION_ID)
 
-        // Cancel any existing download work first
         WorkManager.getInstance(context).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
 
-        // Start the download again
         val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .addTag(DOWNLOAD_WORK_TAG)
             .build()

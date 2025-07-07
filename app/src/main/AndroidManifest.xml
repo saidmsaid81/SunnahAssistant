@@ -129,8 +129,8 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
     </receiver>
-    <receiver android:name=".receivers.DownloadRetryReceiver"
-        android:exported="false" />
+    <receiver android:name=".receivers.DownloadRetryReceiver" android:exported="false" />
+    <receiver android:name=".receivers.DownloadCancelReceiver" android:exported="false" />
 
     <service
         android:name="com.thesunnahrevival.sunnahassistant.widgets.TodaysToDosRemoteViewsService"

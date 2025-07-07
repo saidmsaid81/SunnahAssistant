@@ -20,13 +20,11 @@ import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICA
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Downloading
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Error
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
+import com.thesunnahrevival.sunnahassistant.viewmodels.DOWNLOAD_WORK_TAG
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class DownloadWorker(context: Context, parameters: WorkerParameters) :
@@ -58,6 +56,7 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
                     val notificationManager =
                         applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+                    WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
                     downloadCompletion.complete(Result.success())
                 }
                 Error -> {
@@ -92,7 +91,12 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
                     val notificationManager =
                         applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+                    WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
                     downloadCompletion.complete(Result.failure())
+                }
+
+                Cancelled -> {
+                    downloadCompletion.complete(Result.success())
                 }
 
                 else -> {
@@ -105,7 +109,7 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
         return downloadCompletion.await()
     }
 
-    private fun createForegroundInfo(downloadProgress: DownloadManager.DownloadProgress): ForegroundInfo {
+    private fun createForegroundInfo(downloadProgress: DownloadProgress): ForegroundInfo {
         createNotificationChannel()
 
         val action = getAction()
@@ -177,13 +181,21 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     }
 
     private fun getAction(): NotificationCompat.Action {
-        val intent = WorkManager.getInstance(applicationContext)
-            .createCancelPendingIntent(id)
+        val intent = android.content.Intent(
+            applicationContext,
+            com.thesunnahrevival.sunnahassistant.receivers.DownloadCancelReceiver::class.java
+        )
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val action = NotificationCompat.Action(
             android.R.drawable.ic_delete,
             applicationContext.getString(R.string.cancel),
-            intent
+            pendingIntent
         )
         return action
     }
