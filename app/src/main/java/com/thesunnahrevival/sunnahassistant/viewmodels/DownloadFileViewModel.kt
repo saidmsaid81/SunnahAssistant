@@ -15,10 +15,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NotInitiat
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
 import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 const val DOWNLOAD_WORK_TAG = "download_work"
@@ -76,9 +73,7 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
 
     fun cancelDownload() {
         WorkManager.getInstance(getApplication()).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
-        viewModelScope.launch {
-            downloadManager.cancelDownload()
-        }
+        downloadManager.cancelDownload()
     }
 
     fun incrementNotificationRequestCount() {

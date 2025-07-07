@@ -27,9 +27,6 @@ import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class DownloadWorker(context: Context, parameters: WorkerParameters) :
@@ -40,72 +37,71 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     override suspend fun doWork(): Result {
         setForeground(createForegroundInfo(Preparing))
 
+        downloadManager.downloadFile(applicationContext)
+
         val downloadCompletion = CompletableDeferred<Result>()
 
-        CoroutineScope(Dispatchers.Main).launch {
-            downloadManager.downloadProgress.collect { downloadProgress ->
-                when (downloadProgress) {
-                    Completed -> {
-                        val notification = getNotification(
-                            title = applicationContext.getString(R.string.download_complete),
-                            content = applicationContext.getString(R.string.tap_to_read_quran),
-                            channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
-                            smallIconRes = R.drawable.ic_alarm,
-                            pendingIntent = NavDeepLinkBuilder(applicationContext)
-                                .setGraph(R.navigation.navigation)
-                                .setDestination(R.id.resourcesFragment)
-                                .createPendingIntent()
-                        )
+        downloadManager.downloadProgress.collect { downloadProgress ->
+            when (downloadProgress) {
+                Completed -> {
+                    val notification = getNotification(
+                        title = applicationContext.getString(R.string.download_complete),
+                        content = applicationContext.getString(R.string.tap_to_read_quran),
+                        channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+                        smallIconRes = R.drawable.ic_alarm,
+                        pendingIntent = NavDeepLinkBuilder(applicationContext)
+                            .setGraph(R.navigation.navigation)
+                            .setDestination(R.id.resourcesFragment)
+                            .createPendingIntent()
+                    )
 
-                        val notificationManager =
-                            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
-                        downloadCompletion.complete(Result.success())
-                    }
-                    Error -> {
-                        val retryIntent = android.content.Intent(applicationContext, DownloadRetryReceiver::class.java)
-                        val retryPendingIntent = PendingIntent.getBroadcast(
-                            applicationContext,
-                            0,
-                            retryIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                        )
-
-                        val retryAction = NotificationCompat.Action(
-                            R.drawable.ic_retry,
-                            applicationContext.getString(R.string.try_again),
-                            retryPendingIntent
-                        )
-
-                        val notification = getNotification(
-                            title = applicationContext.getString(R.string.downloading_failed),
-                            content = applicationContext.getString(R.string.an_error_occurred,
-                                SUPPORT_EMAIL
-                            ),
-                            channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
-                            smallIconRes = R.drawable.ic_alarm,
-                            pendingIntent = NavDeepLinkBuilder(applicationContext)
-                                .setGraph(R.navigation.navigation)
-                                .setDestination(R.id.resourcesFragment)
-                                .createPendingIntent(),
-                            actions = listOf(retryAction)
-                        )
-
-                        val notificationManager =
-                            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
-                        downloadCompletion.complete(Result.failure())
-                    }
-
-                    else -> {
-                        setForeground(createForegroundInfo(downloadProgress))
-                    }
-
+                    val notificationManager =
+                        applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+                    downloadCompletion.complete(Result.success())
                 }
+                Error -> {
+                    val retryIntent = android.content.Intent(applicationContext, DownloadRetryReceiver::class.java)
+                    val retryPendingIntent = PendingIntent.getBroadcast(
+                        applicationContext,
+                        0,
+                        retryIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+
+                    val retryAction = NotificationCompat.Action(
+                        R.drawable.ic_retry,
+                        applicationContext.getString(R.string.try_again),
+                        retryPendingIntent
+                    )
+
+                    val notification = getNotification(
+                        title = applicationContext.getString(R.string.downloading_failed),
+                        content = applicationContext.getString(R.string.an_error_occurred,
+                            SUPPORT_EMAIL
+                        ),
+                        channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+                        smallIconRes = R.drawable.ic_alarm,
+                        pendingIntent = NavDeepLinkBuilder(applicationContext)
+                            .setGraph(R.navigation.navigation)
+                            .setDestination(R.id.resourcesFragment)
+                            .createPendingIntent(),
+                        actions = listOf(retryAction)
+                    )
+
+                    val notificationManager =
+                        applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+                    downloadCompletion.complete(Result.failure())
+                }
+
+                else -> {
+                    setForeground(createForegroundInfo(downloadProgress))
+                }
+
             }
         }
 
-        downloadManager.downloadFile(applicationContext)
         return downloadCompletion.await()
     }
 

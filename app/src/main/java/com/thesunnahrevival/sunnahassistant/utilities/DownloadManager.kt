@@ -3,10 +3,15 @@ package com.thesunnahrevival.sunnahassistant.utilities
 import android.content.Context
 import android.util.Log
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.File
@@ -31,49 +36,57 @@ class DownloadManager private constructor() {
         }
     }
 
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var downloadJob: Job? = null
     private var _downloadProgress = MutableSharedFlow<DownloadProgress>()
     private var tempZipFile: File? = null
-    private var currentState: DownloadProgress = NotInitiated
 
     val downloadProgress: Flow<DownloadProgress> = _downloadProgress
 
-    suspend fun downloadFile(context: Context) {
-        try {
-            val downloadFileRepository = DownloadFileRepository.getInstance(context)
-            updateProgress(Preparing)
-            val response = downloadFileRepository.downloadFile()
+    fun downloadFile(context: Context) {
+        if (downloadJob?.isActive == true) {
+            return
+        }
+        downloadJob = coroutineScope.launch {
+            try {
+                val downloadFileRepository = DownloadFileRepository.getInstance(context)
+                updateProgress(Preparing)
+                val response = downloadFileRepository.downloadFile()
 
-            if (response?.isSuccessful == true) {
-                response.body()?.let { responseBody: ResponseBody ->
-                    tempZipFile = generateTempZipFile(responseBody, context)
+                if (response?.isSuccessful == true) {
+                    response.body()?.let { responseBody: ResponseBody ->
+                        tempZipFile = generateTempZipFile(responseBody, context)
 
-                    tempZipFile?.let {
-                        extractZipContents(it, context)
+                        tempZipFile?.let {
+                            extractZipContents(it, context)
+                        }
+
+                        tempZipFile?.delete()
+
+                        updateProgress(Completed)
                     }
-
-                    tempZipFile?.delete()
-
-                    updateProgress(Completed)
+                } else {
+                    updateProgress(Error)
                 }
-            } else {
+            } catch (e: Exception) {
+                tempZipFile?.delete()
+                e.printStackTrace()
                 updateProgress(Error)
             }
-        } catch (e: Exception) {
-            tempZipFile?.delete()
-            e.printStackTrace()
-            updateProgress(Error)
+        }
+    }
+
+    fun cancelDownload() {
+        downloadJob?.cancel()
+        downloadJob = null
+        tempZipFile?.delete()
+        coroutineScope.launch {
+            updateProgress(Cancelled)
         }
     }
 
     private suspend fun updateProgress(progress: DownloadProgress) {
-        currentState = progress
         _downloadProgress.emit(progress)
-    }
-
-    suspend fun cancelDownload() {
-        tempZipFile?.delete()
-        updateProgress(Cancelled)
-        instance = null
     }
 
     private suspend fun generateTempZipFile(
@@ -84,7 +97,7 @@ class DownloadManager private constructor() {
 
         val (totalSize, unit) = convertBytesToAppropriateUnit(totalBytes)
 
-        _downloadProgress.emit(Downloading(0f, totalSize, unit))
+        updateProgress(Downloading(0f, totalSize, unit))
 
         val tempZipFile = File(application.filesDir, "temp.zip")
         var downloadedBytes = 0L
@@ -115,7 +128,7 @@ class DownloadManager private constructor() {
                                 )
                             }
 
-                            _downloadProgress.emit(Downloading(downloadedSize, totalSize, unit))
+                            updateProgress(Downloading(downloadedSize, totalSize, unit))
                             lastEmissionTime = currentTime
                         }
                     }
@@ -129,13 +142,13 @@ class DownloadManager private constructor() {
         } else {
             (downloadedBytes.toFloat() / BYTES_IN_1_MB).roundTo(FILE_SIZE_DECIMAL_PLACES)
         }
-        _downloadProgress.emit(Downloading(finalDownloadedSize, totalSize, unit))
+        updateProgress(Downloading(finalDownloadedSize, totalSize, unit))
 
         return tempZipFile
     }
 
     private suspend fun extractZipContents(tempZipFile: File, application: Context) {
-        _downloadProgress.emit(Extracting)
+        updateProgress(Extracting)
         withContext(Dispatchers.IO) {
             ZipInputStream(tempZipFile.inputStream())
                 .use { zipInputStream ->
