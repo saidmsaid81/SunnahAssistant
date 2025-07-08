@@ -1,17 +1,17 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
+import android.app.NotificationManager
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
 import com.thesunnahrevival.sunnahassistant.data.FlagRepository
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.DownloadProgress
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NotInitiated
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
 import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 import kotlinx.coroutines.Dispatchers
@@ -29,21 +29,15 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     val downloadUIState: StateFlow<DownloadUIState> =
         downloadManager.downloadProgress.map { downloadProgress ->
             when (downloadProgress) {
-                NotInitiated -> {
-                    DownloadPromptState
-                }
+                NotInitiated -> DownloadPromptState
 
-                Completed -> {
-                    DownloadCompleteState
-                }
+                Completed -> DownloadCompleteState
 
-                Cancelled -> {
-                    DownloadCancelledState
-                }
+                Cancelled -> DownloadCancelledState
 
-                else -> {
-                    DownloadInProgressState(downloadProgress)
-                }
+                Error -> DownloadErrorState
+
+                else -> DownloadInProgressState(downloadProgress)
             }
         }.stateIn(
             scope = viewModelScope,
@@ -64,6 +58,10 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun downloadQuranFiles() {
+        //Clear any download completion/error notifications
+        val notificationManager = getApplication<Application>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(DOWNLOAD_COMPLETE_NOTIFICATION_ID)
+
         val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
             .addTag(DOWNLOAD_WORK_TAG)
             .build()
@@ -98,5 +96,7 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     data object DownloadCompleteState : DownloadUIState()
 
     data object DownloadCancelledState : DownloadUIState()
+
+    data object DownloadErrorState : DownloadUIState()
 
 }

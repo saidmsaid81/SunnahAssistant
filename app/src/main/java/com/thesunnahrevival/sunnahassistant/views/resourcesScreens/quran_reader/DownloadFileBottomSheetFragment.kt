@@ -26,6 +26,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,9 +55,11 @@ import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.DownloadPr
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Downloading
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCancelledState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCompleteState
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadErrorState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadInProgressState
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadPromptState
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
@@ -97,6 +100,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                                 dismiss()
                             }
                         }
+                        DownloadErrorState -> ErrorScreen()
                     }
                 }
             }
@@ -362,6 +366,71 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @Composable
+    private fun ErrorScreen() {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = stringResource(R.string.an_error_occurred),
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colors.error
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.an_error_occurred, SUPPORT_EMAIL),
+                    style = MaterialTheme.typography.h6,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = { dismiss() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.cancel)
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            viewModel.downloadQuranFiles()
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(R.string.retry))
+                    }
+                }
+            }
+        }
+    }
+
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -459,5 +528,33 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     @Composable
     private fun CompletionScreenPreviewArabic() {
         CompletionScreenPreview()
+    }
+
+    @Preview(
+        name = "Error Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun ErrorScreenPreviewDark() {
+        ErrorScreenPreview()
+    }
+
+    @Preview(name = "Error Screen - Light Mode")
+    @Composable
+    private fun ErrorScreenPreview() {
+        SunnahAssistantTheme {
+            ErrorScreen()
+        }
+    }
+
+    @Preview(
+        name = "Error Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun ErrorScreenPreviewArabic() {
+        ErrorScreenPreview()
     }
 }
