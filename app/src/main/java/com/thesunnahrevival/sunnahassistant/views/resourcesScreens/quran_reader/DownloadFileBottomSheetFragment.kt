@@ -186,27 +186,16 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 ) {
 
                     // Action Buttons
-                    Row(modifier = Modifier.padding(top = 16.dp)) {
-                        OutlinedButton(
-                            onClick = { dismiss() },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 16.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.continue_label)
-                            )
+                    ActionButtons(
+                        modifier = Modifier.padding(top = 16.dp),
+                        secondaryButtonText = stringResource(R.string.continue_label),
+                        onSecondaryClick = { dismiss() },
+                        primaryButtonText = stringResource(R.string.download),
+                        onPrimaryClick = {
+                            requestNotificationPermission()
+                            viewModel.downloadQuranFiles()
                         }
-                        Button(
-                            onClick = {
-                                requestNotificationPermission()
-                                viewModel.downloadQuranFiles()
-                            },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(stringResource(R.string.download))
-                        }
-                    }
+                    )
                 }
             }
         }
@@ -295,34 +284,19 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 ) {
 
                     // Action Buttons
-                    Row(modifier = Modifier.padding(top = 16.dp)) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        OutlinedButton(
-                            onClick = { viewModel.cancelDownload() },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 16.dp)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.cancel)
-                            )
-                        }
+                    val hasNotificationPermission = ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
 
-                        if (ContextCompat.checkSelfPermission(
-                                requireContext(),
-                                Manifest.permission.POST_NOTIFICATIONS
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            Button(
-                                onClick = {
-                                    dismiss()
-                                },
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text(text = stringResource(R.string.background))
-                            }
-                        }
-                    }
+                    ActionButtons(
+                        modifier = Modifier.padding(top = 16.dp),
+                        showSpacer = true,
+                        secondaryButtonText = stringResource(R.string.cancel),
+                        onSecondaryClick = { viewModel.cancelDownload() },
+                        primaryButtonText = if (hasNotificationPermission) stringResource(R.string.background) else null,
+                        onPrimaryClick = if (hasNotificationPermission) ({ dismiss() }) else null
+                    )
                 }
             }
         }
@@ -414,29 +388,49 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
 
-                Row(
+                ActionButtons(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    secondaryButtonText = stringResource(R.string.cancel),
+                    onSecondaryClick = { dismiss() },
+                    primaryButtonText = stringResource(R.string.retry),
+                    onPrimaryClick = { viewModel.downloadQuranFiles() }
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun ActionButtons(
+        modifier: Modifier = Modifier,
+        primaryButtonText: String? = null,
+        onPrimaryClick: (() -> Unit)? = null,
+        secondaryButtonText: String? = null,
+        onSecondaryClick: (() -> Unit)? = null,
+        showSpacer: Boolean = false
+    ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+        ) {
+            if (showSpacer) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            if (secondaryButtonText != null && onSecondaryClick != null) {
+                OutlinedButton(
+                    onClick = onSecondaryClick,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
+                        .weight(1f)
+                        .padding(end = if (primaryButtonText != null && onPrimaryClick != null) 16.dp else 0.dp)
                 ) {
-                    OutlinedButton(
-                        onClick = { dismiss() },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 16.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.cancel)
-                        )
-                    }
-                    Button(
-                        onClick = {
-                            viewModel.downloadQuranFiles()
-                        },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(stringResource(R.string.retry))
-                    }
+                    Text(text = secondaryButtonText)
+                }
+            }
+            if (primaryButtonText != null && onPrimaryClick != null) {
+                Button(
+                    onClick = onPrimaryClick,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = primaryButtonText)
                 }
             }
         }
