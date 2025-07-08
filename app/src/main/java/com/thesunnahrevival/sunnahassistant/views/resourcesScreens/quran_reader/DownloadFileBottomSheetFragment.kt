@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -47,6 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
@@ -105,6 +108,14 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 }
             }
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.behavior.isDraggable = false
+
+        return dialog
     }
 
     @Composable
