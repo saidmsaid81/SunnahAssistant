@@ -1,13 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.content.Context
-import android.util.Log
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,6 +14,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.util.zip.ZipInputStream
 
 
@@ -68,6 +67,13 @@ class DownloadManager private constructor() {
                 } else {
                     updateProgress(Error)
                 }
+            } catch (e: CancellationException) {
+                tempZipFile?.delete()
+                throw e
+            } catch (e: IOException) {
+                tempZipFile?.delete()
+                e.printStackTrace()
+                updateProgress(NetworkError)
             } catch (e: Exception) {
                 tempZipFile?.delete()
                 e.printStackTrace()
@@ -214,5 +220,7 @@ class DownloadManager private constructor() {
     data object Completed : DownloadProgress()
     data object Cancelled : DownloadProgress()
     data object Error : DownloadProgress()
+
+    data object NetworkError : DownloadProgress()
 
 }

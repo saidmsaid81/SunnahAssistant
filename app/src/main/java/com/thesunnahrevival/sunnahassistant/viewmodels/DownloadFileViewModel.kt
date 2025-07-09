@@ -37,6 +37,8 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
 
                 Error -> DownloadErrorState
 
+                NetworkError -> DownloadNetworkErrorState
+
                 else -> DownloadInProgressState(downloadProgress)
             }
         }.stateIn(
@@ -98,5 +100,7 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     data object DownloadCancelledState : DownloadUIState()
 
     data object DownloadErrorState : DownloadUIState()
+
+    data object DownloadNetworkErrorState : DownloadUIState()
 
 }

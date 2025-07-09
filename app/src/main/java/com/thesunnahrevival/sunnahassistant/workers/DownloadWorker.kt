@@ -59,7 +59,7 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
                     WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
                     downloadCompletion.complete(Result.success())
                 }
-                Error -> {
+                Error, NetworkError -> {
                     val retryIntent = android.content.Intent(applicationContext, DownloadRetryReceiver::class.java)
                     val retryPendingIntent = PendingIntent.getBroadcast(
                         applicationContext,
@@ -76,9 +76,10 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
                     val notification = getNotification(
                         title = applicationContext.getString(R.string.downloading_failed),
-                        content = applicationContext.getString(R.string.an_error_occurred,
-                            SUPPORT_EMAIL
-                        ),
+                        content = if (downloadProgress is Error)
+                            applicationContext.getString(R.string.an_error_occurred, SUPPORT_EMAIL)
+                        else
+                            applicationContext.getString(R.string.network_error),
                         channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
                         smallIconRes = R.drawable.ic_alarm,
                         pendingIntent = NavDeepLinkBuilder(applicationContext)

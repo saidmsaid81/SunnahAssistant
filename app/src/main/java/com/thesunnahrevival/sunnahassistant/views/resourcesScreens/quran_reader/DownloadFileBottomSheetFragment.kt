@@ -43,12 +43,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
@@ -60,11 +60,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCancelledState
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadCompleteState
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadErrorState
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadInProgressState
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.DownloadPromptState
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.*
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -103,7 +99,13 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                                 dismiss()
                             }
                         }
-                        DownloadErrorState -> ErrorScreen()
+                        DownloadErrorState, DownloadNetworkErrorState ->
+                            ErrorScreen(
+                                if (downloadUIState is DownloadErrorState)
+                                    stringResource(R.string.an_error_occurred, SUPPORT_EMAIL)
+                                else
+                                    stringResource(R.string.network_error)
+                        )
                     }
                 }
             }
@@ -352,7 +354,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     @Composable
-    private fun ErrorScreen() {
+    private fun ErrorScreen(message: String) {
         Surface {
             Column(
                 modifier = Modifier
@@ -382,8 +384,9 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 }
 
                 Text(
-                    text = stringResource(R.string.an_error_occurred, SUPPORT_EMAIL),
+                    text = message,
                     style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
@@ -549,7 +552,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     @Composable
     private fun ErrorScreenPreview() {
         SunnahAssistantTheme {
-            ErrorScreen()
+            ErrorScreen(stringResource(R.string.an_error_occurred, SUPPORT_EMAIL))
         }
     }
 
