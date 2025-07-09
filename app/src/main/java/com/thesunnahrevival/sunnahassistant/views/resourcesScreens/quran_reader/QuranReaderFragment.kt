@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -36,6 +37,7 @@ import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.IOException
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
@@ -172,7 +174,27 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 }
             }
 
-            viewmodel.downloadQuranPage(pageNumber)
+            try {
+                viewmodel.downloadQuranPage(pageNumber)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.network_error),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } catch(e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.an_error_occurred),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
             withContext(Dispatchers.Main) {
                 callback(pageNumber, false)
             }
