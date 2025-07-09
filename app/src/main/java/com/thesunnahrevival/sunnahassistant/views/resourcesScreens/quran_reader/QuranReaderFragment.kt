@@ -1,5 +1,8 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -24,6 +27,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
@@ -164,13 +168,15 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             if (!viewmodel.hasSeenDownloadFilesDialog && !viewmodel.isHideDownloadFilePrompt()) {
-                withContext(Dispatchers.Main) {
-                    val fragment = DownloadFileBottomSheetFragment()
-                    fragment.show(
-                        requireActivity().supportFragmentManager,
-                        "download_files"
-                    )
-                    viewmodel.hasSeenDownloadFilesDialog = true
+                if (isNetworkAvailable()) {
+                    withContext(Dispatchers.Main) {
+                        val fragment = DownloadFileBottomSheetFragment()
+                        fragment.show(
+                            requireActivity().supportFragmentManager,
+                            "download_files"
+                        )
+                        viewmodel.hasSeenDownloadFilesDialog = true
+                    }
                 }
             }
 
@@ -179,20 +185,30 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             } catch (e: IOException) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.network_error),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    view?.let {
+                        Snackbar.make(
+                            it.rootView,
+                            getString(R.string.network_error),
+                            Snackbar.LENGTH_LONG
+                        ).apply {
+                            view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
+                            show()
+                        }
+                    }
                 }
             } catch(e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.an_error_occurred),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    view?.let {
+                        Snackbar.make(
+                            it.rootView,
+                            getString(R.string.an_error_occurred),
+                            Snackbar.LENGTH_LONG
+                        ).apply {
+                            view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
+                            show()
+                        }
+                    }
                 }
             }
             withContext(Dispatchers.Main) {
@@ -250,6 +266,21 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             }
         }
     }
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val network = connectivityManager.activeNetwork ?: return false
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+            return activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        } else {
+            @Suppress("DEPRECATION")
+            val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnected
+        }
+    }
+
     private fun handleBackPressed() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
