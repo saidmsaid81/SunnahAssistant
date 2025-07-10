@@ -133,23 +133,9 @@
   <string name="new_features">ميزات جديدة</string>
 
     <string name="resources">المصادر</string>
-    <string name="selected_surahs">السور المختارة</string>
-    <string name="suratul_fatiha">سورة الفاتحة</string>
-    <string name="suratul_baqarah">سورة البقرة</string>
-    <string name="suratul_kahf">سورة الكهف</string>
-    <string name="suratul_sajdah">سورة السجدة</string>
-    <string name="suratulmulk">سورة الملك</string>
-    <string name="suratul_ikhlaas">سورة الإخلاص</string>
-    <string name="suratul_falaq">سورة الفلق</string>
-    <string name="suratul_nas">سورة الناس</string>
-    <string name="recommended_to_read_regularly">يوصى بقراءتها بانتظام</string>
-    <string name="recommended_to_read_every_friday">يوصى بقراءتها كل يوم جمعة</string>
-    <string name="recommended_to_read_before_sleeping">يوصى بقراءتها قبل النوم (الترمذي ، 3404)</string>
-    <string name="equivalent_in_reward_to_reciting_1_3_of_the_quran">أي ما يعادل أجر تلاوة ثلث القرآن</string>
-    <string name="for_protection_from_jinn_and_evil_eye">للحماية من الجن والعين</string>
     <string name="hadith">حديث</string>
     <string name="daily_hadith">الحديث اليومي</string>
-    <string name="quran">قرآن</string>
+    <string name="quran">القرآن</string>
     <string name="from_the_sunnah_revival_blog">من مدونة إحياء السنة</string>
     <string name="showing_cached_data_because_device_is_offline">عرض البيانات المخزنة مؤقتًا لأن الجهاز غير متصل بالإنترنت</string>
     <string name="no_hadith_found">لم يتم العثور على أي حديث</string>

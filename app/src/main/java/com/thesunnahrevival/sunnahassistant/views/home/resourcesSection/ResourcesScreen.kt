@@ -90,7 +90,7 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            ResourceTitle(title = stringResource(R.string.selected_surahs))
+            ResourceTitle(title = stringResource(R.string.quran))
 
             Column {
                 surahs.value.forEachIndexed { index, surah ->
