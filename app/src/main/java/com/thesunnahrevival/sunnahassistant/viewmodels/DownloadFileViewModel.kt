@@ -85,12 +85,12 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
 
     fun incrementNotificationRequestCount() {
         viewModelScope.launch(Dispatchers.IO) {
-            var notificationPermissionRequestCount =
+            val notificationPermissionRequestCount =
                 flagRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
             if (notificationPermissionRequestCount != -1L) {
                 flagRepository.setFlag(
                     NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY,
-                    ++notificationPermissionRequestCount
+                    (notificationPermissionRequestCount + 1)
                 )
             }
         }
