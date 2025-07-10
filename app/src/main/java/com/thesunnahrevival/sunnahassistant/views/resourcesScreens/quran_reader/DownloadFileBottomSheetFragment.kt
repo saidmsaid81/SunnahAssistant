@@ -4,6 +4,10 @@ import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -61,6 +65,12 @@ import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.*
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCancelledState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCompleteState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadErrorState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadInProgressState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadNetworkErrorState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadPromptState
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
 
 class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
@@ -187,7 +197,6 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         .padding(bottom = 16.dp)
                 ) {
 
-                    // Action Buttons
                     ActionButtons(
                         modifier = Modifier.padding(top = 16.dp),
                         secondaryButtonText = stringResource(R.string.continue_label),

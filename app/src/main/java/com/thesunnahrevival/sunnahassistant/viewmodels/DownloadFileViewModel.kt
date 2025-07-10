@@ -13,6 +13,13 @@ import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICA
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCancelledState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCompleteState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadErrorState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadInProgressState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadNetworkErrorState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadPromptState
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadUIState
 import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -89,18 +96,5 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    sealed class DownloadUIState
-
-    data object DownloadPromptState : DownloadUIState()
-
-    data class DownloadInProgressState(val downloadProgress: DownloadProgress) : DownloadUIState()
-
-    data object DownloadCompleteState : DownloadUIState()
-
-    data object DownloadCancelledState : DownloadUIState()
-
-    data object DownloadErrorState : DownloadUIState()
-
-    data object DownloadNetworkErrorState : DownloadUIState()
 
 }
