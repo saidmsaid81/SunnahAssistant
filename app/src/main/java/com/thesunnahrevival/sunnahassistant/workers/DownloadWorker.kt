@@ -49,7 +49,7 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
                         smallIconRes = R.drawable.ic_alarm,
                         pendingIntent = NavDeepLinkBuilder(applicationContext)
                             .setGraph(R.navigation.navigation)
-                            .setDestination(R.id.resourcesFragment)
+                            .setDestination(R.id.surahList)
                             .createPendingIntent()
                     )
 
