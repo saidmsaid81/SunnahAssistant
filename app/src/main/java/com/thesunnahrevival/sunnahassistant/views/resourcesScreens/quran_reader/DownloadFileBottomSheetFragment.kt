@@ -41,6 +41,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -53,6 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
@@ -136,6 +138,8 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
             mutableStateOf(false)
         }
 
+        val networkCapabilities by viewModel.networkCapabilities.collectAsState()
+
         Surface {
             Column(
                 modifier = Modifier
@@ -159,22 +163,28 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         append(" ")
                         append(stringResource(R.string.download_file_info_part3))
                         append(" ")
-                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(stringResource(R.string.download_file_info_part4))
+
+                        if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true) {
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(stringResource(R.string.download_file_info_part4))
+                            }
+                            append(" ")
+                            append(stringResource(R.string.download_file_info_part5))
                         }
-                        append(" ")
-                        append(stringResource(R.string.download_file_info_part5))
                     },
                     style = MaterialTheme.typography.subtitle1
                 )
 
-                // Mobile data usage note
-                Text(
-                    text = stringResource(R.string.download_file_warning_message),
-                    style = MaterialTheme.typography.caption,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
+                if (networkCapabilities == null || networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED) == false) {
+                    // Mobile data usage note
+                    Text(
+                        text = stringResource(R.string.download_file_warning_message),
+                        style = MaterialTheme.typography.caption,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.error,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
 
                 // Don's show this again checkbox
                 SunnahAssistantCheckbox(
@@ -196,11 +206,17 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 ) {
-
                     ActionButtons(
                         modifier = Modifier.padding(top = 16.dp),
-                        secondaryButtonText = stringResource(R.string.continue_label),
-                        onSecondaryClick = { dismiss() },
+                        secondaryButtonText = stringResource(R.string.dismiss),
+                        onSecondaryClick = {
+                            if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true) {
+                                dismiss()
+                            } else {
+                                findNavController().navigate(R.id.resourcesFragment)
+                                dismiss()
+                            }
+                        },
                         primaryButtonText = stringResource(R.string.download),
                         onPrimaryClick = {
                             requestNotificationPermission()

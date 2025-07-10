@@ -168,48 +168,20 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             if (!viewmodel.hasSeenDownloadFilesDialog && !viewmodel.isHideDownloadFilePrompt()) {
-                if (isNetworkAvailable()) {
-                    withContext(Dispatchers.Main) {
-                        val fragment = DownloadFileBottomSheetFragment()
-                        fragment.show(
-                            requireActivity().supportFragmentManager,
-                            "download_files"
-                        )
-                        viewmodel.hasSeenDownloadFilesDialog = true
-                    }
+                withContext(Dispatchers.Main) {
+                    val fragment = DownloadFileBottomSheetFragment()
+                    fragment.show(
+                        requireActivity().supportFragmentManager,
+                        "download_files"
+                    )
+                    viewmodel.hasSeenDownloadFilesDialog = true
                 }
             }
 
             try {
                 viewmodel.downloadQuranPage(pageNumber)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    view?.let {
-                        Snackbar.make(
-                            it.rootView,
-                            getString(R.string.network_error),
-                            Snackbar.LENGTH_LONG
-                        ).apply {
-                            view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-                            show()
-                        }
-                    }
-                }
             } catch(e: Exception) {
                 e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    view?.let {
-                        Snackbar.make(
-                            it.rootView,
-                            getString(R.string.an_error_occurred),
-                            Snackbar.LENGTH_LONG
-                        ).apply {
-                            view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.fabColor))
-                            show()
-                        }
-                    }
-                }
             }
             withContext(Dispatchers.Main) {
                 callback(pageNumber, false)

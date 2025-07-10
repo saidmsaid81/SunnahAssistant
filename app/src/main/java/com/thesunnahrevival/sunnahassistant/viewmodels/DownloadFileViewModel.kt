@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import android.app.NotificationManager
 import android.content.Context
+import android.net.NetworkCapabilities
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
@@ -11,8 +12,13 @@ import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
 import com.thesunnahrevival.sunnahassistant.data.FlagRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Error
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NetworkError
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NotInitiated
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
+import com.thesunnahrevival.sunnahassistant.utilities.NetworkManager
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCancelledState
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCompleteState
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadErrorState
@@ -22,7 +28,10 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadPromptState
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadUIState
 import com.thesunnahrevival.sunnahassistant.workers.DownloadWorker
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 const val DOWNLOAD_WORK_TAG = "download_work"
@@ -33,6 +42,12 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
 
     private val downloadManager = DownloadManager.getInstance()
 
+    val networkCapabilities: StateFlow<NetworkCapabilities?> = NetworkManager.getInstance(getApplication()).networkCapabilitiesFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
     val downloadUIState: StateFlow<DownloadUIState> =
         downloadManager.downloadProgress.map { downloadProgress ->
             when (downloadProgress) {
