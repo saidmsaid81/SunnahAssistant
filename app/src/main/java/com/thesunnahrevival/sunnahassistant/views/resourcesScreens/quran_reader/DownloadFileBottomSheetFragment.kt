@@ -4,10 +4,7 @@ import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,7 +38,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -66,7 +62,6 @@ import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
-import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel.*
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCancelledState
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadCompleteState
 import com.thesunnahrevival.sunnahassistant.viewmodels.state.DownloadErrorState
@@ -95,14 +90,38 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
             setContent {
                 SunnahAssistantTheme {
                     val downloadUIState by viewModel.downloadUIState.collectAsState()
+                    val networkCapabilities by viewModel.networkCapabilities.collectAsState()
 
                     when (downloadUIState) {
-                        DownloadPromptState -> PromptScreen()
+                        DownloadPromptState -> PromptScreen(
+                            networkCapabilities = networkCapabilities,
+                            disableDownloadFilesPrompt = { viewModel.disableDownloadFilesPrompt() },
+                            enableDownloadFilesPrompt = { viewModel.enableDownloadFilesPrompt() },
+                            downloadQuranFiles = { viewModel.downloadQuranFiles() },
+                        )
                         is DownloadInProgressState -> {
                             if ((downloadUIState as DownloadInProgressState).downloadProgress == DownloadManager.NotInitiated) {
-                                PromptScreen()
+                                PromptScreen(
+                                    networkCapabilities = networkCapabilities,
+                                    disableDownloadFilesPrompt = { viewModel.disableDownloadFilesPrompt() },
+                                    enableDownloadFilesPrompt = { viewModel.enableDownloadFilesPrompt() },
+                                    downloadQuranFiles = { viewModel.downloadQuranFiles() },
+                                )
                             } else {
-                                DownloadScreen((downloadUIState as DownloadInProgressState).downloadProgress)
+                                val hasNotificationPermission =
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        ContextCompat.checkSelfPermission(
+                                            this@DownloadFileBottomSheetFragment.requireContext(),
+                                            Manifest.permission.POST_NOTIFICATIONS
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    } else {
+                                        true
+                                    }
+                                DownloadScreen(
+                                    downloadProgress = (downloadUIState as DownloadInProgressState).downloadProgress,
+                                    cancelDownload = { viewModel.cancelDownload() },
+                                    hasNotificationPermission = hasNotificationPermission
+                                )
                             }
                         }
                         DownloadCompleteState -> CompletionScreen()
@@ -133,12 +152,15 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     @Composable
-    private fun PromptScreen() {
+    private fun PromptScreen(
+        networkCapabilities: NetworkCapabilities? = null,
+        disableDownloadFilesPrompt: () -> Unit = {},
+        enableDownloadFilesPrompt: () -> Unit = {},
+        downloadQuranFiles: () -> Unit = {}
+    ) {
         var hideDownloadFilesPrompt by rememberSaveable {
             mutableStateOf(false)
         }
-
-        val networkCapabilities by viewModel.networkCapabilities.collectAsState()
 
         Surface {
             Column(
@@ -175,7 +197,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     style = MaterialTheme.typography.subtitle1
                 )
 
-                if (networkCapabilities == null || networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED) == false) {
+                if (networkCapabilities == null || !networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)) {
                     // Mobile data usage note
                     Text(
                         text = stringResource(R.string.download_file_warning_message),
@@ -193,10 +215,10 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     checked = hideDownloadFilesPrompt
                 ) {
                     if (!hideDownloadFilesPrompt) {
-                        viewModel.disableDownloadFilesPrompt()
+                        disableDownloadFilesPrompt()
                         hideDownloadFilesPrompt = true
                     } else {
-                        viewModel.enableDownloadFilesPrompt()
+                        enableDownloadFilesPrompt()
                         hideDownloadFilesPrompt = false
                     }
                 }
@@ -220,7 +242,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         primaryButtonText = stringResource(R.string.download),
                         onPrimaryClick = {
                             requestNotificationPermission()
-                            viewModel.downloadQuranFiles()
+                            downloadQuranFiles()
                         }
                     )
                 }
@@ -229,7 +251,11 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     @Composable
-    private fun DownloadScreen(downloadProgress: DownloadProgress) {
+    private fun DownloadScreen(
+        downloadProgress: DownloadProgress,
+        cancelDownload: () -> Unit = {},
+        hasNotificationPermission: Boolean = true
+    ) {
         Surface {
             Column(
                 modifier = Modifier
@@ -311,16 +337,12 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                 ) {
 
                     // Action Buttons
-                    val hasNotificationPermission = ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) == PackageManager.PERMISSION_GRANTED
 
                     ActionButtons(
                         modifier = Modifier.padding(top = 16.dp),
                         showSpacer = true,
                         secondaryButtonText = stringResource(R.string.cancel),
-                        onSecondaryClick = { viewModel.cancelDownload() },
+                        onSecondaryClick = { cancelDownload() },
                         primaryButtonText = if (hasNotificationPermission) stringResource(R.string.background) else null,
                         onPrimaryClick = if (hasNotificationPermission) ({ dismiss() }) else null
                     )
@@ -521,7 +543,9 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
     @Composable
     private fun DownloadScreenPreview() {
         SunnahAssistantTheme {
-            DownloadScreen(Downloading(50f, 100f, "MB"))
+            DownloadScreen(
+                Downloading(50f, 100f, "MB")
+            )
         }
     }
 
