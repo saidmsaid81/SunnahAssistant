@@ -20,9 +20,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,44 +36,11 @@ import com.thesunnahrevival.sunnahassistant.utilities.ResourceItem
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 
-
 @Composable
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    locale = "en"
-)
-fun ResourcesScreenPreviewDark() {
-    ResourcesScreenPreview()
-}
-
-@Composable
-@Preview
-fun ResourcesScreenPreviewLight() {
-    ResourcesScreenPreview()
-}
-
-@Composable
-@Preview(
-    name = "Arabic Dark Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    locale = "ar"
-)
-fun ResourcesScreenPreviewDarkArabic() {
-    ResourcesScreenPreview()
-}
-
-@Composable
-private fun ResourcesScreenPreview() {
-    val previewSurahs = remember {
-        previewSurahs()
-    }
-    SunnahAssistantTheme {
-        ResourcesScreen(surahs = previewSurahs)
-    }
-}
-
-@Composable
-fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List<Surah>>) {
+fun ResourcesScreen(
+    findNavController: NavController? = null,
+    surahs: List<Surah>
+) {
 
     val resourceItemList = resourceItems()
     Surface(
@@ -93,7 +57,7 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
             ResourceTitle(title = stringResource(R.string.quran))
 
             Column {
-                surahs.value.forEachIndexed { index, surah ->
+                surahs.forEachIndexed { index, surah ->
                     SurahItem(surah, isArabic()) {
                         findNavController?.navigate(
                             ResourcesFragmentDirections.toQuranReaderFragment(
@@ -102,7 +66,7 @@ fun ResourcesScreen(findNavController: NavController? = null, surahs: State<List
                         )
                     }
 
-                    if (index == surahs.value.lastIndex) {
+                    if (index == surahs.lastIndex) {
                         ResourceCard(
                             title = stringResource(R.string.more),
                             subtitle = stringResource(R.string.tap_to_view_all_surahs),
@@ -142,7 +106,7 @@ fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
 }
 
 @Composable
-fun ResourceCard(
+private fun ResourceCard(
     title: String,
     subtitle: String,
     resourceNumber: String? = null,
@@ -210,7 +174,7 @@ fun ResourceCard(
 }
 
 @Composable
-fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
+private fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
         modifier = modifier
@@ -236,13 +200,43 @@ private fun resourceItems(): List<ResourceItem> {
     )
 }
 
-private fun previewSurahs() = mutableStateOf(
-    listOf(
+@Composable
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    locale = "en"
+)
+fun ResourcesScreenPreviewDark() {
+    ResourcesScreenPreview()
+}
+
+@Composable
+@Preview
+fun ResourcesScreenPreviewLight() {
+    ResourcesScreenPreview()
+}
+
+@Composable
+@Preview(
+    name = "Arabic Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    locale = "ar"
+)
+fun ResourcesScreenPreviewDarkArabic() {
+    ResourcesScreenPreview()
+}
+
+@Composable
+private fun ResourcesScreenPreview() {
+    SunnahAssistantTheme {
+        ResourcesScreen(surahs = previewSurahs())
+    }
+}
+
+fun previewSurahs() = listOf(
         Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1),
         Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2),
         Surah(3, "سورة آل عمران", "Suratul Aal-Imran", false, 200, 50),
         Surah(4, "سورة النساء", "Suratul Nisa", false, 176, 77),
         Surah(5, "سورة المائدة", "Suratul Maidah", false, 120, 106)
     )
-)
 

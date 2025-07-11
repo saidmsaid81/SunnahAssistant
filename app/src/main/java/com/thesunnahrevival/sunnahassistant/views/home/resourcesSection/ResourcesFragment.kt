@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -25,9 +26,12 @@ class ResourcesFragment : MenuBarFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SunnahAssistantTheme {
-                    val surahs =
+                    val surahs by
                         viewModel.getFirst5Surahs().collectAsState(initial = listOf())
-                    ResourcesScreen(findNavController(), surahs)
+                    ResourcesScreen(
+                        findNavController(),
+                        surahs
+                    )
                 }
             }
         }
