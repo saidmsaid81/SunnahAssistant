@@ -392,6 +392,11 @@
   <string name="extracting">جاري الاستخراج…</string>
   <string name="file_downloads_notification_channel">تنزيلات الملفات</string>
   <string name="used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant">يستخدم لإظهار تقدم التنزيل عند تحميل الملفات في مساعد السنة</string>
+  <string name="tap_to_read_quran">اضغط لقراءة القرآن</string>
+  <string name="downloading_failed">فشل تنزيل ملفات القرآن</string>
+  <string name="notifications_for_download_completion_and_errors">إشعارات عند اكتمال التنزيل والأخطاء</string>
+  <string name="retry">إعادة المحاولة</string>
+  <string name="network_error">حدث خطأ. يرجى التأكد من وجود اتصال إنترنت مستقر</string>
   <string-array name="categories">
     <item>غير مصنف</item>
     <item>السنة</item>
