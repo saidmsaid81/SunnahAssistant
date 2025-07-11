@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -24,10 +25,6 @@ import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.IOException
 
 class QuranRepository private constructor(
     private val applicationContext: Context
@@ -57,23 +54,7 @@ class QuranRepository private constructor(
     private val toDoDao: ToDoDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).toDoDao()
 
-    private val resourceLinksRestApi: ResourceApiInterface
-
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (surahDao.countSurah() == 0) {
-                prepopulateSurahData()
-                prepopulateAyahData()
-                prepopulateLineData()
-                prepopulateLanguageData()
-                prepopulateTranslationData()
-                prepopulateAyahTranslationData()
-                prepopulateFootnoteData()
-            }
-        }
-
-        resourceLinksRestApi = retrofit.create(ResourceApiInterface::class.java)
-    }
+    private val resourceLinksRestApi: ResourceApiInterface = retrofit.create(ResourceApiInterface::class.java)
 
     suspend fun getLinesByPageNumber(pageNumber: Int) = lineDao.getLineByPageNumber(pageNumber)
 
@@ -106,6 +87,18 @@ class QuranRepository private constructor(
 
     suspend fun isHideDownloadFilePrompt() = toDoDao.isHideDownloadFilePrompt()
 
+    suspend fun prepopulateQuranData() {
+        if (surahDao.countSurah() == 0) {
+            prepopulateSurahData()
+            prepopulateAyahData()
+            prepopulateLineData()
+            prepopulateLanguageData()
+            prepopulateTranslationData()
+            prepopulateAyahTranslationData()
+            prepopulateFootnoteData()
+        }
+    }
+
 
     private suspend fun prepopulateSurahData() {
         try {
@@ -121,8 +114,8 @@ class QuranRepository private constructor(
             }
 
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -139,8 +132,8 @@ class QuranRepository private constructor(
                 ayahDao.insert(it)
             }
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -157,8 +150,8 @@ class QuranRepository private constructor(
                 lineDao.insert(it)
             }
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -175,8 +168,8 @@ class QuranRepository private constructor(
                 ayahTranslationDao.insert(it)
             }
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -193,8 +186,8 @@ class QuranRepository private constructor(
                 footnoteDao.insert(it)
             }
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -211,8 +204,8 @@ class QuranRepository private constructor(
                 languageDao.insert(it)
             }
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
@@ -229,8 +222,8 @@ class QuranRepository private constructor(
                 translationDao.insert(it)
             }
 
-        } catch (ioException: IOException) {
-            ioException.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
     }
 
