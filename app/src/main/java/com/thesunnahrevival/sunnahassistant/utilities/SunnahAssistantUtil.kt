@@ -185,6 +185,11 @@ fun Float.roundTo(decimals: Int): Float {
     return round(this * multiplier) / multiplier
 }
 
+fun CharSequence.extractNumber(): Int? {
+    val numberString = this.takeWhile { it.isDigit() } // "15"
+    return numberString.toString().toIntOrNull()
+}
+
 private val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
     .build()

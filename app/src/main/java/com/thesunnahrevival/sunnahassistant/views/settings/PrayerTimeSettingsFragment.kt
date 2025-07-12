@@ -19,6 +19,7 @@ import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.extractNumber
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
@@ -178,7 +179,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                     latitudeMethods.indexOf(item.title.toString())
             }
             R.id.do_not_disturb -> {
-                mainActivityViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
+                mainActivityViewModel.settingsValue?.doNotDisturbMinutes = item.title?.extractNumber() ?: 0
             }
             R.id.fajr_notification_settings -> setPrayerOffset(0, item)
             R.id.dhuhr_notification_settings -> setPrayerOffset(1, item)

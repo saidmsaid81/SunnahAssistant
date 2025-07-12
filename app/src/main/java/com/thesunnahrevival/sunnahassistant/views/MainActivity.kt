@@ -43,7 +43,6 @@ import com.thesunnahrevival.sunnahassistant.utilities.SHARE
 import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
 import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
-import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
@@ -73,7 +72,6 @@ open class MainActivity : AppCompatActivity() {
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainActivityBinding.root)
         mViewModel = ViewModelProvider(this)[SunnahAssistantViewModel::class.java]
-        createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
 
         navController = findNavController(R.id.myNavHostFragment)

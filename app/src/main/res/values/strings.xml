@@ -394,6 +394,8 @@
     <string name="notifications_for_download_completion_and_errors">Notifications for download completion and errors</string>
     <string name="retry">Retry</string>
     <string name="network_error">An error occurred. Please ensure you have a stable internet connection</string>
+    <string name="maintenance_notifications_channel_title">Maintenance Notifications</string>
+    <string name="maintenance_notifications_channel_description">Notifications used by the app to ensure reliable delivery of scheduled reminders</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

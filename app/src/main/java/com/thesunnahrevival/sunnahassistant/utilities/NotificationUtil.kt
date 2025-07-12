@@ -6,227 +6,173 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
-import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.navigation.NavDeepLinkBuilder
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 fun createNotification(
     context: Context,
-    id: Int?,
+    channel: NotificationChannel?,
     title: String?,
     text: String?,
-    priority: Int,
-    notificationToneUri: Uri?,
-    isVibrate: Boolean,
-    isFCMMessage: Boolean = false
+    priority: Int = NotificationCompat.PRIORITY_DEFAULT,
+    pendingIntent: PendingIntent? = null,
+    onlyAlertOnce: Boolean = false,
+    category: String = Notification.CATEGORY_REMINDER,
+    actions: List<NotificationCompat.Action> = listOf()
 ): Notification {
-    var category = ""
-
-    if (priority == NotificationCompat.PRIORITY_LOW) {
-        category = "Next Reminder"
-    } else {
-        if (!isFCMMessage) {
-            val reminderNotificationChannel = getReminderNotificationChannel(context)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                reminderNotificationChannel != null
-            ) {
-                category = reminderNotificationChannel.id
-            }
-        } else
-            category = "Developer"
-    }
-
-    val intent = Intent(context, MainActivity::class.java)
-
-    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        PendingIntent.FLAG_IMMUTABLE
-    } else {
-        0
-    }
-
-    val activity =
-        if (priority != NotificationCompat.PRIORITY_LOW && id != REQUEST_ALARM_PERMISSION_CODE) {
-        PendingIntent.getActivity(context, 0, intent, flag)
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && id == REQUEST_ALARM_PERMISSION_CODE) {
-            getOpenAlarmSettingsPendingIntent(context)
-        } else {
-            NavDeepLinkBuilder(context)
-                .setGraph(R.navigation.navigation)
-                .setDestination(R.id.notificationSettingsFragment)
-                .createPendingIntent()
-        }
-
-
-    val builder: NotificationCompat.Builder = NotificationCompat.Builder(context, category)
+    val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+        context,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) channel?.id ?: "" else ""
+    )
         .setSmallIcon(R.drawable.ic_alarm)
         .setContentTitle(title)
         .setContentText(text)
-        .setContentIntent(activity)
+        .setContentIntent(pendingIntent ?: getMainActivityPendingIntent(context))
         .setPriority(priority)
         .setTicker(title)
-        .setOnlyAlertOnce(id == REQUEST_ALARM_PERMISSION_CODE)
+        .setOnlyAlertOnce(onlyAlertOnce)
         .setStyle(
             NotificationCompat.BigTextStyle()
                 .bigText(text)
                 .setBigContentTitle(title)
         )
-            .setAutoCancel(true)
-    if (priority != -1 && id != null && id != REQUEST_ALARM_PERMISSION_CODE) {
-        if (notificationToneUri != null) builder.setSound(notificationToneUri)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //Important to set prayer time reminders to Notification.CATEGORY_ALARM so it triggers even when Sunnah Assistant initiated DND is on
-            builder.setCategory(if (id > PRAYER_TIMES_REMINDERS_ID) Notification.CATEGORY_REMINDER else Notification.CATEGORY_ALARM)
-        }
-        builder.addAction(
-            R.drawable.ic_check,
-            context.getString(R.string.mark_as_complete),
-            getMarkAsCompletePendingIntent(context, id)
-        )
-        builder.addAction(
-            R.drawable.ic_check,
-            context.getString(R.string.snooze),
-            snoozeNotification(context, id)
-        )
-        builder.addAction(
-            R.drawable.ic_check,
-            context.getString(R.string.share),
-            shareToDo(context, id)
-        )
+        .setAutoCancel(true)
+        .setCategory(category)
+
+    for (action in actions) {
+        builder.addAction(action)
     }
-    if (isVibrate)
-        builder.setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+
     return builder.build()
 }
 
-private fun getMarkAsCompletePendingIntent(context: Context, id: Int): PendingIntent? {
-    val markAsCompleteIntent = Intent(context, ToDoBroadcastReceiver::class.java).apply {
-        action = MARK_AS_COMPLETE
-        putExtra(TO_DO_ID, id)
-    }
-    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        PendingIntent.FLAG_IMMUTABLE
-    } else {
-        0
-    }
-    return PendingIntent.getBroadcast(context, id, markAsCompleteIntent, flag)
-
+fun getMainActivityPendingIntent(context: Context): PendingIntent? {
+    val intent = Intent(context, MainActivity::class.java)
+    val flag = PendingIntent.FLAG_IMMUTABLE
+    return PendingIntent.getActivity(context, 0, intent, flag)
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
-private fun getOpenAlarmSettingsPendingIntent(context: Context): PendingIntent {
-    val openSettingsIntent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-        data = Uri.parse("package:${context.packageName}")
-        addFlags(FLAG_ACTIVITY_NEW_TASK)
-    }
-    return PendingIntent.getActivity(context, -3, openSettingsIntent, PendingIntent.FLAG_IMMUTABLE)
-}
-
-
-private fun snoozeNotification(context: Context, id: Int): PendingIntent {
-    return NavDeepLinkBuilder(context)
-        .setGraph(R.navigation.navigation)
-        .setArguments(Bundle().apply { putInt(TO_DO_ID, id) })
-        .setDestination(R.id.snooze_options)
-        .createPendingIntent()
-}
-
-private fun shareToDo(context: Context, id: Int): PendingIntent? {
-    val shareToDoIntent = Intent(context, MainActivity::class.java).apply {
-        action = SHARE
-        putExtra(TO_DO_ID, id)
-    }
-    val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        PendingIntent.FLAG_IMMUTABLE
-    } else {
-        0
-    }
-    return PendingIntent.getActivity(context, id, shareToDoIntent, flag)
-}
-
-/**
- * Creates The NotificationUtil Channel Required for displaying notifications in Android 8.0+
- */
-fun createNotificationChannels(context: Context) {
-    // Create the NotificationChannel, but only on API 26+ because
-    // the NotificationChannel class is new and not in the support library
+fun getToDoNotificationChannel(context: Context): NotificationChannel? {
+    var notificationChannel: NotificationChannel? = null
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        deleteToDoNotificationChannel(context)
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(
-            "remindersDefault",
-            context.getString(R.string.to_dos),
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        notificationManager.createNotificationChannel(channel)
+        val manager = getNotificationManager(context)
+        notificationChannel = manager.notificationChannels
+            .find { it.id.startsWith(TODO_NOTIFICATION_CHANNEL_PREFIX) }
 
-        val nextReminderChannel = NotificationChannel(
-            "Next Reminder",
-            context.getString(R.string.next_to_do_sticky_notification),
-            NotificationManager.IMPORTANCE_LOW
-        )
-        nextReminderChannel.description =
-            context.getString(R.string.sticky_notification_description)
-        notificationManager.createNotificationChannel(nextReminderChannel)
-
-        val messagesFromDeveloper = NotificationChannel(
-            "Developer",
-            context.getString(R.string.developers_messages),
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        nextReminderChannel.description = context.getString(R.string.developer_messages_description)
-        notificationManager.createNotificationChannel(messagesFromDeveloper)
-    }
-}
-
-private fun getReminderNotificationChannel(context: Context): NotificationChannel? {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val manager = context.getSystemService(NotificationManager::class.java)
-        for (channel in manager.notificationChannels) {
-            if (!channel.id.matches("Next Reminder".toRegex()))
-                return channel
+        if (notificationChannel == null) {
+            notificationChannel = NotificationChannel(
+                TODO_NOTIFICATION_CHANNEL_PREFIX + System.currentTimeMillis(),
+                context.getString(R.string.to_dos),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            manager.createNotificationChannel(notificationChannel)
+            return notificationChannel
         }
     }
-    return null
+
+    return notificationChannel
 }
 
-fun deleteToDoNotificationChannel(context: Context) {
+fun getDeveloperMessagesNotificationChannel(context: Context): NotificationChannel? {
+    var notificationChannel: NotificationChannel? = null
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val manager = context.getSystemService(NotificationManager::class.java)
-        for (channel in manager.notificationChannels) {
-            if (!channel.id.matches("Next Reminder".toRegex()))
-                manager.deleteNotificationChannel(channel.id)
+        val manager = getNotificationManager(context)
+        notificationChannel = manager.notificationChannels
+            .find { it.id.matches(DEVELOPER_MESSAGES_CHANNEL_ID.toRegex()) }
+
+        if (notificationChannel == null) {
+            notificationChannel = NotificationChannel(
+                DEVELOPER_MESSAGES_CHANNEL_ID,
+                context.getString(R.string.developers_messages),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.description =
+                context.getString(R.string.developer_messages_description)
+            manager.createNotificationChannel(notificationChannel)
+            return notificationChannel
+        }
+    }
+
+    return notificationChannel
+}
+
+fun getMaintenanceNotificationsChannel(context: Context): NotificationChannel? {
+    var notificationChannel: NotificationChannel? = null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val manager = getNotificationManager(context)
+        notificationChannel = manager.notificationChannels
+            .find { it.id.matches(LOW_PRIORITY_MAINTENANCE_NOTIFICATION_CHANNEL_ID.toRegex()) }
+
+        if (notificationChannel == null) {
+            notificationChannel = NotificationChannel(
+                LOW_PRIORITY_MAINTENANCE_NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.maintenance_notifications_channel_title),
+                NotificationManager.IMPORTANCE_LOW
+            )
+            notificationChannel.description =
+                context.getString(R.string.maintenance_notifications_channel_description)
+            manager.createNotificationChannel(notificationChannel)
+            return notificationChannel
+        }
+    }
+
+    return notificationChannel
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun getNotificationManager(context: Context): NotificationManager {
+    val manager = context.getSystemService(NotificationManager::class.java)
+    deleteObsoleteNotificationChannels(manager)
+    return manager
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun deleteObsoleteNotificationChannels(notificationManager: NotificationManager?) {
+    notificationManager?.let {
+        for (channel in it.notificationChannels) {
+            if (
+                !channel.id.startsWith(TODO_NOTIFICATION_CHANNEL_PREFIX) &&
+                !channel.id.matches(DEVELOPER_MESSAGES_CHANNEL_ID.toRegex()) &&
+                !channel.id.matches(LOW_PRIORITY_MAINTENANCE_NOTIFICATION_CHANNEL_ID.toRegex())
+            ) {
+                notificationManager.deleteNotificationChannel(channel.id)
+            }
         }
     }
 }
 
-fun createToDoNotificationChannel(
+fun updateToDoNotificationChannel(
     context: Context,
-    toneUri: Uri?,
+    notificationToneUri: Uri?,
     isVibrate: Boolean,
     priority: Int
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val channel = NotificationChannel(
-            System.currentTimeMillis().toString(),
-            "Reminders",
+        val notificationManager = getNotificationManager(context)
+
+        // Delete existing to do channels
+        notificationManager.notificationChannels
+            .filter { it.id.startsWith(TODO_NOTIFICATION_CHANNEL_PREFIX) }
+            .forEach { notificationManager.deleteNotificationChannel(it.id) }
+
+        val notificationChannel = NotificationChannel(
+            TODO_NOTIFICATION_CHANNEL_PREFIX + System.currentTimeMillis(),
+            context.getString(R.string.to_dos),
             priority
         )
+
         val attributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
             .build()
-        channel.setSound(toneUri, attributes)
-        channel.enableVibration(isVibrate)
-        val manager = context.getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(channel)
+
+        notificationChannel.setSound(notificationToneUri, attributes)
+        notificationChannel.enableVibration(isVibrate)
+        notificationManager.createNotificationChannel(notificationChannel)
     }
 }

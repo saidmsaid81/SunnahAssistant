@@ -14,10 +14,10 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
-import com.thesunnahrevival.sunnahassistant.utilities.createToDoNotificationChannel
-import com.thesunnahrevival.sunnahassistant.utilities.deleteToDoNotificationChannel
+import com.thesunnahrevival.sunnahassistant.utilities.updateToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 
 class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
@@ -125,13 +125,10 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         super.onPause()
         if (isSettingsUpdated) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context?.let { deleteToDoNotificationChannel(it) }
-                mainActivityViewModel.settingsValue?.let {
-                    context?.let { it1 ->
-                        createToDoNotificationChannel(
-                            it1, it.notificationToneUri, it.isVibrate, it.priority
-                        )
-                    }
+                mainActivityViewModel.settingsValue?.let { settings: AppSettings ->
+                    updateToDoNotificationChannel(
+                        requireContext(), settings.notificationToneUri, settings.isVibrate, settings.priority
+                    )
                 }
             }
         }

@@ -25,6 +25,15 @@ const val NOTIFICATION_CATEGORY =
     "com.thesunnahrevival.sunnahassistant.utilities.notificationCategory"
 const val NOTIFICATION_DND_MINUTES =
     "com.thesunnahrevival.sunnahassistant.utilities.dndMinutes"
+
+const val TODO_REMINDER_SCHEDULER_WORK_TAG = "todo_reminder_scheduler_work"
+
+const val TODO_NOTIFICATION_CHANNEL_PREFIX = "ToDo_"
+
+const val DEVELOPER_MESSAGES_CHANNEL_ID = "Developer"
+
+const val LOW_PRIORITY_MAINTENANCE_NOTIFICATION_CHANNEL_ID = "Low Priority Maintenance"
+
 const val TEXT_COLOR = "text_color"
 
 const val THE_SUNNAH_REVIVAL_RSS_FEED = "https://thesunnahrevival.com/category/daily-hadith/feed"

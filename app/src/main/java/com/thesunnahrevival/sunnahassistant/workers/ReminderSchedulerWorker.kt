@@ -9,6 +9,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.REFRESHING_NOTIFICATIONS_ID
 import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
 import com.thesunnahrevival.sunnahassistant.utilities.createNotification
+import com.thesunnahrevival.sunnahassistant.utilities.getMaintenanceNotificationsChannel
 
 class ReminderSchedulerWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
@@ -19,14 +20,12 @@ class ReminderSchedulerWorker(context: Context, parameters: WorkerParameters) :
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
         val notification = createNotification(
-            applicationContext,
-            REFRESHING_NOTIFICATIONS_ID,
-            applicationContext.getString(R.string.app_name),
-            applicationContext.getString(R.string.refreshing_notifications),
-            NotificationCompat.PRIORITY_LOW,
-            null,
-            false
+            context = applicationContext,
+            channel = getMaintenanceNotificationsChannel(applicationContext),
+            title = applicationContext.getString(R.string.app_name),
+            text = applicationContext.getString(R.string.refreshing_notifications)
         )
+
         return ForegroundInfo(REFRESHING_NOTIFICATIONS_ID, notification)
     }
 }

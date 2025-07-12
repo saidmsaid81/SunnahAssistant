@@ -7,10 +7,13 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.core.app.NotificationCompat
+import android.provider.Settings
+import androidx.annotation.RequiresApi
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
@@ -19,6 +22,7 @@ import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.TimeZone
+import androidx.core.net.toUri
 
 class ReminderManager private constructor() {
 
@@ -240,7 +244,7 @@ class ReminderManager private constructor() {
                 }
             }
         } else {
-            showNotificationForRequestingAlarmPermission(context, notificationUri, isVibrate)
+            showNotificationForRequestingAlarmPermission(context)
         }
     }
 
@@ -312,9 +316,7 @@ class ReminderManager private constructor() {
     }
 
     fun showNotificationForRequestingAlarmPermission(
-        context: Context,
-        notificationUri: Uri,
-        isVibrate: Boolean
+        context: Context
     ) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -323,14 +325,26 @@ class ReminderManager private constructor() {
             REQUEST_ALARM_PERMISSION_CODE,
             createNotification(
                 context,
-                REQUEST_ALARM_PERMISSION_CODE,
+                getToDoNotificationChannel(context),
                 context.getString(R.string.fix_alarms_and_reminders),
                 context.getString(R.string.tap_to_fix_this),
-                NotificationCompat.PRIORITY_DEFAULT,
-                notificationUri,
-                isVibrate
+                onlyAlertOnce = true,
+                pendingIntent = if (VERSION.SDK_INT >= VERSION_CODES.S) {
+                    getOpenAlarmSettingsPendingIntent(context)
+                } else {
+                    null
+                }
             )
         )
+    }
+
+    @RequiresApi(VERSION_CODES.S)
+    private fun getOpenAlarmSettingsPendingIntent(context: Context): PendingIntent {
+        val openSettingsIntent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+            data = "package:${context.packageName}".toUri()
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
+        }
+        return PendingIntent.getActivity(context, -3, openSettingsIntent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     companion object {
