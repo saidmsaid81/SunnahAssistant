@@ -19,10 +19,10 @@ import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOADS_NOTIFICATION_CHA
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_NOTIFICATION_ID
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_WORK_TAG
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
-import com.thesunnahrevival.sunnahassistant.viewmodels.DOWNLOAD_WORK_TAG
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

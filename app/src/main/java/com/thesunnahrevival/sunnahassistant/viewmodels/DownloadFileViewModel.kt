@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
 import com.thesunnahrevival.sunnahassistant.data.FlagRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
+import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_WORK_TAG
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
@@ -34,7 +35,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-const val DOWNLOAD_WORK_TAG = "download_work"
 
 class DownloadFileViewModel(application: Application) : AndroidViewModel(application) {
     private val downloadFileRepository = DownloadFileRepository.getInstance(application)

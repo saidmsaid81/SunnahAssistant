@@ -32,6 +32,8 @@ const val THE_SUNNAH_REVIVAL_RSS_FEED = "https://thesunnahrevival.com/category/d
 const val DOWNLOADS_NOTIFICATION_CHANNEL_ID = "Downloads"
 const val DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID = "DownloadComplete"
 
+const val DOWNLOAD_WORK_TAG = "download_work"
+
 const val PRAYER_TIMES_REMINDERS_ID = -1019700
 
 const val REQUEST_NOTIFICATION_PERMISSION_CODE = 100
