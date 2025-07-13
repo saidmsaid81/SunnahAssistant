@@ -1,7 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.content.Context
-import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.DownloadFileRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -10,7 +10,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
-import com.thesunnahrevival.sunnahassistant.data.DailyHadithRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.DailyHadithRepository
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

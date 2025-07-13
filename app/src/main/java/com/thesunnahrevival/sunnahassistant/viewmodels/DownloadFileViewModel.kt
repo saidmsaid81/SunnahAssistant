@@ -8,8 +8,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.thesunnahrevival.sunnahassistant.data.DownloadFileRepository
-import com.thesunnahrevival.sunnahassistant.data.FlagRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.DownloadFileRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_WORK_TAG
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager

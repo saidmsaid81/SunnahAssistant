@@ -23,9 +23,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.FlagRepository
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository.Companion.getInstance
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData

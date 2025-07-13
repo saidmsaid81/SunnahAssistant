@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.DailyHadithRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.DailyHadithRepository
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentDailyHadithBinding
 import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK

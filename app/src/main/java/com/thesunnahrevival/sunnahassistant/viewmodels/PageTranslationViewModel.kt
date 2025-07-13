@@ -2,7 +2,7 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.QuranRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

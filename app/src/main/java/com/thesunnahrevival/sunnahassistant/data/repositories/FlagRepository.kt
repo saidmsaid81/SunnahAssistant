@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.data
+package com.thesunnahrevival.sunnahassistant.data.repositories
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -9,13 +9,12 @@ import android.content.Intent.ACTION_BOOT_COMPLETED
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.utilities.MARK_AS_COMPLETE
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_CATEGORY
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_DND_MINUTES
