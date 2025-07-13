@@ -38,16 +38,14 @@ class SurahListFragment : SunnahAssistantFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return ComposeView(requireContext()).apply {
             setContent {
-                SunnahAssistantTheme {
-                    SurahListScreen(
-                        surahs = viewModel.getAllSurahs().collectAsLazyPagingItems(),
-                        onSurahClick = { surah ->
-                            findNavController().navigate(
-                                SurahListFragmentDirections.toQuranReaderFragment(surah)
-                            )
-                        }
-                    )
-                }
+                SurahListScreen(
+                    surahs = viewModel.getAllSurahs().collectAsLazyPagingItems(),
+                    onSurahClick = { surah ->
+                        findNavController().navigate(
+                            SurahListFragmentDirections.toQuranReaderFragment(surah)
+                        )
+                    }
+                )
             }
         }
     }
@@ -82,19 +80,21 @@ class SurahListFragment : SunnahAssistantFragment() {
         surahs: LazyPagingItems<Surah>,
         onSurahClick: (Surah) -> Unit
     ) {
-        Surface {
-            Column(modifier = Modifier.padding(top = 16.dp)) {
-                LazyColumn {
-                    items(
-                        count = surahs.itemCount,
-                        key = { index ->
+        SunnahAssistantTheme {
+            Surface {
+                Column(modifier = Modifier.padding(top = 16.dp)) {
+                    LazyColumn {
+                        items(
+                            count = surahs.itemCount,
+                            key = { index ->
+                                val surah = surahs[index]
+                                "surah_${surah?.id ?: "null"}_$index"
+                            }
+                        ) { index ->
                             val surah = surahs[index]
-                            "surah_${surah?.id ?: "null"}_$index"
-                        }
-                    ) { index ->
-                        val surah = surahs[index]
-                        surah?.let {
-                            SurahItem(surah, isArabic()) { onSurahClick(surah) }
+                            surah?.let {
+                                SurahItem(surah, isArabic()) { onSurahClick(surah) }
+                            }
                         }
                     }
                 }
@@ -104,12 +104,10 @@ class SurahListFragment : SunnahAssistantFragment() {
 
     @Composable
     private fun PreviewSurahListScreen() {
-        SunnahAssistantTheme {
-            SurahListScreen(
-                surahs = flowOf(PagingData.from(previewSurahs())).collectAsLazyPagingItems(),
-                onSurahClick = {}
-            )
-        }
+        SurahListScreen(
+            surahs = flowOf(PagingData.from(previewSurahs())).collectAsLazyPagingItems(),
+            onSurahClick = {}
+        )
     }
 
     @Composable

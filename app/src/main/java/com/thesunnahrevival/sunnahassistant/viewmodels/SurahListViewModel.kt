@@ -9,11 +9,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import kotlinx.coroutines.flow.Flow
 
 class SurahListViewModel(application: Application) : AndroidViewModel(application) {
-    private val mQuranRepository =
-        QuranRepository.getInstance(application)
+    private val repository =
+        SurahRepository.getInstance(application)
 
     fun getAllSurahs(): Flow<PagingData<Surah>> {
         return Pager(
@@ -24,7 +25,7 @@ class SurahListViewModel(application: Application) : AndroidViewModel(applicatio
                 initialLoadSize = 40
             ),
             pagingSourceFactory = {
-                mQuranRepository.getAllSurahs()
+                repository.getAllSurahs()
             }
         ).flow.cachedIn(viewModelScope)
     }

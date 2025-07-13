@@ -1,36 +1,20 @@
 package com.thesunnahrevival.sunnahassistant.data.repositories
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.data.local.AyahDao
-import com.thesunnahrevival.sunnahassistant.data.local.AyahTranslationDao
 import com.thesunnahrevival.sunnahassistant.data.local.FootnoteDao
-import com.thesunnahrevival.sunnahassistant.data.local.LanguageDao
 import com.thesunnahrevival.sunnahassistant.data.local.LineDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
 import com.thesunnahrevival.sunnahassistant.data.local.TranslationDao
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.data.model.Footnote
-import com.thesunnahrevival.sunnahassistant.data.model.Language
-import com.thesunnahrevival.sunnahassistant.data.model.Line
 import com.thesunnahrevival.sunnahassistant.data.model.ResourceLinks
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
-import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 
 class QuranRepository private constructor(
     private val applicationContext: Context
 ) {
-
-    private val surahDao: SurahDao
-        get() = SunnahAssistantDatabase.getInstance(applicationContext).surahDao()
 
     private val ayahDao: AyahDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).ayahDao()
@@ -66,8 +50,6 @@ class QuranRepository private constructor(
 
     suspend fun getFullAyahDetailsByPageNumber(pageNumber: Int) =
         ayahDao.getFullAyahDetailsByPageNumber(pageNumber)
-
-    fun getAllSurahs() = surahDao.getAllSurahs()
 
     suspend fun getResourceLinks(): ResourceLinks? {
         val response = resourceLinksRestApi.getResourceLinks()
