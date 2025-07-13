@@ -25,14 +25,15 @@ class ResourcesFragment : MenuBarFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return ComposeView(requireContext()).apply {
             setContent {
-                SunnahAssistantTheme {
-                    val surahs by
-                        viewModel.getFirst5Surahs().collectAsState(initial = listOf())
-                    ResourcesScreen(
-                        findNavController(),
-                        surahs
-                    )
-                }
+                val surahs by
+                viewModel.getFirst5Surahs().collectAsState(initial = listOf())
+                val resourceItems = viewModel.resourceItems()
+
+                ResourcesScreen(
+                    findNavController(),
+                    surahs,
+                    resourceItems
+                )
             }
         }
     }

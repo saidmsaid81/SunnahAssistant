@@ -32,58 +32,60 @@ import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
-import com.thesunnahrevival.sunnahassistant.utilities.ResourceItem
+import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 
 @Composable
 fun ResourcesScreen(
     findNavController: NavController? = null,
-    surahs: List<Surah>
+    surahs: List<Surah>,
+    resourceItemList: List<ResourceItem>
 ) {
 
-    val resourceItemList = resourceItems()
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(start = 16.dp, end = 16.dp)
-    ) {
-        Column(
+    SunnahAssistantTheme {
+        Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(start = 16.dp, end = 16.dp)
         ) {
-            ResourceTitle(title = stringResource(R.string.quran))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                ResourceTitle(title = stringResource(R.string.quran))
 
-            Column {
-                surahs.forEachIndexed { index, surah ->
-                    SurahItem(surah, isArabic()) {
-                        findNavController?.navigate(
-                            ResourcesFragmentDirections.toQuranReaderFragment(
-                                surah
+                Column {
+                    surahs.forEachIndexed { index, surah ->
+                        SurahItem(surah, isArabic()) {
+                            findNavController?.navigate(
+                                ResourcesFragmentDirections.toQuranReaderFragment(
+                                    surah
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    if (index == surahs.lastIndex) {
-                        ResourceCard(
-                            title = stringResource(R.string.more),
-                            subtitle = stringResource(R.string.tap_to_view_all_surahs),
-                            resourceNumber = ""
-                        ) {
-                            findNavController?.navigate(R.id.surahList)
+                        if (index == surahs.lastIndex) {
+                            ResourceCard(
+                                title = stringResource(R.string.more),
+                                subtitle = stringResource(R.string.tap_to_view_all_surahs),
+                                resourceNumber = ""
+                            ) {
+                                findNavController?.navigate(R.id.surahList)
+                            }
                         }
                     }
                 }
-            }
 
-            ResourceTitle(title = stringResource(R.string.hadith))
+                ResourceTitle(title = stringResource(R.string.hadith))
 
-            Column {
-                resourceItemList.forEach { item ->
-                    ResourceCard(title = item.title, subtitle = item.description) {
-                        findNavController?.navigate(item.destination)
+                Column {
+                    resourceItemList.forEach { item ->
+                        ResourceCard(title = stringResource(item.titleResourceKey), subtitle = stringResource(item.descriptionResourceKey)) {
+                            findNavController?.navigate(item.destination)
+                        }
                     }
                 }
             }
@@ -189,18 +191,6 @@ private fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
 
 
 @Composable
-private fun resourceItems(): List<ResourceItem> {
-    return listOf(
-        ResourceItem(
-            1,
-            stringResource(R.string.daily_hadith),
-            stringResource(R.string.from_the_sunnah_revival_blog),
-            R.id.dailyHadithFragment
-        )
-    )
-}
-
-@Composable
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     locale = "en"
@@ -228,7 +218,17 @@ fun ResourcesScreenPreviewDarkArabic() {
 @Composable
 private fun ResourcesScreenPreview() {
     SunnahAssistantTheme {
-        ResourcesScreen(surahs = previewSurahs())
+        ResourcesScreen(
+            surahs = previewSurahs(),
+            resourceItemList = listOf(
+                ResourceItem(
+                    id = 1,
+                    titleResourceKey = R.string.daily_hadith,
+                    descriptionResourceKey = R.string.from_the_sunnah_revival_blog,
+                    destination = R.id.dailyHadithFragment
+                )
+            )
+        )
     }
 }
 
