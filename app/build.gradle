@@ -13,8 +13,8 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 16
-        versionName "1.0.5"
+        versionCode 17
+        versionName "1.0.6-NIGHTLY.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
