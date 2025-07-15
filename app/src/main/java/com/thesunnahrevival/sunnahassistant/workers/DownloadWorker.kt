@@ -14,6 +14,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.repositories.DownloadFileRepository
 import com.thesunnahrevival.sunnahassistant.receivers.DownloadRetryReceiver
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOADS_NOTIFICATION_CHANNEL_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID
@@ -23,91 +24,229 @@ import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_WORK_TAG
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.launch
+import com.thesunnahrevival.sunnahassistant.utilities.roundTo
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.zip.ZipInputStream
 import kotlin.math.roundToInt
+
+private const val FILE_SIZE_DECIMAL_PLACES = 1
+private const val BYTES_IN_1_KB = 1024L
+private const val BYTES_IN_1_MB = 1048576L
+private const val PROGRESS_UPDATE_INTERVAL_MS = 5000L // 5 seconds for slow networks
+private const val BUFFER_SIZE = 4096 // Reduced buffer size for better memory management
 
 class DownloadWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
 
     private val downloadManager = DownloadManager.getInstance()
+    private var tempZipFile: File? = null
 
     override suspend fun doWork(): Result {
-        setForeground(createForegroundInfo(Preparing))
+        return try {
+            setForeground(createForegroundInfo(Preparing))
 
-        downloadManager.downloadFile(applicationContext)
+            downloadManager.updateUIProgress(Preparing)
 
-        val downloadCompletion = CompletableDeferred<Result>()
+            executeDownload()
 
-        downloadManager.downloadProgress.collect { downloadProgress ->
-            when (downloadProgress) {
-                Completed -> {
-                    val notification = getNotification(
-                        title = applicationContext.getString(R.string.download_complete),
-                        content = applicationContext.getString(R.string.tap_to_read_quran),
-                        channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
-                        smallIconRes = R.drawable.ic_alarm,
-                        pendingIntent = NavDeepLinkBuilder(applicationContext)
-                            .setGraph(R.navigation.navigation)
-                            .setDestination(R.id.surahList)
-                            .createPendingIntent()
-                    )
+            Result.success()
+        } catch (e: CancellationException) {
+            e.printStackTrace()
+            cleanupTempFiles()
+            downloadManager.updateUIProgress(Cancelled)
+            Result.success()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            cleanupTempFiles()
+            downloadManager.updateUIProgress(NetworkError)
+            showErrorNotification(false)
+            Result.failure()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            cleanupTempFiles()
+            downloadManager.updateUIProgress(Error)
+            showErrorNotification(true)
+            Result.failure()
+        }
+    }
 
-                    val notificationManager =
-                        applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
-                    WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
-                    downloadCompletion.complete(Result.success())
+    private suspend fun executeDownload() {
+        val downloadFileRepository = DownloadFileRepository.getInstance(applicationContext)
+        val response = downloadFileRepository.downloadFile()
+
+        if (response?.isSuccessful == true) {
+            response.body()?.let { responseBody ->
+                tempZipFile = downloadFileToTemp(responseBody)
+                tempZipFile?.let {
+                    extractZipContents(it)
+                    it.delete()
                 }
-                Error, NetworkError -> {
-                    val retryIntent = android.content.Intent(applicationContext, DownloadRetryReceiver::class.java)
-                    val retryPendingIntent = PendingIntent.getBroadcast(
-                        applicationContext,
-                        0,
-                        retryIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
+                downloadManager.updateUIProgress(Completed)
+                showSuccessNotification()
+            } ?: throw IOException("Response body is null")
+        } else {
+            throw IOException("Download request failed with code: ${response?.code()}")
+        }
+    }
 
-                    val retryAction = NotificationCompat.Action(
-                        R.drawable.ic_retry,
-                        applicationContext.getString(R.string.try_again),
-                        retryPendingIntent
-                    )
+    private suspend fun downloadFileToTemp(responseBody: ResponseBody): File {
+        val totalBytes = responseBody.contentLength()
+        val (totalSize, unit) = convertBytesToAppropriateUnit(totalBytes)
 
-                    val notification = getNotification(
-                        title = applicationContext.getString(R.string.downloading_failed),
-                        content = if (downloadProgress is Error)
-                            applicationContext.getString(R.string.an_error_occurred, SUPPORT_EMAIL)
-                        else
-                            applicationContext.getString(R.string.network_error),
-                        channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
-                        smallIconRes = R.drawable.ic_alarm,
-                        pendingIntent = NavDeepLinkBuilder(applicationContext)
-                            .setGraph(R.navigation.navigation)
-                            .setDestination(R.id.resourcesFragment)
-                            .createPendingIntent(),
-                        actions = listOf(retryAction)
-                    )
+        val progressState = Downloading(0f, totalSize, unit)
+        setForeground(createForegroundInfo(progressState))
+        downloadManager.updateUIProgress(progressState)
 
-                    val notificationManager =
-                        applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
-                    WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
-                    downloadCompletion.complete(Result.failure())
+        val tempFile = File(applicationContext.filesDir, "temp.zip")
+        var downloadedBytes = 0L
+        var lastUpdateTime = System.currentTimeMillis()
+
+        withContext(Dispatchers.IO) {
+            FileOutputStream(tempFile).use { output ->
+                responseBody.byteStream().use { input ->
+                    val buffer = ByteArray(BUFFER_SIZE)
+                    var bytesRead: Int
+
+                    while (input.read(buffer).also { bytesRead = it } != -1) {
+                        ensureActive()
+
+                        output.write(buffer, 0, bytesRead)
+                        downloadedBytes += bytesRead
+
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastUpdateTime >= PROGRESS_UPDATE_INTERVAL_MS) {
+                            val downloadedSize = if (unit == "KB") {
+                                (downloadedBytes.toFloat() / BYTES_IN_1_KB).roundTo(FILE_SIZE_DECIMAL_PLACES)
+                            } else {
+                                (downloadedBytes.toFloat() / BYTES_IN_1_MB).roundTo(FILE_SIZE_DECIMAL_PLACES)
+                            }
+
+                            val currentProgress = Downloading(downloadedSize, totalSize, unit)
+                            setForeground(createForegroundInfo(currentProgress))
+                            downloadManager.updateUIProgress(currentProgress)
+                            lastUpdateTime = currentTime
+                        }
+                    }
                 }
-
-                Cancelled -> {
-                    downloadCompletion.complete(Result.success())
-                }
-
-                else -> {
-                    setForeground(createForegroundInfo(downloadProgress))
-                }
-
             }
         }
 
-        return downloadCompletion.await()
+        val finalDownloadedSize = if (unit == "KB") {
+            (downloadedBytes.toFloat() / BYTES_IN_1_KB).roundTo(FILE_SIZE_DECIMAL_PLACES)
+        } else {
+            (downloadedBytes.toFloat() / BYTES_IN_1_MB).roundTo(FILE_SIZE_DECIMAL_PLACES)
+        }
+        val finalProgress = Downloading(finalDownloadedSize, totalSize, unit)
+        setForeground(createForegroundInfo(finalProgress))
+        downloadManager.updateUIProgress(finalProgress)
+
+        return tempFile
+    }
+
+    private suspend fun extractZipContents(zipFile: File) {
+        setForeground(createForegroundInfo(Extracting))
+        downloadManager.updateUIProgress(Extracting)
+
+        withContext(Dispatchers.IO) {
+            ZipInputStream(zipFile.inputStream()).use { zipInputStream ->
+                var zipEntry = zipInputStream.nextEntry
+                val buffer = ByteArray(BUFFER_SIZE)
+
+                while (zipEntry != null) {
+                    ensureActive()
+
+                    val newFile = File(applicationContext.filesDir, zipEntry.name)
+
+                    if (zipEntry.isDirectory) {
+                        newFile.mkdirs()
+                    } else {
+                        newFile.parentFile?.mkdirs()
+
+                        FileOutputStream(newFile).use { fileOutputStream ->
+                            var len: Int
+                            while (zipInputStream.read(buffer).also { len = it } > 0) {
+                                ensureActive()
+                                fileOutputStream.write(buffer, 0, len)
+                            }
+                        }
+                    }
+                    zipEntry = zipInputStream.nextEntry
+                }
+            }
+        }
+    }
+
+    private fun cleanupTempFiles() {
+        tempZipFile?.delete()
+    }
+
+    private fun convertBytesToAppropriateUnit(bytes: Long): Pair<Float, String> {
+        return if (bytes < BYTES_IN_1_MB) {
+            val kb = bytes.toFloat() / BYTES_IN_1_KB
+            Pair(kb.roundTo(FILE_SIZE_DECIMAL_PLACES), "KB")
+        } else {
+            val mb = bytes.toFloat() / BYTES_IN_1_MB
+            Pair(mb.roundTo(FILE_SIZE_DECIMAL_PLACES), "MB")
+        }
+    }
+
+    private fun showSuccessNotification() {
+        val notification = getNotification(
+            title = applicationContext.getString(R.string.download_complete),
+            content = applicationContext.getString(R.string.tap_to_read_quran),
+            channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+            smallIconRes = R.drawable.ic_alarm,
+            pendingIntent = NavDeepLinkBuilder(applicationContext)
+                .setGraph(R.navigation.navigation)
+                .setDestination(R.id.surahList)
+                .createPendingIntent()
+        )
+
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+        WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
+    }
+
+    private fun showErrorNotification(isGeneralError: Boolean) {
+        val retryIntent = android.content.Intent(applicationContext, DownloadRetryReceiver::class.java)
+        val retryPendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            0,
+            retryIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val retryAction = NotificationCompat.Action(
+            R.drawable.ic_retry,
+            applicationContext.getString(R.string.try_again),
+            retryPendingIntent
+        )
+
+        val notification = getNotification(
+            title = applicationContext.getString(R.string.downloading_failed),
+            content = if (isGeneralError)
+                applicationContext.getString(R.string.an_error_occurred, SUPPORT_EMAIL)
+            else
+                applicationContext.getString(R.string.network_error),
+            channelId = DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID,
+            smallIconRes = R.drawable.ic_alarm,
+            pendingIntent = NavDeepLinkBuilder(applicationContext)
+                .setGraph(R.navigation.navigation)
+                .setDestination(R.id.resourcesFragment)
+                .createPendingIntent(),
+            actions = listOf(retryAction)
+        )
+
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(DOWNLOAD_COMPLETE_NOTIFICATION_ID, notification)
+        WorkManager.getInstance(applicationContext).cancelAllWorkByTag(DOWNLOAD_WORK_TAG)
     }
 
     private fun createForegroundInfo(downloadProgress: DownloadProgress): ForegroundInfo {
