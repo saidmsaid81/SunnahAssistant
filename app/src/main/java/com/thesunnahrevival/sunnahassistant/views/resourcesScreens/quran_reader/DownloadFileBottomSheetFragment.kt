@@ -45,6 +45,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -340,7 +341,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
 
                     ActionButtons(
                         modifier = Modifier.padding(top = 16.dp),
-                        showSpacer = true,
+                        showSpacer = false,
                         secondaryButtonText = stringResource(R.string.cancel),
                         onSecondaryClick = { cancelDownload() },
                         primaryButtonText = if (hasNotificationPermission) stringResource(R.string.background) else null,
@@ -472,7 +473,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                         .weight(1f)
                         .padding(end = if (primaryButtonText != null && onPrimaryClick != null) 16.dp else 0.dp)
                 ) {
-                    Text(text = secondaryButtonText)
+                    Text(text = secondaryButtonText, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
             if (primaryButtonText != null && onPrimaryClick != null) {
@@ -480,7 +481,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                     onClick = onPrimaryClick,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(text = primaryButtonText)
+                    Text(text = primaryButtonText, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
