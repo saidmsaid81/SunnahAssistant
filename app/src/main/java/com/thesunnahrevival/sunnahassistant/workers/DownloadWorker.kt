@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.CoroutineWorker
@@ -35,18 +36,26 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.zip.ZipInputStream
 import kotlin.math.roundToInt
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 
 private const val FILE_SIZE_DECIMAL_PLACES = 1
 private const val BYTES_IN_1_KB = 1024L
 private const val BYTES_IN_1_MB = 1048576L
-private const val PROGRESS_UPDATE_INTERVAL_MS = 5000L // 5 seconds for slow networks
-private const val BUFFER_SIZE = 4096 // Reduced buffer size for better memory management
+private const val PROGRESS_UPDATE_INTERVAL_MS = 3000L // 3 Seconds
+private const val BUFFER_SIZE = 4096
+private const val MAX_RESUME_ATTEMPTS = 5
+
+private const val RESUME_ATTEMPTS_FLAG_KEY = "resume_attempts"
+
+private const val DOWNLOADED_BYTES_FLAG_KEY = "downloaded_bytes"
 
 class DownloadWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
 
     private val downloadManager = DownloadManager.getInstance()
     private var tempZipFile: File? = null
+
+    private val flagRepository = FlagRepository.getInstance(applicationContext)
 
     override suspend fun doWork(): Result {
         return try {
@@ -60,17 +69,17 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
         } catch (e: CancellationException) {
             e.printStackTrace()
             cleanupTempFiles()
+            clearDownloadState()
+            clearResumeAttempts()
             downloadManager.updateUIProgress(Cancelled)
             Result.success()
         } catch (e: IOException) {
             e.printStackTrace()
-            cleanupTempFiles()
             downloadManager.updateUIProgress(NetworkError)
             showErrorNotification(false)
             Result.failure()
         } catch (e: Exception) {
             e.printStackTrace()
-            cleanupTempFiles()
             downloadManager.updateUIProgress(Error)
             showErrorNotification(true)
             Result.failure()
@@ -79,16 +88,27 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
     private suspend fun executeDownload() {
         val downloadFileRepository = DownloadFileRepository.getInstance(applicationContext)
-        val response = downloadFileRepository.downloadFile()
+
+        val resumeFromByte = if (getResumeAttempts() > MAX_RESUME_ATTEMPTS) {
+            clearDownloadState()
+            clearResumeAttempts()
+            0
+        } else {
+            getDownloadState()
+        }
+
+        val response = downloadFileRepository.downloadFile(resumeFromByte)
 
         if (response?.isSuccessful == true) {
             response.body()?.let { responseBody ->
-                tempZipFile = downloadFileToTemp(responseBody)
+                tempZipFile = downloadFileToTemp(responseBody, resumeFromByte)
                 tempZipFile?.let {
                     extractZipContents(it)
                     it.delete()
                 }
                 downloadManager.updateUIProgress(Completed)
+                clearDownloadState()
+                clearResumeAttempts()
                 showSuccessNotification()
             } ?: throw IOException("Response body is null")
         } else {
@@ -96,20 +116,36 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
         }
     }
 
-    private suspend fun downloadFileToTemp(responseBody: ResponseBody): File {
-        val totalBytes = responseBody.contentLength()
+    private suspend fun downloadFileToTemp(responseBody: ResponseBody, resumeFromByte: Long = 0L): File {
+        val contentLength = responseBody.contentLength()
+        val isResume = resumeFromByte > 0
+
+        if (isResume) {
+            incrementResumeAttempts()
+        }
+
+        val totalBytes = contentLength + resumeFromByte
         val (totalSize, unit) = convertBytesToAppropriateUnit(totalBytes)
 
-        val progressState = Downloading(0f, totalSize, unit)
-        setForeground(createForegroundInfo(progressState))
-        downloadManager.updateUIProgress(progressState)
+        // Calculate already downloaded amount for UI display
+        val alreadyDownloadedSize = if (isResume) {
+            if (unit == "KB") {
+                (resumeFromByte.toFloat() / BYTES_IN_1_KB).roundTo(FILE_SIZE_DECIMAL_PLACES)
+            } else {
+                (resumeFromByte.toFloat() / BYTES_IN_1_MB).roundTo(FILE_SIZE_DECIMAL_PLACES)
+            }
+        } else 0f
+
+        val initialProgress = Downloading(alreadyDownloadedSize, totalSize, unit)
+        setForeground(createForegroundInfo(initialProgress))
+        downloadManager.updateUIProgress(initialProgress)
 
         val tempFile = File(applicationContext.filesDir, "temp.zip")
-        var downloadedBytes = 0L
+        var downloadedBytes = resumeFromByte
         var lastUpdateTime = System.currentTimeMillis()
 
         withContext(Dispatchers.IO) {
-            FileOutputStream(tempFile).use { output ->
+            FileOutputStream(tempFile, isResume).use { output ->
                 responseBody.byteStream().use { input ->
                     val buffer = ByteArray(BUFFER_SIZE)
                     var bytesRead: Int
@@ -119,6 +155,9 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
                         output.write(buffer, 0, bytesRead)
                         downloadedBytes += bytesRead
+
+                        // Save progress periodically for resume capability
+                        saveDownloadState(downloadedBytes)
 
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastUpdateTime >= PROGRESS_UPDATE_INTERVAL_MS) {
@@ -138,6 +177,7 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
             }
         }
 
+        // Final progress update
         val finalDownloadedSize = if (unit == "KB") {
             (downloadedBytes.toFloat() / BYTES_IN_1_KB).roundTo(FILE_SIZE_DECIMAL_PLACES)
         } else {
@@ -185,6 +225,32 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
 
     private fun cleanupTempFiles() {
         tempZipFile?.delete()
+    }
+
+    private suspend fun saveDownloadState(downloadedBytes: Long) {
+        flagRepository.setFlag(DOWNLOADED_BYTES_FLAG_KEY, downloadedBytes)
+    }
+
+    private suspend fun clearDownloadState() {
+        flagRepository.clearLongFlag(DOWNLOADED_BYTES_FLAG_KEY)
+    }
+
+    private suspend fun getDownloadState(): Long {
+        return flagRepository.getLongFlag(DOWNLOADED_BYTES_FLAG_KEY) ?: 0
+    }
+
+    private suspend fun getResumeAttempts(): Int {
+        return flagRepository.getIntFlag(RESUME_ATTEMPTS_FLAG_KEY) ?: 0
+    }
+
+    private suspend fun incrementResumeAttempts(): Int {
+        val attempts = getResumeAttempts() + 1
+        flagRepository.setFlag(RESUME_ATTEMPTS_FLAG_KEY, attempts)
+        return attempts
+    }
+
+    private suspend fun clearResumeAttempts() {
+        flagRepository.clearIntFlag(RESUME_ATTEMPTS_FLAG_KEY)
     }
 
     private fun convertBytesToAppropriateUnit(bytes: Long): Pair<Float, String> {
