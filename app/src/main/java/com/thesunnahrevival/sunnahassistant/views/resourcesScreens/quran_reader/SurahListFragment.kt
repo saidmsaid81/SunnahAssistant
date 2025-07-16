@@ -2,14 +2,24 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +35,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.SurahItem
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 
 class SurahListFragment : SunnahAssistantFragment() {
@@ -83,7 +94,17 @@ class SurahListFragment : SunnahAssistantFragment() {
         SunnahAssistantTheme {
             Surface {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
-                    LazyColumn {
+                    val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = viewModel.firstVisiblePosition)
+
+                    LaunchedEffect(lazyListState) {
+                        snapshotFlow {
+                            lazyListState.firstVisibleItemIndex
+                        }.collectLatest { index ->
+                             viewModel.firstVisiblePosition = index
+                        }
+                    }
+
+                    LazyColumn(state = lazyListState) {
                         items(
                             count = surahs.itemCount,
                             key = { index ->

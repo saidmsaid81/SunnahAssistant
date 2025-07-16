@@ -16,13 +16,14 @@ class SurahListViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository =
         SurahRepository.getInstance(application)
 
+    var firstVisiblePosition = 0
     fun getAllSurahs(): Flow<PagingData<Surah>> {
         return Pager(
             PagingConfig(
                 pageSize = 20,
                 prefetchDistance = 40,
                 enablePlaceholders = true,
-                initialLoadSize = 40
+                initialLoadSize = firstVisiblePosition + 20
             ),
             pagingSourceFactory = {
                 repository.getAllSurahs()
