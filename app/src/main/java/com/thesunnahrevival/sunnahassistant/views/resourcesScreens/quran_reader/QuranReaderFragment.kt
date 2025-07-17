@@ -73,6 +73,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         val currentPage = args.surah.startPage
 
         quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
+        quranReaderBinding.viewPager.offscreenPageLimit = 1
         quranReaderBinding.viewPager.adapter = quranPageAdapter
         quranReaderBinding.viewPager.reduceDragSensitivity(4)
         quranReaderBinding.viewPager.registerOnPageChangeCallback(pageChangeCallback)
@@ -168,13 +169,16 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             if (!viewmodel.hasSeenDownloadFilesDialog && !viewmodel.isHideDownloadFilePrompt()) {
+                viewmodel.hasSeenDownloadFilesDialog = true
                 withContext(Dispatchers.Main) {
                     val fragment = DownloadFileBottomSheetFragment()
-                    fragment.show(
-                        requireActivity().supportFragmentManager,
-                        "download_files"
-                    )
-                    viewmodel.hasSeenDownloadFilesDialog = true
+                    if (!fragment.isVisible) {
+                        fragment.show(
+                            requireActivity().supportFragmentManager,
+                            "download_files"
+                        )
+                        viewmodel.hasSeenDownloadFilesDialog = true
+                    }
                 }
             }
 
