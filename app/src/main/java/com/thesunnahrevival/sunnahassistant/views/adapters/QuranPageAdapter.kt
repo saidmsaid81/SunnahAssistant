@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
@@ -29,24 +30,29 @@ class QuranPageAdapter(
     override fun getItemCount(): Int = pageNumbers.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(pageNumbers[position], true)
+        holder.bind(pageNumbers[position])
     }
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(pageNumber: Int, fallbackIfFileNotExists: Boolean) {
+        fun bind(pageNumber: Int) {
+            val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
+            progressBar.visibility = View.GONE
+
             val quranPageView = view.findViewById<ImageView>(R.id.quran_page)
+            quranPageView.setImageDrawable(null)
+
+            val pageNumberView = view.findViewById<TextView>(R.id.page_number)
+            pageNumberView.text = null
+
             val highlightOverlay = view.findViewById<HighlightOverlayView>(R.id.highlight_overlay)
             highlightOverlay.tag = "overlay_$pageNumber"
 
             try {
                 val file = java.io.File(view.context.filesDir, "quran_pages/$pageNumber.png")
 
-                if (!file.exists() && fallbackIfFileNotExists) {
-                    listener.onPageNotFound(pageNumber) { pageNum, fallback ->
-                        bind(pageNum, fallback)
-                    }
-                    return
-                } else if (!file.exists()) {
+                if (!file.exists()) {
+                    progressBar.visibility = View.VISIBLE
+                    listener.onPageNotFound(pageNumber)
                     return
                 }
 
@@ -95,7 +101,7 @@ class QuranPageAdapter(
 
                 setupDarkMode(quranPageView)
 
-                view.findViewById<TextView>(R.id.page_number).text = pageNumber.toString()
+                pageNumberView.text = pageNumber.toString()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

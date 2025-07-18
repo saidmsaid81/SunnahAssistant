@@ -13,7 +13,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -27,7 +26,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
@@ -41,7 +39,6 @@ import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okio.IOException
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
@@ -73,7 +70,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         val currentPage = args.surah.startPage
 
         quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
-        quranReaderBinding.viewPager.offscreenPageLimit = 1
+        quranReaderBinding.viewPager.offscreenPageLimit = 2
         quranReaderBinding.viewPager.adapter = quranPageAdapter
         quranReaderBinding.viewPager.reduceDragSensitivity(4)
         quranReaderBinding.viewPager.registerOnPageChangeCallback(pageChangeCallback)
@@ -164,8 +161,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     }
 
     override fun onPageNotFound(
-        pageNumber: Int,
-        callback: (pageNumber: Int, fallbackIfFileNotExists: Boolean) -> Unit
+        pageNumber: Int
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             if (!viewmodel.hasSeenDownloadFilesDialog && !viewmodel.isHideDownloadFilePrompt()) {
@@ -177,7 +173,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                             requireActivity().supportFragmentManager,
                             "download_files"
                         )
-                        viewmodel.hasSeenDownloadFilesDialog = true
                     }
                 }
             }
@@ -188,7 +183,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 e.printStackTrace()
             }
             withContext(Dispatchers.Main) {
-                callback(pageNumber, false)
+                quranReaderBinding.viewPager.adapter?.notifyItemChanged((pageNumber - 1))
             }
         }
     }
