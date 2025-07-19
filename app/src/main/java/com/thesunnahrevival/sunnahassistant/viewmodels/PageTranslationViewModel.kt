@@ -32,24 +32,4 @@ class PageTranslationViewModel(application: Application) : AyahTranslationViewMo
             this@PageTranslationViewModel.selectedPageNumber.emit(selectedPageNumber)
         }
     }
-
-    fun nextPage() {
-        viewModelScope.launch {
-            selectedPageNumber.replayCache.firstOrNull()?.let { pageNumber ->
-                if (pageNumber < 604) {
-                    selectedPageNumber.emit(pageNumber + 1)
-                }
-            }
-        }
-    }
-
-    fun previousPage() {
-        viewModelScope.launch {
-            selectedPageNumber.replayCache.firstOrNull()?.let { pageNumber ->
-                if (pageNumber > 1) {
-                    selectedPageNumber.emit(pageNumber - 1)
-                }
-            }
-        }
-    }
 }
