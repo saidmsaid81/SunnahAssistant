@@ -30,6 +30,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.utilities.Encryption
@@ -59,6 +60,15 @@ import kotlin.math.roundToLong
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
     private val flagRepository: FlagRepository = FlagRepository.getInstance(application)
+
+    private val resourcesRepository: ResourcesRepository = ResourcesRepository.getInstance(application)
+
+    init {
+        viewModelScope.launch {
+            resourcesRepository.prepopulateQuranData()
+        }
+    }
+
     private val mutex = Mutex()
 
     var selectedToDo =
