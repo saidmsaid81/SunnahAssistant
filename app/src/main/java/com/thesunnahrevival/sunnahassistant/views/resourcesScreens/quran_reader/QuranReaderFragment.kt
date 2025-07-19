@@ -188,6 +188,22 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         }
     }
 
+    override fun onDownloadAllPagesRequested() {
+        val fragment = DownloadFileBottomSheetFragment()
+        
+        val args = Bundle().apply {
+            putBoolean("auto_start_download", true)
+        }
+        fragment.arguments = args
+        
+        if (!fragment.isVisible) {
+            fragment.show(
+                requireActivity().supportFragmentManager,
+                "download_files_from_timeout"
+            )
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mainActivityViewModel.setSelectedAyahId(null)

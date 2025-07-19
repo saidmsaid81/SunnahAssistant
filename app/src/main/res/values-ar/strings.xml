@@ -395,6 +395,8 @@
   <string name="tap_to_read_quran">اضغط لقراءة القرآن</string>
   <string name="downloading_failed">فشل تنزيل ملفات القرآن</string>
   <string name="notifications_for_download_completion_and_errors">إشعارات عند اكتمال التنزيل والأخطاء</string>
+  <string name="page_loading_timeout_message">تستغرق الصفحة وقتاً أطول للتحميل؟ قم بتنزيل جميع صفحات القرآن للوصول السريع والقراءة دون اتصال.</string>
+  <string name="download_all_pages">تحميل جميع الصفحات</string>
   <string name="retry">إعادة المحاولة</string>
   <string name="network_error">حدث خطأ. يرجى التأكد من وجود اتصال إنترنت مستقر</string>
   <string-array name="categories">

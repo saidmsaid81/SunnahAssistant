@@ -8,5 +8,5 @@ interface QuranPageInteractionListener {
     fun onQuranPageLongClick(view: View, highlightOverlay: HighlightOverlayView)
     fun setLastTouchCoordinates(x: Float, y: Float)
     fun onPageNotFound(pageNumber: Int)
-
+    fun onDownloadAllPagesRequested()
 }

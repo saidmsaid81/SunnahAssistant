@@ -7,10 +7,12 @@ import android.content.res.Configuration
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +21,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
@@ -87,6 +91,15 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        
+        // Check if auto-start download is requested
+        val autoStartDownload = arguments?.getBoolean("auto_start_download", false) ?: false
+
+        if (autoStartDownload) {
+            requestNotificationPermission()
+            viewModel.downloadQuranFiles()
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
                 SunnahAssistantTheme {
@@ -98,7 +111,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                             networkCapabilities = networkCapabilities,
                             disableDownloadFilesPrompt = { viewModel.disableDownloadFilesPrompt() },
                             enableDownloadFilesPrompt = { viewModel.enableDownloadFilesPrompt() },
-                            downloadQuranFiles = { viewModel.downloadQuranFiles() },
+                            downloadQuranFiles = { viewModel.downloadQuranFiles() }
                         )
                         is DownloadInProgressState -> {
                             if ((downloadUIState as DownloadInProgressState).downloadProgress == DownloadManager.NotInitiated) {
@@ -106,7 +119,7 @@ class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
                                     networkCapabilities = networkCapabilities,
                                     disableDownloadFilesPrompt = { viewModel.disableDownloadFilesPrompt() },
                                     enableDownloadFilesPrompt = { viewModel.enableDownloadFilesPrompt() },
-                                    downloadQuranFiles = { viewModel.downloadQuranFiles() },
+                                    downloadQuranFiles = { viewModel.downloadQuranFiles() }
                                 )
                             } else {
                                 val hasNotificationPermission =

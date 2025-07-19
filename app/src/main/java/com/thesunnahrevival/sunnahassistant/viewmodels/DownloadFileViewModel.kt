@@ -82,6 +82,21 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun downloadQuranFiles() {
+        val workManager = WorkManager.getInstance(getApplication())
+        val workInfos = workManager.getWorkInfosByTag(DOWNLOAD_WORK_TAG)
+        try {
+            val isWorkRunning = workInfos.get().any { workInfo ->
+                workInfo.state == androidx.work.WorkInfo.State.RUNNING || 
+                workInfo.state == androidx.work.WorkInfo.State.ENQUEUED
+            }
+            
+            if (isWorkRunning) {
+                return
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         //Clear any download completion/error notifications
         val notificationManager = getApplication<Application>().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(DOWNLOAD_COMPLETE_NOTIFICATION_ID)
@@ -90,7 +105,7 @@ class DownloadFileViewModel(application: Application) : AndroidViewModel(applica
             .addTag(DOWNLOAD_WORK_TAG)
             .build()
 
-        WorkManager.getInstance(getApplication()).enqueue(downloadRequest)
+        workManager.enqueue(downloadRequest)
     }
 
     fun cancelDownload() {
