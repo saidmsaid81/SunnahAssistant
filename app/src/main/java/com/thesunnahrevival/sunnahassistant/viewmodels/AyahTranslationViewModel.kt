@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.repositories.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 open class AyahTranslationViewModel(application: Application) : TranslationViewModel(application) {
 
-    private val mQuranRepository = QuranRepository.getInstance(getApplication())
+    private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
 
     private val _selectedAyah = MutableStateFlow<FullAyahDetails?>(null)
     val selectedAyah = _selectedAyah.asStateFlow()
@@ -26,14 +26,14 @@ open class AyahTranslationViewModel(application: Application) : TranslationViewM
         _selectedAyah.update { ayah }
     }
 
-    suspend fun getAyahById(ayahId: Int) = mQuranRepository.getFullAyahDetailsById(ayahId)
+    suspend fun getAyahById(ayahId: Int) = quranTranslationRepository.getFullAyahDetailsById(ayahId)
 
     fun toggleFootnote(ayahTranslationId: Int, footnoteNumber: Int) {
         val footnoteKey = "$ayahTranslationId-$footnoteNumber"
 
         if (_visibleFootnotes.remove(footnoteKey) == null) {
             viewModelScope.launch {
-                mQuranRepository.getFootnote(ayahTranslationId, footnoteNumber)?.let { footnote ->
+                quranTranslationRepository.getFootnote(ayahTranslationId, footnoteNumber)?.let { footnote ->
                     _visibleFootnotes[footnoteKey] = footnote
                 }
             }

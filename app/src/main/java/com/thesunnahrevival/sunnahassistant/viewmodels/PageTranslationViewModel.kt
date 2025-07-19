@@ -2,8 +2,8 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.repositories.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PageTranslationViewModel(application: Application) : AyahTranslationViewModel(application) {
-    private val mQuranRepository = QuranRepository.getInstance(getApplication())
+    private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
     private val _ayahDetails = MutableStateFlow<List<FullAyahDetails>>(emptyList())
     val ayahDetails: StateFlow<List<FullAyahDetails>> = _ayahDetails.asStateFlow()
 
@@ -22,7 +22,7 @@ class PageTranslationViewModel(application: Application) : AyahTranslationViewMo
     init {
         viewModelScope.launch(Dispatchers.IO) {
             selectedPageNumber.collect { pageNumber ->
-                _ayahDetails.update { mQuranRepository.getFullAyahDetailsByPageNumber(pageNumber) }
+                _ayahDetails.update { quranTranslationRepository.getFullAyahDetailsByPageNumber(pageNumber) }
             }
         }
     }

@@ -7,7 +7,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.thesunnahrevival.sunnahassistant.data.repositories.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import kotlinx.coroutines.flow.Flow

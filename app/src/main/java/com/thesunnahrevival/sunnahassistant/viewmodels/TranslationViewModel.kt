@@ -3,8 +3,8 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.repositories.QuranRepository
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 open class TranslationViewModel(application: Application) : AndroidViewModel(application) {
-    private val mQuranRepository: QuranRepository =
-        QuranRepository.getInstance(application)
+    private val quranTranslationRepository =
+        QuranTranslationRepository.getInstance(application)
 
-    val translationUiState = mQuranRepository.getTranslations().map { translations ->
+    val translationUiState = quranTranslationRepository.getTranslations().map { translations ->
         TranslationUiState(
             allTranslations = translations,
             selectedTranslations = translations.filter { it.selected }
@@ -29,7 +29,7 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
     fun toggleTranslationSelection(translation: Translation) {
         viewModelScope.launch(Dispatchers.IO) {
             val updatedTranslation = translation.copy(selected = !translation.selected)
-            mQuranRepository.updateTranslation(updatedTranslation)
+            quranTranslationRepository.updateTranslation(updatedTranslation)
         }
     }
 
