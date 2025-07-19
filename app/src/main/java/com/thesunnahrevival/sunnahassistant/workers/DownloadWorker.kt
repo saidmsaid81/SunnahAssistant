@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.CoroutineWorker
@@ -97,7 +96,10 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
             getDownloadState()
         }
 
-        val response = downloadFileRepository.downloadFile(resumeFromByte)
+        val response = downloadFileRepository.downloadFile(
+            downloadFileRepository.getResourceLinks().body()?.quranZipFileLink ?: return,
+            resumeFromByte
+        )
 
         if (response?.isSuccessful == true) {
             response.body()?.let { responseBody ->

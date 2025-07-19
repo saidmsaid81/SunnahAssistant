@@ -7,4 +7,7 @@ import androidx.room.Query
 interface AppSettingsDao {
     @Query("UPDATE app_settings SET hideDownloadFilePrompt = :value WHERE id = 1")
     suspend fun updateHideDownloadFilePrompt(value: Boolean)
+
+    @Query("SELECT hideDownloadFilePrompt FROM app_settings WHERE id = 1 ")
+    suspend fun isHideDownloadFilePrompt(): Boolean
 }

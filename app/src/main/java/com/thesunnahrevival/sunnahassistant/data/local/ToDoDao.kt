@@ -230,7 +230,4 @@ interface ToDoDao {
 
     @Query("UPDATE app_settings SET isShowHijriDateWidget =:isShowHijriDateWidget, isShowNextReminderWidget =:isDisplayNextToDo WHERE id = 1")
     suspend fun updateWidgetSettings(isShowHijriDateWidget: Boolean, isDisplayNextToDo: Boolean)
-
-    @Query("SELECT hideDownloadFilePrompt FROM app_settings WHERE id = 1 ")
-    suspend fun isHideDownloadFilePrompt(): Boolean
 }

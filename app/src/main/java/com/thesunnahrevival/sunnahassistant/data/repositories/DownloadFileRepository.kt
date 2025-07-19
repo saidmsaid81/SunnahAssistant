@@ -21,16 +21,17 @@ class DownloadFileRepository private constructor(
     suspend fun updateHideDownloadFilePrompt(value: Boolean) =
         appSettingsDao.updateHideDownloadFilePrompt(value)
 
-    suspend fun downloadFile(rangeStart: Long = 0): Response<ResponseBody>? {
+    suspend fun isHideDownloadFilePrompt() = appSettingsDao.isHideDownloadFilePrompt()
+
+    suspend fun getResourceLinks() = resourceApiRestApi.getResourceLinks()
+
+    suspend fun downloadFile(url: String, rangeStart: Long = 0): Response<ResponseBody>? {
         return try {
-            val response = resourceApiRestApi.getResourceLinks()
-            response.body()?.let { resourceLink ->
-                if (rangeStart > 0) {
-                    val rangeHeader = "bytes=$rangeStart-"
-                    resourceApiRestApi.downloadFileWithRange(rangeHeader, resourceLink.quranZipFileLink)
-                } else {
-                    resourceApiRestApi.downloadFile(resourceLink.quranZipFileLink)
-                }
+            if (rangeStart > 0) {
+                val rangeHeader = "bytes=$rangeStart-"
+                resourceApiRestApi.downloadFileWithRange(rangeHeader, url)
+            } else {
+                resourceApiRestApi.downloadFile(url)
             }
         } catch (e: Exception) {
             e.printStackTrace()

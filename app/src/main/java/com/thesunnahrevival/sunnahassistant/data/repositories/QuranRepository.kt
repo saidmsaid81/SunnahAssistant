@@ -51,14 +51,7 @@ class QuranRepository private constructor(
     suspend fun getFullAyahDetailsByPageNumber(pageNumber: Int) =
         ayahDao.getFullAyahDetailsByPageNumber(pageNumber)
 
-    suspend fun getResourceLinks(): ResourceLinks? {
-        val response = resourceLinksRestApi.getResourceLinks()
-        return response.body()
-    }
 
-    suspend fun downloadFile(url: String) = resourceLinksRestApi.downloadFile(url)
-
-    suspend fun isHideDownloadFilePrompt() = toDoDao.isHideDownloadFilePrompt()
 
     companion object {
         @Volatile
