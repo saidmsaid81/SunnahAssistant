@@ -80,10 +80,23 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
-        dialog.behavior.isDraggable = false
+        dialog.setOnShowListener {
+            val bottomSheet =
+                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.isDraggable = false
+
+                // Set the height to 60% of screen height
+                val displayMetrics = requireContext().resources.displayMetrics
+                val height = (displayMetrics.heightPixels * 0.6).toInt()
+                it.layoutParams.height = height
+                dialog.window?.setDimAmount(0f)
+            }
+        }
 
         return dialog
     }
