@@ -15,6 +15,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.repositories.DownloadFileRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.receivers.DownloadRetryReceiver
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOADS_NOTIFICATION_CHANNEL_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICATION_CHANNEL_ID
@@ -22,11 +23,19 @@ import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_COMPLETE_NOTIFICA
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.DOWNLOAD_WORK_TAG
 import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
-import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Cancelled
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Completed
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.DownloadProgress
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Downloading
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Error
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Extracting
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.NetworkError
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.Preparing
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.roundTo
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -35,7 +44,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.zip.ZipInputStream
 import kotlin.math.roundToInt
-import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 
 private const val FILE_SIZE_DECIMAL_PLACES = 1
 private const val BYTES_IN_1_KB = 1024L
@@ -67,9 +75,11 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
             Result.success()
         } catch (e: CancellationException) {
             e.printStackTrace()
-            cleanupTempFiles()
-            clearDownloadState()
-            clearResumeAttempts()
+            withContext(NonCancellable) {
+                cleanupTempFiles()
+                clearDownloadState()
+                clearResumeAttempts()
+            }
             downloadManager.updateUIProgress(Cancelled)
             Result.success()
         } catch (e: IOException) {
@@ -226,7 +236,15 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     }
 
     private fun cleanupTempFiles() {
-        tempZipFile?.delete()
+        // Try to delete using the tracked file reference first
+        val deleted = tempZipFile?.delete() == true
+
+        if (!deleted) {
+            val tempFile = File(applicationContext.filesDir, "temp.zip")
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
+        }
     }
 
     private suspend fun saveDownloadState(downloadedBytes: Long) {
