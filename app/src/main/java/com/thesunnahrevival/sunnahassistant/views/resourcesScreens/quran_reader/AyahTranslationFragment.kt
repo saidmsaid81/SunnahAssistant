@@ -62,7 +62,8 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                 { translation: Translation ->
                                     viewModel.toggleTranslationSelection(
                                         translation
-                                    )
+                                    ) {
+                                        mainActivityViewModel.refreshSelectedAyahId() }
                                 },
                                 viewModel.visibleFootnotes,
                                 { ayahTranslationId, footnoteNumber ->

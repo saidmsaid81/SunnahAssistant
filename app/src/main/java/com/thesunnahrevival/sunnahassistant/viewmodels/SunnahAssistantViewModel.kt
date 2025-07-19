@@ -639,6 +639,10 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         _selectedAyahId.value = ayahId
     }
 
+    fun refreshSelectedAyahId() {
+        _selectedAyahId.value = _selectedAyahId.value
+    }
+
     fun nextAyah() {
         val nextAyahId = selectedAyahId.value?.plus(1)
 

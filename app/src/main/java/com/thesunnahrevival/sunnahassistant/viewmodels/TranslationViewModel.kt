@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 open class TranslationViewModel(application: Application) : AndroidViewModel(application) {
     private val quranTranslationRepository =
@@ -26,10 +27,13 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
         initialValue = TranslationUiState()
     )
 
-    fun toggleTranslationSelection(translation: Translation) {
+    fun toggleTranslationSelection(translation: Translation, callback: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val updatedTranslation = translation.copy(selected = !translation.selected)
             quranTranslationRepository.updateTranslation(updatedTranslation)
+            withContext(Dispatchers.Main) {
+                callback()
+            }
         }
     }
 
