@@ -1,8 +1,14 @@
 [
   {
     "id": 1,
-    "name": "Saheeh International",
+    "name": "English: Saheeh International",
     "languageId": 1,
     "key": "english_saheeh"
+  },
+  {
+    "id": 2,
+    "name": "English: Hilali & Muhsin Khan",
+    "languageId": 1,
+    "key": "english_hilali_khan"
   }
 ]
