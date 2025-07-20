@@ -6,8 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,10 +17,16 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
     private val quranTranslationRepository =
         QuranTranslationRepository.getInstance(application)
 
-    val translationUiState = quranTranslationRepository.getTranslations().map { translations ->
+    private val _translationsDownloadInProgress = MutableStateFlow<Set<Int>>(emptySet())
+
+    val translationUiState = combine(
+        quranTranslationRepository.getTranslations(),
+        _translationsDownloadInProgress
+    ) { translations, downloadingIds ->
         TranslationUiState(
             allTranslations = translations,
-            selectedTranslations = translations.filter { it.selected }
+            selectedTranslations = translations.filter { it.selected },
+            translationsDownloadInProgress = translations.filter { it.id in downloadingIds }
         )
     }.stateIn(
         scope = viewModelScope,
@@ -29,8 +36,10 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
 
     fun toggleTranslationSelection(translation: Translation, callback: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
+            _translationsDownloadInProgress.value = _translationsDownloadInProgress.value + translation.id
             val updatedTranslation = translation.copy(selected = !translation.selected)
             quranTranslationRepository.updateTranslation(updatedTranslation)
+            _translationsDownloadInProgress.value = _translationsDownloadInProgress.value - translation.id
             withContext(Dispatchers.Main) {
                 callback()
             }
@@ -39,6 +48,7 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
 
     data class TranslationUiState(
         val allTranslations: List<Translation> = listOf(),
-        val selectedTranslations: List<Translation> = listOf()
+        val selectedTranslations: List<Translation> = listOf(),
+        val translationsDownloadInProgress: List<Translation> = listOf()
     )
 }

@@ -398,6 +398,7 @@
     <string name="network_error">An error occurred. Please ensure you have a stable internet connection</string>
     <string name="maintenance_notifications_channel_title">Maintenance Notifications</string>
     <string name="maintenance_notifications_channel_description">Notifications used by the app to ensure reliable delivery of scheduled reminders</string>
+    <string name="downloading_translation_please_wait">Downloading %s translation… Please wait.</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

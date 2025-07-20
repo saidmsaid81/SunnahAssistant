@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.Surface
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
@@ -49,14 +50,14 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
             setContent {
                 SunnahAssistantTheme {
                     Surface {
-                        val selectedAyah = viewModel.selectedAyah.collectAsState()
-                        selectedAyah.value?.let {
-                            val translationUiState =
-                                viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
+                        val selectedAyah by viewModel.selectedAyah.collectAsState()
+                        selectedAyah?.let {
+                            val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                             SheetContent(
                                 it,
-                                translationUiState.value.allTranslations,
-                                translationUiState.value.selectedTranslations,
+                                translationUiState.allTranslations,
+                                translationUiState.selectedTranslations,
+                                translationUiState.translationsDownloadInProgress,
                                 { mainActivityViewModel.nextAyah() },
                                 { mainActivityViewModel.previousAyah() },
                                 { translation: Translation ->

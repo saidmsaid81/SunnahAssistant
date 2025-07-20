@@ -59,17 +59,19 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                             state = pagerState,
                             modifier = Modifier.fillMaxSize()
                         ) { _ ->
-                            val translationUiState =
+                            val translationUiState by
                                 viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
-                            val allTranslations = translationUiState.value.allTranslations
-                            val selectedTranslations = translationUiState.value.selectedTranslations
+                            val allTranslations = translationUiState.allTranslations
+                            val selectedTranslations = translationUiState.selectedTranslations
+                            val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
                             val ayahFullDetailsList by viewModel.ayahDetails.collectAsState()
 
                             LazyColumn(modifier = Modifier.padding(16.dp)) {
                                 item {
                                     TranslationDropdown(
                                         allTranslations,
-                                        selectedTranslations
+                                        selectedTranslations,
+                                        translationsDownloadInProgress
                                     ) { translation: Translation ->
                                         viewModel.toggleTranslationSelection(translation) {
                                             mainActivityViewModel.refreshSelectedAyahId()
@@ -97,6 +99,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                     AyahTranslations(
                                         ayahFullDetail,
                                         selectedTranslations,
+                                        translationsDownloadInProgress,
                                         viewModel.visibleFootnotes,
                                         { ayahTranslationId, footnoteNumber ->
                                             viewModel.toggleFootnote(

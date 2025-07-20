@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -50,6 +52,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
@@ -62,6 +65,7 @@ fun SheetContent(
     selectedAyah: FullAyahDetails,
     translations: List<Translation>,
     selectedTranslations: List<Translation>,
+    translationsDownloadInProgress: List<Translation>,
     nextAyah: () -> Unit,
     previousAyah: () -> Unit,
     onSelection: (Translation) -> Unit,
@@ -84,7 +88,7 @@ fun SheetContent(
             Alignment.CenterHorizontally
         )
 
-        TranslationDropdown(translations, selectedTranslations, onSelection)
+        TranslationDropdown(translations, selectedTranslations, translationsDownloadInProgress, onSelection)
 
         LazyColumn(
             modifier = Modifier
@@ -95,6 +99,7 @@ fun SheetContent(
                 AyahTranslations(
                     selectedAyah,
                     selectedTranslations,
+                    translationsDownloadInProgress,
                     visibleFootnotes,
                     onFootnoteClick,
                     modifier = Modifier.fillMaxWidth(),
@@ -244,6 +249,7 @@ fun ShareIcon(
 fun AyahTranslations(
     selectedAyah: FullAyahDetails,
     selectedTranslations: List<Translation>,
+    translationsDownloadInProgress: List<Translation>,
     visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
     modifier: Modifier = Modifier
@@ -270,85 +276,116 @@ fun AyahTranslations(
 
         val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
 
+        translationsDownloadInProgress.forEach {
+            val ayahTranslation = AyahTranslation(
+                translationId = it.id,
+                text = stringResource(R.string.downloading_translation_please_wait, it.name),
+                ayahId = -1
+            )
+
+            Column {
+                AyahTranslationText(
+                    translationName = it.name,
+                    ayahTranslation = ayahTranslation,
+                    visibleFootnotes = visibleFootnotes,
+                    onFootnoteClick = onFootnoteClick
+                )
+            }
+        }
+
         selectedAyah.ayahTranslations
             .filter { it.translation.id in selectedTranslationIds }
             .forEach { translationWithFootnotes ->
-                Text(
-                    text = translationWithFootnotes.translation.name,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                AyahTranslationText(
+                    translationName = translationWithFootnotes.translation.name,
+                    ayahTranslation = translationWithFootnotes.ayahTranslation,
+                    visibleFootnotes = visibleFootnotes,
+                    onFootnoteClick = onFootnoteClick
+                )
+            }
+    }
+}
+
+@Composable
+private fun AyahTranslationText(
+    translationName: String,
+    ayahTranslation: AyahTranslation,
+    visibleFootnotes: Map<String, Footnote>,
+    onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
+) {
+    Text(
+        text = translationName,
+        fontSize = 14.sp,
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+    )
+
+    Column {
+        val annotatedText = buildAnnotatedString {
+            val pattern = "\\[(\\d+)\\]".toRegex()
+            var lastIndex = 0
+
+            pattern.findAll(ayahTranslation.text).forEach { matchResult ->
+                // Add text before the footnote
+                append(
+                    ayahTranslation.text.substring(
+                        lastIndex,
+                        matchResult.range.first
+                    )
                 )
 
-                Column {
-                    val ayahTranslationText = translationWithFootnotes.ayahTranslation.text
-                    val annotatedText = buildAnnotatedString {
-                        val pattern = "\\[(\\d+)\\]".toRegex()
-                        var lastIndex = 0
-
-                        pattern.findAll(ayahTranslationText).forEach { matchResult ->
-                            // Add text before the footnote
-                            append(
-                                ayahTranslationText.substring(
-                                    lastIndex,
-                                    matchResult.range.first
-                                )
+                withLink(
+                    LinkAnnotation.Clickable(
+                        tag = "footnote",
+                        linkInteractionListener = {
+                            onFootnoteClick(
+                                ayahTranslation.id,
+                                matchResult.groupValues[1].toInt()
                             )
-
-                            withLink(
-                                LinkAnnotation.Clickable(
-                                    tag = "footnote",
-                                    linkInteractionListener = {
-                                        onFootnoteClick(
-                                            translationWithFootnotes.ayahTranslation.id,
-                                            matchResult.groupValues[1].toInt()
-                                        )
-                                    })
-                            ) {
-                                withStyle(
-                                    style = SpanStyle(
-                                        baselineShift = BaselineShift.Superscript,
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colors.primary
-                                    )
-                                ) {
-                                    append(matchResult.groupValues[1])
-                                }
-                            }
-
-                            lastIndex = matchResult.range.last + 1
-                        }
-
-                        // Append remaining text
-                        if (lastIndex < ayahTranslationText.length) {
-                            append(ayahTranslationText.substring(lastIndex))
-                        }
-                    }
-
-                    Text(
-                        text = annotatedText,
-                        style = MaterialTheme.typography.body1.copy(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colors.onSurface
-                        ),
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-
-                    // Display footnotes if visible
-                    val pattern = "\\[(\\d+)\\]".toRegex()
-                    pattern.findAll(ayahTranslationText).forEach { matchResult ->
-                        val footnoteNumber = matchResult.groupValues[1].toInt()
-                        val footnoteKey =
-                            "${translationWithFootnotes.ayahTranslation.id}-$footnoteNumber"
-
-                        visibleFootnotes[footnoteKey]?.let { footnote ->
-                            FootnoteText(footnote.number, footnote.text)
-                        }
+                        })
+                ) {
+                    withStyle(
+                        style = SpanStyle(
+                            baselineShift = BaselineShift.Superscript,
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colors.primary
+                        )
+                    ) {
+                        append(matchResult.groupValues[1])
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                lastIndex = matchResult.range.last + 1
             }
+
+            // Append remaining text
+            if (lastIndex < ayahTranslation.text.length) {
+                append(ayahTranslation.text.substring(lastIndex))
+            }
+        }
+
+        Text(
+            text = annotatedText,
+            style = MaterialTheme.typography.body1.copy(
+                fontSize = 16.sp,
+                color = MaterialTheme.colors.onSurface
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        // Display footnotes if visible
+        val pattern = "\\[(\\d+)\\]".toRegex()
+        pattern.findAll(ayahTranslation.text).forEach { matchResult ->
+            val footnoteNumber = matchResult.groupValues[1].toInt()
+            val footnoteKey =
+                "${ayahTranslation.id}-$footnoteNumber"
+
+            visibleFootnotes[footnoteKey]?.let { footnote ->
+                FootnoteText(footnote.number, footnote.text)
+            }
+        }
     }
+
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
@@ -384,9 +421,11 @@ private fun FootnoteText(number: Int, text: String) {
 fun TranslationDropdown(
     translations: List<Translation>,
     selectedTranslations: List<Translation>,
+    translationsDownloadInProgress: List<Translation>,
     onSelection: (Translation) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val translationsDownloadInProgressIds = translationsDownloadInProgress.map { it.id }.toSet()
 
     Column(
         modifier = Modifier
@@ -435,11 +474,27 @@ fun TranslationDropdown(
                             .padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SunnahAssistantCheckbox(
-                            text = translation.name,
-                            checked = translation.selected,
-                            onSelection = { onSelection(translation) }
-                        )
+                        if (!translationsDownloadInProgressIds.contains(translation.id)) {
+                            SunnahAssistantCheckbox(
+                                text = translation.name,
+                                checked = translation.selected,
+                                onSelection = { onSelection(translation) }
+                            )
+                        } else {
+                            Box {
+                                SunnahAssistantCheckbox(
+                                    text = translation.name,
+                                    checked = translation.selected,
+                                    onSelection = {  }
+                                )
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .align(Alignment.CenterStart)
+                                        .offset(x = 15.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }

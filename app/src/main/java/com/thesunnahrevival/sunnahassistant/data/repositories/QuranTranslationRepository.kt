@@ -53,6 +53,7 @@ class QuranTranslationRepository private constructor(
     fun getTranslations() = translationDao.getTranslations()
 
     suspend fun updateTranslation(translation: Translation): Boolean {
+        translationDao.updateTranslation(translation)
         if (translation.selected && !ayahTranslationDao.exists(translation.id)) {
             if (resourcesLink == null) {
                 resourcesLink = resourceApiRestApi.getResourceLinks().body()?.translationLink ?: return false
@@ -101,7 +102,6 @@ class QuranTranslationRepository private constructor(
                 }
             }
         }
-        translationDao.updateTranslation(translation)
         return true
     }
 
