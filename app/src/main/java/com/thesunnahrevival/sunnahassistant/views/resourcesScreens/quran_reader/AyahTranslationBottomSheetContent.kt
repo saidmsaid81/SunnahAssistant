@@ -276,6 +276,17 @@ fun AyahTranslations(
 
         val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
 
+        selectedAyah.ayahTranslations
+            .filter { it.translation.id in selectedTranslationIds }
+            .forEach { translationWithFootnotes ->
+                AyahTranslationText(
+                    translationName = translationWithFootnotes.translation.name,
+                    ayahTranslation = translationWithFootnotes.ayahTranslation,
+                    visibleFootnotes = visibleFootnotes,
+                    onFootnoteClick = onFootnoteClick
+                )
+            }
+
         translationsDownloadInProgress.forEach {
             val ayahTranslation = AyahTranslation(
                 translationId = it.id,
@@ -292,17 +303,6 @@ fun AyahTranslations(
                 )
             }
         }
-
-        selectedAyah.ayahTranslations
-            .filter { it.translation.id in selectedTranslationIds }
-            .forEach { translationWithFootnotes ->
-                AyahTranslationText(
-                    translationName = translationWithFootnotes.translation.name,
-                    ayahTranslation = translationWithFootnotes.ayahTranslation,
-                    visibleFootnotes = visibleFootnotes,
-                    onFootnoteClick = onFootnoteClick
-                )
-            }
     }
 }
 
