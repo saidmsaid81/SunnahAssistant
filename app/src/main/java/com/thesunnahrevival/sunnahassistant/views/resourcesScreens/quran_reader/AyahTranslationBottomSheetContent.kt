@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -78,6 +80,9 @@ fun SheetContent(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
         GrayLine(modifier = Modifier.align(Alignment.CenterHorizontally))
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -85,8 +90,7 @@ fun SheetContent(
         AyahTitle(
             selectedAyah.surah.transliteratedName,
             stringResource(R.string.ayah_number, selectedAyah.ayah.number),
-            modifier = Modifier.fillMaxWidth(),
-            Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxWidth()
         )
 
         TranslationDropdown(translations, selectedTranslations, translationsDownloadInProgress, onSelection)
@@ -110,24 +114,45 @@ fun SheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AyahInteractionRow(
-            selectedAyah,
-            selectedTranslations,
-            LocalContext.current,
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        )
+        if (isLandscape) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Next {
+                    nextAyah()
+                }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Next {
-                nextAyah()
+                AyahInteractionRow(
+                    selectedAyah,
+                    selectedTranslations,
+                    LocalContext.current,
+                    Modifier
+                        .padding(bottom = 16.dp)
+                        .weight(1f)
+                )
+
+                Previous {
+                    previousAyah()
+                }
             }
+        } else {
+            AyahInteractionRow(
+                selectedAyah,
+                selectedTranslations,
+                LocalContext.current,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Next {
+                    nextAyah()
+                }
 
-            Previous {
-                previousAyah()
+                Spacer(modifier = Modifier.weight(1f))
+
+                Previous {
+                    previousAyah()
+                }
             }
         }
     }
@@ -508,25 +533,52 @@ fun TranslationDropdown(
 fun AyahTitle(
     title: String,
     subTitle: String,
-    modifier: Modifier,
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start
+    modifier: Modifier
 ) {
-    Column(
-        horizontalAlignment = horizontalAlignment,
-        modifier = modifier
-    ) {
-        Text(
-            text = title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        Text(
-            text = stringResource(id = R.string.ayah_number, subTitle.split(" ")[1].toInt()),
-            fontSize = 12.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+    if (isLandscape) {
+        Row(
+            modifier = modifier
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = stringResource(id = R.string.ayah_number, subTitle.split(" ")[1].toInt()),
+                fontSize = 16.sp,
+            )
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Text(
+                text = stringResource(id = R.string.ayah_number, subTitle.split(" ")[1].toInt()),
+                fontSize = 12.sp,
+            )
+        }
     }
 }
 
