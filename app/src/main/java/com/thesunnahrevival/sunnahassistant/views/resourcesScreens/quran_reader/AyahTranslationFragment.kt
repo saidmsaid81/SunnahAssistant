@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.app.Dialog
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,20 +85,27 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
-        dialog.setOnShowListener {
-            val bottomSheet =
-                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let {
-                val behavior = BottomSheetBehavior.from(it)
-                behavior.isDraggable = false
+       dialog.setOnShowListener {
+           val bottomSheet =
+               dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+           bottomSheet?.let {
+               val behavior = BottomSheetBehavior.from(it)
+               behavior.isDraggable = false
 
-                // Set the height to 60% of screen height
-                val displayMetrics = requireContext().resources.displayMetrics
-                val height = (displayMetrics.heightPixels * 0.6).toInt()
-                it.layoutParams.height = height
-                dialog.window?.setDimAmount(0f)
-            }
-        }
+               val displayMetrics = requireContext().resources.displayMetrics
+
+               if (resources.configuration.orientation != ORIENTATION_LANDSCAPE) {
+                   val height = (displayMetrics.heightPixels * 0.6).toInt()
+                   it.layoutParams.height = height
+                   dialog.window?.setDimAmount(0f)
+               } else {
+                   val height = (displayMetrics.heightPixels * 0.8).toInt()
+                   it.layoutParams.height = height
+                   behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    dialog.window?.setDimAmount(0f)
+               }
+           }
+       }
 
         return dialog
     }
