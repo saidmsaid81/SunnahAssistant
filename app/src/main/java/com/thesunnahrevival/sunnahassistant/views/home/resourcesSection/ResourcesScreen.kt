@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -30,15 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
-import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 
 @Composable
 fun ResourcesScreen(
     findNavController: NavController? = null,
+    isDataReady: Boolean = true,
     surahs: List<Surah>,
     resourceItemList: List<ResourceItem>
 ) {
@@ -57,26 +59,30 @@ fun ResourcesScreen(
             ) {
                 ResourceTitle(title = stringResource(R.string.quran))
 
-                Column {
-                    surahs.forEachIndexed { index, surah ->
-                        SurahItem(surah, isArabic()) {
-                            findNavController?.navigate(
-                                ResourcesFragmentDirections.toQuranReaderFragment(
-                                    surah
+                if (isDataReady) {
+                    Column {
+                        surahs.forEachIndexed { index, surah ->
+                            SurahItem(surah, isArabic()) {
+                                findNavController?.navigate(
+                                    ResourcesFragmentDirections.toQuranReaderFragment(
+                                        surah
+                                    )
                                 )
-                            )
-                        }
+                            }
 
-                        if (index == surahs.lastIndex) {
-                            ResourceCard(
-                                title = stringResource(R.string.more),
-                                subtitle = stringResource(R.string.tap_to_view_all_surahs),
-                                resourceNumber = ""
-                            ) {
-                                findNavController?.navigate(R.id.surahList)
+                            if (index == surahs.lastIndex) {
+                                ResourceCard(
+                                    title = stringResource(R.string.more),
+                                    subtitle = stringResource(R.string.tap_to_view_all_surahs),
+                                    resourceNumber = ""
+                                ) {
+                                    findNavController?.navigate(R.id.surahList)
+                                }
                             }
                         }
                     }
+                } else {
+                    CircularProgressIndicator()
                 }
 
                 ResourceTitle(title = stringResource(R.string.hadith))

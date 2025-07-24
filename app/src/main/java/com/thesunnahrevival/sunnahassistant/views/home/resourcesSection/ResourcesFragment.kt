@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 
@@ -25,14 +24,15 @@ class ResourcesFragment : MenuBarFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return ComposeView(requireContext()).apply {
             setContent {
-                val surahs by
-                viewModel.getFirst5Surahs().collectAsState(initial = listOf())
+                val surahs by viewModel.getFirst5Surahs().collectAsState(initial = listOf())
+                val isDataReady by mainActivityViewModel.prepopulateQuranDataCompletionStatus.collectAsState(initial = true)
                 val resourceItems = viewModel.resourceItems()
 
                 ResourcesScreen(
-                    findNavController(),
-                    surahs,
-                    resourceItems
+                    findNavController = findNavController(),
+                    isDataReady = isDataReady,
+                    surahs = surahs,
+                    resourceItemList = resourceItems
                 )
             }
         }
