@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "71fe88f1320624981786212fd29c006e",
+    "identityHash": "239fc78c176d5a9777799c8982ffe3ee",
     "entities": [
       {
         "tableName": "reminders_table",
@@ -714,7 +714,7 @@
       },
       {
         "tableName": "translations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `language_id` INTEGER NOT NULL, `key` TEXT NOT NULL, `selected` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`language_id`) REFERENCES `languages`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `language_id` INTEGER NOT NULL, `key` TEXT NOT NULL, `selected` INTEGER NOT NULL, `order` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`language_id`) REFERENCES `languages`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -745,6 +745,12 @@
             "columnName": "selected",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -772,7 +778,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '71fe88f1320624981786212fd29c006e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '239fc78c176d5a9777799c8982ffe3ee')"
     ]
   }
 }

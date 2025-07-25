@@ -19,5 +19,6 @@ data class Translation(
     val name: String,
     @ColumnInfo(name = "language_id") val languageId: Int,
     val key: String,
-    var selected: Boolean = false
+    var selected: Boolean = false,
+    var order: Int? = null
 )

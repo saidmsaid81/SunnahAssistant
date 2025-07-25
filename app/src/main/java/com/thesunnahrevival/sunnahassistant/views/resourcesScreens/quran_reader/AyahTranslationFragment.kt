@@ -63,7 +63,8 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                 { mainActivityViewModel.previousAyah() },
                                 { translation: Translation ->
                                     viewModel.toggleTranslationSelection(
-                                        translation
+                                        translation,
+                                        translationUiState.selectedTranslations.size
                                     ) {
                                         mainActivityViewModel.refreshSelectedAyahId() }
                                 },

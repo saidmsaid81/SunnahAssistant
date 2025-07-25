@@ -34,11 +34,12 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
         initialValue = TranslationUiState()
     )
 
-    fun toggleTranslationSelection(translation: Translation, callback: () -> Unit) {
+    fun toggleTranslationSelection(translation: Translation, order: Int, callback: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             _translationsDownloadInProgress.value = _translationsDownloadInProgress.value + translation.id
 
             val updatedTranslation = translation.copy(selected = !translation.selected)
+            updatedTranslation.order = if (updatedTranslation.selected) order else null
             quranTranslationRepository.updateTranslation(updatedTranslation)
 
             _translationsDownloadInProgress.value = _translationsDownloadInProgress.value - translation.id

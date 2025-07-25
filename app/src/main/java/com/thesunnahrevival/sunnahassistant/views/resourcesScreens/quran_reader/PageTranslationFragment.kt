@@ -73,7 +73,10 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                         selectedTranslations,
                                         translationsDownloadInProgress
                                     ) { translation: Translation ->
-                                        viewModel.toggleTranslationSelection(translation) {
+                                        viewModel.toggleTranslationSelection(
+                                            translation,
+                                            translationUiState.selectedTranslations.size
+                                        ) {
                                             mainActivityViewModel.refreshSelectedAyahId()
                                         }
                                     }

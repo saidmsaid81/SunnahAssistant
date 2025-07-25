@@ -33,7 +33,7 @@ import java.util.TreeSet
 
 @Database(
     entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class],
-    version = 9,
+    version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
     )
@@ -245,6 +245,11 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_9_10: Migration = object : Migration(9, 10) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE translations ADD COLUMN `order` INTEGER")
+            }
+        }
 
         fun getInstance(context: Context): SunnahAssistantDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -284,7 +289,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 MIGRATION_3_4,
                 MIGRATION_4_5,
                 MIGRATION_5_6,
-                MIGRATION_6_7
+                MIGRATION_6_7,
+                MIGRATION_9_10
             )
             .build()
     }

@@ -284,6 +284,13 @@ fun AyahTranslations(
     val baseTextSize = 18.sp
     val arabicTextScale = 1.4f
 
+    val sortedTranslations = remember(selectedAyah.ayahTranslations, selectedTranslations) {
+        val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
+        selectedAyah.ayahTranslations
+            .filter { it.translation.id in selectedTranslationIds }
+            .sortedBy { it.translation.order }
+    }
+
     Column(modifier = modifier) {
         Text(
             text = ArabicTextUtils.formatArabicText(selectedAyah.ayah.arabicText),
@@ -300,18 +307,14 @@ fun AyahTranslations(
             )
         )
 
-        val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
-
-        selectedAyah.ayahTranslations
-            .filter { it.translation.id in selectedTranslationIds }
-            .forEach { translationWithFootnotes ->
-                AyahTranslationText(
-                    translationName = translationWithFootnotes.translation.name,
-                    ayahTranslation = translationWithFootnotes.ayahTranslation,
-                    visibleFootnotes = visibleFootnotes,
-                    onFootnoteClick = onFootnoteClick
-                )
-            }
+        sortedTranslations.forEach { translationWithFootnotes ->
+            AyahTranslationText(
+                translationName = translationWithFootnotes.translation.name,
+                ayahTranslation = translationWithFootnotes.ayahTranslation,
+                visibleFootnotes = visibleFootnotes,
+                onFootnoteClick = onFootnoteClick
+            )
+        }
 
         translationsDownloadInProgress.forEach {
             val ayahTranslation = AyahTranslation(
