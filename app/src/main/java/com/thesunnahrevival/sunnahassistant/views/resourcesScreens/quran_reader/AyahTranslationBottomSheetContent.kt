@@ -33,10 +33,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,10 +74,17 @@ fun SheetContent(
     visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit
 ) {
+    val expanded = remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .clickable(
+                onClick = { expanded.value = false },
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                indication = null
+            )
     ) {
         val configuration = LocalConfiguration.current
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -93,7 +99,7 @@ fun SheetContent(
             modifier = Modifier.fillMaxWidth()
         )
 
-        TranslationDropdown(translations, selectedTranslations, translationsDownloadInProgress, onSelection)
+        TranslationDropdown(translations, selectedTranslations, translationsDownloadInProgress,  expanded, onSelection)
 
         LazyColumn(
             modifier = Modifier
@@ -451,9 +457,9 @@ fun TranslationDropdown(
     translations: List<Translation>,
     selectedTranslations: List<Translation>,
     translationsDownloadInProgress: List<Translation>,
+    expanded: MutableState<Boolean>,
     onSelection: (Translation) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
     val translationsDownloadInProgressIds = translationsDownloadInProgress.map { it.id }.toSet()
 
     Column(
@@ -464,7 +470,7 @@ fun TranslationDropdown(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { expanded = !expanded }
+                .clickable { expanded.value = !expanded.value }
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -487,7 +493,7 @@ fun TranslationDropdown(
             )
         }
 
-        if (expanded) {
+        if (expanded.value) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

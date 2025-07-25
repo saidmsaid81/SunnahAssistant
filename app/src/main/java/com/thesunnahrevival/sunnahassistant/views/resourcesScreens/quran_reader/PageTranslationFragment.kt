@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -49,12 +52,19 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                 SunnahAssistantTheme {
                     val pagerState = rememberPagerState(initialPage = 604 - initialPage) { 604 }
                     val currentPage = 604 - pagerState.currentPage
+                    val expanded = remember { mutableStateOf(false) }
 
                     LaunchedEffect(currentPage) {
                         viewModel.setSelectedPage(currentPage)
                     }
 
-                    Surface(modifier = Modifier.fillMaxSize()) {
+                    Surface(modifier = Modifier.fillMaxSize()
+                        .clickable(
+                            onClick = { expanded.value = false },
+                            interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                            indication = null
+                        )
+                    ) {
                         HorizontalPager(
                             state = pagerState,
                             modifier = Modifier.fillMaxSize()
@@ -71,7 +81,8 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                     TranslationDropdown(
                                         allTranslations,
                                         selectedTranslations,
-                                        translationsDownloadInProgress
+                                        translationsDownloadInProgress,
+                                        expanded
                                     ) { translation: Translation ->
                                         viewModel.toggleTranslationSelection(
                                             translation,
