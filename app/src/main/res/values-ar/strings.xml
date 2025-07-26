@@ -399,6 +399,7 @@
     <string name="download_all_pages">تحميل جميع الصفحات</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="network_error">حدث خطأ. يرجى التأكد من وجود اتصال إنترنت مستقر</string>
+    <string name="last_read">آخر ما تم قراءته</string>
     <string-array name="categories">
         <item>غير مصنف</item>
         <item>السنة</item>

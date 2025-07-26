@@ -23,15 +23,19 @@ class ResourcesFragment : MenuBarFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        val lastReadPage = mainActivityViewModel.settingsValue?.lastReadPage
+        lastReadPage?.let { viewModel.setLatReadPage(it) }
         return ComposeView(requireContext()).apply {
             setContent {
                 val surahs by viewModel.getFirst5Surahs().collectAsState(initial = listOf())
                 val isDataReady by mainActivityViewModel.prepopulateQuranDataCompletionStatus.collectAsState(initial = true)
                 val resourceItems = viewModel.resourceItems()
+                val lastReadSurah by viewModel.lastReadSurah.collectAsState()
 
                 ResourcesScreen(
                     findNavController = findNavController(),
                     isDataReady = isDataReady,
+                    lastReadSurah = lastReadSurah,
                     surahs = surahs,
                     resourceItemList = resourceItems
                 ) { surah ->

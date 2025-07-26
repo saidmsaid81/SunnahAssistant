@@ -48,7 +48,9 @@ data class AppSettings(
     @ColumnInfo(name = "generatePrayerRemindersAfter") var generatePrayerToDosAfter: Date = Date(),
     var includeHijriDateInCalendar: Boolean = true,
     @ColumnInfo(defaultValue = "0")
-    var hideDownloadFilePrompt: Boolean = false
+    var hideDownloadFilePrompt: Boolean = false,
+    @ColumnInfo(name = "lastReadPage",defaultValue = "null")
+    var lastReadPage: Int? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

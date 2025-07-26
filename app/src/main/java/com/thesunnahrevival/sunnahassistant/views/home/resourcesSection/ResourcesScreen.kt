@@ -42,6 +42,7 @@ fun ResourcesScreen(
     findNavController: NavController? = null,
     isDataReady: Boolean = true,
     surahs: List<Surah>,
+    lastReadSurah: Surah? = null,
     resourceItemList: List<ResourceItem>,
     surahItemOnClick: (surah: Surah) -> Unit = {}
 ) {
@@ -58,6 +59,15 @@ fun ResourcesScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
+
+                if (isDataReady && lastReadSurah != null) {
+                    ResourceTitle(title = stringResource(R.string.last_read))
+
+                    SurahItem(lastReadSurah, isArabic()) {
+                        surahItemOnClick(lastReadSurah)
+                    }
+                }
+
                 ResourceTitle(title = stringResource(R.string.quran))
 
                 if (isDataReady) {

@@ -26,7 +26,7 @@ interface SurahDao {
     fun getAllSurahs(): PagingSource<Int, Surah>
 
     @Query("SELECT * FROM surahs WHERE start_page BETWEEN 1 AND :page ORDER BY start_page DESC LIMIT 1 ")
-    suspend fun getSurahByPage(page: Int): Surah
+    suspend fun getSurahByPage(page: Int): Surah?
 
 
 }
