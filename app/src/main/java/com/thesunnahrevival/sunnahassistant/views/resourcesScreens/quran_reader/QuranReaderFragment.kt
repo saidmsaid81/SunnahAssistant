@@ -1,8 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -23,7 +20,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.thesunnahrevival.sunnahassistant.R
@@ -42,9 +38,7 @@ import kotlinx.coroutines.withContext
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
-    private val quranReaderBinding get() = _quranReaderBinding!!
-
-    private val args: QuranReaderFragmentArgs by navArgs()
+    private val quranReaderBinding get() = _quranReaderBinding
 
     private var stayInImmersiveMode = false
 
@@ -60,41 +54,55 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
 
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
-        val currentPage = args.surah.startPage
+        val currentPage = mainActivityViewModel.getCurrentQuranPage()
 
         quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
-        quranReaderBinding.viewPager.offscreenPageLimit = 2
-        quranReaderBinding.viewPager.adapter = quranPageAdapter
-        quranReaderBinding.viewPager.reduceDragSensitivity(4)
-        quranReaderBinding.viewPager.registerOnPageChangeCallback(pageChangeCallback)
-        quranReaderBinding.viewPager.setCurrentItem((currentPage - 1), false)
+        val viewPager = quranReaderBinding?.viewPager
+        viewPager?.offscreenPageLimit = 2
+        viewPager?.adapter = quranPageAdapter
+        viewPager?.reduceDragSensitivity(4)
+        viewPager?.registerOnPageChangeCallback(pageChangeCallback)
+        viewPager?.setCurrentItem((currentPage - 1), false)
         handleAyahSelection()
         handleBackPressed()
 
-        return quranReaderBinding.root
+        mainActivityViewModel.selectedSurah.observe(viewLifecycleOwner) { surah ->
+            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                resources.configuration.locales[0]
+            } else {
+                @Suppress("DEPRECATION")
+                resources.configuration.locale
+            }
+
+            val title = if (locale.language.equals("ar", ignoreCase = true)) {
+                surah.arabicName
+            } else {
+                surah.transliteratedName
+            }
+            (activity as? MainActivity)?.supportActionBar?.title = title
+        }
+
+        return quranReaderBinding?.root
     }
 
     private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             viewmodel.getLinesByPageNumber(position + 1)
-            val highlightOverlay: HighlightOverlayView? = quranReaderBinding.viewPager
-                .findViewWithTag("overlay_$position")
+            mainActivityViewModel.updateCurrentPage(position + 1)
+            val highlightOverlay: HighlightOverlayView? = quranReaderBinding?.viewPager
+                ?.findViewWithTag("overlay_$position")
             highlightOverlay?.clearHighlights()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainActivity)?.supportActionBar?.title = args.surah.transliteratedName
-    }
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.quran_reader_menu, menu)
     }
@@ -102,10 +110,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.translations -> {
-                val pageNumber = quranReaderBinding.viewPager.currentItem + 1
-                val action =
-                    QuranReaderFragmentDirections.toPageTranslationsFragment(pageNumber)
-                findNavController().navigate(action)
+                findNavController().navigate(R.id.pageTranslationFragment)
             }
         }
         return true
@@ -183,7 +188,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 e.printStackTrace()
             }
             withContext(Dispatchers.Main) {
-                quranReaderBinding.viewPager.adapter?.notifyItemChanged((pageNumber - 1))
+                quranReaderBinding?.viewPager?.adapter?.notifyItemChanged((pageNumber - 1))
             }
         }
     }
@@ -207,7 +212,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     override fun onDestroyView() {
         super.onDestroyView()
         mainActivityViewModel.setSelectedAyahId(null)
-        quranReaderBinding.viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+        quranReaderBinding?.viewPager?.unregisterOnPageChangeCallback(pageChangeCallback)
         val mainActivity = activity as MainActivity
 
         val toolbar = mainActivity.findViewById<Toolbar>(R.id.toolbar)
@@ -247,7 +252,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         }
 
         mainActivityViewModel.navBarHeight.observe(viewLifecycleOwner) { navBarHeight ->
-            quranReaderBinding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            quranReaderBinding?.root?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 if (mainActivity.supportActionBar?.isShowing == true) {
                     bottomMargin = navBarHeight
                 }
@@ -307,9 +312,9 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     }
 
     private fun getHighlightOverlay(): HighlightOverlayView? {
-        val pageNumber = quranPageAdapter.pageNumbers[quranReaderBinding.viewPager.currentItem]
-        return quranReaderBinding.viewPager
-            .findViewWithTag("overlay_$pageNumber")
+        val pageNumber = quranPageAdapter.pageNumbers[quranReaderBinding?.viewPager?.currentItem ?: 0]
+        return quranReaderBinding?.viewPager
+            ?.findViewWithTag("overlay_$pageNumber")
     }
 
     private fun handleAyahSelection() {
@@ -327,21 +332,21 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 val pageNumber = linesToHighlight.first().pageNumber
 
                 withContext(Dispatchers.Main) {
-                    if (quranReaderBinding.viewPager.currentItem == pageNumber - 1) {
+                    if (quranReaderBinding?.viewPager?.currentItem == pageNumber - 1) {
                         highlightAyah(linesToHighlight)
                     } else {
                         val callback = object : ViewPager2.OnPageChangeCallback() {
                             override fun onPageScrollStateChanged(state: Int) {
                                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                                    quranReaderBinding.viewPager.unregisterOnPageChangeCallback(this)
+                                    quranReaderBinding?.viewPager?.unregisterOnPageChangeCallback(this)
                                     view?.post {
                                         highlightAyah(linesToHighlight)
                                     }
                                 }
                             }
                         }
-                        quranReaderBinding.viewPager.registerOnPageChangeCallback(callback)
-                        quranReaderBinding.viewPager.setCurrentItem(pageNumber - 1, true)
+                        quranReaderBinding?.viewPager?.registerOnPageChangeCallback(callback)
+                        quranReaderBinding?.viewPager?.setCurrentItem(pageNumber - 1, true)
                     }
                 }
             }

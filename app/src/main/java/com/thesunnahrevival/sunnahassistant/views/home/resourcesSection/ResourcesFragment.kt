@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 
@@ -33,7 +34,10 @@ class ResourcesFragment : MenuBarFragment() {
                     isDataReady = isDataReady,
                     surahs = surahs,
                     resourceItemList = resourceItems
-                )
+                ) { surah ->
+                    findNavController().navigate(R.id.quranReaderFragment)
+                    mainActivityViewModel.updateCurrentPage(surah.startPage)
+                }
             }
         }
     }

@@ -14,10 +14,10 @@ import com.thesunnahrevival.sunnahassistant.data.local.TranslationDao
 import com.thesunnahrevival.sunnahassistant.data.model.Ayah
 import com.thesunnahrevival.sunnahassistant.data.model.Language
 import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
-import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 
 class ResourcesRepository private constructor(
     private val applicationContext: Context
@@ -50,6 +50,8 @@ class ResourcesRepository private constructor(
         get() = SunnahAssistantDatabase.getInstance(applicationContext).languageDao()
 
     fun getFirst5Surahs() = surahDao.getFirst5Surahs()
+
+    suspend fun getSurahByPage(page: Int) = surahDao.getSurahByPage(page)
 
     fun resourceItems(): List<ResourceItem> {
         return listOf(

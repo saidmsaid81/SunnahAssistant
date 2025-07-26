@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,17 +28,16 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
+import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
 class PageTranslationFragment : SunnahAssistantFragment() {
 
     private val viewModel: PageTranslationViewModel by viewModels()
-    private val args: PageTranslationFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +45,25 @@ class PageTranslationFragment : SunnahAssistantFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val initialPage = args.pageNumber
+        val initialPage = mainActivityViewModel.getCurrentQuranPage()
+
+
+        mainActivityViewModel.selectedSurah.observe(viewLifecycleOwner) { surah ->
+            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                resources.configuration.locales[0]
+            } else {
+                @Suppress("DEPRECATION")
+                resources.configuration.locale
+            }
+
+            val title = if (locale.language.equals("ar", ignoreCase = true)) {
+                surah.arabicName
+            } else {
+                surah.transliteratedName
+            }
+            (activity as? MainActivity)?.supportActionBar?.title = title
+        }
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -56,6 +74,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
 
                     LaunchedEffect(currentPage) {
                         viewModel.setSelectedPage(currentPage)
+                        mainActivityViewModel.updateCurrentPage(currentPage)
                     }
 
                     Surface(modifier = Modifier.fillMaxSize()

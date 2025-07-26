@@ -26,6 +26,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
@@ -110,6 +111,12 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
     val statusBarHeight = MutableLiveData(0)
     val navBarHeight = MutableLiveData(0)
+
+    private val _selectedAyahId: MutableLiveData<Int?> = MutableLiveData()
+    val selectedAyahId = _selectedAyahId
+
+    private var _currentQuranPage: Int? = null
+    val selectedSurah: MutableLiveData<Surah> = MutableLiveData()
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
@@ -639,9 +646,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         existingDataFile.delete()
     }
 
-    private val _selectedAyahId: MutableLiveData<Int?> = MutableLiveData()
-    val selectedAyahId = _selectedAyahId
-
     fun setSelectedAyahId(ayahId: Int?) {
         _selectedAyahId.value = ayahId
     }
@@ -662,6 +666,19 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val previousAyahId = selectedAyahId.value?.minus(1)
         previousAyahId?.let {
             _selectedAyahId.value = it
+        }
+    }
+
+    fun getCurrentQuranPage() = _currentQuranPage ?: 1
+
+    fun updateCurrentPage(page: Int) {
+        _currentQuranPage = page
+
+        viewModelScope.launch {
+            val surah = resourcesRepository.getSurahByPage(page)
+            withContext(Dispatchers.Main) {
+                selectedSurah.value = surah
+            }
         }
     }
 }

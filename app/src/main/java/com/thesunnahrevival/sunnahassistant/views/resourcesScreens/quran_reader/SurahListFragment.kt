@@ -2,7 +2,6 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -29,6 +22,7 @@ import androidx.navigation.findNavController
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
@@ -53,8 +47,9 @@ class SurahListFragment : SunnahAssistantFragment() {
                     surahs = viewModel.getAllSurahs().collectAsLazyPagingItems(),
                     onSurahClick = { surah ->
                         findNavController().navigate(
-                            SurahListFragmentDirections.toQuranReaderFragment(surah)
+                            R.id.quranReaderFragment
                         )
+                        mainActivityViewModel.updateCurrentPage(surah.startPage)
                     }
                 )
             }

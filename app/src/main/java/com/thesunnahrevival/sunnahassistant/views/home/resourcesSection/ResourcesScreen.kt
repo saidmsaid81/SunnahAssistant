@@ -42,7 +42,8 @@ fun ResourcesScreen(
     findNavController: NavController? = null,
     isDataReady: Boolean = true,
     surahs: List<Surah>,
-    resourceItemList: List<ResourceItem>
+    resourceItemList: List<ResourceItem>,
+    surahItemOnClick: (surah: Surah) -> Unit = {}
 ) {
 
     SunnahAssistantTheme {
@@ -63,11 +64,7 @@ fun ResourcesScreen(
                     Column {
                         surahs.forEachIndexed { index, surah ->
                             SurahItem(surah, isArabic()) {
-                                findNavController?.navigate(
-                                    ResourcesFragmentDirections.toQuranReaderFragment(
-                                        surah
-                                    )
-                                )
+                                surahItemOnClick(surah)
                             }
 
                             if (index == surahs.lastIndex) {
