@@ -69,7 +69,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         viewPager?.adapter = quranPageAdapter
         viewPager?.reduceDragSensitivity(4)
         viewPager?.registerOnPageChangeCallback(pageChangeCallback)
-        viewPager?.setCurrentItem((currentPage - 1), false)
         handleAyahSelection()
         handleBackPressed()
 
@@ -90,6 +89,12 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         }
 
         return quranReaderBinding?.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val currentPage = mainActivityViewModel.getCurrentQuranPage()
+        quranReaderBinding?.viewPager?.setCurrentItem((currentPage - 1), false)
     }
 
     private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
