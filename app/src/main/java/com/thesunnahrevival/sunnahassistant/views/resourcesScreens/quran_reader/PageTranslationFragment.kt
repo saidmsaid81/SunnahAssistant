@@ -28,12 +28,15 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PageTranslationFragment : SunnahAssistantFragment() {
 
@@ -95,6 +98,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                             val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
                             val ayahFullDetailsList by viewModel.ayahDetails.collectAsState()
 
+
                             LazyColumn(modifier = Modifier.padding(16.dp)) {
                                 item {
                                     TranslationDropdown(
@@ -144,9 +148,18 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                     )
 
                                     AyahInteractionRow(
-                                        ayahFullDetail, selectedTranslations, context, Modifier
+                                        selectedAyah = ayahFullDetail,
+                                        selectedTranslations = selectedTranslations,
+                                        context = context,
+                                        modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(bottom = 16.dp)
+                                            .padding(bottom = 16.dp),
+                                        toggleAyahBookmark = { ayah ->
+                                            lifecycleScope.launch(Dispatchers.IO) {
+                                                mainActivityViewModel.toggleAyahBookmark(ayah)
+                                                viewModel.setSelectedPage(currentPage)
+                                            }
+                                        }
                                     )
 
                                     Divider(

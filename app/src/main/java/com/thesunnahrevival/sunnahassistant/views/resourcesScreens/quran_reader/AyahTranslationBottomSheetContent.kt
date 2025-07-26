@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -54,6 +56,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.Ayah
 import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
@@ -72,7 +75,8 @@ fun SheetContent(
     previousAyah: () -> Unit,
     onSelection: (Translation) -> Unit,
     visibleFootnotes: Map<String, Footnote>,
-    onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit
+    onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
+    toggleAyahBookmark: (Ayah) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -132,7 +136,8 @@ fun SheetContent(
                     LocalContext.current,
                     Modifier
                         .padding(bottom = 16.dp)
-                        .weight(1f)
+                        .weight(1f),
+                    toggleAyahBookmark
                 )
 
                 Previous {
@@ -146,7 +151,8 @@ fun SheetContent(
                 LocalContext.current,
                 Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
+                toggleAyahBookmark
             )
 
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -169,7 +175,8 @@ fun AyahInteractionRow(
     selectedAyah: FullAyahDetails,
     selectedTranslations: List<Translation>,
     context: Context,
-    modifier: Modifier
+    modifier: Modifier,
+    toggleAyahBookmark: (Ayah) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -178,7 +185,7 @@ fun AyahInteractionRow(
         val ayahTexts = getAyahText(
             selectedAyah,
             selectedTranslations,
-            stringResource(R.string.surah_number, selectedAyah.surah.id ?: 0)
+            stringResource(R.string.surah_number, selectedAyah.surah.id)
         )
 
         ShareIcon(
@@ -199,8 +206,8 @@ fun AyahInteractionRow(
 
         Spacer(modifier = Modifier.width(32.dp))
 
-        BookmarkIcon(modifier = Modifier.size(24.dp)) {
-
+        BookmarkIcon(if (selectedAyah.ayah.bookmarked) Icons.Outlined.Bookmark else Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
+            toggleAyahBookmark(selectedAyah.ayah)
         }
     }
 }
@@ -228,9 +235,11 @@ fun Previous(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun BookmarkIcon(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun BookmarkIcon(
+    icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit
+) {
     Icon(
-        imageVector = Icons.Outlined.BookmarkAdd,
+        imageVector = icon,
         contentDescription = stringResource(R.string.bookmark),
         modifier = modifier
             .clickable { onClick() }

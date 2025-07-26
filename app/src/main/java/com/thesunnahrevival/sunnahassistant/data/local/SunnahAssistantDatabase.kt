@@ -249,6 +249,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE translations ADD COLUMN `order` INTEGER")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `lastReadPage` INTEGER")
+                database.execSQL("ALTER TABLE ayahs ADD COLUMN `bookmarked` INTEGER DEFAULT 0")
             }
         }
 

@@ -52,6 +52,10 @@ class QuranTranslationRepository private constructor(
 
     fun getTranslations() = translationDao.getTranslations()
 
+    suspend fun updateAyahBookmarkStatus(ayahId: Int, bookmarked: Boolean) {
+        ayahDao.updateAyahBookmarkStatus(ayahId, bookmarked)
+    }
+
     suspend fun updateTranslation(translation: Translation): Boolean {
         translationDao.updateTranslation(translation)
         if (translation.selected && !ayahTranslationDao.exists(translation.id)) {

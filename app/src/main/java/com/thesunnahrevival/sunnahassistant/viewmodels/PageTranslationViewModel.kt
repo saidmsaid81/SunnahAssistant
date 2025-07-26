@@ -27,9 +27,7 @@ class PageTranslationViewModel(application: Application) : AyahTranslationViewMo
         }
     }
 
-    fun setSelectedPage(selectedPageNumber: Int) {
-        viewModelScope.launch {
-            this@PageTranslationViewModel.selectedPageNumber.emit(selectedPageNumber)
-        }
+    suspend fun setSelectedPage(selectedPageNumber: Int) {
+        this@PageTranslationViewModel.selectedPageNumber.emit(selectedPageNumber)
     }
 }

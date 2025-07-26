@@ -55,25 +55,33 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                         selectedAyah?.let {
                             val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                             SheetContent(
-                                it,
-                                translationUiState.allTranslations,
-                                translationUiState.selectedTranslations,
-                                translationUiState.translationsDownloadInProgress,
-                                { mainActivityViewModel.nextAyah() },
-                                { mainActivityViewModel.previousAyah() },
-                                { translation: Translation ->
+                                selectedAyah = it,
+                                translations = translationUiState.allTranslations,
+                                selectedTranslations = translationUiState.selectedTranslations,
+                                translationsDownloadInProgress = translationUiState.translationsDownloadInProgress,
+                                nextAyah = { mainActivityViewModel.nextAyah() },
+                                previousAyah = { mainActivityViewModel.previousAyah() },
+                                onSelection = { translation: Translation ->
                                     viewModel.toggleTranslationSelection(
                                         translation,
                                         translationUiState.selectedTranslations.size
                                     ) {
                                         mainActivityViewModel.refreshSelectedAyahId() }
                                 },
-                                viewModel.visibleFootnotes,
-                                { ayahTranslationId, footnoteNumber ->
+                                visibleFootnotes = viewModel.visibleFootnotes,
+                                onFootnoteClick = { ayahTranslationId, footnoteNumber ->
                                     viewModel.toggleFootnote(
                                         ayahTranslationId,
                                         footnoteNumber
                                     )
+                                },
+                                toggleAyahBookmark = { ayah ->
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        mainActivityViewModel.toggleAyahBookmark(
+                                            ayah = ayah,
+                                            updateSelectedAyahId = true
+                                        )
+                                    }
                                 }
                             )
                         }

@@ -18,5 +18,6 @@ data class Ayah(
     @PrimaryKey val id: Int,
     val number: Int,
     @ColumnInfo(name = "surah_id") val surahId: Int,
-    @ColumnInfo(name = "arabic_text") val arabicText: String
+    @ColumnInfo(name = "arabic_text") val arabicText: String,
+    var bookmarked: Boolean = false
 )

@@ -24,11 +24,13 @@ import androidx.paging.cachedIn
 import androidx.paging.liveData
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.Ayah
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository.Companion.getInstance
@@ -65,6 +67,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     private val flagRepository: FlagRepository = FlagRepository.getInstance(application)
 
     private val resourcesRepository: ResourcesRepository = ResourcesRepository.getInstance(application)
+
+    private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
 
     private val _prepopulateQuranDataCompletionStatus = MutableSharedFlow<Boolean>()
     val prepopulateQuranDataCompletionStatus: SharedFlow<Boolean> = _prepopulateQuranDataCompletionStatus
@@ -666,6 +670,16 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val previousAyahId = selectedAyahId.value?.minus(1)
         previousAyahId?.let {
             _selectedAyahId.value = it
+        }
+    }
+
+    suspend fun toggleAyahBookmark(ayah: Ayah, updateSelectedAyahId: Boolean = false) {
+        val newBookmarkStatus = !ayah.bookmarked
+        quranTranslationRepository.updateAyahBookmarkStatus(ayah.id, newBookmarkStatus)
+        if (updateSelectedAyahId) {
+            withContext(Dispatchers.Main) {
+                _selectedAyahId.value = ayah.id
+            }
         }
     }
 
