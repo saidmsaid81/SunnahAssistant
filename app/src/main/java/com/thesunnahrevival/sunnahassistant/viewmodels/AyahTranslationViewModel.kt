@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -32,7 +33,7 @@ open class AyahTranslationViewModel(application: Application) : TranslationViewM
         val footnoteKey = "$ayahTranslationId-$footnoteNumber"
 
         if (_visibleFootnotes.remove(footnoteKey) == null) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 quranTranslationRepository.getFootnote(ayahTranslationId, footnoteNumber)?.let { footnote ->
                     _visibleFootnotes[footnoteKey] = footnote
                 }

@@ -688,7 +688,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     fun updateCurrentPage(page: Int) {
         _currentQuranPage = page
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val surah = resourcesRepository.getSurahByPage(page)
             settingsValue?.let {
                 it.lastReadPage = page

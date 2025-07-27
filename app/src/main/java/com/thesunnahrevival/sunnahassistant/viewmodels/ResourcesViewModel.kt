@@ -19,7 +19,7 @@ class ResourcesViewModel(application: Application) : AndroidViewModel(applicatio
     val lastReadSurah: StateFlow<Surah?> = _lastReadSurah
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.prepopulateQuranData()
         }
     }
