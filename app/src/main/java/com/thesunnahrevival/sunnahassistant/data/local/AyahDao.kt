@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -7,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.thesunnahrevival.sunnahassistant.data.model.Ayah
+import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 
 @Dao
@@ -30,4 +32,7 @@ interface AyahDao {
 
     @Query("UPDATE ayahs SET bookmarked = :bookmarked WHERE id = :ayahId")
     suspend fun updateAyahBookmarkStatus(ayahId: Int, bookmarked: Boolean)
+
+    @Query("SELECT * FROM ayahs WHERE bookmarked = 1 ORDER BY surah_id, number")
+    fun getBookmarkedAyahs(): PagingSource<Int, AyahWithSurah>
 }

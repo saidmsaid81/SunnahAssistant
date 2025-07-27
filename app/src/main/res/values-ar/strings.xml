@@ -400,6 +400,11 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="network_error">حدث خطأ. يرجى التأكد من وجود اتصال إنترنت مستقر</string>
     <string name="last_read">آخر ما تم قراءته</string>
+    <string name="bookmarks">العلامات المرجعية</string>
+    <string name="ayahs">الآيات</string>
+    <string name="pages">الصفحات</string>
+    <string name="no_bookmarked_ayahs">لا توجد آيات مضافة إلى العلامات المرجعية</string>
+
     <string-array name="categories">
         <item>غير مصنف</item>
         <item>السنة</item>

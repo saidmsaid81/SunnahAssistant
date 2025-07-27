@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,11 +16,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +47,8 @@ fun ResourcesScreen(
     surahs: List<Surah>,
     lastReadSurah: Surah? = null,
     resourceItemList: List<ResourceItem>,
-    surahItemOnClick: (surah: Surah) -> Unit = {}
+    surahItemOnClick: (surah: Surah) -> Unit = {},
+    onBookmarksClick: () -> Unit = {}
 ) {
 
     SunnahAssistantTheme {
@@ -68,7 +72,17 @@ fun ResourcesScreen(
                     }
                 }
 
-                ResourceTitle(title = stringResource(R.string.quran))
+                ResourceTitle(
+                    title = stringResource(R.string.quran),
+                    trailingIcon = {
+                        IconButton(onClick = onBookmarksClick) {
+                            Icon(
+                                imageVector = Icons.Outlined.Bookmarks,
+                                contentDescription = stringResource(R.string.bookmarks)
+                            )
+                        }
+                    }
+                )
 
                 if (isDataReady) {
                     Column {
@@ -121,7 +135,7 @@ fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
 }
 
 @Composable
-private fun ResourceCard(
+fun ResourceCard(
     title: String,
     subtitle: String,
     resourceNumber: String? = null,
@@ -189,17 +203,27 @@ private fun ResourceCard(
 }
 
 @Composable
-private fun ResourceTitle(title: String, modifier: Modifier = Modifier) {
-    Text(
-        text = title,
+private fun ResourceTitle(
+    title: String, 
+    modifier: Modifier = Modifier,
+    trailingIcon: @Composable (() -> Unit)? = null
+) {
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp, top = 16.dp, start = 8.dp, end = 8.dp),
-        style = MaterialTheme.typography.body1.copy(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium
-        ),
-    )
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.body1.copy(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium
+            ),
+        )
+        trailingIcon?.invoke()
+    }
 }
 
 
@@ -240,7 +264,8 @@ private fun ResourcesScreenPreview() {
                     descriptionResourceKey = R.string.from_the_sunnah_revival_blog,
                     destination = R.id.dailyHadithFragment
                 )
-            )
+            ),
+            onBookmarksClick = {}
         )
     }
 }

@@ -48,6 +48,15 @@
     <action
         android:id="@+id/to_quran_reader_fragment"
         app:destination="@id/quranReaderFragment" />
+    <action
+        android:id="@+id/to_bookmarks_fragment"
+        app:destination="@id/bookmarksFragment" />
+  </fragment>
+
+  <fragment
+      android:id="@+id/bookmarksFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.BookmarksFragment"
+      android:label="@string/bookmarks">
   </fragment>
 
   <fragment

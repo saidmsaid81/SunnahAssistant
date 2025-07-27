@@ -400,6 +400,10 @@
     <string name="maintenance_notifications_channel_description">Notifications used by the app to ensure reliable delivery of scheduled reminders</string>
     <string name="downloading_translation_please_wait">Downloading %s translation… Please wait.</string>
     <string name="last_read">Last Read</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="ayahs">Ayahs</string>
+    <string name="pages">Pages</string>
+    <string name="no_bookmarked_ayahs">No bookmarked ayahs</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

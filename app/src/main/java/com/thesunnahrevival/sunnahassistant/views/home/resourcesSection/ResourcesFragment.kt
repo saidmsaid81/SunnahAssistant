@@ -37,11 +37,15 @@ class ResourcesFragment : MenuBarFragment() {
                     isDataReady = isDataReady,
                     lastReadSurah = lastReadSurah,
                     surahs = surahs,
-                    resourceItemList = resourceItems
-                ) { surah ->
-                    findNavController().navigate(R.id.quranReaderFragment)
-                    mainActivityViewModel.updateCurrentPage(surah.startPage)
-                }
+                    resourceItemList = resourceItems,
+                    surahItemOnClick = { surah ->
+                        findNavController().navigate(R.id.quranReaderFragment)
+                        mainActivityViewModel.updateCurrentPage(surah.startPage)
+                    },
+                    onBookmarksClick = {
+                        findNavController().navigate(R.id.to_bookmarks_fragment)
+                    }
+                )
             }
         }
     }
