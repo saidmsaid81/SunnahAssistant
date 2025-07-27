@@ -8,10 +8,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ResourcesFragment : MenuBarFragment() {
 
@@ -23,8 +26,13 @@ class ResourcesFragment : MenuBarFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        val lastReadPage = mainActivityViewModel.settingsValue?.lastReadPage
-        lastReadPage?.let { viewModel.setLatReadPage(it) }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            mainActivityViewModel.getAppSettingsValue()?.lastReadPage?.let {
+                viewModel.setLatReadPage(it)
+            }
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
                 val surahs by viewModel.getFirst5Surahs().collectAsState(initial = listOf())
