@@ -3,6 +3,9 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
@@ -19,18 +22,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
-import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.SurahItem
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import kotlinx.coroutines.flow.collectLatest
 
-class SurahListFragment : SunnahAssistantFragment() {
+class SurahListFragment : MenuBarFragment() {
     private val viewModel: SurahListViewModel by viewModels()
 
     override fun onCreateView(
@@ -53,6 +57,20 @@ class SurahListFragment : SunnahAssistantFragment() {
                     }
                 )
             }
+        }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.surah_list_menu, menu)
+    }
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.bookmarks -> {
+                findNavController().navigate(R.id.bookmarksFragment)
+                true
+            }
+            else -> super.onMenuItemSelected(item)
         }
     }
 }
