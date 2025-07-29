@@ -42,13 +42,13 @@ import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.BookmarksViewModel
-import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 
-class BookmarksFragment : MenuBarFragment() {
+class BookmarksFragment : SunnahAssistantFragment() {
 
     private val bookmarksViewModel: BookmarksViewModel by viewModels()
 
