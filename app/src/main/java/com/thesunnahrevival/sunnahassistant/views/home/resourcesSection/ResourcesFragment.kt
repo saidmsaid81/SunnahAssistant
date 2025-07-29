@@ -26,13 +26,6 @@ class ResourcesFragment : MenuBarFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            mainActivityViewModel.getAppSettingsValue()?.lastReadPage?.let {
-                viewModel.setLatReadPage(it)
-            }
-        }
-
         return ComposeView(requireContext()).apply {
             setContent {
                 val surahs by viewModel.getFirst5Surahs().collectAsState(initial = listOf())
@@ -54,6 +47,15 @@ class ResourcesFragment : MenuBarFragment() {
                         findNavController().navigate(R.id.to_bookmarks_fragment)
                     }
                 )
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch(Dispatchers.IO) {
+            mainActivityViewModel.getAppSettingsValue()?.lastReadPage?.let {
+                viewModel.setLatReadPage(it)
             }
         }
     }
