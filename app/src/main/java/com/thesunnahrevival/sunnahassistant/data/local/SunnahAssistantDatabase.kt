@@ -250,6 +250,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE translations ADD COLUMN `order` INTEGER")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `lastReadPage` INTEGER")
                 database.execSQL("ALTER TABLE ayahs ADD COLUMN `bookmarked` INTEGER DEFAULT 0")
+                database.execSQL("ALTER TABLE surahs ADD COLUMN `pin_order` INTEGER")
             }
         }
 

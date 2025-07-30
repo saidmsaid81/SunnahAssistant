@@ -34,6 +34,7 @@ import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRe
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository.Companion.getInstance
+import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.utilities.Encryption
@@ -69,6 +70,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     private val resourcesRepository: ResourcesRepository = ResourcesRepository.getInstance(application)
 
     private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
+
+    private val surahRepository: SurahRepository = SurahRepository.getInstance(application)
 
     private val _prepopulateQuranDataCompletionStatus = MutableSharedFlow<Boolean>()
     val prepopulateQuranDataCompletionStatus: SharedFlow<Boolean> = _prepopulateQuranDataCompletionStatus
@@ -689,14 +692,14 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         _currentQuranPage = page
 
         viewModelScope.launch(Dispatchers.IO) {
-            val surah = resourcesRepository.getSurahByPage(page)
+            val surah = surahRepository.getSurahByPage(page)
             settingsValue?.let {
                 it.lastReadPage = page
                 mRepository.updateAppSettings(it)
             }
             surah?.let {
                 withContext(Dispatchers.Main) {
-                    selectedSurah.value = surah
+                    selectedSurah.value = it
                 }
             }
         }

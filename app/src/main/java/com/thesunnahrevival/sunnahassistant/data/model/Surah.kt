@@ -22,5 +22,8 @@ data class Surah(
     val verseCount: Int,
 
     @ColumnInfo(name = "start_page")
-    val startPage: Int
+    val startPage: Int,
+
+    @ColumnInfo(name = "pin_order")
+    val pinOrder: Int? = null
 ) : Serializable

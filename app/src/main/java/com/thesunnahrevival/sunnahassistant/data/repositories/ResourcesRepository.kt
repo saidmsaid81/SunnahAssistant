@@ -49,10 +49,6 @@ class ResourcesRepository private constructor(
     private val languageDao: LanguageDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).languageDao()
 
-    fun getFirst5Surahs() = surahDao.getFirst5Surahs()
-
-    suspend fun getSurahByPage(page: Int) = surahDao.getSurahByPage(page)
-
     fun resourceItems(): List<ResourceItem> {
         return listOf(
             ResourceItem(

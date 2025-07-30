@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,21 @@ class ResourcesFragment : MenuBarFragment() {
                         findNavController().navigate(R.id.quranReaderFragment)
                         mainActivityViewModel.updateCurrentPage(surah.startPage)
                     },
+                    onSurahPinClick = { surahId ->
+                        viewModel.toggleSurahPin(surahId) { result ->
+                            when (result) {
+                                SurahRepository.PinResult.LimitReached -> {
+                                    android.widget.Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.pinned_surahs_limit_reached),
+                                        android.widget.Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                else -> {
+                                }
+                            }
+                        }
+                    },
                     onBookmarksClick = {
                         findNavController().navigate(R.id.to_bookmarks_fragment)
                     }
@@ -55,7 +71,7 @@ class ResourcesFragment : MenuBarFragment() {
         super.onResume()
         lifecycleScope.launch(Dispatchers.IO) {
             mainActivityViewModel.getAppSettingsValue()?.lastReadPage?.let {
-                viewModel.setLatReadPage(it)
+                viewModel.setLastReadPage(it)
             }
         }
     }

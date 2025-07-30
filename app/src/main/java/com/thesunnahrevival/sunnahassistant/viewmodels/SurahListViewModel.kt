@@ -9,9 +9,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SurahListViewModel(application: Application) : AndroidViewModel(application) {
+open class SurahListViewModel(application: Application) : AndroidViewModel(application) {
     private val repository =
         SurahRepository.getInstance(application)
 
@@ -28,5 +31,14 @@ class SurahListViewModel(application: Application) : AndroidViewModel(applicatio
                 repository.getAllSurahs()
             }
         ).flow.cachedIn(viewModelScope)
+    }
+
+    fun toggleSurahPin(surahId: Int, onResult: (SurahRepository.PinResult) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.toggleSurahPin(surahId)
+            withContext(Dispatchers.Main) {
+                onResult(result)
+            }
+        }
     }
 }

@@ -54,6 +54,21 @@ class SurahListFragment : MenuBarFragment() {
                             R.id.quranReaderFragment
                         )
                         mainActivityViewModel.updateCurrentPage(surah.startPage)
+                    },
+                    onSurahPinClick = { surahId ->
+                        viewModel.toggleSurahPin(surahId) { result ->
+                            when (result) {
+                                com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository.PinResult.LimitReached -> {
+                                    // Show toast message for limit reached
+                                    android.widget.Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.pinned_surahs_limit_reached),
+                                        android.widget.Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                else -> {}
+                            }
+                        }
                     }
                 )
             }
@@ -80,7 +95,8 @@ private fun SurahListScreen(
     surahs: LazyPagingItems<Surah>,
     firstVisiblePosition: Int,
     onScroll: (Int) -> Unit,
-    onSurahClick: (Surah) -> Unit
+    onSurahClick: (Surah) -> Unit,
+    onSurahPinClick: ((Int) -> Unit)? = null
 ) {
     SunnahAssistantTheme {
         Surface {
@@ -106,7 +122,7 @@ private fun SurahListScreen(
                     ) { index ->
                         val surah = surahs[index]
                         surah?.let {
-                            SurahItem(surah, isArabic()) { onSurahClick(surah) }
+                            SurahItem(surah, isArabic(), onSurahPinClick) { onSurahClick(surah) }
                         }
                     }
                 }
@@ -149,7 +165,7 @@ private fun PreviewSurahListScreen() {
                 LazyColumn {
                     items(previewSurahs().size) { index ->
                         val surah = previewSurahs()[index]
-                        SurahItem(surah, false) { }
+                        SurahItem(surah, false, { }) { }
                     }
                 }
             }
@@ -158,10 +174,10 @@ private fun PreviewSurahListScreen() {
 }
 
 private fun previewSurahs() = listOf(
-    Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1),
-    Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2),
-    Surah(3, "سورة آل عمران", "Suratul Aal-Imran", false, 200, 50),
-    Surah(4, "سورة النساء", "Suratul Nisa", false, 176, 77),
-    Surah(5, "سورة المائدة", "Suratul Maidah", false, 120, 106),
-    Surah(6, "سورة الأنعام", "Suratul An'am", true, 165, 128)
+    Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1, 1),
+    Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2, null),
+    Surah(3, "سورة آل عمران", "Suratul Aal-Imran", false, 200, 50, 2),
+    Surah(4, "سورة النساء", "Suratul Nisa", false, 176, 77, null),
+    Surah(5, "سورة المائدة", "Suratul Maidah", false, 120, 106, null),
+    Surah(6, "سورة الأنعام", "Suratul An'am", true, 165, 128, null)
 )

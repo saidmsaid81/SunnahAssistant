@@ -404,6 +404,9 @@
     <string name="ayahs">Ayahs</string>
     <string name="pages">Pages</string>
     <string name="no_bookmarked_ayahs">No bookmarked ayahs</string>
+    <string name="pin_surah">Pin Surah</string>
+    <string name="unpin_surah">Unpin Surah</string>
+    <string name="pinned_surahs_limit_reached">Maximum 5 Surahs can be pinned. Please unpin a Surah first.</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

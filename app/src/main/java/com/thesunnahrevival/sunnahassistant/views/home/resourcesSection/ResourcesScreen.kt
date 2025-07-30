@@ -22,7 +22,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +50,7 @@ fun ResourcesScreen(
     lastReadSurah: Surah? = null,
     resourceItemList: List<ResourceItem>,
     surahItemOnClick: (surah: Surah) -> Unit = {},
+    onSurahPinClick: ((Int) -> Unit)? = null,
     onBookmarksClick: () -> Unit = {}
 ) {
 
@@ -67,7 +70,7 @@ fun ResourcesScreen(
                 if (isDataReady && lastReadSurah != null) {
                     ResourceTitle(title = stringResource(R.string.last_read))
 
-                    SurahItem(lastReadSurah, isArabic()) {
+                    SurahItem(lastReadSurah, isArabic(), onSurahPinClick) {
                         surahItemOnClick(lastReadSurah)
                     }
                 }
@@ -87,7 +90,7 @@ fun ResourcesScreen(
                 if (isDataReady) {
                     Column {
                         surahs.forEachIndexed { index, surah ->
-                            SurahItem(surah, isArabic()) {
+                            SurahItem(surah, isArabic(), onSurahPinClick) {
                                 surahItemOnClick(surah)
                             }
 
@@ -121,7 +124,12 @@ fun ResourcesScreen(
 }
 
 @Composable
-fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
+fun SurahItem(
+    surah: Surah,
+    isArabic: Boolean = false,
+    onPinClick: ((Int) -> Unit)? = null,
+    onClick: () -> Unit
+) {
     val verseCount = if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
     ResourceCard(
         title = if (isArabic) surah.arabicName else surah.transliteratedName,
@@ -130,7 +138,9 @@ fun SurahItem(surah: Surah, isArabic: Boolean = false, onClick: () -> Unit) {
             verseCount
         ) else stringResource(R.string.madani_verse_count, verseCount),
         resourceNumber = if (isArabic) surah.id.toArabicNumbers() else surah.id.toString(),
-        pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString()
+        pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString(),
+        isPinned = surah.pinOrder != null,
+        onPinClick = if (onPinClick != null) { { onPinClick(surah.id) } } else null
     ) { onClick() }
 }
 
@@ -140,6 +150,8 @@ fun ResourceCard(
     subtitle: String,
     resourceNumber: String? = null,
     pageNumber: String? = null,
+    isPinned: Boolean = false,
+    onPinClick: (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     Card(
@@ -159,6 +171,18 @@ fun ResourceCard(
                 end = 16.dp
             )
         ) {
+            if (onPinClick != null) {
+                IconButton(
+                    onClick = onPinClick,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                ) {
+                    Icon(
+                        imageVector = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                        contentDescription = if (isPinned) "Unpin Surah" else "Pin Surah",
+                        tint = if (isPinned) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+                    )
+                }
+            }
             if (resourceNumber != null) {
                 Text(
                     text = resourceNumber,
@@ -204,7 +228,7 @@ fun ResourceCard(
 
 @Composable
 private fun ResourceTitle(
-    title: String, 
+    title: String,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
@@ -271,10 +295,10 @@ private fun ResourcesScreenPreview() {
 }
 
 fun previewSurahs() = listOf(
-        Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1),
-        Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2),
-        Surah(3, "سورة آل عمران", "Suratul Aal-Imran", false, 200, 50),
-        Surah(4, "سورة النساء", "Suratul Nisa", false, 176, 77),
-        Surah(5, "سورة المائدة", "Suratul Maidah", false, 120, 106)
-    )
+    Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1, 1),
+    Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2, null),
+    Surah(3, "سورة آل عمران", "Suratul Aal-Imran", false, 200, 50, 2),
+    Surah(4, "سورة النساء", "Suratul Nisa", false, 176, 77, null),
+    Surah(5, "سورة المائدة", "Suratul Maidah", false, 120, 106, null)
+)
 
