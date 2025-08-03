@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,21 +11,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +58,7 @@ fun ResourcesScreen(
     lastReadSurah: Surah? = null,
     resourceItemList: List<ResourceItem>,
     surahItemOnClick: (surah: Surah) -> Unit = {},
-    onSurahPinClick: ((Int) -> Unit)? = null,
+    onSurahPin: ((Int) -> Unit)? = null,
     onBookmarksClick: () -> Unit = {}
 ) {
 
@@ -70,7 +78,7 @@ fun ResourcesScreen(
                 if (isDataReady && lastReadSurah != null) {
                     ResourceTitle(title = stringResource(R.string.last_read))
 
-                    SurahItem(lastReadSurah, isArabic(), onSurahPinClick) {
+                    SurahItem(lastReadSurah, isArabic(), onSurahPin) {
                         surahItemOnClick(lastReadSurah)
                     }
                 }
@@ -90,7 +98,7 @@ fun ResourcesScreen(
                 if (isDataReady) {
                     Column {
                         surahs.forEachIndexed { index, surah ->
-                            SurahItem(surah, isArabic(), onSurahPinClick) {
+                            SurahItem(surah, isArabic(), onSurahPin) {
                                 surahItemOnClick(surah)
                             }
 
@@ -123,25 +131,69 @@ fun ResourcesScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SurahItem(
     surah: Surah,
     isArabic: Boolean = false,
-    onPinClick: ((Int) -> Unit)? = null,
+    onSurahPin: ((Int) -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    val verseCount = if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
-    ResourceCard(
-        title = if (isArabic) surah.arabicName else surah.transliteratedName,
-        subtitle = if (surah.isMakki) stringResource(
-            R.string.makki_verse_count,
-            verseCount
-        ) else stringResource(R.string.madani_verse_count, verseCount),
-        resourceNumber = if (isArabic) surah.id.toArabicNumbers() else surah.id.toString(),
-        pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString(),
-        isPinned = surah.pinOrder != null,
-        onPinClick = if (onPinClick != null) { { onPinClick(surah.id) } } else null
-    ) { onClick() }
+    val rememberDismissState = rememberDismissState(
+        confirmStateChange = { dismissState ->
+            when (dismissState) {
+                DismissValue.DismissedToEnd -> {
+                    onSurahPin?.invoke(surah.id)
+                    Log.v("Surah Pin Action", surah.id.toString())
+                    false
+                }
+
+                DismissValue.DismissedToStart -> {
+                    onClick()
+                    false
+                }
+
+                DismissValue.Default -> {
+                    true
+                }
+            }
+        }
+    )
+    SwipeToDismiss(
+        state = rememberDismissState,
+        background = {
+            when (rememberDismissState.dismissDirection) {
+                DismissDirection.StartToEnd -> {
+                    Icon(
+                        if (surah.pinOrder != null) Icons.Outlined.PushPin else Icons.Filled.PushPin,
+                        contentDescription = "Pin Surah",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.CenterStart)
+                            .padding(12.dp),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+                DismissDirection.EndToStart -> {
+
+                }
+
+                null -> {}
+            }
+        }
+    ) {
+        val verseCount = if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
+        ResourceCard(
+            title = if (isArabic) surah.arabicName else surah.transliteratedName,
+            subtitle = if (surah.isMakki) stringResource(
+                R.string.makki_verse_count,
+                verseCount
+            ) else stringResource(R.string.madani_verse_count, verseCount),
+            resourceNumber = if (isArabic) surah.id.toArabicNumbers() else surah.id.toString(),
+            pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString(),
+            isPinned = surah.pinOrder != null
+        ) { onClick() }
+    }
 }
 
 @Composable
@@ -151,7 +203,6 @@ fun ResourceCard(
     resourceNumber: String? = null,
     pageNumber: String? = null,
     isPinned: Boolean = false,
-    onPinClick: (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
     Card(
@@ -171,18 +222,6 @@ fun ResourceCard(
                 end = 16.dp
             )
         ) {
-            if (onPinClick != null) {
-                IconButton(
-                    onClick = onPinClick,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
-                        contentDescription = if (isPinned) "Unpin Surah" else "Pin Surah",
-                        tint = if (isPinned) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
-                    )
-                }
-            }
             if (resourceNumber != null) {
                 Text(
                     text = resourceNumber,
@@ -199,12 +238,23 @@ fun ResourceCard(
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.W500
                 )
-                Text(
-                    text = subtitle,
-                    fontSize = 13.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row {
+                    Text(
+                        text = subtitle,
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    if (isPinned) {
+                        Icon(
+                            imageVector = Icons.Filled.PushPin,
+                            contentDescription = "Pinned Surah",
+                            modifier = Modifier.size(size = 12.dp)
+                                .align(Alignment.CenterVertically)
+                        )
+                    }
+                }
             }
             if (pageNumber != null) {
                 Text(

@@ -44,7 +44,7 @@ class ResourcesFragment : MenuBarFragment() {
                         findNavController().navigate(R.id.quranReaderFragment)
                         mainActivityViewModel.updateCurrentPage(surah.startPage)
                     },
-                    onSurahPinClick = { surahId ->
+                    onSurahPin = { surahId ->
                         viewModel.toggleSurahPin(surahId) { result ->
                             when (result) {
                                 SurahRepository.PinResult.LimitReached -> {
