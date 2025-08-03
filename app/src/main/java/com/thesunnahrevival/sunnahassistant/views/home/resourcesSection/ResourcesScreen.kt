@@ -1,8 +1,8 @@
 package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 
 import android.content.res.Configuration
-import android.util.Log
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,26 +13,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -139,63 +133,21 @@ fun SurahItem(
     onSurahPin: ((Int) -> Unit)? = null,
     onClick: () -> Unit
 ) {
-    val rememberDismissState = rememberDismissState(
-        confirmStateChange = { dismissState ->
-            when (dismissState) {
-                DismissValue.DismissedToEnd -> {
-                    onSurahPin?.invoke(surah.id)
-                    Log.v("Surah Pin Action", surah.id.toString())
-                    false
-                }
-
-                DismissValue.DismissedToStart -> {
-                    onClick()
-                    false
-                }
-
-                DismissValue.Default -> {
-                    true
-                }
-            }
-        }
-    )
-    SwipeToDismiss(
-        state = rememberDismissState,
-        background = {
-            when (rememberDismissState.dismissDirection) {
-                DismissDirection.StartToEnd -> {
-                    Icon(
-                        if (surah.pinOrder != null) Icons.Outlined.PushPin else Icons.Filled.PushPin,
-                        contentDescription = "Pin Surah",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.CenterStart)
-                            .padding(12.dp),
-                        tint = MaterialTheme.colors.primary
-                    )
-                }
-                DismissDirection.EndToStart -> {
-
-                }
-
-                null -> {}
-            }
-        }
-    ) {
-        val verseCount = if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
-        ResourceCard(
-            title = if (isArabic) surah.arabicName else surah.transliteratedName,
-            subtitle = if (surah.isMakki) stringResource(
-                R.string.makki_verse_count,
-                verseCount
-            ) else stringResource(R.string.madani_verse_count, verseCount),
-            resourceNumber = if (isArabic) surah.id.toArabicNumbers() else surah.id.toString(),
-            pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString(),
-            isPinned = surah.pinOrder != null
-        ) { onClick() }
-    }
+    val verseCount = if (isArabic) surah.verseCount.toArabicNumbers() else surah.verseCount
+    ResourceCard(
+        title = if (isArabic) surah.arabicName else surah.transliteratedName,
+        subtitle = if (surah.isMakki) stringResource(
+            R.string.makki_verse_count,
+            verseCount
+        ) else stringResource(R.string.madani_verse_count, verseCount),
+        resourceNumber = if (isArabic) surah.id.toArabicNumbers() else surah.id.toString(),
+        pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString(),
+        isPinned = surah.pinOrder != null,
+        onDoubleClick = { onSurahPin?.invoke(surah.id) }
+    ) { onClick() }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ResourceCard(
     title: String,
@@ -203,6 +155,7 @@ fun ResourceCard(
     resourceNumber: String? = null,
     pageNumber: String? = null,
     isPinned: Boolean = false,
+    onDoubleClick: () -> Unit = {},
     onClick: () -> Unit
 ) {
     Card(
@@ -210,7 +163,7 @@ fun ResourceCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp)
-            .clickable {
+            .combinedClickable(onDoubleClick = onDoubleClick) {
                 onClick()
             }
     ) {
