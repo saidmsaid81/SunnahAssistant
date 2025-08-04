@@ -1,9 +1,12 @@
 package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,9 +30,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -43,6 +53,8 @@ import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ResourcesScreen(
@@ -158,73 +170,109 @@ fun ResourceCard(
     onDoubleClick: () -> Unit = {},
     onClick: () -> Unit
 ) {
-    Card(
-        elevation = 4.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp)
-            .combinedClickable(onDoubleClick = onDoubleClick) {
-                onClick()
-            }
-    ) {
-        Row(
-            modifier = Modifier.padding(
-                top = 8.dp,
-                bottom = 8.dp,
-                start = 16.dp,
-                end = 16.dp
-            )
+    var showPinOverlay by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
+    val overlayAlpha by animateFloatAsState(
+        targetValue = if (showPinOverlay) 1f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "pin_overlay_alpha"
+    )
+
+    Box {
+        Card(
+            elevation = 4.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp)
+                .combinedClickable(onDoubleClick = {
+                    showPinOverlay = true
+                    coroutineScope.launch {
+                        delay(1100)
+                        showPinOverlay = false
+                        delay(300)
+                        onDoubleClick()
+                    }
+                }) {
+                    onClick()
+                }
         ) {
-            if (resourceNumber != null) {
-                Text(
-                    text = resourceNumber,
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .weight(1f)
+            Row(
+                modifier = Modifier.padding(
+                    top = 8.dp,
+                    bottom = 8.dp,
+                    start = 16.dp,
+                    end = 16.dp
                 )
-            }
-            Column(modifier = Modifier.weight(4F)) {
-                Text(
-                    text = title,
-                    fontSize = 16.sp,
-                    style = MaterialTheme.typography.subtitle1,
-                    fontWeight = FontWeight.W500
-                )
-                Row {
+            ) {
+                if (resourceNumber != null) {
                     Text(
-                        text = subtitle,
-                        fontSize = 13.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(end = 8.dp)
+                        text = resourceNumber,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f)
                     )
-                    if (isPinned) {
-                        Icon(
-                            imageVector = Icons.Filled.PushPin,
-                            contentDescription = "Pinned Surah",
-                            modifier = Modifier.size(size = 12.dp)
-                                .align(Alignment.CenterVertically)
+                }
+                Column(modifier = Modifier.weight(4F)) {
+                    Text(
+                        text = title,
+                        fontSize = 16.sp,
+                        style = MaterialTheme.typography.subtitle1,
+                        fontWeight = FontWeight.W500
+                    )
+                    Row {
+                        Text(
+                            text = subtitle,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(end = 8.dp)
                         )
+                        if (isPinned) {
+                            Icon(
+                                imageVector = Icons.Filled.PushPin,
+                                contentDescription = "Pinned Surah",
+                                modifier = Modifier
+                                    .size(size = 12.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                        }
                     }
                 }
-            }
-            if (pageNumber != null) {
-                Text(
-                    text = pageNumber,
-                    style = MaterialTheme.typography.caption,
+                if (pageNumber != null) {
+                    Text(
+                        text = pageNumber,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                    )
+                }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "",
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .height(36.dp)
+                        .width(36.dp)
                 )
             }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "",
+        }
+
+        if (overlayAlpha > 0f) {
+            Box(
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .height(36.dp)
-                    .width(36.dp)
-            )
+                    .matchParentSize()
+                    .alpha(overlayAlpha),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (isPinned) Icons.Outlined.PushPin else Icons.Filled.PushPin,
+                    contentDescription = "Pin Action",
+                    tint = MaterialTheme.colors.primary,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
         }
     }
 }
