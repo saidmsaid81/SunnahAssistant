@@ -29,7 +29,7 @@ class ResourcesFragment : MenuBarFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         return ComposeView(requireContext()).apply {
             setContent {
-                val surahs by viewModel.getFirst5Surahs().collectAsState(initial = listOf())
+                val surahs by viewModel.getFirst3Surahs().collectAsState(initial = listOf())
                 val isDataReady by mainActivityViewModel.prepopulateQuranDataCompletionStatus.collectAsState(initial = true)
                 val resourceItems = viewModel.resourceItems()
                 val lastReadSurah by viewModel.lastReadSurah.collectAsState()

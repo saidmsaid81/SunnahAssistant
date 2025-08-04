@@ -19,8 +19,8 @@ interface SurahDao {
     @Query("SELECT * FROM surahs WHERE id = :id ")
     suspend fun getSurahById(id: Int): Surah
 
-    @Query("SELECT * FROM surahs ORDER BY CASE WHEN pin_order IS NULL THEN 1 ELSE 0 END, pin_order ASC, id ASC LIMIT 5")
-    fun getFirst5Surahs(): Flow<List<Surah>>
+    @Query("SELECT * FROM surahs ORDER BY CASE WHEN pin_order IS NULL THEN 1 ELSE 0 END, pin_order ASC, id ASC LIMIT 3")
+    fun getFirst3Surahs(): Flow<List<Surah>>
 
     @Query("SELECT * FROM surahs ORDER BY CASE WHEN pin_order IS NULL THEN 1 ELSE 0 END, pin_order ASC, id ASC")
     fun getAllSurahs(): PagingSource<Int, Surah>

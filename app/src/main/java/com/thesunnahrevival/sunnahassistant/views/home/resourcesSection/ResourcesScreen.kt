@@ -135,6 +135,18 @@ fun ResourcesScreen(
                         }
                     }
                 }
+
+                ResourceTitle(
+                    title = stringResource(R.string.adhkaar),
+                    trailingIcon = {
+                        IconButton(onClick = onBookmarksClick) {
+                            Icon(
+                                imageVector = Icons.Outlined.Bookmarks,
+                                contentDescription = stringResource(R.string.bookmarks)
+                            )
+                        }
+                    }
+                )
             }
         }
     }

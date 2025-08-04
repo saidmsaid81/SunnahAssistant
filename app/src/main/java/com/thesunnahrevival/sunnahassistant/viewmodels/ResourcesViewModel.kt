@@ -27,8 +27,8 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
         }
     }
 
-    fun getFirst5Surahs(): Flow<List<Surah>> {
-        return surahRepository.getFirst5Surahs()
+    fun getFirst3Surahs(): Flow<List<Surah>> {
+        return surahRepository.getFirst3Surahs()
     }
 
     fun resourceItems() = repository.resourceItems()
