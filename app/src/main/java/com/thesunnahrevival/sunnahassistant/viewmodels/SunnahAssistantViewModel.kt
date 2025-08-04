@@ -47,8 +47,6 @@ import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -72,17 +70,6 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
 
     private val surahRepository: SurahRepository = SurahRepository.getInstance(application)
-
-    private val _prepopulateQuranDataCompletionStatus = MutableSharedFlow<Boolean>()
-    val prepopulateQuranDataCompletionStatus: SharedFlow<Boolean> = _prepopulateQuranDataCompletionStatus
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            _prepopulateQuranDataCompletionStatus.emit(false)
-            resourcesRepository.prepopulateQuranData()
-            _prepopulateQuranDataCompletionStatus.emit(true)
-        }
-    }
 
     private val mutex = Mutex()
 

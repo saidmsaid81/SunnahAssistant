@@ -55,6 +55,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
+import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesUIState
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,14 +63,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun ResourcesScreen(
     findNavController: NavController? = null,
-    isDataReady: Boolean = true,
-    surahs: List<Surah>,
-    lastReadSurah: Surah? = null,
-    resourceItemList: List<ResourceItem>,
+    resourcesUIState: ResourcesUIState,
     surahItemOnClick: (surah: Surah) -> Unit = {},
     onSurahPin: ((Int) -> Unit)? = null,
     onBookmarksClick: () -> Unit = {}
 ) {
+
+    val isDataReady = resourcesUIState.isDataReady
+    val surahs = resourcesUIState.surahs
+    val lastReadSurah = resourcesUIState.lastReadSurah
+    val resourceItemList = resourcesUIState.resourceItems
 
     SunnahAssistantTheme {
         Surface(
@@ -350,14 +353,20 @@ fun ResourcesScreenPreviewDarkArabic() {
 private fun ResourcesScreenPreview() {
     SunnahAssistantTheme {
         ResourcesScreen(
-            surahs = previewSurahs(),
-            resourceItemList = listOf(
-                ResourceItem(
-                    id = 1,
-                    titleResourceKey = R.string.daily_hadith,
-                    descriptionResourceKey = R.string.from_the_sunnah_revival_blog,
-                    destination = R.id.dailyHadithFragment
-                )
+            resourcesUIState = ResourcesUIState(
+                isDataReady = true,
+                isLoading = false,
+                surahs = previewSurahs(),
+                lastReadSurah = previewSurahs().first(),
+                resourceItems = listOf(
+                    ResourceItem(
+                        id = 1,
+                        titleResourceKey = R.string.daily_hadith,
+                        descriptionResourceKey = R.string.from_the_sunnah_revival_blog,
+                        destination = R.id.dailyHadithFragment
+                    )
+                ),
+                error = null
             ),
             onBookmarksClick = {}
         )
