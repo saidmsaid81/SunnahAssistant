@@ -36,6 +36,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.roundTo
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -98,7 +99,7 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
     private suspend fun executeDownload() {
         val downloadFileRepository = DownloadFileRepository.getInstance(applicationContext)
 
-        val resumeFromByte = if (getResumeAttempts() > MAX_RESUME_ATTEMPTS) {
+        var resumeFromByte = if (getResumeAttempts() > MAX_RESUME_ATTEMPTS) {
             clearDownloadState()
             clearResumeAttempts()
             0
@@ -106,26 +107,42 @@ class DownloadWorker(context: Context, parameters: WorkerParameters) :
             getDownloadState()
         }
 
-        val response = downloadFileRepository.downloadFile(
-            downloadFileRepository.getResourceLinks().body()?.quranZipFileLink ?: return,
-            resumeFromByte
-        )
+        var shouldRetry = true
+        var retries = 0
+        do {
+            val response = downloadFileRepository.downloadFile(
+                downloadFileRepository.getResourceLinks().body()?.quranZipFileLink ?: return,
+                resumeFromByte
+            )
 
-        if (response?.isSuccessful == true) {
-            response.body()?.let { responseBody ->
-                tempZipFile = downloadFileToTemp(responseBody, resumeFromByte)
-                tempZipFile?.let {
-                    extractZipContents(it)
-                    it.delete()
+            if (response?.isSuccessful == true) {
+                response.body()?.let { responseBody ->
+                    tempZipFile = downloadFileToTemp(responseBody, resumeFromByte)
+                    tempZipFile?.let {
+                        extractZipContents(it)
+                        it.delete()
+                    }
+                    downloadManager.updateUIProgress(Completed)
+                    clearDownloadState()
+                    clearResumeAttempts()
+                    showSuccessNotification()
+                    shouldRetry = false
+                } ?: throw IOException("Response body is null")
+            } else {
+                retries++
+                if (retries == 2 || response?.code() == 416) { // Range not satisfiable
+                    resumeFromByte = 0
+                    clearDownloadState()
+                    clearResumeAttempts()
                 }
-                downloadManager.updateUIProgress(Completed)
-                clearDownloadState()
-                clearResumeAttempts()
-                showSuccessNotification()
-            } ?: throw IOException("Response body is null")
-        } else {
-            throw IOException("Download request failed with code: ${response?.code()}")
-        }
+
+                if (retries > 2) {
+                    throw IOException("Download request failed with code: ${response?.code()}")
+                }
+
+                delay(1000L * retries) //Backoff
+            }
+        } while (shouldRetry)
     }
 
     private suspend fun downloadFileToTemp(responseBody: ResponseBody, resumeFromByte: Long = 0L): File {
