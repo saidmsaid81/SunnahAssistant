@@ -184,6 +184,12 @@
       android:label="@string/quran">
   </fragment>
 
+  <fragment
+      android:id="@+id/adhkaarChaptersList"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar.AdhkaarChapterListFragment"
+      android:label="@string/adhkaar">
+  </fragment>
+
   <dialog
       android:id="@+id/snooze_options"
       android:name="com.thesunnahrevival.sunnahassistant.views.dialogs.SnoozeOptionsFragment" />

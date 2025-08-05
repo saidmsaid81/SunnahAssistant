@@ -1,7 +1,9 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
+import android.os.Build
 import androidx.lifecycle.viewModelScope
+import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
 import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
@@ -30,18 +32,29 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 
-                repository.prepopulateQuranData()
+                repository.prepopulateResourcesData()
+
+                val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    getApplication<Application>().resources.configuration.locales[0]
+                } else {
+                    getApplication<Application>().resources.configuration.locale
+                }
+
+                val language = if (locale.language.startsWith("ar")) "ar" else "en"
+
                 
                 combine(
                     surahRepository.getFirst3Surahs(),
-                    _lastReadSurah
-                ) { surahs, lastReadSurah ->
+                    _lastReadSurah,
+                    repository.getFirstThreeAdhkaarChapters(language)
+                ) { surahs, lastReadSurah, adhkaarChapters ->
                     ResourcesUIState(
                         isDataReady = true,
                         isLoading = false,
                         surahs = surahs,
                         lastReadSurah = lastReadSurah,
                         resourceItems = repository.resourceItems(),
+                        adhkaarChapters = adhkaarChapters,
                         error = null
                     )
                 }.collect { newState ->
@@ -77,5 +90,6 @@ data class ResourcesUIState(
     val surahs: List<Surah> = emptyList(),
     val lastReadSurah: Surah? = null,
     val resourceItems: List<ResourceItem> = emptyList(),
+    val adhkaarChapters: List<AdhkaarChapter> = emptyList(),
     val error: String? = null
 )

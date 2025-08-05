@@ -3,42 +3,16 @@ package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
 import android.content.res.Configuration
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
 import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
@@ -66,13 +41,15 @@ fun ResourcesScreen(
     resourcesUIState: ResourcesUIState,
     surahItemOnClick: (surah: Surah) -> Unit = {},
     onSurahPin: ((Int) -> Unit)? = null,
-    onBookmarksClick: () -> Unit = {}
+    onBookmarksClick: () -> Unit = {},
+    adhkaarChapterOnClick: (adhkaarChapter: AdhkaarChapter) -> Unit = {}
 ) {
 
     val isDataReady = resourcesUIState.isDataReady
     val surahs = resourcesUIState.surahs
     val lastReadSurah = resourcesUIState.lastReadSurah
     val resourceItemList = resourcesUIState.resourceItems
+    val adhkaarChapters = resourcesUIState.adhkaarChapters
 
     SunnahAssistantTheme {
         Surface(
@@ -150,6 +127,26 @@ fun ResourcesScreen(
                         }
                     }
                 )
+
+                if (isDataReady) {
+                    Column {
+                        adhkaarChapters.forEachIndexed { index, adhkaarChapter ->
+                            AdhkaarChapterItem(adhkaarChapter, isArabic()) {
+                                adhkaarChapterOnClick(adhkaarChapter)
+                            }
+
+                            if (index == adhkaarChapters.lastIndex) {
+                                ResourceCard(
+                                    title = stringResource(R.string.more),
+                                    subtitle = stringResource(R.string.tap_to_view_all_adhkaar_chapters),
+                                    resourceNumber = ""
+                                ) {
+                                    findNavController?.navigate(R.id.adhkaarChaptersList)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -174,6 +171,20 @@ fun SurahItem(
         pageNumber = if (isArabic) surah.startPage.toArabicNumbers() else surah.startPage.toString(),
         isPinned = surah.pinOrder != null,
         onDoubleClick = { onSurahPin?.invoke(surah.id) }
+    ) { onClick() }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun AdhkaarChapterItem(
+    adhkaarChapter: AdhkaarChapter,
+    isArabic: Boolean = false,
+    onClick: () -> Unit
+) {
+    ResourceCard(
+        title = adhkaarChapter.chapterName,
+        subtitle = stringResource(R.string.adhkaar_chapter),
+        resourceNumber = if (isArabic) adhkaarChapter.chapterId.toArabicNumbers() else adhkaarChapter.chapterId.toString()
     ) { onClick() }
 }
 
@@ -330,13 +341,13 @@ private fun ResourceTitle(
     locale = "en"
 )
 fun ResourcesScreenPreviewDark() {
-    ResourcesScreenPreview()
+    ResourcesScreenPreview(previewAdhkaarChapters())
 }
 
 @Composable
 @Preview
 fun ResourcesScreenPreviewLight() {
-    ResourcesScreenPreview()
+    ResourcesScreenPreview(previewAdhkaarChapters())
 }
 
 @Composable
@@ -346,11 +357,11 @@ fun ResourcesScreenPreviewLight() {
     locale = "ar"
 )
 fun ResourcesScreenPreviewDarkArabic() {
-    ResourcesScreenPreview()
+    ResourcesScreenPreview(previewArabicAdhkaarChapters())
 }
 
 @Composable
-private fun ResourcesScreenPreview() {
+private fun ResourcesScreenPreview(chapters: List<AdhkaarChapter>) {
     SunnahAssistantTheme {
         ResourcesScreen(
             resourcesUIState = ResourcesUIState(
@@ -366,6 +377,7 @@ private fun ResourcesScreenPreview() {
                         destination = R.id.dailyHadithFragment
                     )
                 ),
+                adhkaarChapters = chapters,
                 error = null
             ),
             onBookmarksClick = {}
@@ -379,5 +391,18 @@ fun previewSurahs() = listOf(
     Surah(3, "سورة آل عمران", "Suratul Aal-Imran", false, 200, 50, 2),
     Surah(4, "سورة النساء", "Suratul Nisa", false, 176, 77, null),
     Surah(5, "سورة المائدة", "Suratul Maidah", false, 120, 106, null)
+)
+
+
+fun previewArabicAdhkaarChapters() = listOf(
+    AdhkaarChapter(134, 1, "ar", "أَذْكَارُ الاسْـتِيقَاظِ مِنَ النَّـومِ"),
+    AdhkaarChapter(135, 2, "ar", "دُعَـاءُ لُبْسِ الثَّـــوْبِ"),
+    AdhkaarChapter(136, 3, "ar", "دُعَـاءُ لُبْسِ الثَّوْبِ الجَــدِيدِ")
+)
+
+fun previewAdhkaarChapters() = listOf(
+    AdhkaarChapter(134, 1, "en", "When waking up"),
+    AdhkaarChapter(135, 2, "en", "When wearing a garment"),
+    AdhkaarChapter(136, 3, "en", "When wearing a new garment")
 )
 

@@ -1,25 +1,12 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
 import android.content.Context
-import androidx.room.AutoMigration
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
-import com.thesunnahrevival.sunnahassistant.data.model.Footnote
-import com.thesunnahrevival.sunnahassistant.data.model.Language
-import com.thesunnahrevival.sunnahassistant.data.model.Line
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
@@ -29,12 +16,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.TreeSet
+import java.util.*
 
 @Database(
-    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class],
-    version = 10,
-    autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
+    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class],
+    version = 11,
+    autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9), AutoMigration(from = 10, to = 11)],
     exportSchema = true
     )
 @TypeConverters(RoomTypeConverter::class)
@@ -55,6 +42,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun languageDao(): LanguageDao
 
     abstract fun translationDao(): TranslationDao
+
+    abstract fun adhkaarChapterDao(): AdhkaarChapterDao
 
     abstract fun appSettingsDao(): AppSettingsDao
 

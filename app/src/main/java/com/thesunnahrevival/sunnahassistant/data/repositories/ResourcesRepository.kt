@@ -5,18 +5,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.local.AyahDao
-import com.thesunnahrevival.sunnahassistant.data.local.LanguageDao
-import com.thesunnahrevival.sunnahassistant.data.local.LineDao
-import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
-import com.thesunnahrevival.sunnahassistant.data.local.TranslationDao
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.Language
-import com.thesunnahrevival.sunnahassistant.data.model.Line
-import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.local.*
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 
 class ResourcesRepository private constructor(
@@ -49,6 +39,9 @@ class ResourcesRepository private constructor(
     private val languageDao: LanguageDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).languageDao()
 
+    private val adhkaarChapterDao: AdhkaarChapterDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).adhkaarChapterDao()
+
     fun resourceItems(): List<ResourceItem> {
         return listOf(
             ResourceItem(
@@ -59,14 +52,23 @@ class ResourcesRepository private constructor(
             )
         )
     }
+
+    fun getFirstThreeAdhkaarChapters(language: String) = adhkaarChapterDao.getFirstThreeChapters(language)
+
+
+    fun getAllAdhkaarChapters(language: String) = adhkaarChapterDao.getAllChaptersPagingSource(language)
     
-    suspend fun prepopulateQuranData() {
+    suspend fun prepopulateResourcesData() {
         if (surahDao.countSurah() == 0) {
             prepopulateSurahData()
             prepopulateAyahData()
             prepopulateLineData()
             prepopulateLanguageData()
             prepopulateTranslationData()
+        }
+        
+        if (adhkaarChapterDao.countAdhkaarChapters() == 0) {
+            prepopulateAdhkaarData()
         }
     }
 
@@ -155,6 +157,24 @@ class ResourcesRepository private constructor(
             val translations: List<Translation> = gson.fromJson(jsonString, listType)
             translations.forEach {
                 translationDao.insert(it)
+            }
+
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
+    private suspend fun prepopulateAdhkaarData() {
+        try {
+            val jsonString = applicationContext.assets.open("adhkaar_chapters.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            val listType = object : TypeToken<List<AdhkaarChapter>>() {}.type
+            val gson = getGson()
+            val adhkaarChapters: List<AdhkaarChapter> = gson.fromJson(jsonString, listType)
+            adhkaarChapters.forEach {
+                adhkaarChapterDao.insert(it)
             }
 
         } catch (exception: Exception) {
