@@ -409,7 +409,6 @@
     <string name="pinned_surahs_limit_reached">Maximum 5 Surahs can be pinned. Please unpin a Surah first.</string>
     <string name="adhkaar">Adhkaar</string>
     <string name="tap_to_view_all_adhkaar_chapters">Tap to view all adhkaars</string>
-    <string name="adhkaar_chapter">Hisnul Muslim</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

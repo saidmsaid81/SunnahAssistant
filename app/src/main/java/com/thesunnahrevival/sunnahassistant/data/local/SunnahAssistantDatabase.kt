@@ -20,8 +20,8 @@ import java.util.*
 
 @Database(
     entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class],
-    version = 11,
-    autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9), AutoMigration(from = 10, to = 11)],
+    version = 10,
+    autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
     )
 @TypeConverters(RoomTypeConverter::class)
@@ -240,6 +240,17 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `lastReadPage` INTEGER")
                 database.execSQL("ALTER TABLE ayahs ADD COLUMN `bookmarked` INTEGER DEFAULT 0")
                 database.execSQL("ALTER TABLE surahs ADD COLUMN `pin_order` INTEGER")
+
+                // Create adhkaar_chapters table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS adhkaar_chapters (
+                        id INTEGER PRIMARY KEY NOT NULL,
+                        chapter_id INTEGER NOT NULL,
+                        language TEXT NOT NULL,
+                        chapter_name TEXT NOT NULL,
+                        category_name TEXT NOT NULL
+                    )
+                """)
             }
         }
 

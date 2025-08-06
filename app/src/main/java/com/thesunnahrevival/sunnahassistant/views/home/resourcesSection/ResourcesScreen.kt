@@ -183,7 +183,7 @@ fun AdhkaarChapterItem(
 ) {
     ResourceCard(
         title = adhkaarChapter.chapterName,
-        subtitle = stringResource(R.string.adhkaar_chapter),
+        subtitle = adhkaarChapter.categoryName,
         resourceNumber = if (isArabic) adhkaarChapter.chapterId.toArabicNumbers() else adhkaarChapter.chapterId.toString()
     ) { onClick() }
 }
@@ -395,14 +395,14 @@ fun previewSurahs() = listOf(
 
 
 fun previewArabicAdhkaarChapters() = listOf(
-    AdhkaarChapter(134, 1, "ar", "أَذْكَارُ الاسْـتِيقَاظِ مِنَ النَّـومِ"),
-    AdhkaarChapter(135, 2, "ar", "دُعَـاءُ لُبْسِ الثَّـــوْبِ"),
-    AdhkaarChapter(136, 3, "ar", "دُعَـاءُ لُبْسِ الثَّوْبِ الجَــدِيدِ")
+    AdhkaarChapter(134, 1, "ar", "أَذْكَارُ الاسْـتِيقَاظِ مِنَ النَّـومِ", "اليوم و الليلة"),
+    AdhkaarChapter(135, 2, "ar", "دُعَـاءُ لُبْسِ الثَّـــوْبِ", "البيت و الأهل"),
+    AdhkaarChapter(136, 3, "ar", "دُعَـاءُ لُبْسِ الثَّوْبِ الجَــدِيدِ", "البيت و الأهل")
 )
 
 fun previewAdhkaarChapters() = listOf(
-    AdhkaarChapter(134, 1, "en", "When waking up"),
-    AdhkaarChapter(135, 2, "en", "When wearing a garment"),
-    AdhkaarChapter(136, 3, "en", "When wearing a new garment")
+    AdhkaarChapter(134, 1, "en", "When waking up", "Morning & Evening"),
+    AdhkaarChapter(135, 2, "en", "When wearing a garment", "Home & Family"),
+    AdhkaarChapter(136, 3, "en", "When wearing a new garment", "Home & Family")
 )
 

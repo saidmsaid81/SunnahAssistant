@@ -8,7 +8,7 @@ import java.io.Serializable
 
 @Entity(tableName = "adhkaar_chapters")
 data class AdhkaarChapter(
-    @PrimaryKey 
+    @PrimaryKey
     @SerializedName("_id")
     val id: Int,
 
@@ -22,5 +22,9 @@ data class AdhkaarChapter(
 
     @ColumnInfo(name = "chapter_name")
     @SerializedName("chapter_name")
-    val chapterName: String
+    val chapterName: String,
+
+    @ColumnInfo(name = "category_name")
+    @SerializedName("category_name")
+    val categoryName: String
 ) : Serializable

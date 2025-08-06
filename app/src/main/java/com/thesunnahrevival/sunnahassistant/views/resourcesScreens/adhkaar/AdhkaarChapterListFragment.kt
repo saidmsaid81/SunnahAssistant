@@ -138,10 +138,10 @@ private fun PreviewAdhkaarChapterListScreen() {
 }
 
 private fun previewAdhkaarChapters() = listOf(
-    AdhkaarChapter(134, 1, "en", "When waking up"),
-    AdhkaarChapter(135, 2, "en", "When wearing a garment"),
-    AdhkaarChapter(136, 3, "en", "When wearing a new garment"),
-    AdhkaarChapter(137, 4, "en", "When undressing"),
-    AdhkaarChapter(138, 5, "en", "When going to the toilet"),
-    AdhkaarChapter(139, 6, "en", "When leaving the toilet")
+    AdhkaarChapter(134, 1, "en", "When waking up", "Morning & Evening"),
+    AdhkaarChapter(135, 2, "en", "When wearing a garment", "Home & Family"),
+    AdhkaarChapter(136, 3, "en", "When wearing a new garment", "Home & Family"),
+    AdhkaarChapter(137, 4, "en", "When undressing", "Home & Family"),
+    AdhkaarChapter(138, 5, "en", "When going to the toilet", "Home & Family"),
+    AdhkaarChapter(139, 6, "en", "When leaving the toilet", "Home & Family"),
 )
