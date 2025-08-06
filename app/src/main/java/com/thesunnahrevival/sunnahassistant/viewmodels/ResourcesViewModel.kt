@@ -49,7 +49,6 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
                     repository.getFirstThreeAdhkaarChapters(language)
                 ) { surahs, lastReadSurah, adhkaarChapters ->
                     ResourcesUIState(
-                        isDataReady = true,
                         isLoading = false,
                         surahs = surahs,
                         lastReadSurah = lastReadSurah,
@@ -85,7 +84,6 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
 }
 
 data class ResourcesUIState(
-    val isDataReady: Boolean = false,
     val isLoading: Boolean = true,
     val surahs: List<Surah> = emptyList(),
     val lastReadSurah: Surah? = null,

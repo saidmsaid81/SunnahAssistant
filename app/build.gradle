@@ -149,6 +149,9 @@ dependencies {
     //Work Manager
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
+    // Shimmer
+    implementation "com.valentinilk.shimmer:compose-shimmer:1.3.0"
+
     implementation("androidx.activity:activity-ktx:$activity_version")
 
     // Compose

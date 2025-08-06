@@ -32,6 +32,7 @@ import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesUIState
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
+import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -45,7 +46,7 @@ fun ResourcesScreen(
     adhkaarChapterOnClick: (adhkaarChapter: AdhkaarChapter) -> Unit = {}
 ) {
 
-    val isDataReady = resourcesUIState.isDataReady
+    val hasFinishedLoading = !resourcesUIState.isLoading
     val surahs = resourcesUIState.surahs
     val lastReadSurah = resourcesUIState.lastReadSurah
     val resourceItemList = resourcesUIState.resourceItems
@@ -64,7 +65,7 @@ fun ResourcesScreen(
                     .verticalScroll(rememberScrollState())
             ) {
 
-                if (isDataReady && lastReadSurah != null) {
+                if (hasFinishedLoading && lastReadSurah != null) {
                     ResourceTitle(title = stringResource(R.string.last_read))
 
                     SurahItem(lastReadSurah, isArabic(), onSurahPin) {
@@ -84,7 +85,7 @@ fun ResourcesScreen(
                     }
                 )
 
-                if (isDataReady) {
+                if (hasFinishedLoading) {
                     Column {
                         surahs.forEachIndexed { index, surah ->
                             SurahItem(surah, isArabic(), onSurahPin) {
@@ -103,16 +104,26 @@ fun ResourcesScreen(
                         }
                     }
                 } else {
-                    CircularProgressIndicator()
+                    Column {
+                        repeat(5) {
+                            ShimmerResourceCard()
+                        }
+                    }
                 }
 
                 ResourceTitle(title = stringResource(R.string.hadith))
 
-                Column {
-                    resourceItemList.forEach { item ->
-                        ResourceCard(title = stringResource(item.titleResourceKey), subtitle = stringResource(item.descriptionResourceKey)) {
-                            findNavController?.navigate(item.destination)
+                if (hasFinishedLoading) {
+                    Column {
+                        resourceItemList.forEach { item ->
+                            ResourceCard(title = stringResource(item.titleResourceKey), subtitle = stringResource(item.descriptionResourceKey)) {
+                                findNavController?.navigate(item.destination)
+                            }
                         }
+                    }
+                } else {
+                    Column {
+                        ShimmerResourceCard()
                     }
                 }
 
@@ -128,7 +139,7 @@ fun ResourcesScreen(
                     }
                 )
 
-                if (isDataReady) {
+                if (hasFinishedLoading) {
                     Column {
                         adhkaarChapters.forEachIndexed { index, adhkaarChapter ->
                             AdhkaarChapterItem(adhkaarChapter, isArabic()) {
@@ -144,6 +155,12 @@ fun ResourcesScreen(
                                     findNavController?.navigate(R.id.adhkaarChaptersList)
                                 }
                             }
+                        }
+                    }
+                } else {
+                    Column {
+                        repeat(4) {
+                            ShimmerResourceCard()
                         }
                     }
                 }
@@ -336,6 +353,81 @@ private fun ResourceTitle(
 
 
 @Composable
+fun ShimmerResourceCard() {
+    Card(
+        elevation = 4.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 4.dp)
+            .shimmer()
+    ) {
+        Row(
+            modifier = Modifier.padding(
+                top = 8.dp,
+                bottom = 8.dp,
+                start = 16.dp,
+                end = 16.dp
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(
+                        Color.Gray.copy(alpha = 0.3f),
+                        RoundedCornerShape(4.dp)
+                    )
+                    .align(Alignment.CenterVertically)
+                    .weight(1f)
+            )
+            
+            Column(modifier = Modifier.weight(4F)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(16.dp)
+                        .background(
+                            Color.Gray.copy(alpha = 0.3f),
+                            RoundedCornerShape(4.dp)
+                        )
+                )
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .height(12.dp)
+                        .background(
+                            Color.Gray.copy(alpha = 0.3f),
+                            RoundedCornerShape(4.dp)
+                        )
+                )
+            }
+            
+            Box(
+                modifier = Modifier
+                    .size(width = 20.dp, height = 12.dp)
+                    .background(
+                        Color.Gray.copy(alpha = 0.3f),
+                        RoundedCornerShape(4.dp)
+                    )
+                    .align(Alignment.CenterVertically)
+            )
+            
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .background(
+                        Color.Gray.copy(alpha = 0.3f),
+                        RoundedCornerShape(4.dp)
+                    )
+                    .align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
+@Composable
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     locale = "en"
@@ -365,7 +457,6 @@ private fun ResourcesScreenPreview(chapters: List<AdhkaarChapter>) {
     SunnahAssistantTheme {
         ResourcesScreen(
             resourcesUIState = ResourcesUIState(
-                isDataReady = true,
                 isLoading = false,
                 surahs = previewSurahs(),
                 lastReadSurah = previewSurahs().first(),
@@ -405,4 +496,41 @@ fun previewAdhkaarChapters() = listOf(
     AdhkaarChapter(135, 2, "en", "When wearing a garment", "Home & Family"),
     AdhkaarChapter(136, 3, "en", "When wearing a new garment", "Home & Family")
 )
+
+@Composable
+@Preview
+fun ShimmerResourceCardPreview() {
+    SunnahAssistantTheme {
+        Column {
+            repeat(3) {
+                ShimmerResourceCard()
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun ResourcesScreenLoadingPreview() {
+    SunnahAssistantTheme {
+        ResourcesScreen(
+            resourcesUIState = ResourcesUIState(
+                isLoading = true,
+                surahs = emptyList(),
+                lastReadSurah = null,
+                resourceItems = listOf(
+                    ResourceItem(
+                        id = 1,
+                        titleResourceKey = R.string.daily_hadith,
+                        descriptionResourceKey = R.string.from_the_sunnah_revival_blog,
+                        destination = R.id.dailyHadithFragment
+                    )
+                ),
+                adhkaarChapters = emptyList(),
+                error = null
+            ),
+            onBookmarksClick = {}
+        )
+    }
+}
 

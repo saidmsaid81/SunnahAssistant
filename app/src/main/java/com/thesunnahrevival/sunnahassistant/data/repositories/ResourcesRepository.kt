@@ -8,6 +8,8 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.*
 import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class ResourcesRepository private constructor(
     private val applicationContext: Context
@@ -58,18 +60,25 @@ class ResourcesRepository private constructor(
 
     fun getAllAdhkaarChapters(language: String) = adhkaarChapterDao.getAllChaptersPagingSource(language)
     
-    suspend fun prepopulateResourcesData() {
-        if (surahDao.countSurah() == 0) {
-            prepopulateSurahData()
-            prepopulateAyahData()
-            prepopulateLineData()
-            prepopulateLanguageData()
-            prepopulateTranslationData()
+    suspend fun prepopulateResourcesData() = coroutineScope {
+        val surahJob = launch {
+            if (surahDao.countSurah() == 0) {
+                prepopulateSurahData()
+                prepopulateAyahData()
+                prepopulateLineData()
+                prepopulateLanguageData()
+                prepopulateTranslationData()
+            }
         }
-        
-        if (adhkaarChapterDao.countAdhkaarChapters() == 0) {
-            prepopulateAdhkaarData()
+
+        val adhkaarJob = launch {
+            if (adhkaarChapterDao.countAdhkaarChapters() == 0) {
+                prepopulateAdhkaarData()
+            }
         }
+
+        surahJob.join()
+        adhkaarJob.join()
     }
 
 
