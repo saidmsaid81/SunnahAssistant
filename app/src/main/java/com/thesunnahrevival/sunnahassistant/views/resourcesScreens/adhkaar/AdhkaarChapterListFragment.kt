@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
@@ -42,8 +43,9 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
                     firstVisiblePosition = viewModel.firstVisiblePosition,
                     onScroll = { index -> viewModel.firstVisiblePosition = index },
                     onAdhkaarChapterClick = { adhkaarChapter ->
-                        // TODO: Navigate to adhkaar chapter details
-                        // findNavController().navigate(R.id.adhkaarChapterDetailsFragment)
+                        val action = AdhkaarChapterListFragmentDirections
+                            .actionAdhkaarChaptersListToAdhkaarReaderFragment(adhkaarChapter.chapterId)
+                        findNavController().navigate(action)
                     }
                 )
             }

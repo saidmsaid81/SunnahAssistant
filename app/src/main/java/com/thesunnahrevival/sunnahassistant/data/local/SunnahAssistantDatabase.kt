@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.util.*
 
 @Database(
-    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class],
+    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class],
     version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
@@ -44,6 +44,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun translationDao(): TranslationDao
 
     abstract fun adhkaarChapterDao(): AdhkaarChapterDao
+
+    abstract fun adhkaarItemDao(): AdhkaarItemDao
 
     abstract fun appSettingsDao(): AppSettingsDao
 
@@ -251,6 +253,22 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         category_name TEXT NOT NULL
                     )
                 """)
+
+                // Create adhkaar_items table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS adhkaar_items (
+                        id INTEGER PRIMARY KEY NOT NULL,
+                        item_id INTEGER NOT NULL,
+                        language TEXT NOT NULL,
+                        item_translation TEXT NOT NULL,
+                        chapter_id INTEGER NOT NULL,
+                        reference TEXT NULL,
+                        FOREIGN KEY(chapter_id) REFERENCES adhkaar_chapters(chapter_id) ON DELETE CASCADE
+                    )
+                """)
+
+                database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_adhkaar_chapters_chapter_id` ON `adhkaar_chapters` (`chapter_id`)")
+
             }
         }
 

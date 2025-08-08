@@ -8,17 +8,7 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -26,11 +16,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
@@ -44,23 +30,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withLink
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.data.model.Footnote
-import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextUtils
 import com.thesunnahrevival.sunnahassistant.views.utilities.FontLoader
 import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
@@ -433,7 +411,7 @@ private fun AyahTranslationText(
 }
 
 @Composable
-private fun FootnoteText(number: Int, text: String) {
+fun FootnoteText(number: Int? = null, text: String) {
     Row(
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
@@ -441,17 +419,18 @@ private fun FootnoteText(number: Int, text: String) {
                 color = MaterialTheme.colors.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .padding(8.dp),
     ) {
-        Text(
-            text = number.toString(),
-            style = MaterialTheme.typography.caption.copy(
-                baselineShift = BaselineShift.Superscript,
-                fontSize = 12.sp,
-                color = MaterialTheme.colors.primary
-            ),
-            modifier = Modifier.padding(end = 4.dp)
-        )
+        if (number != null) {
+            Text(
+                text = number.toString(),
+                style = MaterialTheme.typography.caption.copy(
+                    baselineShift = BaselineShift.Superscript,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colors.primary
+                ),
+                modifier = Modifier.padding(end = 4.dp)
+            )
+        }
         Text(
             text = text,
             style = MaterialTheme.typography.caption,

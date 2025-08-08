@@ -188,6 +188,18 @@
       android:id="@+id/adhkaarChaptersList"
       android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar.AdhkaarChapterListFragment"
       android:label="@string/adhkaar">
+    <action
+        android:id="@+id/action_adhkaarChaptersList_to_adhkaarReaderFragment"
+        app:destination="@id/adhkaarReaderFragment" />
+  </fragment>
+
+  <fragment
+      android:id="@+id/adhkaarReaderFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar.AdhkaarReaderFragment"
+      android:label="@string/adhkaar">
+    <argument
+        android:name="chapterId"
+        app:argType="integer" />
   </fragment>
 
   <dialog
