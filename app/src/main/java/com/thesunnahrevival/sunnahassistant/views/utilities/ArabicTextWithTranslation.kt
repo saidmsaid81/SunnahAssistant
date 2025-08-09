@@ -28,7 +28,8 @@ fun ArabicTextWithTranslation(
     sectionMarker: String,
     arabicText: String,
     translationTexts: List<TranslationText>,
-    textToShare: String
+    textToShare: String,
+    onBookmarkClick: () -> Unit = {}
 ) {
 
     val uthmaniFont = FontLoader.loadUthmaniFont()
@@ -124,7 +125,7 @@ fun ArabicTextWithTranslation(
                 Spacer(modifier = Modifier.width(32.dp))
 
                 BookmarkIcon(icon = Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
-//                                                    toggleAyahBookmark(selectedAyah.ayah)
+                    onBookmarkClick()
                 }
             }
 
