@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,11 +85,13 @@ fun ArabicTextWithTranslation(
             )
 
             if (translationText.footnotes.isNotEmpty()) {
-                Text(
-                    text = translationText.footnoteLabel,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-                )
+                if (translationText.footnoteLabel.isNotEmpty()) {
+                    Text(
+                        text = translationText.footnoteLabel,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                    )
+                }
 
                 for (footnote in translationText.footnotes) {
                     Text(
@@ -96,44 +99,44 @@ fun ArabicTextWithTranslation(
                         style = MaterialTheme.typography.caption,
                         color = MaterialTheme.colors.onSurface,
                     )
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+        }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
 
-                ShareIcon(
-                    context = context,
-                    textToShare = textToShare,
-                    modifier = Modifier.size(24.dp)
-                )
+            ShareIcon(
+                context = context,
+                textToShare = textToShare,
+                modifier = Modifier.size(24.dp)
+            )
 
-                Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(32.dp))
 
-                CopyIcon(
-                    context,
-                    textToShare,
-                    stringResource(R.string.copy_label),
-                    stringResource(R.string.copy_message),
-                    Modifier.size(24.dp)
-                )
+            CopyIcon(
+                context,
+                textToShare,
+                stringResource(R.string.copy_label),
+                stringResource(R.string.copy_message),
+                Modifier.size(24.dp)
+            )
 
-                Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(32.dp))
 
-                BookmarkIcon(icon = Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
-                    onBookmarkClick()
-                }
+            BookmarkIcon(icon = Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
+                onBookmarkClick()
             }
-
         }
     }
 }
 
-data class TranslationText(val title: String, val text: String, val footnoteLabel: String, val footnotes: List<String>)
+data class TranslationText(val title: String, val text: AnnotatedString, val footnoteLabel: String = "", val footnotes: List<AnnotatedString>)
 
 @Composable
 fun ArabicTextWithTranslationShimmer(index: Int) {

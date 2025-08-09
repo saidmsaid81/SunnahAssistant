@@ -21,6 +21,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
+import com.thesunnahrevival.sunnahassistant.utilities.toAnnotatedString
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
@@ -68,9 +69,9 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                             listOf(
                                                 TranslationText(
                                                     title = LocalConfiguration.current.locales[0].displayLanguage,
-                                                    text = adhkaarItem.englishText,
+                                                    text = adhkaarItem.englishText.toAnnotatedString() ,
                                                     footnoteLabel = stringResource(R.string.reference),
-                                                    footnotes = if (adhkaarItem.reference != null) listOf(adhkaarItem.reference) else listOf()
+                                                    footnotes = if (adhkaarItem.reference != null) listOf((adhkaarItem.reference).toAnnotatedString()) else listOf()
                                                 )
                                             )
                                         } else {

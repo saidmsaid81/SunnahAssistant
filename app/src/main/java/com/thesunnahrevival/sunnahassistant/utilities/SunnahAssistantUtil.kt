@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
@@ -23,8 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URL
 import java.time.LocalDate
-import java.util.Locale
-import java.util.TreeSet
+import java.util.*
 import kotlin.math.pow
 import kotlin.math.round
 
@@ -188,6 +189,12 @@ fun Float.roundTo(decimals: Int): Float {
 fun CharSequence.extractNumber(): Int? {
     val numberString = this.takeWhile { it.isDigit() } // "15"
     return numberString.toString().toIntOrNull()
+}
+
+fun String.toAnnotatedString(): AnnotatedString {
+    return buildAnnotatedString {
+        append(this@toAnnotatedString)
+    }
 }
 
 private val okHttpClient = OkHttpClient.Builder()
