@@ -7,6 +7,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ fun ArabicTextWithTranslation(
     arabicText: String,
     translationTexts: List<TranslationText>,
     textToShare: String,
+    bookmarked: Boolean = false,
     onBookmarkClick: () -> Unit = {}
 ) {
 
@@ -129,7 +131,7 @@ fun ArabicTextWithTranslation(
 
             Spacer(modifier = Modifier.width(32.dp))
 
-            BookmarkIcon(icon = Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
+            BookmarkIcon(icon = if (bookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
                 onBookmarkClick()
             }
         }

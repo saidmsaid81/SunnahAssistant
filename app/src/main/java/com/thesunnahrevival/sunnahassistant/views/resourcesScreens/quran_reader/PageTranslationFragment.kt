@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel
@@ -30,6 +31,8 @@ import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 private val FOOTNOTE_PATTERN = "\\[(\\d+)\\]".toRegex()
 
@@ -149,8 +152,14 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                         sectionMarker = "${ayahFullDetail.surah.id}:${ayahFullDetail.ayah.number}",
                                         arabicText = ayahFullDetail.ayah.arabicText,
                                         translationTexts = translationTexts,
-                                        textToShare = ""
-                                    )
+                                        textToShare = "",
+                                        bookmarked = ayahFullDetail.ayah.bookmarked
+                                    ) {
+                                        lifecycleScope.launch(Dispatchers.IO) {
+                                            mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
+                                            viewModel.setSelectedPage(currentPage)
+                                        }
+                                    }
                                 }
                             }
                         }
