@@ -624,7 +624,7 @@ private fun copyToClipboard(
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
-private fun getAyahText(
+fun getAyahText(
     ayah: FullAyahDetails,
     selectedTranslations: List<Translation>,
     surahNumber: String

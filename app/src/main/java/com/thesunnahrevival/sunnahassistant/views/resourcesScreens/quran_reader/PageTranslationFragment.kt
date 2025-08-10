@@ -148,7 +148,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                         sectionMarker = "${ayahFullDetail.surah.id}:${ayahFullDetail.ayah.number}",
                                         arabicText = ayahFullDetail.ayah.arabicText,
                                         translationTexts = translationTexts,
-                                        textToShare = "",
+                                        textToShare = getAyahText(ayahFullDetail, selectedTranslations, ayahFullDetail.surah.id.toString()),
                                         bookmarked = ayahFullDetail.ayah.bookmarked
                                     ) {
                                         lifecycleScope.launch(Dispatchers.IO) {

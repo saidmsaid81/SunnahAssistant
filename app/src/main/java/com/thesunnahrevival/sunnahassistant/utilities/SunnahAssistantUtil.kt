@@ -13,9 +13,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
@@ -203,6 +201,26 @@ fun Context.getLocale(): Locale {
     } else {
         this.resources.configuration.locale
     }
+}
+
+private fun getAyahText(
+    ayah: FullAyahDetails,
+    selectedTranslations: List<Translation>,
+    surahNumber: String
+): String {
+    val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
+
+    val translations = ayah.ayahTranslations
+        .filter { it.translation.id in selectedTranslationIds }
+        .joinToString(separator = "") {
+            "${it.translation.name} \n" +
+                    "${it.ayahTranslation.text} \n\n"
+        }
+
+    return "${ayah.surah.transliteratedName} ($surahNumber)\n\n" +
+            "Ayah ${ayah.ayah.number}\n" +
+            "${ayah.ayah.arabicText}\n\n" +
+            translations
 }
 
 private val okHttpClient = OkHttpClient.Builder()
