@@ -34,7 +34,7 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private val FOOTNOTE_PATTERN = "\\[(\\d+)\\]".toRegex()
+private val FOOTNOTE_PATTERN = "\\[(\\d+)]".toRegex()
 
 class PageTranslationFragment : SunnahAssistantFragment() {
 
