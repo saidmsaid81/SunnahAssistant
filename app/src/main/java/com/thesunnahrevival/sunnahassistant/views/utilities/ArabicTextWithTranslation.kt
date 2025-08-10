@@ -2,26 +2,34 @@ package com.thesunnahrevival.sunnahassistant.views.utilities
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.BookmarkIcon
-import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.CopyIcon
-import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.ShareIcon
+import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.utilities.copyToClipboard
+import com.thesunnahrevival.sunnahassistant.utilities.shareText
 
 @Composable
 fun ArabicTextWithTranslation(
@@ -133,6 +141,145 @@ fun ArabicTextWithTranslation(
 
             BookmarkIcon(icon = if (bookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
                 onBookmarkClick()
+            }
+        }
+    }
+}
+
+@Composable
+private fun BookmarkIcon(
+    icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit
+) {
+    Icon(
+        imageVector = icon,
+        contentDescription = stringResource(R.string.bookmark),
+        modifier = modifier
+            .clickable { onClick() }
+    )
+}
+
+@Composable
+private fun CopyIcon(
+    context: Context,
+    textToCopy: String,
+    label: String,
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector = Icons.Filled.ContentCopy,
+        contentDescription = stringResource(R.string.copy),
+        modifier = modifier
+            .clickable {
+                copyToClipboard(
+                    context,
+                    textToCopy,
+                    label,
+                    message
+                )
+            }
+    )
+}
+
+@Composable
+private fun ShareIcon(
+    context: Context,
+    textToShare: String,
+    modifier: Modifier = Modifier
+) {
+    val title = stringResource(R.string.share_via)
+    Icon(
+        imageVector = Icons.Filled.Share,
+        contentDescription = stringResource(R.string.share),
+        modifier = modifier
+            .clickable {
+                shareText(context, textToShare, title)
+            }
+    )
+}
+
+
+@Composable
+fun TranslationDropdown(
+    translations: List<Translation>,
+    selectedTranslations: List<Translation>,
+    translationsDownloadInProgress: List<Translation>,
+    expanded: MutableState<Boolean>,
+    onSelection: (Translation) -> Unit
+) {
+    val translationsDownloadInProgressIds = translationsDownloadInProgress.map { it.id }.toSet()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded.value = !expanded.value }
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = when {
+                    selectedTranslations.isEmpty() -> stringResource(R.string.select_translation)
+                    selectedTranslations.size == 1 -> selectedTranslations.firstOrNull()?.name ?: ""
+                    else -> stringResource(
+                        R.string.translations_selected,
+                        selectedTranslations.size
+                    )
+                },
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Icon(
+                imageVector = Icons.Filled.ArrowDropDown,
+                contentDescription = stringResource(R.string.dropdown_arrow)
+            )
+        }
+
+        if (expanded.value) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colors.onError)
+            ) {
+                translations.forEach { translation ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onSelection(translation)
+                            }
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (!translationsDownloadInProgressIds.contains(translation.id)) {
+                            SunnahAssistantCheckbox(
+                                text = translation.name,
+                                checked = translation.selected,
+                                onSelection = { onSelection(translation) }
+                            )
+                        } else {
+                            Box {
+                                SunnahAssistantCheckbox(
+                                    text = translation.name,
+                                    checked = translation.selected,
+                                    onSelection = {  }
+                                )
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .align(Alignment.CenterStart)
+                                        .offset(x = 15.dp)
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

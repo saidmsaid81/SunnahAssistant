@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.thesunnahrevival.sunnahassistant.data.model.Footnote
+import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
@@ -30,6 +33,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
+import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationDropdown
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -113,43 +117,18 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                 items(ayahFullDetailsList.size) { index ->
                                     val ayahFullDetail = ayahFullDetailsList[index]
 
-                                    val translationTexts = ayahFullDetail.ayahTranslations
-                                        .map { (ayahTranslation, translation) ->
-                                            TranslationText(
-                                                title = translation.name,
-                                                text = getTranslationText(ayahTranslation.id, ayahTranslation.text)  { ayahTranslationId, footnoteNumber ->
-                                                    viewModel.toggleFootnote(
-                                                        ayahTranslationId,
-                                                        footnoteNumber
-                                                    )
-                                                },
-                                                footnotes = viewModel.visibleFootnotes
-                                                    .filter { footnote -> footnote.key.startsWith("${ayahTranslation.id}-") }
-                                                    .map { footnote ->
-                                                        buildAnnotatedString {
-                                                            withStyle(
-                                                                style = SpanStyle(
-                                                                    baselineShift = BaselineShift.Superscript,
-                                                                    fontSize = 12.sp,
-                                                                    color = MaterialTheme.colors.primary
-                                                                )
-                                                            ) {
-                                                                append(footnote.value.number.toString())
-                                                            }
-                                                            append(" ${footnote.value.text}")
-                                                        }
-                                                    }
-                                            )
-                                        }
-
-                                    ArabicTextWithTranslation(
+                                    AyahTranslation(
                                         context = requireContext(),
+                                        ayahFullDetail = ayahFullDetail,
                                         index = index,
-                                        sectionMarker = "${ayahFullDetail.surah.id}:${ayahFullDetail.ayah.number}",
-                                        arabicText = ayahFullDetail.ayah.arabicText,
-                                        translationTexts = translationTexts,
-                                        textToShare = getAyahText(ayahFullDetail, selectedTranslations, ayahFullDetail.surah.id.toString()),
-                                        bookmarked = ayahFullDetail.ayah.bookmarked
+                                        selectedTranslations = selectedTranslations,
+                                        visibleFootnotes = viewModel.visibleFootnotes,
+                                        onFootnoteClick = { ayahTranslationId, footnoteNumber ->
+                                            viewModel.toggleFootnote(
+                                                ayahTranslationId,
+                                                footnoteNumber
+                                            )
+                                        },
                                     ) {
                                         lifecycleScope.launch(Dispatchers.IO) {
                                             mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
@@ -164,54 +143,123 @@ class PageTranslationFragment : SunnahAssistantFragment() {
             }
         }
     }
+}
 
-
-    @Composable
-    private fun getTranslationText(
-        ayahTranslationId: Int,
-        text: String,
-        onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit
-    ): AnnotatedString {
-        return buildAnnotatedString {
-            var lastIndex = 0
-
-            FOOTNOTE_PATTERN.findAll(text).forEach { matchResult ->
-                // Add text before the footnote
-                append(
-                    text.substring(
-                        lastIndex,
-                        matchResult.range.first
-                    )
-                )
-
-                withLink(
-                    LinkAnnotation.Clickable(
-                        tag = "footnote",
-                        linkInteractionListener = {
-                            onFootnoteClick(
-                                ayahTranslationId,
-                                matchResult.groupValues[1].toInt()
-                            )
-                        })
-                ) {
-                    withStyle(
-                        style = SpanStyle(
-                            baselineShift = BaselineShift.Superscript,
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colors.primary
-                        )
-                    ) {
-                        append(matchResult.groupValues[1])
+@Composable
+fun AyahTranslation(
+    context: Context,
+    ayahFullDetail: FullAyahDetails,
+    index: Int,
+    selectedTranslations: List<Translation>,
+    visibleFootnotes: Map<String, Footnote>,
+    onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
+    onBookmark: () -> Unit
+) {
+    val translationTexts = ayahFullDetail.ayahTranslations
+        .map { (ayahTranslation, translation) ->
+            TranslationText(
+                title = translation.name,
+                text = getTranslationText(
+                    ayahTranslation.id,
+                    ayahTranslation.text
+                ) { ayahTranslationId, footnoteNumber ->
+                    onFootnoteClick(ayahTranslationId, footnoteNumber)
+                },
+                footnotes = visibleFootnotes
+                    .filter { footnote -> footnote.key.startsWith("${ayahTranslation.id}-") }
+                    .map { footnote ->
+                        buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    baselineShift = BaselineShift.Superscript,
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colors.primary
+                                )
+                            ) {
+                                append(footnote.value.number.toString())
+                            }
+                            append(" ${footnote.value.text}")
+                        }
                     }
+            )
+        }
+
+    ArabicTextWithTranslation(
+        context = context,
+        index = index,
+        sectionMarker = "${ayahFullDetail.surah.id}:${ayahFullDetail.ayah.number}",
+        arabicText = ayahFullDetail.ayah.arabicText,
+        translationTexts = translationTexts,
+        textToShare = getAyahText(ayahFullDetail, selectedTranslations, ayahFullDetail.surah.id.toString()),
+        bookmarked = ayahFullDetail.ayah.bookmarked
+    ) { onBookmark() }
+}
+
+@Composable
+private fun getTranslationText(
+    ayahTranslationId: Int,
+    text: String,
+    onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit
+): AnnotatedString {
+    return buildAnnotatedString {
+        var lastIndex = 0
+
+        FOOTNOTE_PATTERN.findAll(text).forEach { matchResult ->
+            // Add text before the footnote
+            append(
+                text.substring(
+                    lastIndex,
+                    matchResult.range.first
+                )
+            )
+
+            withLink(
+                LinkAnnotation.Clickable(
+                    tag = "footnote",
+                    linkInteractionListener = {
+                        onFootnoteClick(
+                            ayahTranslationId,
+                            matchResult.groupValues[1].toInt()
+                        )
+                    })
+            ) {
+                withStyle(
+                    style = SpanStyle(
+                        baselineShift = BaselineShift.Superscript,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colors.primary
+                    )
+                ) {
+                    append(matchResult.groupValues[1])
                 }
-
-                lastIndex = matchResult.range.last + 1
             }
 
-            // Append remaining text
-            if (lastIndex < text.length) {
-                append(text.substring(lastIndex))
-            }
+            lastIndex = matchResult.range.last + 1
+        }
+
+        // Append remaining text
+        if (lastIndex < text.length) {
+            append(text.substring(lastIndex))
         }
     }
+}
+
+private fun getAyahText(
+    ayah: FullAyahDetails,
+    selectedTranslations: List<Translation>,
+    surahNumber: String
+): String {
+    val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
+
+    val translations = ayah.ayahTranslations
+        .filter { it.translation.id in selectedTranslationIds }
+        .joinToString(separator = "") {
+            "${it.translation.name} \n" +
+                    "${it.ayahTranslation.text} \n\n"
+        }
+
+    return "${ayah.surah.transliteratedName} ($surahNumber)\n\n" +
+            "Ayah ${ayah.ayah.number}\n" +
+            "${ayah.ayah.arabicText}\n\n" +
+            translations
 }

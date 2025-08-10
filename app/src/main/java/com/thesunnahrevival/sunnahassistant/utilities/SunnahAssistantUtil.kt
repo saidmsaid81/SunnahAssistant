@@ -3,12 +3,10 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.appwidget.AppWidgetManager
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import com.thesunnahrevival.sunnahassistant.BuildConfig
@@ -221,6 +219,37 @@ private fun getAyahText(
             "Ayah ${ayah.ayah.number}\n" +
             "${ayah.ayah.arabicText}\n\n" +
             translations
+}
+
+fun copyToClipboard(
+    context: Context,
+    textToCopy: String,
+    label: String,
+    message: String
+) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    val clip = ClipData.newPlainText(
+        label,
+        textToCopy
+    )
+    clipboard.setPrimaryClip(clip)
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun shareText(
+    context: Context,
+    textToShare: String,
+    title: String
+) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(
+            Intent.EXTRA_TEXT,
+            textToShare
+        )
+    }
+    context.startActivity(Intent.createChooser(shareIntent, title))
 }
 
 private val okHttpClient = OkHttpClient.Builder()
