@@ -197,6 +197,14 @@ fun String.toAnnotatedString(): AnnotatedString {
     }
 }
 
+fun Context.getLocale(): Locale {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        this.resources.configuration.locales[0]
+    } else {
+        this.resources.configuration.locale
+    }
+}
+
 private val okHttpClient = OkHttpClient.Builder()
     .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
     .build()

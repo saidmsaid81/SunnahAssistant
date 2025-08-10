@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.utilities.toAnnotatedString
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
@@ -68,7 +68,7 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                         val translationTexts = if (adhkaarItem.englishText != null) {
                                             listOf(
                                                 TranslationText(
-                                                    title = LocalConfiguration.current.locales[0].displayLanguage,
+                                                    title = context.getLocale().displayLanguage,
                                                     text = adhkaarItem.englishText.toAnnotatedString() ,
                                                     footnoteLabel = stringResource(R.string.reference),
                                                     footnotes = if (adhkaarItem.reference != null) listOf((adhkaarItem.reference).toAnnotatedString()) else listOf()

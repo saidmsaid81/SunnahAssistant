@@ -1,7 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
-import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -10,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.flow.Flow
 
 class AdhkaarChapterListViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,11 +18,7 @@ class AdhkaarChapterListViewModel(application: Application) : AndroidViewModel(a
     var firstVisiblePosition = 0
 
     fun getAllAdhkaarChapters(): Flow<PagingData<AdhkaarChapter>> {
-        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            getApplication<Application>().resources.configuration.locales[0]
-        } else {
-            getApplication<Application>().resources.configuration.locale
-        }
+        val locale = getApplication<Application>().getLocale()
 
         val language = if (locale.language.startsWith("ar")) "ar" else "en"
         return Pager(

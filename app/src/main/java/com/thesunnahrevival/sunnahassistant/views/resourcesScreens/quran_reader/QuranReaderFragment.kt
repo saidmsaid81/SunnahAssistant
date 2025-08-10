@@ -3,13 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
+import android.view.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -25,6 +19,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.viewmodels.QuranReaderViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
@@ -73,12 +68,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         handleBackPressed()
 
         mainActivityViewModel.selectedSurah.observe(viewLifecycleOwner) { surah ->
-            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                resources.configuration.locales[0]
-            } else {
-                @Suppress("DEPRECATION")
-                resources.configuration.locale
-            }
+            val locale = context?.getLocale() ?: return@observe
 
             val title = if (locale.language.equals("ar", ignoreCase = true)) {
                 surah.arabicName

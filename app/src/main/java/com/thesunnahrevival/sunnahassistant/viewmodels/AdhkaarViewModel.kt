@@ -1,11 +1,11 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
-import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarItemRepository
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -33,12 +33,8 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     }
     
     private fun processAdhkaarItems(items: List<AdhkaarItem>): List<AdhkaarDisplayItem> {
-        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            getApplication<Application>().resources.configuration.locales[0]
-        } else {
-            getApplication<Application>().resources.configuration.locale
-        }
-        
+        val locale = getApplication<Application>().getLocale()
+
         val isDeviceArabic = locale.language.equals("ar", ignoreCase = true)
         
         val groupedItems = items.groupBy { it.itemId }

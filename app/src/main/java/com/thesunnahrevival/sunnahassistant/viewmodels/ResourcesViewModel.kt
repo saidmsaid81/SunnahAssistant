@@ -1,13 +1,13 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
-import android.os.Build
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
 import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,12 +34,7 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
                 
                 repository.prepopulateResourcesData()
 
-                val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    getApplication<Application>().resources.configuration.locales[0]
-                } else {
-                    getApplication<Application>().resources.configuration.locale
-                }
-
+                val locale = getApplication<Application>().getLocale()
                 val language = if (locale.language.startsWith("ar")) "ar" else "en"
 
                 

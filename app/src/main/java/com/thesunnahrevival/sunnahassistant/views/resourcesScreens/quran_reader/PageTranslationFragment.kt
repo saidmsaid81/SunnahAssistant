@@ -1,6 +1,5 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +24,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -50,12 +50,8 @@ class PageTranslationFragment : SunnahAssistantFragment() {
 
 
         mainActivityViewModel.selectedSurah.observe(viewLifecycleOwner) { surah ->
-            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                resources.configuration.locales[0]
-            } else {
-                @Suppress("DEPRECATION")
-                resources.configuration.locale
-            }
+            val locale = context?.getLocale() ?: return@observe
+
 
             val title = if (locale.language.equals("ar", ignoreCase = true)) {
                 surah.arabicName
