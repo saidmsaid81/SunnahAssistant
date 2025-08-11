@@ -4,11 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.thesunnahrevival.sunnahassistant.data.local.AyahDao
-import com.thesunnahrevival.sunnahassistant.data.local.AyahTranslationDao
-import com.thesunnahrevival.sunnahassistant.data.local.FootnoteDao
-import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.data.local.TranslationDao
+import com.thesunnahrevival.sunnahassistant.data.local.*
 import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
@@ -139,12 +135,12 @@ class QuranTranslationRepository private constructor(
         .registerTypeAdapter(Boolean::class.java, BooleanAsIntDeserializer())
         .create()
 
-    suspend fun getFullAyahDetailsById(ayahId: Int) = ayahDao.getFullAyahDetailsById(ayahId)
+    suspend fun getFullAyahDetailsById(ayahId: Int) = ayahDao.getFullAyahDetailsById(ayahId).toGroupedFullAyahDetails().firstOrNull()
 
     suspend fun getFootnote(ayahTranslationId: Int, number: Int) =
         footnoteDao.getFootnote(ayahTranslationId, number)
 
     suspend fun getFullAyahDetailsByPageNumber(pageNumber: Int) =
-        ayahDao.getFullAyahDetailsByPageNumber(pageNumber)
+        ayahDao.getFullAyahDetailsByPageNumber(pageNumber).toGroupedFullAyahDetails()
 
 }
