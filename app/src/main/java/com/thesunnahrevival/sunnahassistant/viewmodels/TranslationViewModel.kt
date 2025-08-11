@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 open class TranslationViewModel(application: Application) : AndroidViewModel(application) {
     private val quranTranslationRepository =
@@ -34,7 +33,7 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
         initialValue = TranslationUiState()
     )
 
-    fun toggleTranslationSelection(translation: Translation, order: Int, callback: () -> Unit) {
+    fun toggleTranslationSelection(translation: Translation, order: Int, callback: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             _translationsDownloadInProgress.value = _translationsDownloadInProgress.value + translation.id
 
@@ -43,9 +42,7 @@ open class TranslationViewModel(application: Application) : AndroidViewModel(app
             quranTranslationRepository.updateTranslation(updatedTranslation)
 
             _translationsDownloadInProgress.value = _translationsDownloadInProgress.value - translation.id
-            withContext(Dispatchers.Main) {
-                callback()
-            }
+            callback()
         }
     }
 

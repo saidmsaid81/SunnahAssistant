@@ -42,6 +42,7 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationDropdown
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AyahTranslationFragment : BottomSheetDialogFragment() {
 
@@ -104,7 +105,9 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                         translation,
                                         translationUiState.selectedTranslations.size
                                     ) {
-                                        mainActivityViewModel.refreshSelectedAyahId()
+                                        withContext(Dispatchers.Main) {
+                                            mainActivityViewModel.refreshSelectedAyahId()
+                                        }
                                     }
                                 }
 

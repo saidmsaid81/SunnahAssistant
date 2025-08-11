@@ -109,7 +109,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                             translation,
                                             translationUiState.selectedTranslations.size
                                         ) {
-                                            mainActivityViewModel.refreshSelectedAyahId()
+                                            viewModel.setSelectedPage(currentPage)
                                         }
                                     }
                                 }
