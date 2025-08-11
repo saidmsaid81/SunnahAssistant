@@ -8,6 +8,7 @@ import com.thesunnahrevival.sunnahassistant.data.local.*
 import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.toGroupedFullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
