@@ -45,12 +45,15 @@
       android:name="com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourcesFragment"
       android:label="@string/app_name">
 
-    <action
-        android:id="@+id/to_quran_reader_fragment"
-        app:destination="@id/quranReaderFragment" />
-    <action
-        android:id="@+id/to_bookmarks_fragment"
-        app:destination="@id/bookmarksFragment" />
+      <action
+              android:id="@+id/to_quran_reader_fragment"
+              app:destination="@id/quranReaderFragment"/>
+      <action
+              android:id="@+id/to_bookmarks_fragment"
+              app:destination="@id/bookmarksFragment"/>
+      <action
+              android:id="@+id/to_adhkaarReaderFragment"
+              app:destination="@id/adhkaarReaderFragment"/>
   </fragment>
 
   <fragment

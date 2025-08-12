@@ -55,6 +55,11 @@ class ResourcesFragment : MenuBarFragment() {
                     },
                     onBookmarksClick = {
                         findNavController().navigate(R.id.to_bookmarks_fragment)
+                    },
+                    adhkaarChapterOnClick = { adhkaarChapter ->
+                        val action = ResourcesFragmentDirections
+                            .toAdhkaarReaderFragment(adhkaarChapter.chapterId)
+                        findNavController().navigate(action)
                     }
                 )
             }
