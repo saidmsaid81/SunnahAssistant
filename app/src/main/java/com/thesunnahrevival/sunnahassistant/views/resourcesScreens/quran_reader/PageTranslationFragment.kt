@@ -33,6 +33,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
+import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationDropdown
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
@@ -114,25 +115,31 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                     }
                                 }
 
-                                items(ayahFullDetailsList.size) { index ->
-                                    val ayahFullDetail = ayahFullDetailsList[index]
+                                if (allTranslations.isEmpty()) {
+                                    items(6) { index ->
+                                        ArabicTextWithTranslationShimmer(index)
+                                    }
+                                } else {
+                                    items(ayahFullDetailsList.size) { index ->
+                                        val ayahFullDetail = ayahFullDetailsList[index]
 
-                                    AyahTranslation(
-                                        context = requireContext(),
-                                        ayahFullDetail = ayahFullDetail,
-                                        index = index,
-                                        selectedTranslations = selectedTranslations,
-                                        visibleFootnotes = viewModel.visibleFootnotes,
-                                        onFootnoteClick = { ayahTranslationId, footnoteNumber ->
-                                            viewModel.toggleFootnote(
-                                                ayahTranslationId,
-                                                footnoteNumber
-                                            )
-                                        },
-                                    ) {
-                                        lifecycleScope.launch(Dispatchers.IO) {
-                                            mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
-                                            viewModel.setSelectedPage(currentPage)
+                                        AyahTranslation(
+                                            context = requireContext(),
+                                            ayahFullDetail = ayahFullDetail,
+                                            index = index,
+                                            selectedTranslations = selectedTranslations,
+                                            visibleFootnotes = viewModel.visibleFootnotes,
+                                            onFootnoteClick = { ayahTranslationId, footnoteNumber ->
+                                                viewModel.toggleFootnote(
+                                                    ayahTranslationId,
+                                                    footnoteNumber
+                                                )
+                                            },
+                                        ) {
+                                            lifecycleScope.launch(Dispatchers.IO) {
+                                                mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
+                                                viewModel.setSelectedPage(currentPage)
+                                            }
                                         }
                                     }
                                 }
