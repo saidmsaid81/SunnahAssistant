@@ -5,29 +5,23 @@ import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PageTranslationViewModel(application: Application) : AyahTranslationViewModel(application) {
     private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
-    private val _ayahDetails = MutableStateFlow<List<FullAyahDetails>>(emptyList())
-    val ayahDetails: StateFlow<List<FullAyahDetails>> = _ayahDetails.asStateFlow()
+    private val _ayahDetails = MutableStateFlow<MutableMap<Int, List<FullAyahDetails>>>(mutableMapOf())
+    val ayahDetails: StateFlow<Map<Int, List<FullAyahDetails>>> = _ayahDetails
 
-    private val selectedPageNumber = MutableSharedFlow<Int>(replay = 1)
-
-    init {
+    fun updateAyahDetailsFromPage(selectedPageNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            selectedPageNumber.collect { pageNumber ->
-                _ayahDetails.update { quranTranslationRepository.getFullAyahDetailsByPageNumber(pageNumber) }
+            _ayahDetails.update { currentMap ->
+                currentMap.apply {
+                    put(selectedPageNumber, quranTranslationRepository.getFullAyahDetailsByPageNumber(selectedPageNumber))
+                }
             }
         }
-    }
-
-    suspend fun setSelectedPage(selectedPageNumber: Int) {
-        this@PageTranslationViewModel.selectedPageNumber.emit(selectedPageNumber)
     }
 }

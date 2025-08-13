@@ -75,7 +75,6 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                     val expanded = remember { mutableStateOf(false) }
 
                     LaunchedEffect(currentPage) {
-                        viewModel.setSelectedPage(currentPage)
                         mainActivityViewModel.updateCurrentPage(currentPage)
                     }
 
@@ -89,13 +88,17 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                     ) {
                         HorizontalPager(
                             state = pagerState,
+                            beyondViewportPageCount = 1,
                             modifier = Modifier.fillMaxSize()
-                        ) { _ ->
+                        ) { pageIndex ->
+                            val pageNumber = 604 - pageIndex
+                            viewModel.updateAyahDetailsFromPage(pageNumber)
                             val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                             val allTranslations = translationUiState.allTranslations
                             val selectedTranslations = translationUiState.selectedTranslations
                             val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
-                            val ayahFullDetailsList by viewModel.ayahDetails.collectAsState()
+                            val ayahFullDetailsMap by viewModel.ayahDetails.collectAsState()
+                            val ayahFullDetailsList = ayahFullDetailsMap[pageNumber] ?: listOf()
 
 
                             LazyColumn(modifier = Modifier.padding(16.dp)) {
@@ -110,7 +113,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                             translation,
                                             translationUiState.selectedTranslations.size
                                         ) {
-                                            viewModel.setSelectedPage(currentPage)
+                                            viewModel.updateAyahDetailsFromPage(currentPage)
                                         }
                                     }
                                 }
@@ -138,7 +141,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                         ) {
                                             lifecycleScope.launch(Dispatchers.IO) {
                                                 mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
-                                                viewModel.setSelectedPage(currentPage)
+                                                viewModel.updateAyahDetailsFromPage(currentPage)
                                             }
                                         }
                                     }
