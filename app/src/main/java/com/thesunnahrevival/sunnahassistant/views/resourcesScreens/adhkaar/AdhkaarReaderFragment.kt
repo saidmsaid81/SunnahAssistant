@@ -27,7 +27,6 @@ import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
-import com.valentinilk.shimmer.shimmer
 
 class AdhkaarReaderFragment : SunnahAssistantFragment() {
 
@@ -48,20 +47,23 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
-                val pagerState = rememberPagerState(initialPage = chapterId) { 133 }
-                val uiState by viewModel.getAdhkaarItemsByChapterId(pagerState.currentPage).collectAsState()
+                val pagerState = rememberPagerState(initialPage = chapterId - 1) { 133 }
 
                 SunnahAssistantTheme {
                     Surface {
-                        if (uiState.isLoading) {
-                            LazyColumn(modifier = Modifier.padding(16.dp).shimmer()) {
-                                items(6) { index ->
-                                    ArabicTextWithTranslationShimmer(index)
-                                }
-                            }
-                        } else {
-                            HorizontalPager(state = pagerState) { _ ->
-                                LazyColumn(modifier = Modifier.padding(16.dp)) {
+                        HorizontalPager(
+                            state = pagerState,
+                            beyondViewportPageCount = 1
+                        ) { pageIndex ->
+
+                            val uiState by viewModel.getAdhkaarItemsByChapterId(pageIndex + 1).collectAsState()
+
+                            LazyColumn(modifier = Modifier.padding(16.dp)) {
+                                if (uiState.isLoading) {
+                                    items(6) { index ->
+                                        ArabicTextWithTranslationShimmer(index)
+                                    }
+                                } else {
                                     items(uiState.adhkaarItems.size) { index ->
                                         val adhkaarItem = uiState.adhkaarItems[index]
 
@@ -69,7 +71,7 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                             listOf(
                                                 TranslationText(
                                                     title = context.getLocale().displayLanguage,
-                                                    text = adhkaarItem.englishText.toAnnotatedString() ,
+                                                    text = adhkaarItem.englishText.toAnnotatedString(),
                                                     footnoteLabel = stringResource(R.string.reference),
                                                     footnotes = if (adhkaarItem.reference != null) listOf((adhkaarItem.reference).toAnnotatedString()) else listOf()
                                                 )
@@ -179,11 +181,17 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
 
         val englishPatterns = listOf(
             Regex("\\b(\\d+) times?\\b", RegexOption.IGNORE_CASE),
-            Regex("\\b(thirty-three|thirty-two|thirty-one|twenty-nine|twenty-eight|twenty-seven|twenty-six|twenty-five|twenty-four|twenty-three|twenty-two|twenty-one) times?\\b", RegexOption.IGNORE_CASE),
+            Regex(
+                "\\b(thirty-three|thirty-two|thirty-one|twenty-nine|twenty-eight|twenty-seven|twenty-six|twenty-five|twenty-four|twenty-three|twenty-two|twenty-one) times?\\b",
+                RegexOption.IGNORE_CASE
+            ),
             Regex("\\b(once|one time?)s?\\b", RegexOption.IGNORE_CASE),
             Regex("\\b(twice|two times?)\\b", RegexOption.IGNORE_CASE),
             Regex("\\b(thrice|three times?)\\b", RegexOption.IGNORE_CASE),
-            Regex("\\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred) times?\\b", RegexOption.IGNORE_CASE),
+            Regex(
+                "\\b(eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred) times?\\b",
+                RegexOption.IGNORE_CASE
+            ),
             Regex("\\b(one|two|three|four|five|six|seven|eight|nine|ten) times?\\b", RegexOption.IGNORE_CASE)
         )
 
