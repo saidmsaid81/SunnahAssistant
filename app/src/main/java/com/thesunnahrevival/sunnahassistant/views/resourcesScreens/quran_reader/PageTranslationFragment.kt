@@ -38,6 +38,7 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationDropdown
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private val FOOTNOTE_PATTERN = "\\[(\\d+)]".toRegex()
 
@@ -91,14 +92,21 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                             beyondViewportPageCount = 1,
                             modifier = Modifier.fillMaxSize()
                         ) { pageIndex ->
+
                             val pageNumber = 604 - pageIndex
-                            viewModel.updateAyahDetailsFromPage(pageNumber)
+
                             val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                             val allTranslations = translationUiState.allTranslations
                             val selectedTranslations = translationUiState.selectedTranslations
                             val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
-                            val ayahFullDetailsMap by viewModel.ayahDetails.collectAsState()
-                            val ayahFullDetailsList = ayahFullDetailsMap[pageNumber] ?: listOf()
+                            var ayahFullDetailsList by remember { mutableStateOf<List<FullAyahDetails>>(emptyList()) }
+
+                            LaunchedEffect(pageNumber, translationUiState.selectedTranslations) {
+                                ayahFullDetailsList = withContext(Dispatchers.IO) {
+                                    viewModel.getFullAyahDetailsByPageNumber(pageNumber)
+                                }
+                            }
+
 
 
                             LazyColumn(modifier = Modifier.padding(16.dp)) {
@@ -113,12 +121,11 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                             translation,
                                             translationUiState.selectedTranslations.size
                                         ) {
-                                            viewModel.updateAyahDetailsFromPage(currentPage)
                                         }
                                     }
                                 }
 
-                                if (allTranslations.isEmpty()) {
+                                if (ayahFullDetailsList.isEmpty()) {
                                     items(6) { index ->
                                         ArabicTextWithTranslationShimmer(index)
                                     }
@@ -141,7 +148,6 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                         ) {
                                             lifecycleScope.launch(Dispatchers.IO) {
                                                 mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
-                                                viewModel.updateAyahDetailsFromPage(currentPage)
                                             }
                                         }
                                     }
