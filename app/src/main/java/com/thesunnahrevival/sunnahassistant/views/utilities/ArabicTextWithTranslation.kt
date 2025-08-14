@@ -30,6 +30,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
 import com.thesunnahrevival.sunnahassistant.utilities.copyToClipboard
 import com.thesunnahrevival.sunnahassistant.utilities.shareText
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun ArabicTextWithTranslation(
@@ -289,7 +290,7 @@ data class TranslationText(val title: String, val text: AnnotatedString, val foo
 
 @Composable
 fun ArabicTextWithTranslationShimmer(index: Int) {
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp).shimmer()) {
         if (index > 0) {
             Spacer(
                 modifier = Modifier
