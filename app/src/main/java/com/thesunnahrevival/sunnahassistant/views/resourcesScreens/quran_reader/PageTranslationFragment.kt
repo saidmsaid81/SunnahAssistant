@@ -100,8 +100,9 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                             val selectedTranslations = translationUiState.selectedTranslations
                             val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
                             var ayahFullDetailsList by remember { mutableStateOf<List<FullAyahDetails>>(emptyList()) }
+                            var bookmarksUpdated by remember { mutableStateOf(false) }
 
-                            LaunchedEffect(pageNumber, translationUiState.selectedTranslations) {
+                            LaunchedEffect(pageNumber, translationUiState.selectedTranslations, bookmarksUpdated) {
                                 ayahFullDetailsList = withContext(Dispatchers.IO) {
                                     viewModel.getFullAyahDetailsByPageNumber(pageNumber)
                                 }
@@ -148,6 +149,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                         ) {
                                             lifecycleScope.launch(Dispatchers.IO) {
                                                 mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
+                                                bookmarksUpdated = !bookmarksUpdated
                                             }
                                         }
                                     }
