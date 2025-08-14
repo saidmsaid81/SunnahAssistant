@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
@@ -64,7 +65,10 @@ class PageTranslationFragment : SunnahAssistantFragment() {
             } else {
                 surah.transliteratedName
             }
-            (activity as? MainActivity)?.supportActionBar?.title = title
+            (activity as? MainActivity)?.supportActionBar?.title = "$title:" + getString(
+                R.string.page,
+                mainActivityViewModel.getCurrentQuranPage()
+            )
         }
 
         return ComposeView(requireContext()).apply {
