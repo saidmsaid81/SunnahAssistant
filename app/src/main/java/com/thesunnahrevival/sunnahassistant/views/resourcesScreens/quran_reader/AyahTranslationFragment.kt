@@ -131,7 +131,7 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                             },
                                         ) {
                                             lifecycleScope.launch(Dispatchers.IO) {
-                                                mainActivityViewModel.toggleAyahBookmark(it.ayah)
+                                                mainActivityViewModel.toggleAyahBookmark(it.ayah, updateSelectedAyahId = true)
                                             }
                                         }
                                     }
