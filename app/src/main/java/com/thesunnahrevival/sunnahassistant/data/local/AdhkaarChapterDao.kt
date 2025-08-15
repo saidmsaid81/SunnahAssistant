@@ -21,4 +21,7 @@ interface AdhkaarChapterDao {
 
     @Query("SELECT * FROM adhkaar_chapters WHERE language = :language ORDER BY chapter_id")
     fun getAllChaptersPagingSource(language: String): PagingSource<Int, AdhkaarChapter>
+
+    @Query("SELECT chapter_name FROM adhkaar_chapters WHERE chapter_id = :id AND language = :language")
+    suspend fun getChapterNameByChapterId(id: Int, language: String): String?
 }

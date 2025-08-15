@@ -31,6 +31,10 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
             initialValue = AdhkaarUiState(adhkaarItems = listOf(), isLoading = false)
         )
     }
+
+    suspend fun getChapterNameByChapterId(id: Int): String? {
+        return adhkaarItemRepository.getChapterNameByChapterId(id, getLocale().language)
+    }
     
     private fun processAdhkaarItems(items: List<AdhkaarItem>): List<AdhkaarDisplayItem> {
         val locale = getApplication<Application>().getLocale()

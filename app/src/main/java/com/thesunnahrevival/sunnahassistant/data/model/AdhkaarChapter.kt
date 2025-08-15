@@ -9,7 +9,7 @@ import java.io.Serializable
 
 @Entity(
     tableName = "adhkaar_chapters",
-    indices = [Index(value = ["chapter_id"], unique = true)]
+    indices = [Index(value = ["chapter_id"])]
 )
 data class AdhkaarChapter(
     @PrimaryKey

@@ -2,19 +2,12 @@ package com.thesunnahrevival.sunnahassistant.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(
-    tableName = "adhkaar_items",
-    foreignKeys = [ForeignKey(
-        entity = AdhkaarChapter::class,
-        parentColumns = ["chapter_id"],
-        childColumns = ["chapter_id"],
-        onDelete = ForeignKey.CASCADE
-    )]
+    tableName = "adhkaar_items"
 )
 data class AdhkaarItem(
     @PrimaryKey

@@ -8,9 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -23,10 +24,13 @@ import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.utilities.toAnnotatedString
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
+import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AdhkaarReaderFragment : SunnahAssistantFragment() {
 
@@ -40,14 +44,27 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val chapterId = args.chapterId
-
+        val initialChapterId = args.chapterId
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
-                val pagerState = rememberPagerState(initialPage = chapterId - 1) { 133 }
+                val pagerState = rememberPagerState(initialPage = initialChapterId - 1) { 133 }
+
+                LaunchedEffect(pagerState) {
+                    snapshotFlow { pagerState.currentPage }.collect { currentPage ->
+                        val currentChapterId = currentPage + 1
+                        val chapterName = withContext(Dispatchers.IO) {
+                            viewModel.getChapterNameByChapterId(currentChapterId) ?: ""
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            (activity as? MainActivity)?.supportActionBar?.title = chapterName
+                        }
+                    }
+                }
+
 
                 SunnahAssistantTheme {
                     Surface {
@@ -56,7 +73,15 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                             beyondViewportPageCount = 1
                         ) { pageIndex ->
 
-                            val uiState by viewModel.getAdhkaarItemsByChapterId(pageIndex + 1).collectAsState()
+                            val chapterId = pageIndex + 1
+                            val uiState by viewModel.getAdhkaarItemsByChapterId(chapterId).collectAsState()
+                            var chapterName by remember { mutableStateOf("") }
+
+                            LaunchedEffect(chapterId) {
+                                chapterName = withContext(Dispatchers.IO) {
+                                    viewModel.getChapterNameByChapterId(chapterId) ?: ""
+                                }
+                            }
 
                             LazyColumn(modifier = Modifier.padding(16.dp)) {
                                 if (uiState.isLoading) {
@@ -65,6 +90,15 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                     }
                                 } else {
                                     items(uiState.adhkaarItems.size) { index ->
+
+                                        if (index == 0) {
+                                            Text(
+                                                text = chapterName,
+                                                style = MaterialTheme.typography.h6,
+                                                modifier = Modifier.padding(bottom = 16.dp)
+                                            )
+                                        }
+
                                         val adhkaarItem = uiState.adhkaarItems[index]
 
                                         val translationTexts = if (adhkaarItem.englishText != null) {

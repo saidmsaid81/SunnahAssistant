@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.data.repositories
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarChapterDao
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarItemDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
@@ -27,6 +28,9 @@ class AdhkaarItemRepository private constructor(
 
     private val adhkaarItemDao: AdhkaarItemDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).adhkaarItemDao()
+
+    private val adhkaarChapterDao: AdhkaarChapterDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).adhkaarChapterDao()
 
     private val resourceApiRestApi = retrofit.create(ResourceApiInterface::class.java)
 
@@ -58,4 +62,8 @@ class AdhkaarItemRepository private constructor(
     fun getAdhkaarItemsByChapterId(chapterId: Int): Flow<List<AdhkaarItem>> {
         return adhkaarItemDao.getAdhkaarItemsByChapterId(chapterId)
     }
+
+    suspend fun getChapterNameByChapterId(id: Int, language: String) = adhkaarChapterDao.getChapterNameByChapterId(id, language)
+
+
 }
