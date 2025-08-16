@@ -55,11 +55,6 @@ class ResourcesRepository private constructor(
         )
     }
 
-    fun getFirstThreeAdhkaarChapters(language: String) = adhkaarChapterDao.getFirstThreeChapters(language)
-
-
-    fun getAllAdhkaarChapters(language: String) = adhkaarChapterDao.getAllChaptersPagingSource(language)
-    
     suspend fun prepopulateResourcesData() = coroutineScope {
         val surahJob = launch {
             if (surahDao.countSurah() == 0) {

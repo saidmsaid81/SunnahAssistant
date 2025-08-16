@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository.PinResult
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
@@ -63,6 +64,21 @@ class ResourcesFragment : MenuBarFragment() {
                         val action = ResourcesFragmentDirections
                             .toAdhkaarReaderFragment(adhkaarChapter.chapterId)
                         findNavController().navigate(action)
+                    },
+                    onAdhkaarChapterPin = { chapterId ->
+                        viewModel.toggleChapterPin(chapterId) { result ->
+                            when (result) {
+                                PinResult.LimitReached -> {
+                                    android.widget.Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.you_can_only_pin_up_to_5_chapters),
+                                        android.widget.Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                else -> {
+                                }
+                            }
+                        }
                     }
                 )
             }

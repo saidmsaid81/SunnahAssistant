@@ -30,5 +30,8 @@ data class AdhkaarChapter(
 
     @ColumnInfo(name = "category_name")
     @SerializedName("category_name")
-    val categoryName: String
+    val categoryName: String,
+
+    @ColumnInfo(name = "pin_order")
+    val pinOrder: Int? = null
 ) : Serializable

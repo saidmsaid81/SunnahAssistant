@@ -1,10 +1,12 @@
 package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
 import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
@@ -15,12 +17,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class ResourcesViewModel(application: Application) : SurahListViewModel(application) {
+class ResourcesViewModel(application: Application) : AndroidViewModel(application), AdhkaarChapterPinnable, SurahPinnable {
     private val repository: ResourcesRepository =
         ResourcesRepository.getInstance(application)
 
     private val surahRepository: SurahRepository =
         SurahRepository.getInstance(application)
+
+    private val adhkaarChapterRepository: AdhkaarChapterRepository =
+        AdhkaarChapterRepository.getInstance(application)
+
+    private val pinHelper = PinHelper(this, adhkaarChapterRepository, surahRepository)
 
     private val _uiState = MutableStateFlow(ResourcesUIState())
     val uiState: StateFlow<ResourcesUIState> = _uiState.asStateFlow()
@@ -41,7 +48,7 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
                 combine(
                     surahRepository.getFirst3Surahs(),
                     _lastReadSurah,
-                    repository.getFirstThreeAdhkaarChapters(language)
+                    adhkaarChapterRepository.getFirstThreeChapters(language)
                 ) { surahs, lastReadSurah, adhkaarChapters ->
                     ResourcesUIState(
                         isLoading = false,
@@ -75,6 +82,14 @@ class ResourcesViewModel(application: Application) : SurahListViewModel(applicat
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
         }
+    }
+
+    override fun toggleChapterPin(chapterId: Int, onResult: (AdhkaarChapterRepository.PinResult) -> Unit) {
+        pinHelper.toggleChapterPin(chapterId, onResult)
+    }
+
+    override fun toggleSurahPin(surahId: Int, onResult: (SurahRepository.PinResult) -> Unit) {
+        pinHelper.toggleSurahPin(surahId, onResult)
     }
 }
 

@@ -3,6 +3,8 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast.LENGTH_LONG
+import android.widget.Toast.makeText
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +21,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarChapterListViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
@@ -46,6 +50,21 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
                         val action = AdhkaarChapterListFragmentDirections
                             .actionAdhkaarChaptersListToAdhkaarReaderFragment(adhkaarChapter.chapterId)
                         findNavController().navigate(action)
+                    },
+                    onAdhkaarChapterPin = { chapterId ->
+                        viewModel.toggleChapterPin(chapterId) { result ->
+                            when (result) {
+                                AdhkaarChapterRepository.PinResult.LimitReached -> {
+                                    makeText(
+                                        requireContext(),
+                                        context.getString(R.string.you_can_only_pin_up_to_5_chapters),
+                                        LENGTH_LONG
+                                    ).show()
+                                }
+                                else -> {
+                                }
+                            }
+                        }
                     }
                 )
             }
@@ -60,7 +79,8 @@ private fun AdhkaarChapterListScreen(
     adhkaarChapters: LazyPagingItems<AdhkaarChapter>,
     firstVisiblePosition: Int,
     onScroll: (Int) -> Unit,
-    onAdhkaarChapterClick: (AdhkaarChapter) -> Unit
+    onAdhkaarChapterClick: (AdhkaarChapter) -> Unit,
+    onAdhkaarChapterPin: ((Int) -> Unit)? = null
 ) {
     SunnahAssistantTheme {
         Surface {
@@ -86,7 +106,7 @@ private fun AdhkaarChapterListScreen(
                     ) { index ->
                         val chapter = adhkaarChapters[index]
                         chapter?.let {
-                            AdhkaarChapterItem(chapter, isArabic()) { 
+                            AdhkaarChapterItem(chapter, isArabic(), onAdhkaarChapterPin) { 
                                 onAdhkaarChapterClick(chapter) 
                             }
                         }
@@ -131,7 +151,7 @@ private fun PreviewAdhkaarChapterListScreen() {
                 LazyColumn {
                     items(previewAdhkaarChapters().size) { index ->
                         val chapter = previewAdhkaarChapters()[index]
-                        AdhkaarChapterItem(chapter, false) { }
+                        AdhkaarChapterItem(chapter, false, null) { }
                     }
                 }
             }
@@ -140,7 +160,7 @@ private fun PreviewAdhkaarChapterListScreen() {
 }
 
 private fun previewAdhkaarChapters() = listOf(
-    AdhkaarChapter(134, 1, "en", "When waking up", "Morning & Evening"),
+    AdhkaarChapter(134, 1, "en", "When waking up", "Morning & Evening", 1),
     AdhkaarChapter(135, 2, "en", "When wearing a garment", "Home & Family"),
     AdhkaarChapter(136, 3, "en", "When wearing a new garment", "Home & Family"),
     AdhkaarChapter(137, 4, "en", "When undressing", "Home & Family"),

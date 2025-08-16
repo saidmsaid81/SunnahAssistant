@@ -250,7 +250,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         chapter_id INTEGER NOT NULL,
                         language TEXT NOT NULL,
                         chapter_name TEXT NOT NULL,
-                        category_name TEXT NOT NULL
+                        category_name TEXT NOT NULL,
+                        pin_order INTEGER
                     )
                 """)
 

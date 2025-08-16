@@ -44,7 +44,8 @@ fun ResourcesScreen(
     onSurahPin: ((Int) -> Unit)? = null,
     onQuranBookmarksClick: () -> Unit = {},
     onAdhkaarBookmarksClick: () -> Unit = {},
-    adhkaarChapterOnClick: (adhkaarChapter: AdhkaarChapter) -> Unit = {}
+    adhkaarChapterOnClick: (adhkaarChapter: AdhkaarChapter) -> Unit = {},
+    onAdhkaarChapterPin: ((Int) -> Unit)? = null
 ) {
 
     val hasFinishedLoading = !resourcesUIState.isLoading
@@ -143,7 +144,7 @@ fun ResourcesScreen(
                 if (hasFinishedLoading) {
                     Column {
                         adhkaarChapters.forEachIndexed { index, adhkaarChapter ->
-                            AdhkaarChapterItem(adhkaarChapter, isArabic()) {
+                            AdhkaarChapterItem(adhkaarChapter, isArabic(), onAdhkaarChapterPin) {
                                 adhkaarChapterOnClick(adhkaarChapter)
                             }
 
@@ -197,12 +198,15 @@ fun SurahItem(
 fun AdhkaarChapterItem(
     adhkaarChapter: AdhkaarChapter,
     isArabic: Boolean = false,
+    onAdhkaarChapterPin: ((Int) -> Unit)? = null,
     onClick: () -> Unit
 ) {
     ResourceCard(
         title = adhkaarChapter.chapterName,
         subtitle = adhkaarChapter.categoryName,
-        resourceNumber = if (isArabic) adhkaarChapter.chapterId.toArabicNumbers() else adhkaarChapter.chapterId.toString()
+        resourceNumber = if (isArabic) adhkaarChapter.chapterId.toArabicNumbers() else adhkaarChapter.chapterId.toString(),
+        isPinned = adhkaarChapter.pinOrder != null,
+        onDoubleClick = { onAdhkaarChapterPin?.invoke(adhkaarChapter.chapterId) }
     ) { onClick() }
 }
 
@@ -488,13 +492,13 @@ fun previewSurahs() = listOf(
 
 
 fun previewArabicAdhkaarChapters() = listOf(
-    AdhkaarChapter(134, 1, "ar", "أَذْكَارُ الاسْـتِيقَاظِ مِنَ النَّـومِ", "اليوم و الليلة"),
+    AdhkaarChapter(134, 1, "ar", "أَذْكَارُ الاسْـتِيقَاظِ مِنَ النَّـومِ", "اليوم و الليلة", 1),
     AdhkaarChapter(135, 2, "ar", "دُعَـاءُ لُبْسِ الثَّـــوْبِ", "البيت و الأهل"),
     AdhkaarChapter(136, 3, "ar", "دُعَـاءُ لُبْسِ الثَّوْبِ الجَــدِيدِ", "البيت و الأهل")
 )
 
 fun previewAdhkaarChapters() = listOf(
-    AdhkaarChapter(134, 1, "en", "When waking up", "Morning & Evening"),
+    AdhkaarChapter(134, 1, "en", "When waking up", "Morning & Evening", 1),
     AdhkaarChapter(135, 2, "en", "When wearing a garment", "Home & Family"),
     AdhkaarChapter(136, 3, "en", "When wearing a new garment", "Home & Family")
 )

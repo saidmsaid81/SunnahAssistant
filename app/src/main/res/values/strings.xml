@@ -413,6 +413,7 @@
     <string name="page">" Page %1$d"</string>
     <string name="no_bookmarked_adhkaar">No bookmarked Adhkaar</string>
     <string name="adhkaar_chapter_number">Chapter %1$d</string>
+    <string name="you_can_only_pin_up_to_5_chapters">You can only pin up to 5 chapters</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
