@@ -35,6 +35,12 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     suspend fun getChapterNameByChapterId(id: Int): String? {
         return adhkaarItemRepository.getChapterNameByChapterId(id, getLocale().language)
     }
+
+    fun toggleBookmark(itemId: Int, currentBookmarkStatus: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            adhkaarItemRepository.updateBookmarkStatus(itemId, !currentBookmarkStatus)
+        }
+    }
     
     private fun processAdhkaarItems(items: List<AdhkaarItem>): List<AdhkaarDisplayItem> {
         val locale = getApplication<Application>().getLocale()
@@ -52,6 +58,7 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
                 arabicText = arabicItem?.itemTranslation,
                 englishText = if (!isDeviceArabic) englishItem?.itemTranslation else null,
                 reference = if (!isDeviceArabic) englishItem?.reference else arabicItem?.reference,
+                bookmarked = arabicItem?.bookmarked ?: englishItem?.bookmarked ?: false
             )
         }.sortedBy { it.itemId }
     }
@@ -65,6 +72,7 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         val itemId: Int,
         val arabicText: String?,
         val englishText: String?,
-        val reference: String?
+        val reference: String?,
+        val bookmarked: Boolean = false
     )
 }

@@ -133,7 +133,11 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                             translationTexts = translationTexts,
                                             textToShare = "${adhkaarItem.arabicText}\n\n" +
                                                     "${adhkaarItem.englishText}\n\n" +
-                                                    stringResource(R.string.reference) + ": ${adhkaarItem.reference}"
+                                                    stringResource(R.string.reference) + ": ${adhkaarItem.reference}",
+                                            bookmarked = adhkaarItem.bookmarked,
+                                            onBookmarkClick = {
+                                                viewModel.toggleBookmark(adhkaarItem.itemId, adhkaarItem.bookmarked)
+                                            }
                                         )
 
                                     }

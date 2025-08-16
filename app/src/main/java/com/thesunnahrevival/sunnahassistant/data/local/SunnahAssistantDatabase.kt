@@ -263,6 +263,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         item_translation TEXT NOT NULL,
                         chapter_id INTEGER NOT NULL,
                         reference TEXT NULL,
+                        bookmarked INTEGER NOT NULL DEFAULT 0,
                         FOREIGN KEY(chapter_id) REFERENCES adhkaar_chapters(chapter_id) ON DELETE CASCADE
                     )
                 """)

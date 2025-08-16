@@ -32,5 +32,8 @@ data class AdhkaarItem(
 
     @ColumnInfo(name = "reference")
     @SerializedName("reference")
-    val reference: String?
+    val reference: String?,
+
+    @ColumnInfo(name = "bookmarked")
+    val bookmarked: Boolean = false
 ) : Serializable

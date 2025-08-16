@@ -65,5 +65,8 @@ class AdhkaarItemRepository private constructor(
 
     suspend fun getChapterNameByChapterId(id: Int, language: String) = adhkaarChapterDao.getChapterNameByChapterId(id, language)
 
+    suspend fun updateBookmarkStatus(itemId: Int, bookmarked: Boolean) {
+        adhkaarItemDao.updateBookmarkStatus(itemId, bookmarked)
+    }
 
 }

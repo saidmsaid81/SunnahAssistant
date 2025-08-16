@@ -17,4 +17,7 @@ interface AdhkaarItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(adhkaarItems: List<AdhkaarItem>)
+
+    @Query("UPDATE adhkaar_items SET bookmarked = :bookmarked WHERE item_id = :itemId")
+    suspend fun updateBookmarkStatus(itemId: Int, bookmarked: Boolean)
 }
