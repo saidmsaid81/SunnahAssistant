@@ -53,8 +53,11 @@ class ResourcesFragment : MenuBarFragment() {
                             }
                         }
                     },
-                    onBookmarksClick = {
+                    onQuranBookmarksClick = {
                         findNavController().navigate(R.id.to_bookmarks_fragment)
+                    },
+                    onAdhkaarBookmarksClick = {
+                        findNavController().navigate(R.id.adhkaarBookmarksFragment)
                     },
                     adhkaarChapterOnClick = { adhkaarChapter ->
                         val action = ResourcesFragmentDirections

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.MaterialTheme
@@ -45,6 +46,7 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val initialChapterId = args.chapterId
+        val scrollToItemId = args.scrollToItemId
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -76,6 +78,7 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                             val chapterId = pageIndex + 1
                             val uiState by viewModel.getAdhkaarItemsByChapterId(chapterId).collectAsState()
                             var chapterName by remember { mutableStateOf("") }
+                            val listState = rememberLazyListState()
 
                             LaunchedEffect(chapterId) {
                                 chapterName = withContext(Dispatchers.IO) {
@@ -83,7 +86,21 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                 }
                             }
 
-                            LazyColumn(modifier = Modifier.padding(16.dp)) {
+                            LaunchedEffect(chapterId, scrollToItemId) {
+                                if (scrollToItemId != -1 && chapterId == initialChapterId) {
+                                    while (uiState.adhkaarItems.isEmpty() || uiState.isLoading) {
+                                        kotlinx.coroutines.delay(50)
+                                    }
+
+                                    val targetIndex = uiState.adhkaarItems.indexOfFirst { it.itemId == scrollToItemId }
+                                    listState.animateScrollToItem(targetIndex)
+                                }
+                            }
+
+                            LazyColumn(
+                                modifier = Modifier.padding(16.dp),
+                                state = listState
+                            ) {
                                 if (uiState.isLoading) {
                                     items(6) { index ->
                                         ArabicTextWithTranslationShimmer(index)

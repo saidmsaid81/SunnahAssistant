@@ -411,6 +411,8 @@
     <string name="tap_to_view_all_adhkaar_chapters">Tap to view all adhkaars</string>
     <string name="reference">Reference</string>
     <string name="page">" Page %1$d"</string>
+    <string name="no_bookmarked_adhkaar">No bookmarked Adhkaar</string>
+    <string name="adhkaar_chapter_number">Chapter %1$d</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

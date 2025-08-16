@@ -20,4 +20,14 @@ interface AdhkaarItemDao {
 
     @Query("UPDATE adhkaar_items SET bookmarked = :bookmarked WHERE item_id = :itemId")
     suspend fun updateBookmarkStatus(itemId: Int, bookmarked: Boolean)
+
+    @Query("""
+        SELECT ai.chapter_id as chapterId, ac.chapter_name as chapterName, 
+               ai.item_id as itemId, ai.item_translation as itemTranslation
+        FROM adhkaar_items ai
+        INNER JOIN adhkaar_chapters ac ON ai.chapter_id = ac.chapter_id 
+        WHERE ai.bookmarked = 1 AND ai.language = :language AND ac.language = :language
+        ORDER BY ai.chapter_id, ai.item_id
+    """)
+    fun getBookmarkedAdhkaarData(language: String): Flow<List<com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData>>
 }

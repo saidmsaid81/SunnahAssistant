@@ -42,7 +42,8 @@ fun ResourcesScreen(
     resourcesUIState: ResourcesUIState,
     surahItemOnClick: (surah: Surah) -> Unit = {},
     onSurahPin: ((Int) -> Unit)? = null,
-    onBookmarksClick: () -> Unit = {},
+    onQuranBookmarksClick: () -> Unit = {},
+    onAdhkaarBookmarksClick: () -> Unit = {},
     adhkaarChapterOnClick: (adhkaarChapter: AdhkaarChapter) -> Unit = {}
 ) {
 
@@ -76,7 +77,7 @@ fun ResourcesScreen(
                 ResourceTitle(
                     title = stringResource(R.string.quran),
                     trailingIcon = {
-                        IconButton(onClick = onBookmarksClick) {
+                        IconButton(onClick = onQuranBookmarksClick) {
                             Icon(
                                 imageVector = Icons.Outlined.Bookmarks,
                                 contentDescription = stringResource(R.string.bookmarks)
@@ -130,7 +131,7 @@ fun ResourcesScreen(
                 ResourceTitle(
                     title = stringResource(R.string.adhkaar),
                     trailingIcon = {
-                        IconButton(onClick = onBookmarksClick) {
+                        IconButton(onClick = onAdhkaarBookmarksClick) {
                             Icon(
                                 imageVector = Icons.Outlined.Bookmarks,
                                 contentDescription = stringResource(R.string.bookmarks)
@@ -471,7 +472,8 @@ private fun ResourcesScreenPreview(chapters: List<AdhkaarChapter>) {
                 adhkaarChapters = chapters,
                 error = null
             ),
-            onBookmarksClick = {}
+            onQuranBookmarksClick = {},
+            onAdhkaarBookmarksClick = {}
         )
     }
 }
@@ -529,7 +531,8 @@ fun ResourcesScreenLoadingPreview() {
                 adhkaarChapters = emptyList(),
                 error = null
             ),
-            onBookmarksClick = {}
+            onQuranBookmarksClick = {},
+            onAdhkaarBookmarksClick = {}
         )
     }
 }

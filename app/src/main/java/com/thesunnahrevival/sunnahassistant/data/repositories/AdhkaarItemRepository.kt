@@ -69,4 +69,8 @@ class AdhkaarItemRepository private constructor(
         adhkaarItemDao.updateBookmarkStatus(itemId, bookmarked)
     }
 
+    fun getBookmarkedAdhkaarData(language: String): Flow<List<com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData>> {
+        return adhkaarItemDao.getBookmarkedAdhkaarData(language)
+    }
+
 }
