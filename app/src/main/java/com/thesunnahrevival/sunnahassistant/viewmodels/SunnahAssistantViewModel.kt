@@ -11,41 +11,13 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.liveData
+import androidx.lifecycle.*
+import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
-import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
-import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
-import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
+import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.repositories.*
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository.Companion.getInstance
-import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
-import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
-import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
-import com.thesunnahrevival.sunnahassistant.utilities.Encryption
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY
-import com.thesunnahrevival.sunnahassistant.utilities.RETRY_AFTER_KEY
-import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
-import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
-import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
-import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
-import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -55,8 +27,7 @@ import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.time.LocalDate
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.crypto.BadPaddingException
 import kotlin.math.roundToLong
 
@@ -111,6 +82,12 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     private var _currentQuranPage: Int? = null
     val selectedSurah: MutableLiveData<Surah> = MutableLiveData()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            resourcesRepository.prepopulateResourcesData()
+        }
+    }
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
