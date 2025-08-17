@@ -16,6 +16,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
@@ -107,7 +108,7 @@ class PageTranslationFragment : MenuBarFragment() {
                             var bookmarksUpdated by remember { mutableStateOf(false) }
                             val settings by mainActivityViewModel.getSettings().observeAsState()
 
-                            LaunchedEffect(pageNumber, translationUiState.selectedTranslations, bookmarksUpdated) {
+                            LaunchedEffect(pageNumber, translationUiState.allTranslations, translationUiState.selectedTranslations, translationUiState.translationsDownloadInProgress, bookmarksUpdated) {
                                 ayahFullDetailsList = withContext(Dispatchers.IO) {
                                     viewModel.getFullAyahDetailsByPageNumber(pageNumber)
                                 }
@@ -144,6 +145,7 @@ class PageTranslationFragment : MenuBarFragment() {
                                             ayahFullDetail = ayahFullDetail,
                                             index = index,
                                             selectedTranslations = selectedTranslations,
+                                            translationsDownloadInProgress = translationsDownloadInProgress,
                                             visibleFootnotes = viewModel.visibleFootnotes,
                                             onFootnoteClick = { ayahTranslationId, footnoteNumber ->
                                                 viewModel.toggleFootnote(
@@ -191,6 +193,7 @@ fun AyahTranslation(
     ayahFullDetail: FullAyahDetails,
     index: Int,
     selectedTranslations: List<Translation>,
+    translationsDownloadInProgress: List<Translation>,
     visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
     arabicTextFontSize: Int = 18,
@@ -225,7 +228,23 @@ fun AyahTranslation(
                         }
                     }
             )
+        }.toMutableList()
+
+    translationsDownloadInProgress
+        .sortedBy { translation -> translation.order }
+        .forEach { translation ->
+            translationTexts.add(
+                TranslationText(
+                    title = translation.name,
+                    text = getTranslationText(
+                        -1,
+                        stringResource(R.string.downloading_translation_please_wait, translation.name)
+                    ) { _, _ -> },
+                    footnotes = emptyList()
+                )
+            )
         }
+
 
     ArabicTextWithTranslation(
         context = context,

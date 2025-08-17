@@ -134,6 +134,7 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                                 ayahFullDetail = it,
                                                 index = 0,
                                                 selectedTranslations = translationUiState.selectedTranslations,
+                                                translationsDownloadInProgress = translationUiState.translationsDownloadInProgress,
                                                 visibleFootnotes = viewModel.visibleFootnotes,
                                                 onFootnoteClick = { ayahTranslationId, footnoteNumber ->
                                                     viewModel.toggleFootnote(
@@ -146,7 +147,10 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                                 footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
                                             ) {
                                                 lifecycleScope.launch(Dispatchers.IO) {
-                                                    mainActivityViewModel.toggleAyahBookmark(it.ayah, updateSelectedAyahId = true)
+                                                    mainActivityViewModel.toggleAyahBookmark(
+                                                        it.ayah,
+                                                        updateSelectedAyahId = true
+                                                    )
                                                 }
                                             }
                                         }
