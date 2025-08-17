@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.BuildConfig
-import java.util.Date
-import java.util.TreeSet
+import java.util.*
 
 @Entity(tableName = "app_settings")
 data class AppSettings(
@@ -50,7 +49,13 @@ data class AppSettings(
     @ColumnInfo(defaultValue = "0")
     var hideDownloadFilePrompt: Boolean = false,
     @ColumnInfo(name = "lastReadPage",defaultValue = "null")
-    var lastReadPage: Int? = null
+    var lastReadPage: Int? = null,
+    @ColumnInfo(defaultValue = "18")
+    var arabicTextFontSize: Int = 18,
+    @ColumnInfo(defaultValue = "16")
+    var translationTextFontSize: Int = 16,
+    @ColumnInfo(defaultValue = "12")
+    var footnoteTextFontSize: Int = 12
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -93,6 +98,11 @@ data class AppSettings(
         if (shareAnonymousUsageData != other.shareAnonymousUsageData) return false
         if (generatePrayerToDosAfter != other.generatePrayerToDosAfter) return false
         if (includeHijriDateInCalendar != other.includeHijriDateInCalendar) return false
+        if (hideDownloadFilePrompt != other.hideDownloadFilePrompt) return false
+        if (lastReadPage != other.lastReadPage) return false
+        if (arabicTextFontSize != other.arabicTextFontSize) return false
+        if (translationTextFontSize != other.translationTextFontSize) return false
+        if (footnoteTextFontSize != other.footnoteTextFontSize) return false
 
         return true
     }
@@ -132,6 +142,12 @@ data class AppSettings(
         result = 31 * result + numberOfLaunches
         result = 31 * result + shareAnonymousUsageData.hashCode()
         result = 31 * result + generatePrayerToDosAfter.hashCode()
+        result = 31 * result + includeHijriDateInCalendar.hashCode()
+        result = 31 * result + hideDownloadFilePrompt.hashCode()
+        result = 31 * result + (lastReadPage?.hashCode() ?: 0)
+        result = 31 * result + arabicTextFontSize
+        result = 31 * result + translationTextFontSize
+        result = 31 * result + footnoteTextFontSize
         return result
     }
 }

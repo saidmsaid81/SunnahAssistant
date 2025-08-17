@@ -3,10 +3,12 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 import android.app.Dialog
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +18,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -29,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -38,6 +43,8 @@ import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AyahTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
+import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationDropdown
 import kotlinx.coroutines.Dispatchers
@@ -73,91 +80,123 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                         val selectedAyah by viewModel.selectedAyah.collectAsState()
                         val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                         val expanded = remember { mutableStateOf(false) }
+                        val settings by mainActivityViewModel.getSettings().observeAsState()
 
-                        selectedAyah?.let {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .clickable(
-                                        onClick = { expanded.value = false },
-                                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
-                                        indication = null
-                                    )
-                            ) {
-                                GrayLine(modifier = Modifier.align(Alignment.CenterHorizontally))
-
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                AyahTitle(
-                                    it.surah.transliteratedName,
-                                    stringResource(R.string.ayah_number, it.ayah.number),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-
-                                TranslationDropdown(
-                                    translationUiState.allTranslations,
-                                    translationUiState.selectedTranslations,
-                                    translationUiState.translationsDownloadInProgress,
-                                    expanded
-                                ) { translation: Translation ->
-                                    viewModel.toggleTranslationSelection(
-                                        translation,
-                                        translationUiState.selectedTranslations.size
-                                    ) {
-                                        withContext(Dispatchers.Main) {
-                                            mainActivityViewModel.refreshSelectedAyahId()
-                                        }
-                                    }
-                                }
-
-                                LazyColumn(
+                        if (settings == null) {
+                            ArabicTextWithTranslationShimmer(0)
+                        } else {
+                            selectedAyah?.let {
+                                Column(
                                     modifier = Modifier
-                                        .weight(1f)
                                         .fillMaxWidth()
+                                        .padding(16.dp)
+                                        .clickable(
+                                            onClick = { expanded.value = false },
+                                            interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                                            indication = null
+                                        )
                                 ) {
-                                    item {
-                                        AyahTranslation(
-                                            context = requireContext(),
-                                            ayahFullDetail = it,
-                                            index = 0,
-                                            selectedTranslations = translationUiState.selectedTranslations,
-                                            visibleFootnotes = viewModel.visibleFootnotes,
-                                            onFootnoteClick = { ayahTranslationId, footnoteNumber ->
-                                                viewModel.toggleFootnote(
-                                                    ayahTranslationId,
-                                                    footnoteNumber
-                                                )
-                                            },
+                                    GrayLine(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    AyahTitle(
+                                        it.surah.transliteratedName,
+                                        stringResource(R.string.ayah_number, it.ayah.number),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+
+                                    TranslationDropdown(
+                                        translationUiState.allTranslations,
+                                        translationUiState.selectedTranslations,
+                                        translationUiState.translationsDownloadInProgress,
+                                        expanded
+                                    ) { translation: Translation ->
+                                        viewModel.toggleTranslationSelection(
+                                            translation,
+                                            translationUiState.selectedTranslations.size
                                         ) {
-                                            lifecycleScope.launch(Dispatchers.IO) {
-                                                mainActivityViewModel.toggleAyahBookmark(it.ayah, updateSelectedAyahId = true)
+                                            withContext(Dispatchers.Main) {
+                                                mainActivityViewModel.refreshSelectedAyahId()
                                             }
                                         }
                                     }
-                                }
 
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxWidth()
+                                    ) {
+                                        item {
 
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    Next {
-                                        mainActivityViewModel.nextAyah()
+                                            AyahTranslation(
+                                                context = requireContext(),
+                                                ayahFullDetail = it,
+                                                index = 0,
+                                                selectedTranslations = translationUiState.selectedTranslations,
+                                                visibleFootnotes = viewModel.visibleFootnotes,
+                                                onFootnoteClick = { ayahTranslationId, footnoteNumber ->
+                                                    viewModel.toggleFootnote(
+                                                        ayahTranslationId,
+                                                        footnoteNumber
+                                                    )
+                                                },
+                                                arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
+                                                translationTextFontSize = settings?.translationTextFontSize ?: 16,
+                                                footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
+                                            ) {
+                                                lifecycleScope.launch(Dispatchers.IO) {
+                                                    mainActivityViewModel.toggleAyahBookmark(it.ayah, updateSelectedAyahId = true)
+                                                }
+                                            }
+                                        }
                                     }
 
-                                    Spacer(modifier = Modifier.weight(1f))
 
-                                    Previous {
-                                        mainActivityViewModel.previousAyah()
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        Next {
+                                            mainActivityViewModel.nextAyah()
+                                        }
+
+                                        Spacer(modifier = Modifier.weight(1f))
+
+                                        FontSettings {
+                                            findNavController().navigate(R.id.fontSettingsFragment)
+                                            leaveImmersiveMode()
+                                            dismiss()
+                                        }
+
+                                        Spacer(modifier = Modifier.weight(1f))
+
+                                        Previous {
+                                            mainActivityViewModel.previousAyah()
+                                        }
                                     }
+
+
                                 }
-
-
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun leaveImmersiveMode() {
+        val activity = activity as MainActivity
+        activity.supportActionBar?.show()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val controller = activity.window.insetsController
+            if (controller != null) {
+                controller.show(WindowInsets.Type.statusBars())
+                controller.show(WindowInsets.Type.navigationBars())
+            }
+        } else {
+            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
     }
 
@@ -205,6 +244,17 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
         Icon(
             imageVector = Icons.Filled.KeyboardArrowUp,
             contentDescription = stringResource(R.string.previous),
+            modifier = modifier
+                .size(36.dp)
+                .clickable { onClick() }
+        )
+    }
+
+    @Composable
+    private fun FontSettings(modifier: Modifier = Modifier, onClick: () -> Unit) {
+        Icon(
+            imageVector = Icons.Filled.Settings,
+            contentDescription = stringResource(R.string.font_settings),
             modifier = modifier
                 .size(36.dp)
                 .clickable { onClick() }

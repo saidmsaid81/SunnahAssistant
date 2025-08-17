@@ -2,9 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Footnote
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
@@ -32,7 +32,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.TranslationViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationDropdown
@@ -43,7 +43,7 @@ import kotlinx.coroutines.withContext
 
 private val FOOTNOTE_PATTERN = "\\[(\\d+)]".toRegex()
 
-class PageTranslationFragment : SunnahAssistantFragment() {
+class PageTranslationFragment : MenuBarFragment() {
 
     private val viewModel: PageTranslationViewModel by viewModels()
 
@@ -105,6 +105,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                             val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
                             var ayahFullDetailsList by remember { mutableStateOf<List<FullAyahDetails>>(emptyList()) }
                             var bookmarksUpdated by remember { mutableStateOf(false) }
+                            val settings by mainActivityViewModel.getSettings().observeAsState()
 
                             LaunchedEffect(pageNumber, translationUiState.selectedTranslations, bookmarksUpdated) {
                                 ayahFullDetailsList = withContext(Dispatchers.IO) {
@@ -130,7 +131,7 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                     }
                                 }
 
-                                if (ayahFullDetailsList.isEmpty()) {
+                                if (ayahFullDetailsList.isEmpty() || settings == null) {
                                     items(6) { index ->
                                         ArabicTextWithTranslationShimmer(index)
                                     }
@@ -150,6 +151,9 @@ class PageTranslationFragment : SunnahAssistantFragment() {
                                                     footnoteNumber
                                                 )
                                             },
+                                            arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
+                                            translationTextFontSize = settings?.translationTextFontSize ?: 16,
+                                            footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
                                         ) {
                                             lifecycleScope.launch(Dispatchers.IO) {
                                                 mainActivityViewModel.toggleAyahBookmark(ayahFullDetail.ayah)
@@ -165,6 +169,20 @@ class PageTranslationFragment : SunnahAssistantFragment() {
             }
         }
     }
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.font_settings -> {
+                findNavController().navigate(R.id.fontSettingsFragment)
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.font_settings_menu, menu)
+    }
 }
 
 @Composable
@@ -175,6 +193,9 @@ fun AyahTranslation(
     selectedTranslations: List<Translation>,
     visibleFootnotes: Map<String, Footnote>,
     onFootnoteClick: (ayahTranslationId: Int, footnoteNumber: Int) -> Unit,
+    arabicTextFontSize: Int = 18,
+    translationTextFontSize: Int = 16,
+    footnoteTextFontSize: Int = 12,
     onBookmark: () -> Unit
 ) {
     val translationTexts = ayahFullDetail.ayahTranslations
@@ -213,8 +234,12 @@ fun AyahTranslation(
         arabicText = ayahFullDetail.ayah.arabicText,
         translationTexts = translationTexts,
         textToShare = getAyahText(ayahFullDetail, selectedTranslations, ayahFullDetail.surah.id.toString()),
-        bookmarked = ayahFullDetail.ayah.bookmarked
-    ) { onBookmark() }
+        bookmarked = ayahFullDetail.ayah.bookmarked,
+        onBookmarkClick = { onBookmark() },
+        arabicTextFontSize = arabicTextFontSize,
+        translationTextFontSize = translationTextFontSize,
+        footnoteTextFontSize = footnoteTextFontSize
+    )
 }
 
 @Composable

@@ -240,6 +240,9 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE translations ADD COLUMN `order` INTEGER")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `lastReadPage` INTEGER")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `arabicTextFontSize` INTEGER DEFAULT 18")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `translationTextFontSize` INTEGER DEFAULT 16")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `footnoteTextFontSize` INTEGER DEFAULT 12")
                 database.execSQL("ALTER TABLE ayahs ADD COLUMN `bookmarked` INTEGER DEFAULT 0")
                 database.execSQL("ALTER TABLE surahs ADD COLUMN `pin_order` INTEGER")
 

@@ -82,9 +82,10 @@ class SettingsListFragment : SunnahAssistantFragment(), AdapterView.OnItemClickL
             2 -> findNavController().navigate(R.id.customizeCategoriesFragment)
             3 -> findNavController().navigate(R.id.notificationSettingsFragment)
             4 -> findNavController().navigate(R.id.layoutSettingsFragment)
-            5 -> findNavController().navigate(R.id.backupRestoreFragment)
-            6 -> findNavController().navigate(R.id.privacySettingsFragment)
-            7 -> {
+            5 -> findNavController().navigate(R.id.fontSettingsFragment)
+            6 -> findNavController().navigate(R.id.backupRestoreFragment)
+            7 -> findNavController().navigate(R.id.privacySettingsFragment)
+            8 -> {
                 val intent = generateEmailIntent()
                 if (intent.resolveActivity(requireActivity().packageManager) != null)
                     startActivity(intent)

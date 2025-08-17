@@ -414,6 +414,12 @@
     <string name="no_bookmarked_adhkaar">No bookmarked Adhkaar</string>
     <string name="adhkaar_chapter_number">Chapter %1$d</string>
     <string name="you_can_only_pin_up_to_5_chapters">You can only pin up to 5 chapters</string>
+    <string name="font_settings">Font Settings</string>
+    <string name="arabic_text_font_size">Arabic Text Font Size</string>
+    <string name="translation_text_font_size">Translation Text Font Size</string>
+    <string name="footnote_text_font_size">Footnote Text Font Size</string>
+    <string name="preview">Preview</string>
+    <string name="font_settings_subtitle">Customize text sizes in Quran/Adhkaar translations for a better reading experience</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
@@ -448,6 +454,7 @@
         <item>Customize Reminder Categories</item>
         <item>Notifications Settings</item>
         <item>Layout and Theme Settings</item>
+        <item>Font Settings</item>
         <item>Backup/ Restore Data (Experimental)</item>
         <item>Privacy Settings</item>
         <item>Contact Us</item>

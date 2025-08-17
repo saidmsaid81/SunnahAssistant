@@ -41,11 +41,13 @@ fun ArabicTextWithTranslation(
     translationTexts: List<TranslationText>,
     textToShare: String,
     bookmarked: Boolean = false,
-    onBookmarkClick: () -> Unit = {}
+    onBookmarkClick: () -> Unit = {},
+    arabicTextFontSize: Int = 18,
+    translationTextFontSize: Int = 16,
+    footnoteTextFontSize: Int = 12
 ) {
 
     val uthmaniFont = FontLoader.loadUthmaniFont()
-    val baseTextSize = 18.sp
     val arabicTextScale = 1.4f
 
     if (index > 0) {
@@ -66,11 +68,11 @@ fun ArabicTextWithTranslation(
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = ArabicTextUtils.formatArabicText(arabicText),
-            fontSize = baseTextSize * arabicTextScale,
+            fontSize = (arabicTextFontSize * arabicTextScale).sp,
             fontFamily = uthmaniFont,
             textAlign = TextAlign.Right,
             letterSpacing = 1.sp,
-            lineHeight = (baseTextSize * arabicTextScale * 1.6f),
+            lineHeight = (arabicTextFontSize * arabicTextScale * 1.6f).sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
@@ -89,7 +91,7 @@ fun ArabicTextWithTranslation(
             Text(
                 text = translationText.text,
                 style = MaterialTheme.typography.body1.copy(
-                    fontSize = 16.sp,
+                    fontSize = translationTextFontSize.sp,
                     color = MaterialTheme.colors.onSurface
                 ),
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -107,7 +109,7 @@ fun ArabicTextWithTranslation(
                 for (footnote in translationText.footnotes) {
                     Text(
                         text = footnote,
-                        style = MaterialTheme.typography.caption,
+                        fontSize = footnoteTextFontSize.sp,
                         color = MaterialTheme.colors.onSurface,
                     )
                     Spacer(modifier = Modifier.padding(vertical = 8.dp))

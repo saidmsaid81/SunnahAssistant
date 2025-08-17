@@ -1,9 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -13,12 +11,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
@@ -26,14 +26,14 @@ import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.utilities.toAnnotatedString
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AdhkaarReaderFragment : SunnahAssistantFragment() {
+class AdhkaarReaderFragment : MenuBarFragment() {
 
     private val viewModel: AdhkaarViewModel by viewModels()
     private val args: AdhkaarReaderFragmentArgs by navArgs()
@@ -53,6 +53,7 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
             setContent {
 
                 val pagerState = rememberPagerState(initialPage = initialChapterId - 1) { 133 }
+                val settings by mainActivityViewModel.getSettings().observeAsState()
 
                 LaunchedEffect(pagerState) {
                     snapshotFlow { pagerState.currentPage }.collect { currentPage ->
@@ -101,7 +102,7 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                 modifier = Modifier.padding(16.dp),
                                 state = listState
                             ) {
-                                if (uiState.isLoading) {
+                                if (uiState.isLoading || settings == null) {
                                     items(6) { index ->
                                         ArabicTextWithTranslationShimmer(index)
                                     }
@@ -154,7 +155,10 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
                                             bookmarked = adhkaarItem.bookmarked,
                                             onBookmarkClick = {
                                                 viewModel.toggleBookmark(adhkaarItem.itemId, adhkaarItem.bookmarked)
-                                            }
+                                            },
+                                            arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
+                                            translationTextFontSize = settings?.translationTextFontSize ?: 16,
+                                            footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
                                         )
 
                                     }
@@ -293,5 +297,20 @@ class AdhkaarReaderFragment : SunnahAssistantFragment() {
         }
 
         return "1 Time"
+    }
+
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.font_settings -> {
+                findNavController().navigate(R.id.fontSettingsFragment)
+                true
+            }
+            else -> false
+        }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.font_settings_menu, menu)
     }
 }
