@@ -25,6 +25,7 @@ class FontSettingsFragment : SunnahAssistantFragment() {
         )
 
         setupSeekBars()
+        setupResetButton()
         observeSettings()
 
         return binding.root
@@ -78,6 +79,37 @@ class FontSettingsFragment : SunnahAssistantFragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+    }
+
+    private fun setupResetButton() {
+        binding.resetToDefaultsButton.setOnClickListener {
+            resetToDefaults()
+        }
+    }
+
+    private fun resetToDefaults() {
+        val defaultArabicSize = 18
+        val defaultTranslationSize = 16
+        val defaultFootnoteSize = 12
+
+        mainActivityViewModel.settingsValue?.let { settings ->
+            settings.arabicTextFontSize = defaultArabicSize
+            settings.translationTextFontSize = defaultTranslationSize
+            settings.footnoteTextFontSize = defaultFootnoteSize
+            mainActivityViewModel.updateSettings(settings)
+        }
+
+        binding.arabicTextSizeSeekBar.progress = defaultArabicSize - 10
+        binding.arabicTextSizeValue.text = defaultArabicSize.toString()
+        binding.previewArabicText.textSize = defaultArabicSize.toFloat()
+
+        binding.translationTextSizeSeekBar.progress = defaultTranslationSize - 10
+        binding.translationTextSizeValue.text = defaultTranslationSize.toString()
+        binding.previewTranslationText.textSize = defaultTranslationSize.toFloat()
+
+        binding.footnoteTextSizeSeekBar.progress = defaultFootnoteSize - 8
+        binding.footnoteTextSizeValue.text = defaultFootnoteSize.toString()
+        binding.previewFootnoteText.textSize = defaultFootnoteSize.toFloat()
     }
 
     private fun observeSettings() {

@@ -420,7 +420,10 @@
     <string name="footnote_text_font_size">Footnote Text Font Size</string>
     <string name="preview">Preview</string>
     <string name="font_settings_subtitle">Customize text sizes in Quran/Adhkaar translations for a better reading experience</string>
+    <string name="reset_to_defaults">Reset to Defaults</string>
     <string name="share_all">Share All</string>
+    <string name="large">Large</string>
+    <string name="small">Small</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
