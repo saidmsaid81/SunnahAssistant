@@ -1,16 +1,14 @@
 package com.thesunnahrevival.sunnahassistant.views.utilities
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -28,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.copyToClipboard
 import com.thesunnahrevival.sunnahassistant.utilities.shareText
 import com.valentinilk.shimmer.shimmer
@@ -130,7 +129,7 @@ fun ArabicTextWithTranslation(
                 modifier = Modifier.size(24.dp)
             )
 
-            Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(24.dp))
 
             CopyIcon(
                 context,
@@ -140,11 +139,19 @@ fun ArabicTextWithTranslation(
                 Modifier.size(24.dp)
             )
 
-            Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(24.dp))
 
             BookmarkIcon(icon = if (bookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
                 onBookmarkClick()
             }
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+            ReportIssueIcon(
+                context = context,
+                textToReport = textToShare,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
@@ -197,6 +204,38 @@ private fun ShareIcon(
         modifier = modifier
             .clickable {
                 shareText(context, textToShare, title)
+            }
+    )
+}
+
+@Composable
+private fun ReportIssueIcon(
+    context: Context,
+    textToReport: String,
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector = Icons.Filled.ReportProblem,
+        contentDescription = "Report Issue",
+        modifier = modifier
+            .clickable {
+                val emailSubject = "Issue Report - Text Error"
+                val emailBody = "Please describe the issue you found with the following text:\n\n" +
+                        "Text Content:\n$textToReport\n\n" +
+                        "Issue Description:\n[Please describe the issue here]\n\n" +
+                        "Thank you for helping us improve the app!"
+                
+                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                    data = android.net.Uri.parse("mailto:")
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(SUPPORT_EMAIL))
+                    putExtra(Intent.EXTRA_SUBJECT, emailSubject)
+                    putExtra(Intent.EXTRA_TEXT, emailBody)
+                }
+                
+                val chooser = Intent.createChooser(intent, "Send Email")
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(chooser)
+                }
             }
     )
 }
@@ -349,13 +388,19 @@ fun ArabicTextWithTranslationShimmer(index: Int) {
                     .size(24.dp)
                     .background(Color.LightGray.copy(alpha = 0.5f))
             )
-            Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(24.dp))
             Spacer(
                 modifier = Modifier
                     .size(24.dp)
                     .background(Color.LightGray.copy(alpha = 0.5f))
             )
-            Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(Color.LightGray.copy(alpha = 0.5f))
+            )
+            Spacer(modifier = Modifier.width(24.dp))
             Spacer(
                 modifier = Modifier
                     .size(24.dp)
