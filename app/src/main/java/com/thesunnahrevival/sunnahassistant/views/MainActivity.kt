@@ -36,14 +36,7 @@ import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
-import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
-import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
-import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
-import com.thesunnahrevival.sunnahassistant.utilities.SHARE
-import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
-import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
-import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
-import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
@@ -55,7 +48,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.util.Locale
+import java.util.*
 import kotlin.random.Random
 
 open class MainActivity : AppCompatActivity() {
@@ -214,7 +207,7 @@ open class MainActivity : AppCompatActivity() {
                                     )
                                 }\n" +
                                 "${getString(R.string.powered_by_sunnah_assistant)}\n\n" +
-                                "Get Sunnah Assistant App at\n$SUNNAH_ASSISTANT_APP_LINK"
+                                "Get Sunnah Assistant App at\n${getSunnahAssistantAppLink(utmCampaign = "ToDo")}"
                     )
                     val chooserIntent = Intent.createChooser(
                         shareIntent,

@@ -1,7 +1,8 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
-const val SUNNAH_ASSISTANT_APP_LINK =
-    "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+private const val SUNNAH_ASSISTANT_BASE_LINK =
+    "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant"
+
 val SUPPORTED_LOCALES = arrayOf("en", "ar")
 const val RETRY_AFTER_KEY = "Retry-After"
 const val SUPPORT_EMAIL = "apps@thesunnahrevival.com"
@@ -54,3 +55,22 @@ const val STICKY_NOTIFICATION_ID = -4
 const val REFRESHING_NOTIFICATIONS_ID = -5
 const val DOWNLOAD_NOTIFICATION_ID = -6
 const val DOWNLOAD_COMPLETE_NOTIFICATION_ID = -7
+
+fun getSunnahAssistantAppLink(
+    utmSource: String = "Sunnah-Assistant-App",
+    utmMedium: String = "share",
+    utmCampaign: String? = null
+): String {
+    val baseUrl = SUNNAH_ASSISTANT_BASE_LINK
+    val utmParams = mutableListOf<String>()
+
+    utmSource.let { utmParams.add("utm_source=$it") }
+    utmMedium.let { utmParams.add("utm_medium=$it") }
+    utmCampaign?.let { utmParams.add("utm_campaign=$it") }
+
+    return if (utmParams.isNotEmpty()) {
+        "$baseUrl?${utmParams.joinToString("&")}"
+    } else {
+        baseUrl
+    }
+}

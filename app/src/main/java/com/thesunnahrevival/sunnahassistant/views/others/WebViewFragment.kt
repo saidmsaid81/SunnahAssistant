@@ -5,12 +5,7 @@ import android.graphics.Bitmap
 import android.net.MailTo
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -19,8 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
-import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
 
 open class WebViewFragment : SunnahAssistantFragment() {
 
@@ -94,7 +89,7 @@ open class WebViewFragment : SunnahAssistantFragment() {
                         getString(
                             R.string.get_sunnah_assistant
                         )
-                    } $SUNNAH_ASSISTANT_APP_LINK "
+                    } ${getSunnahAssistantAppLink(utmCampaign = "Share-Page-Link")} "
                 )
                 startActivity(
                     Intent.createChooser(

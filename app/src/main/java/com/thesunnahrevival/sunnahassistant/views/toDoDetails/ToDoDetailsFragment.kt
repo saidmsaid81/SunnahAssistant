@@ -8,12 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -28,31 +23,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
-import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
-import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
-import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
-import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
-import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.sunnahassistant.utilities.getFormattedOffset
-import com.thesunnahrevival.sunnahassistant.utilities.getLocale
-import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.DatePickerFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.DeleteToDoFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.SelectDaysDialogFragment
-import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.*
 import java.net.MalformedURLException
 import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.Date
-import java.util.GregorianCalendar
-import java.util.TreeSet
+import java.util.*
 
 open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
@@ -571,7 +551,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 "${getString(R.string.time_label)}: $time\n" +
                 "${getString(R.string.completed)}: $completed\n\n" +
                 "${getString(R.string.powered_by_sunnah_assistant)}\n" +
-                "Get Sunnah Assistant App at\n$SUNNAH_ASSISTANT_APP_LINK"
+                "Get Sunnah Assistant App at\n${getSunnahAssistantAppLink(utmCampaign = "Share-To-Do")}"
 
     }
 

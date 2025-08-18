@@ -9,10 +9,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.sergivonavi.materialbanner.Banner
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
-import java.util.Locale
+import java.util.*
 
 fun showHelpTranslateBanner(todayFragment: TodayFragment) {
     if (!SUPPORTED_LOCALES.contains(Locale.getDefault().language)) {
@@ -95,7 +95,7 @@ fun shareAppIntent(): Intent {
     intent.type = "text/plain"
     intent.putExtra(
         Intent.EXTRA_TEXT,
-        "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To manage to-dos\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- $SUNNAH_ASSISTANT_APP_LINK "
+        "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To manage to-dos\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- ${getSunnahAssistantAppLink(utmCampaign = "Share-App-Link")} "
     )
     return intent
 }

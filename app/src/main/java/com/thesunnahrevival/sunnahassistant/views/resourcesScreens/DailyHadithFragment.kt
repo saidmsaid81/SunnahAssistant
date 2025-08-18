@@ -5,12 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.MenuHost
@@ -20,10 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.repositories.DailyHadithRepository
 import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
+import com.thesunnahrevival.sunnahassistant.data.repositories.DailyHadithRepository
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentDailyHadithBinding
-import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.viewmodels.DailyHadithViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.adapters.DailyHadithAdapter
@@ -209,7 +204,7 @@ class DailyHadithFragment: SunnahAssistantFragment(), MenuProvider {
                     intent.putExtra(
                         Intent.EXTRA_TEXT,
                         HtmlCompat.fromHtml(
-                            "$title \n\n$content\n\n$SUNNAH_ASSISTANT_APP_LINK",
+                            "$title \n\n$content\n\n${getSunnahAssistantAppLink(utmCampaign = "Daily-Hadith")}",
                             HtmlCompat.FROM_HTML_MODE_LEGACY
                         ).toString()
                     )
