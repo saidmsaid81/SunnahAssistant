@@ -141,15 +141,16 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                                             adhkaarItem.englishText
                                         }
 
-                                        val sectionMarker = extractTimesFromText(textToParse)
+                                        val times = extractTimesFromText(textToParse)
 
                                         ArabicTextWithTranslation(
                                             context = requireContext(),
                                             index = index,
-                                            sectionMarker = sectionMarker,
+                                            sectionMarker = times,
                                             arabicText = adhkaarItem.arabicText ?: "",
                                             translationTexts = translationTexts,
-                                            textToShare = "${adhkaarItem.arabicText}\n\n" +
+                                            textToShare = "$chapterName ($times)\n\n" +
+                                                    "${adhkaarItem.arabicText}\n\n" +
                                                     "${adhkaarItem.englishText}\n\n" +
                                                     stringResource(R.string.reference) + ": ${adhkaarItem.reference}",
                                             bookmarked = adhkaarItem.bookmarked,
