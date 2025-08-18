@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.compose.foundation.layout.padding
@@ -18,11 +19,13 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.utilities.toAnnotatedString
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -31,12 +34,17 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTransl
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AdhkaarReaderFragment : MenuBarFragment() {
 
     private val viewModel: AdhkaarViewModel by viewModels()
     private val args: AdhkaarReaderFragmentArgs by navArgs()
+    private var currentChapterId: Int = 1
+    private var currentChapterName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +55,7 @@ class AdhkaarReaderFragment : MenuBarFragment() {
 
         val initialChapterId = args.chapterId
         val scrollToItemId = args.scrollToItemId
+        currentChapterId = initialChapterId
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -57,12 +66,13 @@ class AdhkaarReaderFragment : MenuBarFragment() {
 
                 LaunchedEffect(pagerState) {
                     snapshotFlow { pagerState.currentPage }.collect { currentPage ->
-                        val currentChapterId = currentPage + 1
+                        currentChapterId = currentPage + 1
                         val chapterName = withContext(Dispatchers.IO) {
                             viewModel.getChapterNameByChapterId(currentChapterId) ?: ""
                         }
 
                         withContext(Dispatchers.Main) {
+                            currentChapterName = chapterName
                             (activity as? MainActivity)?.supportActionBar?.title = chapterName
                         }
                     }
@@ -307,11 +317,82 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                 findNavController().navigate(R.id.fontSettingsFragment)
                 true
             }
+            R.id.share_all -> {
+                shareAllAdhkaar()
+                true
+            }
             else -> false
         }
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.font_settings_menu, menu)
+        menuInflater.inflate(R.menu.adhkaar_reader_menu, menu)
+    }
+
+    private fun shareAllAdhkaar() {
+        lifecycleScope.launch {
+            try {
+                val adhkaarItems = viewModel.getAdhkaarItemsByChapterId(currentChapterId)
+                    .filter { !it.isLoading && it.adhkaarItems.isNotEmpty() }
+                    .first()
+                    .adhkaarItems
+
+                if (adhkaarItems.isEmpty()) {
+                    return@launch
+                }
+
+                val shareText = StringBuilder().apply {
+                    appendLine(currentChapterName)
+                    appendLine("=".repeat(currentChapterName.length))
+                    appendLine()
+
+                    adhkaarItems.forEachIndexed { index, item ->
+                        val currentLocale = requireContext().getLocale()
+                        val textToParse = if (currentLocale.language == "ar") {
+                            item.arabicText
+                        } else {
+                            item.englishText
+                        }
+                        val times = extractTimesFromText(textToParse)
+
+                        appendLine("${if (adhkaarItems.size > 1) "${index + 1}." else ""} ($times)")
+                        appendLine()
+                        item.arabicText?.let {
+                            appendLine(it)
+                            appendLine()
+                        }
+                        item.englishText?.let {
+                            appendLine(it)
+                            appendLine()
+                        }
+                        item.reference?.let {
+                            appendLine("${getString(R.string.reference)}: $it")
+                            appendLine()
+                        }
+                        appendLine("---")
+                        appendLine()
+                    }
+
+                    appendLine()
+                    appendLine(getString(R.string.sent_from_sunnah_assistant_app))
+                    appendLine("${getString(R.string.get_sunnah_assistant)} ${getSunnahAssistantAppLink(
+                        utmSource = "app",
+                        utmMedium = "share", 
+                        utmCampaign = "adhkaar_share"
+                    )}")
+                }.toString()
+
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, shareText)
+                    putExtra(Intent.EXTRA_SUBJECT, currentChapterName)
+                }
+
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }

@@ -183,7 +183,7 @@ class PageTranslationFragment : MenuBarFragment() {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.font_settings_menu, menu)
+        menuInflater.inflate(R.menu.page_translation_menu, menu)
     }
 }
 
