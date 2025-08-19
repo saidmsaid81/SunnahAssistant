@@ -72,6 +72,17 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.bookmark_menu, menu)
+    }
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.bookmarks -> {
+                findNavController().navigate(R.id.adhkaarBookmarksFragment)
+                true
+            }
+            else -> super.onMenuItemSelected(item)
+        }
     }
 }
 @Composable

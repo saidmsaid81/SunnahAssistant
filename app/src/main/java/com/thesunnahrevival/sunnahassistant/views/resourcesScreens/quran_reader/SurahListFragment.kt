@@ -2,12 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -76,7 +71,7 @@ class SurahListFragment : MenuBarFragment() {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.surah_list_menu, menu)
+        menuInflater.inflate(R.menu.bookmark_menu, menu)
     }
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
