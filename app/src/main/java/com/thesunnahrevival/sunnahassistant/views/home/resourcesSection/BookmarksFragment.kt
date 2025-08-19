@@ -5,25 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -36,9 +22,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.BookmarksViewModel
@@ -63,12 +47,19 @@ class BookmarksFragment : SunnahAssistantFragment() {
             setContent {
                 val bookmarkedAyahs =
                     bookmarksViewModel.getBookmarkedAyahs().collectAsLazyPagingItems()
+                val bookmarkedPagesWithSurah = 
+                    bookmarksViewModel.getBookmarkedPagesWithSurah().collectAsLazyPagingItems()
 
                 BookmarksScreen(
                     bookmarkedAyahs = bookmarkedAyahs,
+                    bookmarkedPagesWithSurah = bookmarkedPagesWithSurah,
                     firstVisiblePosition = bookmarksViewModel.firstVisiblePosition,
                     onAyahClick = { ayahWithSurah ->
                         mainActivityViewModel.setSelectedAyahId(ayahWithSurah.ayah.id)
+                        findNavController().navigate(R.id.quranReaderFragment)
+                    },
+                    onPageClick = { pageBookmarkWithSurah ->
+                        mainActivityViewModel.updateCurrentPage(pageBookmarkWithSurah.pageBookmark.pageNumber)
                         findNavController().navigate(R.id.quranReaderFragment)
                     },
                     onScroll = { index -> bookmarksViewModel.firstVisiblePosition = index }
@@ -81,8 +72,10 @@ class BookmarksFragment : SunnahAssistantFragment() {
 @Composable
 fun BookmarksScreen(
     bookmarkedAyahs: LazyPagingItems<AyahWithSurah>,
+    bookmarkedPagesWithSurah: LazyPagingItems<PageBookmarkWithSurah>,
     firstVisiblePosition: Int = 0,
     onAyahClick: (ayah: AyahWithSurah) -> Unit = {},
+    onPageClick: (pageBookmarkWithSurah: PageBookmarkWithSurah) -> Unit = {},
     onScroll: (Int) -> Unit = {}
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -123,7 +116,10 @@ fun BookmarksScreen(
                         onScroll = onScroll
                     )
 
-                    1 -> PageBookmarksTab()
+                    1 -> PageBookmarksTab(
+                        bookmarkedPagesWithSurah = bookmarkedPagesWithSurah,
+                        onPageClick = onPageClick
+                    )
                 }
             }
         }
@@ -185,18 +181,60 @@ private fun AyahBookmarksTab(
 }
 
 @Composable
-private fun PageBookmarksTab() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+private fun PageBookmarksTab(
+    bookmarkedPagesWithSurah: LazyPagingItems<PageBookmarkWithSurah>,
+    onPageClick: (pageBookmarkWithSurah: PageBookmarkWithSurah) -> Unit
+) {
+    if (bookmarkedPagesWithSurah.itemCount == 0) {
         Text(
-            text = "Page bookmarks coming soon...",
-            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.no_bookmarked_pages),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.body2
         )
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp)
+        ) {
+            items(
+                count = bookmarkedPagesWithSurah.itemCount,
+                key = { index ->
+                    val pageBookmarkWithSurah = bookmarkedPagesWithSurah[index]
+                    "page_${pageBookmarkWithSurah?.pageBookmark?.pageNumber ?: "null"}_$index"
+                }
+            ) { index ->
+                val pageBookmarkWithSurah = bookmarkedPagesWithSurah[index]
+                if (pageBookmarkWithSurah != null) {
+                    PageBookmarkItem(
+                        pageBookmarkWithSurah = pageBookmarkWithSurah,
+                        isArabic = isArabic(),
+                        onClick = { onPageClick(pageBookmarkWithSurah) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PageBookmarkItem(
+    pageBookmarkWithSurah: PageBookmarkWithSurah,
+    isArabic: Boolean,
+    onClick: () -> Unit
+) {
+    val pageBookmark = pageBookmarkWithSurah.pageBookmark
+    val surah = pageBookmarkWithSurah.surah
+    
+    ResourceCard(
+        title = stringResource(R.string.page_number, pageBookmark.pageNumber),
+        subtitle = if (isArabic) surah.arabicName else surah.transliteratedName,
+        resourceNumber = if (isArabic) pageBookmark.pageNumber.toArabicNumbers() else pageBookmark.pageNumber.toString()
+    ) {
+        onClick()
     }
 }
 
@@ -248,7 +286,7 @@ fun BookmarksScreenPreviewArabic() {
 private fun BookmarksScreenPreview(previewData: Flow<PagingData<AyahWithSurah>>) {
     BookmarksScreen(
         bookmarkedAyahs = previewData.collectAsLazyPagingItems(),
-
+        bookmarkedPagesWithSurah = previewPageBookmarksWithSurahData().collectAsLazyPagingItems()
         )
 }
 
@@ -265,4 +303,23 @@ fun previewAyahBookmarksData(): Flow<PagingData<AyahWithSurah>> {
     )
 
     return flowOf(PagingData.from(previewAyahs))
+}
+
+fun previewPageBookmarksWithSurahData(): Flow<PagingData<PageBookmarkWithSurah>> {
+    val previewPagesWithSurah = listOf(
+        PageBookmarkWithSurah(
+            PageBookmark(1, 1),
+            Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1)
+        ),
+        PageBookmarkWithSurah(
+            PageBookmark(2, 255),
+            Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2)
+        ),
+        PageBookmarkWithSurah(
+            PageBookmark(3, 604),
+            Surah(114, "سورة الناس", "Suratul Nas", true, 6, 604)
+        )
+    )
+
+    return flowOf(PagingData.from(previewPagesWithSurah))
 }

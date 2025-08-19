@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.util.*
 
 @Database(
-    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class],
+    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class, PageBookmark::class],
     version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
@@ -48,6 +48,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun adhkaarItemDao(): AdhkaarItemDao
 
     abstract fun appSettingsDao(): AppSettingsDao
+
+    abstract fun pageBookmarkDao(): PageBookmarkDao
 
     fun closeDB() {
         INSTANCE?.close()
@@ -273,6 +275,18 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 """)
 
                 database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_adhkaar_chapters_chapter_id` ON `adhkaar_chapters` (`chapter_id`)")
+
+                // Create page_bookmarks table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS page_bookmarks (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        page_number INTEGER NOT NULL,
+                        created_at INTEGER NOT NULL,
+                        note TEXT
+                    )
+                """)
+
+                database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_page_bookmarks_page_number` ON `page_bookmarks` (`page_number`)")
 
             }
         }

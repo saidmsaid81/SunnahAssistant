@@ -95,17 +95,22 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             val highlightOverlay: HighlightOverlayView? = quranReaderBinding?.viewPager
                 ?.findViewWithTag("overlay_$position")
             highlightOverlay?.clearHighlights()
+            updateBookmarkIconForCurrentPage()
         }
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.quran_reader_menu, menu)
+        updateBookmarkIcon(menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.translations -> {
                 findNavController().navigate(R.id.pageTranslationFragment)
+            }
+            R.id.bookmark -> {
+                toggleCurrentPageBookmark()
             }
         }
         return true
@@ -366,5 +371,29 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 )
             }
         }
+    }
+
+    private fun toggleCurrentPageBookmark() {
+        val currentPageNumber = (quranReaderBinding?.viewPager?.currentItem ?: 0) + 1
+        lifecycleScope.launch {
+            viewmodel.togglePageBookmark(currentPageNumber)
+            updateBookmarkIconForCurrentPage()
+        }
+    }
+
+    private fun updateBookmarkIcon(menu: Menu) {
+        lifecycleScope.launch {
+            val currentPageNumber = (quranReaderBinding?.viewPager?.currentItem ?: 0) + 1
+            val isBookmarked = viewmodel.isPageBookmarked(currentPageNumber)
+            val bookmarkIcon = if (isBookmarked) R.drawable.ic_bookmark_filled else R.drawable.ic_bookmark
+            menu.findItem(R.id.bookmark)?.setIcon(bookmarkIcon)
+        }
+    }
+
+    private fun updateBookmarkIconForCurrentPage() {
+        val activity = activity as? MainActivity
+        val toolbar = activity?.findViewById<Toolbar>(R.id.toolbar)
+        val menu = toolbar?.menu
+        menu?.let { updateBookmarkIcon(it) }
     }
 }

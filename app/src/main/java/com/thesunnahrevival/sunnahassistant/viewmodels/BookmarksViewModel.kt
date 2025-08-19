@@ -8,6 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
+import com.thesunnahrevival.sunnahassistant.data.model.PageBookmarkWithSurah
 import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -30,5 +31,9 @@ class BookmarksViewModel(application: Application) : AndroidViewModel(applicatio
                 bookmarksRepository.getBookmarkedAyahs()
             }
         ).flow.cachedIn(viewModelScope)
+    }
+
+    fun getBookmarkedPagesWithSurah(): Flow<PagingData<PageBookmarkWithSurah>> {
+        return bookmarksRepository.getBookmarkedPagesWithSurah().cachedIn(viewModelScope)
     }
 }

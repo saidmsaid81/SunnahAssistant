@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranPageRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import java.io.FileOutputStream
 class QuranReaderViewModel(application: Application) : AndroidViewModel(application) {
 
     private val quranPageRepository = QuranPageRepository.getInstance(getApplication())
+    private val bookmarksRepository = BookmarksRepository.getInstance(getApplication())
 
     private var _lines = listOf<Line>()
     val lines: List<Line>
@@ -55,4 +57,8 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     suspend fun isHideDownloadFilePrompt() = quranPageRepository.isHideDownloadFilePrompt()
+
+    suspend fun isPageBookmarked(pageNumber: Int) = bookmarksRepository.isPageBookmarked(pageNumber)
+
+    suspend fun togglePageBookmark(pageNumber: Int) = bookmarksRepository.togglePageBookmark(pageNumber)
 }
