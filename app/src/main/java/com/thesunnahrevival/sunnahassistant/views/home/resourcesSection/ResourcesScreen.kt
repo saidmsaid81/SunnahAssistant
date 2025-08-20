@@ -87,10 +87,22 @@ fun ResourcesScreen(
                     }
                 )
 
+                // Quran Training Text
+                resourcesUIState.currentQuranTrainingStep?.let { step ->
+                    TrainingInfoText(
+                        message = stringResource(step.messageResId),
+                        isVisible = true
+                    )
+                }
+
                 if (hasFinishedLoading) {
                     Column {
                         surahs.forEachIndexed { index, surah ->
-                            SurahItem(surah, isArabic(), onSurahPin) {
+                            SurahItem(
+                                surah,
+                                isArabic(),
+                                onSurahPin
+                            ) {
                                 surahItemOnClick(surah)
                             }
 
@@ -141,10 +153,24 @@ fun ResourcesScreen(
                     }
                 )
 
+                // Adhkaar Training Text
+                resourcesUIState.currentAdhkaarTrainingStep?.let { step ->
+                    TrainingInfoText(
+                        message = stringResource(step.messageResId),
+                        isVisible = true
+                    )
+                }
+
                 if (hasFinishedLoading) {
                     Column {
                         adhkaarChapters.forEachIndexed { index, adhkaarChapter ->
-                            AdhkaarChapterItem(adhkaarChapter, isArabic(), onAdhkaarChapterPin) {
+                            AdhkaarChapterItem(
+                                adhkaarChapter = adhkaarChapter,
+                                isArabic = isArabic(),
+                                onAdhkaarChapterPin = { chapterId ->
+                                    onAdhkaarChapterPin?.invoke(chapterId)
+                                }
+                            ) {
                                 adhkaarChapterOnClick(adhkaarChapter)
                             }
 

@@ -427,6 +427,10 @@
     <string name="share_all">Share All</string>
     <string name="large">Large</string>
     <string name="small">Small</string>
+    <string name="training_tap_to_read_quran">Tap a Surah to Read Quran</string>
+    <string name="training_double_tap_to_pin_surah">Double Tap to pin a Surah</string>
+    <string name="training_tap_to_read_adhkaar">Tap a Chapter to Read Adhkaar</string>
+    <string name="training_double_tap_to_pin_adhkaar">Double Tap to pin a Chapter</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

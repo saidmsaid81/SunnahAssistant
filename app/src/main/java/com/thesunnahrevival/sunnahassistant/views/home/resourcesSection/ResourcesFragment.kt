@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.TrainingSection
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository.PinResult
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel
@@ -36,8 +37,9 @@ class ResourcesFragment : MenuBarFragment() {
                     findNavController = findNavController(),
                     resourcesUIState = uiState,
                     surahItemOnClick = { surah ->
-                        findNavController().navigate(R.id.quranReaderFragment)
                         mainActivityViewModel.updateCurrentPage(surah.startPage)
+                        viewModel.onTrainingActionCompleted(TrainingSection.QURAN_RESOURCE_SECTION)
+                        findNavController().navigate(R.id.quranReaderFragment)
                     },
                     onSurahPin = { surahId ->
                         viewModel.toggleSurahPin(surahId) { result ->
@@ -53,6 +55,7 @@ class ResourcesFragment : MenuBarFragment() {
                                 }
                             }
                         }
+                        viewModel.onTrainingActionCompleted(TrainingSection.QURAN_RESOURCE_SECTION)
                     },
                     onQuranBookmarksClick = {
                         findNavController().navigate(R.id.to_bookmarks_fragment)
@@ -61,6 +64,7 @@ class ResourcesFragment : MenuBarFragment() {
                         findNavController().navigate(R.id.adhkaarBookmarksFragment)
                     },
                     adhkaarChapterOnClick = { adhkaarChapter ->
+                        viewModel.onTrainingActionCompleted(TrainingSection.ADHKAAR_RESOURCE_SECTION)
                         val action = ResourcesFragmentDirections
                             .toAdhkaarReaderFragment(adhkaarChapter.chapterId)
                         findNavController().navigate(action)
@@ -79,6 +83,7 @@ class ResourcesFragment : MenuBarFragment() {
                                 }
                             }
                         }
+                        viewModel.onTrainingActionCompleted(TrainingSection.ADHKAAR_RESOURCE_SECTION)
                     }
                 )
             }

@@ -3,12 +3,11 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
-import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.TrainingInfoRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class ResourcesViewModel(application: Application) : AndroidViewModel(application), AdhkaarChapterPinnable, SurahPinnable {
+class ResourcesViewModel(application: Application) : AndroidViewModel(application), AdhkaarChapterPinnable,
+    SurahPinnable {
     private val repository: ResourcesRepository =
         ResourcesRepository.getInstance(application)
 
@@ -26,6 +26,9 @@ class ResourcesViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val adhkaarChapterRepository: AdhkaarChapterRepository =
         AdhkaarChapterRepository.getInstance(application)
+
+    private val trainingInfoRepository: TrainingInfoRepository =
+        TrainingInfoRepository.getInstance(application)
 
     private val pinHelper = PinHelper(this, adhkaarChapterRepository, surahRepository)
 
@@ -60,6 +63,7 @@ class ResourcesViewModel(application: Application) : AndroidViewModel(applicatio
                     )
                 }.collect { newState ->
                     _uiState.value = newState
+                    loadTrainingSteps()
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
@@ -91,6 +95,25 @@ class ResourcesViewModel(application: Application) : AndroidViewModel(applicatio
     override fun toggleSurahPin(surahId: Int, onResult: (SurahRepository.PinResult) -> Unit) {
         pinHelper.toggleSurahPin(surahId, onResult)
     }
+
+    private fun loadTrainingSteps() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val nextQuranStep = trainingInfoRepository.getNextTrainingStep(TrainingSection.QURAN_RESOURCE_SECTION)
+            val nextAdhkaarStep = trainingInfoRepository.getNextTrainingStep(TrainingSection.ADHKAAR_RESOURCE_SECTION)
+
+            _uiState.value = _uiState.value.copy(
+                currentQuranTrainingStep = nextQuranStep,
+                currentAdhkaarTrainingStep = nextAdhkaarStep
+            )
+        }
+    }
+
+    fun onTrainingActionCompleted(section: TrainingSection) {
+        viewModelScope.launch(Dispatchers.IO) {
+            trainingInfoRepository.completeCurrentTrainingStep(section)
+            loadTrainingSteps()
+        }
+    }
 }
 
 data class ResourcesUIState(
@@ -99,5 +122,7 @@ data class ResourcesUIState(
     val lastReadSurah: Surah? = null,
     val resourceItems: List<ResourceItem> = emptyList(),
     val adhkaarChapters: List<AdhkaarChapter> = emptyList(),
-    val error: String? = null
+    val error: String? = null,
+    val currentQuranTrainingStep: TrainingStep? = null,
+    val currentAdhkaarTrainingStep: TrainingStep? = null
 )
