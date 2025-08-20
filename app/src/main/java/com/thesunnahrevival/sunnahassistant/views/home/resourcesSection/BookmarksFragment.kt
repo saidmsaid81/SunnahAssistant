@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -28,9 +29,12 @@ import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.BookmarksViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BookmarksFragment : SunnahAssistantFragment() {
 
@@ -55,8 +59,16 @@ class BookmarksFragment : SunnahAssistantFragment() {
                     bookmarkedPagesWithSurah = bookmarkedPagesWithSurah,
                     firstVisiblePosition = bookmarksViewModel.firstVisiblePosition,
                     onAyahClick = { ayahWithSurah ->
-                        mainActivityViewModel.setSelectedAyahId(ayahWithSurah.ayah.id)
-                        findNavController().navigate(R.id.quranReaderFragment)
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val pageNumber = bookmarksViewModel.getPageNumberByAyahId(ayahWithSurah.ayah.id)
+                            withContext(Dispatchers.Main) {
+                                pageNumber?.let { mainActivityViewModel.updateCurrentPage(it) }
+                                findNavController().navigate(R.id.quranReaderFragment)
+                                mainActivityViewModel.setSelectedAyahId(ayahWithSurah.ayah.id)
+
+                            }
+                        }
+
                     },
                     onPageClick = { pageBookmarkWithSurah ->
                         mainActivityViewModel.updateCurrentPage(pageBookmarkWithSurah.pageBookmark.pageNumber)

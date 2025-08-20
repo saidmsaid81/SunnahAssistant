@@ -71,4 +71,7 @@ class BookmarksRepository private constructor(
             pageBookmarkDao.insertPageBookmark(PageBookmark(pageNumber = pageNumber))
         }
     }
+
+    suspend fun getPageNumberByAyahId(ayahId: Int): Int? = ayahDao.getPageNumberByAyahId(ayahId)
+
 }

@@ -81,4 +81,7 @@ interface AyahDao {
 
     @Query("SELECT * FROM ayahs WHERE bookmarked = 1 ORDER BY surah_id, number")
     fun getBookmarkedAyahs(): PagingSource<Int, AyahWithSurah>
+
+    @Query("SELECT page_number FROM lines WHERE ayah_id = :ayahId LIMIT 1")
+    suspend fun getPageNumberByAyahId(ayahId: Int): Int?
 }

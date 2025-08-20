@@ -11,7 +11,9 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -40,6 +42,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     private var lastTouchX: Float = 0f
     private var lastTouchY: Float = 0f
 
+    private var isAyahTranslationShowing = false
+
     private val viewmodel by viewModels<QuranReaderViewModel>()
 
     private lateinit var quranPageAdapter: QuranPageAdapter
@@ -56,7 +60,6 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
 
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
-        val currentPage = mainActivityViewModel.getCurrentQuranPage()
 
         quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
         val viewPager = quranReaderBinding?.viewPager
@@ -206,6 +209,12 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 requireActivity().supportFragmentManager,
                 "download_files_from_timeout"
             )
+        }
+    }
+
+    override fun onPageLoaded(pageNumber: Int) {
+        if ((pageNumber - 1) == quranReaderBinding?.viewPager?.currentItem) {
+            mainActivityViewModel.refreshSelectedAyahId()
         }
     }
 
@@ -363,8 +372,19 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             highlightOverlay?.clearHighlights()
             highlightOverlay?.setHighlightCoordinates(coordinates)
 
-            if (requireActivity().supportFragmentManager.findFragmentByTag("ayah_translation") == null) {
+            if (!isAyahTranslationShowing &&
+                requireActivity().supportFragmentManager.findFragmentByTag("ayah_translation") == null) {
+                
+                isAyahTranslationShowing = true
                 val fragment = AyahTranslationFragment()
+                
+                fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                    override fun onDestroy(owner: LifecycleOwner) {
+                        isAyahTranslationShowing = false
+                        fragment.lifecycle.removeObserver(this)
+                    }
+                })
+                
                 fragment.show(
                     requireActivity().supportFragmentManager,
                     "ayah_translation"

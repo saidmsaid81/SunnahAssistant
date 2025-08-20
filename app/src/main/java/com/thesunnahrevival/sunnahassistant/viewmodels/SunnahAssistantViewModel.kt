@@ -78,7 +78,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     val navBarHeight = MutableLiveData(0)
 
     private val _selectedAyahId: MutableLiveData<Int?> = MutableLiveData()
-    val selectedAyahId = _selectedAyahId
+    val selectedAyahId: LiveData<Int?> = _selectedAyahId
 
     private var _currentQuranPage: Int? = null
     val selectedSurah: MutableLiveData<Surah> = MutableLiveData()

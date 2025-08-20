@@ -9,4 +9,5 @@ interface QuranPageInteractionListener {
     fun setLastTouchCoordinates(x: Float, y: Float)
     fun onPageNotFound(pageNumber: Int)
     fun onDownloadAllPagesRequested()
+    fun onPageLoaded(pageNumber: Int)
 }

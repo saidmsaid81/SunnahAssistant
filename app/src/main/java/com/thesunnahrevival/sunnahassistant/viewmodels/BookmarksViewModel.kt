@@ -36,4 +36,7 @@ class BookmarksViewModel(application: Application) : AndroidViewModel(applicatio
     fun getBookmarkedPagesWithSurah(): Flow<PagingData<PageBookmarkWithSurah>> {
         return bookmarksRepository.getBookmarkedPagesWithSurah().cachedIn(viewModelScope)
     }
+
+    suspend fun getPageNumberByAyahId(ayahId: Int): Int? = bookmarksRepository.getPageNumberByAyahId(ayahId)
+
 }
