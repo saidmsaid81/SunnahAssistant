@@ -12,7 +12,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Tip
 import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentTipsBinding
-import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import com.thesunnahrevival.sunnahassistant.views.adapters.TipsAdapter
 import java.net.MalformedURLException
 
@@ -37,7 +37,7 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = TipsAdapter(this)
-        val tips = arrayListOf<Tip>()
+        val tips = arrayListOf(getDonationAppeal())
 
         templateToDos = mainActivityViewModel.getTemplateToDos()
 
@@ -75,7 +75,7 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
         )
             tips.add(
                 Tip(
-                    -900,
+                    TIP_PRAYER_TIME_ALERTS_ID,
                     getString(R.string.prayer_time_alerts),
                     R.drawable.ic_mosque,
                     "",
@@ -84,6 +84,36 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
                 )
             )
         return tips
+    }
+
+    private fun getDonationAppeal(): Tip {
+        val donationAppeals = listOf(
+            Tip(
+                TIP_UNRWA_GAZA_APPEAL_ID,
+                "UNRWA Gaza Appeal",
+                R.drawable.heart,
+                "https://donate.unrwa.org/int/en/gaza",
+                null,
+                null
+            ),
+            Tip(
+                TIP_PRCS_PALESTINE_APPEAL_ID,
+                "PRCS Palestine Appeal",
+                R.drawable.heart,
+                "https://www.palestinercs.org/en/Donation",
+                null,
+                null
+            ),
+            Tip(
+                TIP_ISLAMIC_RELIEF_GAZA_APPEAL_ID,
+                "Islamic Relief Gaza Appeal",
+                R.drawable.heart,
+                "https://www.islamic-relief.org.uk/giving/appeals/palestine/gaza/",
+                null,
+                null
+            )
+        )
+        return donationAppeals.random()
     }
 
     override fun onSetupClickListener(launchFragment: Int, toDoId: Int?) {
