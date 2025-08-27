@@ -407,6 +407,8 @@
     <string name="no_bookmarked_pages">لا توجد صفحات مضافة إلى العلامات المرجعية</string>
     <string name="page_number">صفحة %1$d</string>
     <string name="quran_page">صفحة القرآن</string>
+    <string name="search">بحث</string>
+    <string name="search_chapter_or_category">ابحث حسب اسم الفصل أو الفئة</string>
 
     <string-array name="categories">
         <item>غير مصنف</item>

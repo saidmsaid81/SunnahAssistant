@@ -24,6 +24,8 @@ class AdhkaarChapterRepository private constructor(
 
     fun getAllChapters(language: String) = adhkaarChapterDao.getAllChaptersPagingSource(language)
 
+    fun searchChapters(language: String, query: String) = adhkaarChapterDao.getChaptersByQuery(language, query)
+
     fun getFirstThreeChapters(language: String) = adhkaarChapterDao.getFirstThreeChapters(language)
 
     suspend fun toggleChapterPin(chapterId: Int): PinResult {

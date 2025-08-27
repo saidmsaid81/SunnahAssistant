@@ -43,7 +43,7 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 AdhkaarChapterListScreen(
-                    adhkaarChapters = viewModel.getAllAdhkaarChapters().collectAsLazyPagingItems(),
+                    adhkaarChapters = viewModel.chaptersFlow.collectAsLazyPagingItems(),
                     firstVisiblePosition = viewModel.firstVisiblePosition,
                     onScroll = { index -> viewModel.firstVisiblePosition = index },
                     onAdhkaarChapterClick = { adhkaarChapter ->
@@ -72,7 +72,22 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.bookmark_menu, menu)
+        menuInflater.inflate(R.menu.adhkaar_chapter_list_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+        searchView.queryHint = getString(R.string.search_chapter_or_category)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.setSearchQuery(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setSearchQuery(newText)
+                return true
+            }
+        })
     }
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
