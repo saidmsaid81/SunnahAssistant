@@ -58,7 +58,7 @@
 
   <fragment
       android:id="@+id/bookmarksFragment"
-      android:name="com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.BookmarksFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranBookmarksFragment"
       android:label="@string/bookmarks">
   </fragment>
 

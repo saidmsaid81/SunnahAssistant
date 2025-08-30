@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
+package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -28,6 +28,7 @@ import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.BookmarksViewModel
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceCard
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +37,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BookmarksFragment : SunnahAssistantFragment() {
+class QuranBookmarksFragment : SunnahAssistantFragment() {
 
     private val bookmarksViewModel: BookmarksViewModel by viewModels()
 
@@ -51,7 +52,7 @@ class BookmarksFragment : SunnahAssistantFragment() {
             setContent {
                 val bookmarkedAyahs =
                     bookmarksViewModel.getBookmarkedAyahs().collectAsLazyPagingItems()
-                val bookmarkedPagesWithSurah = 
+                val bookmarkedPagesWithSurah =
                     bookmarksViewModel.getBookmarkedPagesWithSurah().collectAsLazyPagingItems()
 
                 BookmarksScreen(
@@ -98,16 +99,16 @@ fun BookmarksScreen(
 
     SunnahAssistantTheme {
         Surface(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(start = 16.dp, end = 16.dp)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.Companion.fillMaxSize()) {
                 // Tab Row
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.Companion.fillMaxWidth(),
                     backgroundColor = MaterialTheme.colors.surface
                 ) {
                     tabs.forEachIndexed { index, title ->
@@ -158,16 +159,16 @@ private fun AyahBookmarksTab(
     if (bookmarkedAyahs.itemCount == 0) {
         Text(
             text = stringResource(R.string.no_bookmarked_ayahs),
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxWidth()
                 .padding(16.dp),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Companion.Center,
             style = MaterialTheme.typography.body2
         )
     } else {
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize()
                 .padding(top = 16.dp)
         ) {
@@ -200,15 +201,15 @@ private fun PageBookmarksTab(
     if (bookmarkedPagesWithSurah.itemCount == 0) {
         Text(
             text = stringResource(R.string.no_bookmarked_pages),
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxWidth()
                 .padding(16.dp),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Companion.Center,
             style = MaterialTheme.typography.body2
         )
     } else {
         LazyColumn(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize()
                 .padding(top = 16.dp)
         ) {
@@ -240,7 +241,7 @@ private fun PageBookmarkItem(
 ) {
     val pageBookmark = pageBookmarkWithSurah.pageBookmark
     val surah = pageBookmarkWithSurah.surah
-    
+
     ResourceCard(
         title = stringResource(R.string.page_number, pageBookmark.pageNumber),
         subtitle = if (isArabic) surah.arabicName else surah.transliteratedName,
@@ -314,7 +315,7 @@ fun previewAyahBookmarksData(): Flow<PagingData<AyahWithSurah>> {
         )
     )
 
-    return flowOf(PagingData.from(previewAyahs))
+    return flowOf(PagingData.Companion.from(previewAyahs))
 }
 
 fun previewPageBookmarksWithSurahData(): Flow<PagingData<PageBookmarkWithSurah>> {
@@ -333,5 +334,5 @@ fun previewPageBookmarksWithSurahData(): Flow<PagingData<PageBookmarkWithSurah>>
         )
     )
 
-    return flowOf(PagingData.from(previewPagesWithSurah))
+    return flowOf(PagingData.Companion.from(previewPagesWithSurah))
 }

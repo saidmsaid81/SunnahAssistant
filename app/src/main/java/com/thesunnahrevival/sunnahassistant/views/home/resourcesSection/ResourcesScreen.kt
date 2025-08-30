@@ -31,6 +31,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesUIState
+import com.thesunnahrevival.sunnahassistant.views.utilities.TrainingInfoText
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay

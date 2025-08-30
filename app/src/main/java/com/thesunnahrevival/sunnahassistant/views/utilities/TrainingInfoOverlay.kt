@@ -1,4 +1,4 @@
-package com.thesunnahrevival.sunnahassistant.views.home.resourcesSection
+package com.thesunnahrevival.sunnahassistant.views.utilities
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun TrainingInfoText(
     message: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.Companion,
     isVisible: Boolean = true,
 ) {
     if (isVisible) {
@@ -24,15 +24,15 @@ fun TrainingInfoText(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Companion.Center
         ) {
             Text(
                 text = message,
                 style = MaterialTheme.typography.body2.copy(
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Companion.Normal
                 ),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Companion.Center,
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
             )
         }
