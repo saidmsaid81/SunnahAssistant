@@ -39,4 +39,7 @@ interface SurahDao {
 
     @Query("SELECT MAX(pin_order) FROM surahs WHERE pin_order IS NOT NULL")
     suspend fun getMaxPinOrder(): Int?
+
+    @Query("SELECT * FROM surahs WHERE arabic_name LIKE :query OR transliterated_name LIKE :query ORDER BY CASE WHEN pin_order IS NULL THEN 1 ELSE 0 END, pin_order ASC, id ASC")
+    fun searchSurahs(query: String): PagingSource<Int, Surah>
 }

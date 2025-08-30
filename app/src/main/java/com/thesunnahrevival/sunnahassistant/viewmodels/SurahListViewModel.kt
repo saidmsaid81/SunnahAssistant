@@ -9,7 +9,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 
 open class SurahListViewModel(application: Application) : AndroidViewModel(application), SurahPinnable {
     private val repository =
@@ -18,18 +19,38 @@ open class SurahListViewModel(application: Application) : AndroidViewModel(appli
     private val pinHelper = PinHelper(this, surahRepository = repository)
 
     var firstVisiblePosition = 0
-    fun getAllSurahs(): Flow<PagingData<Surah>> {
-        return Pager(
-            PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 40,
-                enablePlaceholders = true,
-                initialLoadSize = firstVisiblePosition + 20
-            ),
-            pagingSourceFactory = {
-                repository.getAllSurahs()
-            }
-        ).flow.cachedIn(viewModelScope)
+
+    private val searchQuery = MutableStateFlow<String?>(null)
+
+    @OptIn(FlowPreview::class)
+    val surahsFlow: Flow<PagingData<Surah>> = searchQuery
+        .map { it?.trim().orEmpty() }
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            Pager(
+                PagingConfig(
+                    pageSize = 20,
+                    prefetchDistance = 40,
+                    enablePlaceholders = true,
+                    initialLoadSize = firstVisiblePosition + 20
+                ),
+                pagingSourceFactory = {
+                    if (query.isBlank()) {
+                        repository.getAllSurahs()
+                    } else {
+                        val q = "%$query%"
+                        repository.searchSurahs(q)
+                    }
+                }
+            ).flow
+        }
+        .cachedIn(viewModelScope)
+
+    fun setSearchQuery(query: String?) {
+        if (firstVisiblePosition != 0) {
+            firstVisiblePosition = 0
+        }
+        searchQuery.value = query
     }
 
     override fun toggleSurahPin(surahId: Int, onResult: (SurahRepository.PinResult) -> Unit) {

@@ -24,6 +24,8 @@ class SurahRepository private constructor(
 
     fun getAllSurahs() = surahDao.getAllSurahs()
 
+    fun searchSurahs(query: String) = surahDao.searchSurahs(query)
+
     fun getFirst3Surahs() = surahDao.getFirst3Surahs()
 
     suspend fun getSurahByPage(page: Int) = surahDao.getSurahByPage(page)

@@ -434,6 +434,7 @@
     <string name="donate">Donate</string>
     <string name="search">Search</string>
     <string name="search_chapter_or_category">Search by chapter or category</string>
+    <string name="search_surah">Search surah</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

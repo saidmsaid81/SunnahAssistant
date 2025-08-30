@@ -41,7 +41,7 @@ class SurahListFragment : MenuBarFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SurahListScreen(
-                    surahs = viewModel.getAllSurahs().collectAsLazyPagingItems(),
+                    surahs = viewModel.surahsFlow.collectAsLazyPagingItems(),
                     firstVisiblePosition = viewModel.firstVisiblePosition,
                     onScroll = { index -> viewModel.firstVisiblePosition = index },
                     onSurahClick = { surah ->
@@ -71,7 +71,22 @@ class SurahListFragment : MenuBarFragment() {
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.bookmark_menu, menu)
+        menuInflater.inflate(R.menu.surah_list_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+        searchView.queryHint = getString(R.string.search_surah)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.setSearchQuery(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setSearchQuery(newText)
+                return true
+            }
+        })
     }
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
