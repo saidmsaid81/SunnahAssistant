@@ -19,7 +19,7 @@ import java.time.LocalDate
 import java.util.*
 
 @Database(
-    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class, PageBookmark::class],
+    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class, PageBookmark::class, AyahBookmark::class],
     version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
@@ -50,6 +50,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun appSettingsDao(): AppSettingsDao
 
     abstract fun pageBookmarkDao(): PageBookmarkDao
+
+    abstract fun ayahBookmarkDao(): AyahBookmarkDao
 
     fun closeDB() {
         INSTANCE?.close()
@@ -245,7 +247,6 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `arabicTextFontSize` INTEGER DEFAULT 18")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `translationTextFontSize` INTEGER DEFAULT 16")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `footnoteTextFontSize` INTEGER DEFAULT 12")
-                database.execSQL("ALTER TABLE ayahs ADD COLUMN `bookmarked` INTEGER DEFAULT 0")
                 database.execSQL("ALTER TABLE surahs ADD COLUMN `pin_order` INTEGER")
 
                 // Create adhkaar_chapters table
@@ -287,6 +288,15 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 """)
 
                 database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_page_bookmarks_page_number` ON `page_bookmarks` (`page_number`)")
+                
+                // Create ayah_bookmarks table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS ayah_bookmarks (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        ayah_id INTEGER NOT NULL,
+                        FOREIGN KEY(ayah_id) REFERENCES ayahs(id) ON DELETE CASCADE
+                    )
+                """)
 
             }
         }

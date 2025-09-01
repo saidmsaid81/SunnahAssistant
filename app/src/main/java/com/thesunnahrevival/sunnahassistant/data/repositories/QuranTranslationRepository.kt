@@ -5,10 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.data.local.*
-import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.data.model.Footnote
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
-import com.thesunnahrevival.sunnahassistant.data.model.toGroupedFullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
@@ -43,14 +40,25 @@ class QuranTranslationRepository private constructor(
     private val ayahTranslationDao: AyahTranslationDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).ayahTranslationDao()
 
+    private val ayahBookmarkDao: AyahBookmarkDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).ayahBookmarkDao()
+
     private val resourceApiRestApi = retrofit.create(ResourceApiInterface::class.java)
 
     private var resourcesLink: String? = null
 
     fun getTranslations() = translationDao.getTranslations()
 
-    suspend fun updateAyahBookmarkStatus(ayahId: Int, bookmarked: Boolean) {
-        ayahDao.updateAyahBookmarkStatus(ayahId, bookmarked)
+    suspend fun toggleAyahBookmarkStatus(ayahId: Int) {
+        val ayahBookmark = ayahBookmarkDao.getAyahBookmark(ayahId)
+        when {
+            ayahBookmark != null -> {
+                ayahBookmarkDao.delete(ayahBookmark)
+            }
+            else -> {
+                ayahBookmarkDao.insert(AyahBookmark(ayahId = ayahId))
+            }
+        }
     }
 
     suspend fun updateTranslation(translation: Translation): Boolean {

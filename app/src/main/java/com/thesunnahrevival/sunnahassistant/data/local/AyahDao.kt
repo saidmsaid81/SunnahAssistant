@@ -1,7 +1,10 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.thesunnahrevival.sunnahassistant.data.model.Ayah
 import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
 import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetailsRaw
@@ -16,7 +19,7 @@ interface AyahDao {
             "a.number AS ayah_number, " +
             "a.surah_id AS ayah_surah_id, " +
             "a.arabic_text AS ayah_arabic_text, " +
-            "a.bookmarked AS ayah_bookmarked, " +
+            "ab.id IS NOT NULL AS ayah_bookmarked, " +
             "at.id AS ayah_translation_id, " +
             "at.translation_id AS ayah_translation_translation_id, " +
             "at.text AS ayah_translation_text, " +
@@ -37,6 +40,7 @@ interface AyahDao {
             "FROM ayahs a " +
             "LEFT JOIN ayah_translations at ON at.ayah_id = a.id AND at.translation_id IN (SELECT id FROM translations WHERE selected = 1) " +
             "LEFT JOIN translations t ON t.id = at.translation_id " +
+            "LEFT JOIN ayah_bookmarks ab ON ab.ayah_id = a.id " +
             "JOIN surahs s ON s.id = a.surah_id " +
             "WHERE a.id = :ayahId")
     suspend fun getFullAyahDetailsById(ayahId: Int): List<FullAyahDetailsRaw>
@@ -47,7 +51,7 @@ interface AyahDao {
                 "a.number AS ayah_number, " +
                 "a.surah_id AS ayah_surah_id, " +
                 "a.arabic_text AS ayah_arabic_text, " +
-                "a.bookmarked AS ayah_bookmarked, " +
+                "ab.id IS NOT NULL AS ayah_bookmarked, " +
                 "at.id AS ayah_translation_id, " +
                 "at.translation_id AS ayah_translation_translation_id, " +
                 "at.text AS ayah_translation_text, " +
@@ -68,23 +72,24 @@ interface AyahDao {
                 "FROM ayahs a " +
                 "LEFT JOIN ayah_translations at ON at.ayah_id = a.id AND at.translation_id IN (SELECT id FROM translations WHERE selected = 1) " +
                 "LEFT JOIN translations t ON t.id = at.translation_id " +
+                "LEFT JOIN ayah_bookmarks ab ON ab.ayah_id = a.id " +
                 "JOIN surahs s ON s.id = a.surah_id " +
                 "WHERE a.id IN (SELECT l.ayah_id FROM lines l WHERE l.page_number = :pageNumber) ORDER BY t.`order` ASC"
     )
     suspend fun getFullAyahDetailsByPageNumber(pageNumber: Int): List<FullAyahDetailsRaw>
 
-    @Update
-    suspend fun updateAyah(ayah: Ayah)
 
-    @Query("UPDATE ayahs SET bookmarked = :bookmarked WHERE id = :ayahId")
-    suspend fun updateAyahBookmarkStatus(ayahId: Int, bookmarked: Boolean)
-
-    @Query("SELECT * FROM ayahs WHERE bookmarked = 1 ORDER BY surah_id, number")
+    @Query("SELECT * FROM ayahs " +
+            "JOIN ayah_bookmarks ab ON ab.ayah_id = ayahs.id " +
+            "ORDER BY surah_id, number")
     fun getBookmarkedAyahs(): PagingSource<Int, AyahWithSurah>
 
     @Query("SELECT page_number FROM lines WHERE ayah_id = :ayahId LIMIT 1")
     suspend fun getPageNumberByAyahId(ayahId: Int): Int?
 
-    @Query("SELECT * FROM ayahs a JOIN surahs s ON a.surah_id = s.id WHERE a.bookmarked = 1 AND (s.arabic_name LIKE :query OR s.transliterated_name LIKE :query OR a.arabic_text LIKE :query) ORDER BY a.surah_id, a.number")
+    @Query("SELECT * FROM ayahs a " +
+            "JOIN ayah_bookmarks ab ON ab.ayah_id = a.id " +
+            "JOIN surahs s ON a.surah_id = s.id " +
+            "WHERE (s.arabic_name LIKE :query OR s.transliterated_name LIKE :query OR a.arabic_text LIKE :query) ORDER BY a.surah_id, a.number")
     fun searchBookmarkedAyahs(query: String): PagingSource<Int, AyahWithSurah>
 }

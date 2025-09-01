@@ -641,8 +641,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     suspend fun toggleAyahBookmark(ayah: Ayah, updateSelectedAyahId: Boolean = false) {
-        val newBookmarkStatus = !ayah.bookmarked
-        quranTranslationRepository.updateAyahBookmarkStatus(ayah.id, newBookmarkStatus)
+        quranTranslationRepository.toggleAyahBookmarkStatus(ayah.id)
         if (updateSelectedAyahId) {
             withContext(Dispatchers.Main) {
                 _selectedAyahId.value = ayah.id
