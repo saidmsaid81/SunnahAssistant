@@ -3,6 +3,7 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,6 +58,7 @@ class QuranBookmarksFragment : MenuBarFragment() {
                     bookmarkedAyahs = bookmarkedAyahs,
                     bookmarkedPagesWithSurah = bookmarkedPagesWithSurah,
                     firstVisiblePosition = bookmarksViewModel.firstVisiblePosition,
+                    tabIndex = mainActivityViewModel.quranBookmarksSelectedTabIndex,
                     onAyahClick = { ayahWithSurah ->
                         lifecycleScope.launch(Dispatchers.IO) {
                             val pageNumber = bookmarksViewModel.getPageNumberByAyahId(ayahWithSurah.ayah.id)
@@ -73,11 +75,30 @@ class QuranBookmarksFragment : MenuBarFragment() {
                         mainActivityViewModel.updateCurrentPage(pageBookmarkWithSurah.pageBookmark.pageNumber)
                         findNavController().navigate(R.id.quranReaderFragment)
                     },
-                    onScroll = { index -> bookmarksViewModel.firstVisiblePosition = index }
+                    onScroll = { index -> bookmarksViewModel.firstVisiblePosition = index },
+                    onSwitchingTabs = { tabIndex ->  mainActivityViewModel.quranBookmarksSelectedTabIndex = tabIndex }
                 )
             }
         }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    mainActivityViewModel.quranBookmarksSelectedTabIndex = 0
+                    remove()
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        )
+    }
+
+
+
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.quran_bookmarks_menu, menu)
@@ -110,13 +131,19 @@ fun BookmarksScreen(
     firstVisiblePosition: Int = 0,
     onAyahClick: (ayah: AyahWithSurah) -> Unit = {},
     onPageClick: (pageBookmarkWithSurah: PageBookmarkWithSurah) -> Unit = {},
-    onScroll: (Int) -> Unit = {}
+    tabIndex: Int = 0,
+    onScroll: (Int) -> Unit = {},
+    onSwitchingTabs: (Int) -> Unit = {}
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by remember { mutableIntStateOf(tabIndex) }
     val tabs = listOf(
         stringResource(R.string.ayahs),
         stringResource(R.string.pages)
     )
+
+    LaunchedEffect(selectedTabIndex) {
+        onSwitchingTabs(selectedTabIndex)
+    }
 
     SunnahAssistantTheme {
         Surface(

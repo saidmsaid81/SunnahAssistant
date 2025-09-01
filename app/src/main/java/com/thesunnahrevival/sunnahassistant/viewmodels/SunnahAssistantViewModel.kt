@@ -11,6 +11,9 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
@@ -82,6 +85,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     private var _currentQuranPage: Int? = null
     val selectedSurah: MutableLiveData<Surah> = MutableLiveData()
+
+    var quranBookmarksSelectedTabIndex by mutableIntStateOf(0)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
