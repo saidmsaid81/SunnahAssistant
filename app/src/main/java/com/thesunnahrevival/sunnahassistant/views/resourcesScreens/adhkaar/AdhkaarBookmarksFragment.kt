@@ -1,9 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,10 +24,10 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarBookmarksViewModel
-import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceCard
 
-class AdhkaarBookmarksFragment : SunnahAssistantFragment() {
+class AdhkaarBookmarksFragment : MenuBarFragment() {
 
     private val viewModel: AdhkaarBookmarksViewModel by viewModels()
 
@@ -42,7 +40,7 @@ class AdhkaarBookmarksFragment : SunnahAssistantFragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                val bookmarks by viewModel.getBookmarkedItems().collectAsState(initial = emptyList())
+                val bookmarks by viewModel.bookmarkedItemsFlow.collectAsState(initial = emptyList())
                 AdhkaarBookmarksScreen(
                     items = bookmarks,
                     onClick = { item ->
@@ -55,6 +53,29 @@ class AdhkaarBookmarksFragment : SunnahAssistantFragment() {
                 )
             }
         }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.adhkaar_bookmarks_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+        searchView.queryHint = getString(R.string.search_adhkaar_bookmarks)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.setSearchQuery(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.setSearchQuery(newText)
+                return true
+            }
+        })
+    }
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        return super.onMenuItemSelected(item)
     }
 }
 

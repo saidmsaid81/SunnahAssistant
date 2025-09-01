@@ -7,6 +7,7 @@ import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarChapterDao
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarItemDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
+import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.flow.Flow
@@ -69,8 +70,12 @@ class AdhkaarItemRepository private constructor(
         adhkaarItemDao.updateBookmarkStatus(itemId, bookmarked)
     }
 
-    fun getBookmarkedAdhkaarData(language: String): Flow<List<com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData>> {
+    fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarData>> {
         return adhkaarItemDao.getBookmarkedAdhkaarData(language)
+    }
+
+    fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarData>> {
+        return adhkaarItemDao.searchBookmarkedAdhkaarData(language, query)
     }
 
 }

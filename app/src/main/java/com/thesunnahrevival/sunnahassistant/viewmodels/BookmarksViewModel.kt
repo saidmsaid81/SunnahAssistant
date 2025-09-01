@@ -10,7 +10,8 @@ import androidx.paging.cachedIn
 import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
 import com.thesunnahrevival.sunnahassistant.data.model.PageBookmarkWithSurah
 import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 
 class BookmarksViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,25 +19,53 @@ class BookmarksViewModel(application: Application) : AndroidViewModel(applicatio
 
     var firstVisiblePosition = 0
 
+    private val searchQuery = MutableStateFlow<String?>(null)
 
-    fun getBookmarkedAyahs(): Flow<PagingData<AyahWithSurah>> {
-        return Pager(
-            PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 40,
-                enablePlaceholders = true,
-                initialLoadSize = firstVisiblePosition + 20
-            ),
-            pagingSourceFactory = {
-                bookmarksRepository.getBookmarkedAyahs()
+    @OptIn(FlowPreview::class)
+    val bookmarkedAyahsFlow: Flow<PagingData<AyahWithSurah>> = searchQuery
+        .map { it?.trim().orEmpty() }
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            Pager(
+                PagingConfig(
+                    pageSize = 20,
+                    prefetchDistance = 40,
+                    enablePlaceholders = true,
+                    initialLoadSize = firstVisiblePosition + 20
+                ),
+                pagingSourceFactory = {
+                    if (query.isBlank()) {
+                        bookmarksRepository.getBookmarkedAyahs()
+                    } else {
+                        val q = "%$query%"
+                        bookmarksRepository.searchBookmarkedAyahs(q)
+                    }
+                }
+            ).flow
+        }
+        .cachedIn(viewModelScope)
+
+    @OptIn(FlowPreview::class)
+    val bookmarkedPagesFlow: Flow<PagingData<PageBookmarkWithSurah>> = searchQuery
+        .map { it?.trim().orEmpty() }
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                bookmarksRepository.getBookmarkedPagesWithSurah()
+            } else {
+                val q = "%$query%"
+                bookmarksRepository.searchBookmarkedPagesWithSurah(q)
             }
-        ).flow.cachedIn(viewModelScope)
-    }
-
-    fun getBookmarkedPagesWithSurah(): Flow<PagingData<PageBookmarkWithSurah>> {
-        return bookmarksRepository.getBookmarkedPagesWithSurah().cachedIn(viewModelScope)
-    }
+        }
+        .cachedIn(viewModelScope)
 
     suspend fun getPageNumberByAyahId(ayahId: Int): Int? = bookmarksRepository.getPageNumberByAyahId(ayahId)
+
+    fun setSearchQuery(query: String?) {
+        if (firstVisiblePosition != 0) {
+            firstVisiblePosition = 0
+        }
+        searchQuery.value = query
+    }
 
 }

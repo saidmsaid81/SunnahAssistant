@@ -5,13 +5,29 @@ import androidx.lifecycle.AndroidViewModel
 import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarItemRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 
 class AdhkaarBookmarksViewModel(application: Application) : AndroidViewModel(application) {
     private val repo = AdhkaarItemRepository.getInstance(application)
 
-    fun getBookmarkedItems(): Flow<List<BookmarkedAdhkaarData>> {
-        val language = if (getLocale().language.equals("ar", ignoreCase = true)) "ar" else "en"
-        return repo.getBookmarkedAdhkaarData(language)
+    private val searchQuery = MutableStateFlow<String?>(null)
+
+    @OptIn(FlowPreview::class)
+    val bookmarkedItemsFlow: Flow<List<BookmarkedAdhkaarData>> = searchQuery
+        .map { it?.trim().orEmpty() }
+        .distinctUntilChanged()
+        .flatMapLatest { query ->
+            val language = if (getLocale().language.equals("ar", ignoreCase = true)) "ar" else "en"
+            if (query.isBlank()) {
+                repo.getBookmarkedAdhkaarData(language)
+            } else {
+                val q = "%$query%"
+                repo.searchBookmarkedAdhkaarData(language, q)
+            }
+        }
+
+    fun setSearchQuery(query: String?) {
+        searchQuery.value = query
     }
 }

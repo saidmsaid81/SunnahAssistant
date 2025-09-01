@@ -40,6 +40,8 @@ class BookmarksRepository private constructor(
 
     fun getBookmarkedAyahs() = ayahDao.getBookmarkedAyahs()
 
+    fun searchBookmarkedAyahs(query: String) = ayahDao.searchBookmarkedAyahs(query)
+
 
     fun getBookmarkedPagesWithSurah(): Flow<PagingData<PageBookmarkWithSurah>> {
         return Pager(
@@ -51,6 +53,26 @@ class BookmarksRepository private constructor(
             ),
             pagingSourceFactory = {
                 pageBookmarkDao.getAllPageBookmarks()
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { pageBookmark ->
+                val surah = surahDao.getSurahByPage(pageBookmark.pageNumber) 
+                    ?: throw IllegalStateException("No Surah found for page ${pageBookmark.pageNumber}")
+                PageBookmarkWithSurah(pageBookmark, surah)
+            }
+        }
+    }
+
+    fun searchBookmarkedPagesWithSurah(query: String): Flow<PagingData<PageBookmarkWithSurah>> {
+        return Pager(
+            PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 40,
+                enablePlaceholders = true,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = {
+                pageBookmarkDao.searchPageBookmarks(query)
             }
         ).flow.map { pagingData ->
             pagingData.map { pageBookmark ->

@@ -2,9 +2,7 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,7 +25,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.*
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.BookmarksViewModel
-import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
+import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceCard
 import com.thesunnahrevival.sunnahassistant.views.utilities.isArabic
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +35,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class QuranBookmarksFragment : SunnahAssistantFragment() {
+class QuranBookmarksFragment : MenuBarFragment() {
 
     private val bookmarksViewModel: BookmarksViewModel by viewModels()
 
@@ -51,9 +49,9 @@ class QuranBookmarksFragment : SunnahAssistantFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val bookmarkedAyahs =
-                    bookmarksViewModel.getBookmarkedAyahs().collectAsLazyPagingItems()
+                    bookmarksViewModel.bookmarkedAyahsFlow.collectAsLazyPagingItems()
                 val bookmarkedPagesWithSurah =
-                    bookmarksViewModel.getBookmarkedPagesWithSurah().collectAsLazyPagingItems()
+                    bookmarksViewModel.bookmarkedPagesFlow.collectAsLazyPagingItems()
 
                 BookmarksScreen(
                     bookmarkedAyahs = bookmarkedAyahs,
@@ -79,6 +77,29 @@ class QuranBookmarksFragment : SunnahAssistantFragment() {
                 )
             }
         }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.quran_bookmarks_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as androidx.appcompat.widget.SearchView
+        searchView.queryHint = getString(R.string.search_bookmarks)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                bookmarksViewModel.setSearchQuery(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                bookmarksViewModel.setSearchQuery(newText)
+                return true
+            }
+        })
+    }
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        return super.onMenuItemSelected(item)
     }
 }
 

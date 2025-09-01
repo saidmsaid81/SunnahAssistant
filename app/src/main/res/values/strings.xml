@@ -435,6 +435,8 @@
     <string name="search">Search</string>
     <string name="search_chapter_or_category">Search by chapter or category</string>
     <string name="search_surah">Search surah</string>
+    <string name="search_bookmarks">Search bookmarks</string>
+    <string name="search_adhkaar_bookmarks">Search adhkaar bookmarks</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

@@ -84,4 +84,7 @@ interface AyahDao {
 
     @Query("SELECT page_number FROM lines WHERE ayah_id = :ayahId LIMIT 1")
     suspend fun getPageNumberByAyahId(ayahId: Int): Int?
+
+    @Query("SELECT * FROM ayahs a JOIN surahs s ON a.surah_id = s.id WHERE a.bookmarked = 1 AND (s.arabic_name LIKE :query OR s.transliterated_name LIKE :query OR a.arabic_text LIKE :query) ORDER BY a.surah_id, a.number")
+    fun searchBookmarkedAyahs(query: String): PagingSource<Int, AyahWithSurah>
 }
