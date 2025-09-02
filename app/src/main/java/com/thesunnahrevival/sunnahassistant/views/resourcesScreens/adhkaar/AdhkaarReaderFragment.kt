@@ -165,7 +165,7 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                                                     stringResource(R.string.reference) + ": ${adhkaarItem.reference}",
                                             bookmarked = adhkaarItem.bookmarked,
                                             onBookmarkClick = {
-                                                viewModel.toggleBookmark(adhkaarItem.itemId, adhkaarItem.bookmarked)
+                                                viewModel.toggleBookmark(adhkaarItem.itemId)
                                             },
                                             arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
                                             translationTextFontSize = settings?.translationTextFontSize ?: 16,

@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -34,6 +35,15 @@ data class AdhkaarItem(
     @SerializedName("reference")
     val reference: String?,
 
-    @ColumnInfo(name = "bookmarked")
+    @Ignore
     val bookmarked: Boolean = false
-) : Serializable
+) : Serializable {
+    constructor(
+            id: Int,
+            itemId: Int,
+            language: String,
+            itemTranslation: String,
+            chapterId: Int,
+            reference: String?,
+    ) : this(id, itemId, language, itemTranslation, chapterId, reference, false)
+}

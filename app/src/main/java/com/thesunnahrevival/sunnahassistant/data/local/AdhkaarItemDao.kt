@@ -5,41 +5,21 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
-import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
+import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItemWithBookmark
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AdhkaarItemDao {
-    @Query("SELECT * FROM adhkaar_items WHERE chapter_id = :chapterId")
-    fun getAdhkaarItemsByChapterId(chapterId: Int): Flow<List<AdhkaarItem>>
+    @Query("SELECT a.*, " +
+            "CASE WHEN aib.id IS NOT NULL THEN 1 ELSE 0 END AS bookmarked " +
+            "FROM adhkaar_items a " +
+            "LEFT JOIN adhkaar_item_bookmarks aib ON aib.adhkaar_item_id = a.item_id " +
+            "WHERE a.chapter_id = :chapterId")
+    fun getAdhkaarItemsByChapterId(chapterId: Int): Flow<List<AdhkaarItemWithBookmark>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM adhkaar_items)")
     suspend fun doesAdhkaarItemsExist(): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(adhkaarItems: List<AdhkaarItem>)
-
-    @Query("UPDATE adhkaar_items SET bookmarked = :bookmarked WHERE item_id = :itemId")
-    suspend fun updateBookmarkStatus(itemId: Int, bookmarked: Boolean)
-
-    @Query("""
-        SELECT ai.chapter_id as chapterId, ac.chapter_name as chapterName, 
-               ai.item_id as itemId, ai.item_translation as itemTranslation
-        FROM adhkaar_items ai
-        JOIN adhkaar_chapters ac ON ai.chapter_id = ac.chapter_id 
-        WHERE ai.bookmarked = 1 AND ai.language = :language AND ac.language = :language
-        ORDER BY ai.chapter_id, ai.item_id
-    """)
-    fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarData>>
-
-    @Query("""
-        SELECT ai.chapter_id as chapterId, ac.chapter_name as chapterName, 
-               ai.item_id as itemId, ai.item_translation as itemTranslation
-        FROM adhkaar_items ai
-        JOIN adhkaar_chapters ac ON ai.chapter_id = ac.chapter_id 
-        WHERE ai.bookmarked = 1 AND ai.language = :language AND ac.language = :language
-        AND (ac.chapter_name LIKE :query OR ai.item_translation LIKE :query OR ai.item_translation LIKE :query)
-        ORDER BY ai.chapter_id, ai.item_id
-    """)
-    fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarData>>
 }

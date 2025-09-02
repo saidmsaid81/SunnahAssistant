@@ -19,7 +19,11 @@ import java.time.LocalDate
 import java.util.*
 
 @Database(
-    entities = [ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class, Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class, PageBookmark::class, AyahBookmark::class],
+    entities = [
+        ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class,
+        Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class,
+        PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class
+   ],
     version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
@@ -52,6 +56,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun pageBookmarkDao(): PageBookmarkDao
 
     abstract fun ayahBookmarkDao(): AyahBookmarkDao
+    abstract fun adhkaarItemBookmarkDao(): AdhkaarItemBookmarkDao
 
     fun closeDB() {
         INSTANCE?.close()
@@ -296,6 +301,14 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         ayah_id INTEGER NOT NULL,
                         FOREIGN KEY(ayah_id) REFERENCES ayahs(id) ON DELETE CASCADE
                     )
+                """)
+
+                // Create adhkaar_item_bookmarks table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS adhkaar_item_bookmarks (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        adhkaar_item_id INTEGER NOT NULL
+                )
                 """)
 
             }

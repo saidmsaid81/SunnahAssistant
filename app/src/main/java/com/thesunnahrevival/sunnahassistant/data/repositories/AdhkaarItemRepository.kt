@@ -4,13 +4,16 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarChapterDao
+import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarItemBookmarkDao
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarItemDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
+import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItemBookmark
 import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class AdhkaarItemRepository private constructor(
     private val applicationContext: Context
@@ -32,6 +35,9 @@ class AdhkaarItemRepository private constructor(
 
     private val adhkaarChapterDao: AdhkaarChapterDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).adhkaarChapterDao()
+
+    private val adhkaarItemBookmarkDao: AdhkaarItemBookmarkDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).adhkaarItemBookmarkDao()
 
     private val resourceApiRestApi = retrofit.create(ResourceApiInterface::class.java)
 
@@ -61,21 +67,38 @@ class AdhkaarItemRepository private constructor(
     }
 
     fun getAdhkaarItemsByChapterId(chapterId: Int): Flow<List<AdhkaarItem>> {
-        return adhkaarItemDao.getAdhkaarItemsByChapterId(chapterId)
+        return adhkaarItemDao.getAdhkaarItemsByChapterId(chapterId).map { itemsWithBookmark ->
+            itemsWithBookmark.map { itemWithBookmark ->
+                AdhkaarItem(
+                    id = itemWithBookmark.item.id,
+                    itemId = itemWithBookmark.item.itemId,
+                    language = itemWithBookmark.item.language,
+                    itemTranslation = itemWithBookmark.item.itemTranslation,
+                    chapterId = itemWithBookmark.item.chapterId,
+                    reference = itemWithBookmark.item.reference,
+                    bookmarked = itemWithBookmark.bookmarked
+                )
+            }
+        }
     }
 
     suspend fun getChapterNameByChapterId(id: Int, language: String) = adhkaarChapterDao.getChapterNameByChapterId(id, language)
 
-    suspend fun updateBookmarkStatus(itemId: Int, bookmarked: Boolean) {
-        adhkaarItemDao.updateBookmarkStatus(itemId, bookmarked)
+    suspend fun toggleBookmark(itemId: Int) {
+        val adhkaarItemBookmark = adhkaarItemBookmarkDao.getAdhkaarItemBookmark(itemId)
+        if (adhkaarItemBookmark != null) {
+            adhkaarItemBookmarkDao.delete(adhkaarItemBookmark)
+        } else {
+            adhkaarItemBookmarkDao.insert(AdhkaarItemBookmark(adhkaarItemId = itemId))
+        }
     }
 
     fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarData>> {
-        return adhkaarItemDao.getBookmarkedAdhkaarData(language)
+        return adhkaarItemBookmarkDao.getBookmarkedAdhkaarData(language)
     }
 
     fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarData>> {
-        return adhkaarItemDao.searchBookmarkedAdhkaarData(language, query)
+        return adhkaarItemBookmarkDao.searchBookmarkedAdhkaarData(language, query)
     }
 
 }

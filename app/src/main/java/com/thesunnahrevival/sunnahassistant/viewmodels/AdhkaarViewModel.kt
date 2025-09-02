@@ -36,9 +36,9 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         return adhkaarItemRepository.getChapterNameByChapterId(id, getLocale().language)
     }
 
-    fun toggleBookmark(itemId: Int, currentBookmarkStatus: Boolean) {
+    fun toggleBookmark(itemId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            adhkaarItemRepository.updateBookmarkStatus(itemId, !currentBookmarkStatus)
+            adhkaarItemRepository.toggleBookmark(itemId)
         }
     }
     
