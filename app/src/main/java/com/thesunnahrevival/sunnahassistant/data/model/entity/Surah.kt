@@ -1,0 +1,39 @@
+package com.thesunnahrevival.sunnahassistant.data.model.entity
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import java.io.Serializable
+
+@Entity(tableName = "surahs")
+data class Surah(
+    @PrimaryKey val id: Int,
+
+    @ColumnInfo(name = "arabic_name")
+    val arabicName: String,
+
+    @ColumnInfo(name = "transliterated_name")
+    val transliteratedName: String,
+
+    @ColumnInfo(name = "is_makki")
+    val isMakki: Boolean,
+
+    @ColumnInfo(name = "verse_count")
+    val verseCount: Int,
+
+    @ColumnInfo(name = "start_page")
+    val startPage: Int,
+
+    @Ignore
+    var pinOrder: Int? = null
+) : Serializable {
+    constructor(
+            id: Int,
+            arabicName: String,
+            transliteratedName: String,
+            isMakki: Boolean,
+            verseCount: Int,
+            startPage: Int
+    ) : this(id, arabicName, transliteratedName, isMakki, verseCount, startPage, null)
+}

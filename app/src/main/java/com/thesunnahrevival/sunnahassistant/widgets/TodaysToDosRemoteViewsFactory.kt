@@ -8,8 +8,8 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.*
 import java.lang.Integer.parseInt
 import java.time.LocalDate

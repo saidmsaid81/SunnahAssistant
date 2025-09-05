@@ -22,7 +22,11 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.dto.PageBookmarkWithSurah
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.AyahWithSurahEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Ayah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PageBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.BookmarksViewModel
@@ -126,10 +130,10 @@ class QuranBookmarksFragment : MenuBarFragment() {
 
 @Composable
 fun BookmarksScreen(
-    bookmarkedAyahs: LazyPagingItems<AyahWithSurah>,
+    bookmarkedAyahs: LazyPagingItems<AyahWithSurahEmbedded>,
     bookmarkedPagesWithSurah: LazyPagingItems<PageBookmarkWithSurah>,
     firstVisiblePosition: Int = 0,
-    onAyahClick: (ayah: AyahWithSurah) -> Unit = {},
+    onAyahClick: (ayah: AyahWithSurahEmbedded) -> Unit = {},
     onPageClick: (pageBookmarkWithSurah: PageBookmarkWithSurah) -> Unit = {},
     tabIndex: Int = 0,
     onScroll: (Int) -> Unit = {},
@@ -189,9 +193,9 @@ fun BookmarksScreen(
 
 @Composable
 private fun AyahBookmarksTab(
-    bookmarkedAyahs: LazyPagingItems<AyahWithSurah>,
+    bookmarkedAyahs: LazyPagingItems<AyahWithSurahEmbedded>,
     firstVisiblePosition: Int = 0,
-    onAyahClick: (ayahWithSurah: AyahWithSurah) -> Unit,
+    onAyahClick: (ayahWithSurahEmbedded: AyahWithSurahEmbedded) -> Unit,
     onScroll: (Int) -> Unit
 ) {
     val lazyListState = rememberLazyListState(initialFirstVisibleItemIndex = firstVisiblePosition)
@@ -344,20 +348,20 @@ fun BookmarksScreenPreviewArabic() {
 }
 
 @Composable
-private fun BookmarksScreenPreview(previewData: Flow<PagingData<AyahWithSurah>>) {
+private fun BookmarksScreenPreview(previewData: Flow<PagingData<AyahWithSurahEmbedded>>) {
     BookmarksScreen(
         bookmarkedAyahs = previewData.collectAsLazyPagingItems(),
         bookmarkedPagesWithSurah = previewPageBookmarksWithSurahData().collectAsLazyPagingItems()
         )
 }
 
-fun previewAyahBookmarksData(): Flow<PagingData<AyahWithSurah>> {
+fun previewAyahBookmarksData(): Flow<PagingData<AyahWithSurahEmbedded>> {
     val previewAyahs = listOf(
-        AyahWithSurah(
+        AyahWithSurahEmbedded(
             ayah = Ayah(1, 1, 1, "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", true),
             surah = Surah(1, "سورة الفاتحة", "Suratul Fatiha", true, 7, 1)
         ),
-        AyahWithSurah(
+        AyahWithSurahEmbedded(
             ayah = Ayah(255, 255, 2, "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", true),
             surah = Surah(2, "سورة البقرة", "Suratul Baqarah", false, 286, 2)
         )

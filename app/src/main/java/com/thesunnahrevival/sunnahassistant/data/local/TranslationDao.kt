@@ -1,11 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import androidx.room.*
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import kotlinx.coroutines.flow.Flow
 
 @Dao

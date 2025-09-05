@@ -4,8 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.thesunnahrevival.sunnahassistant.data.model.AyahTranslation
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AyahTranslation
 
 @Dao
 interface AyahTranslationDao {

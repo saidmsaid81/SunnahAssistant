@@ -38,7 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AyahTranslationViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel

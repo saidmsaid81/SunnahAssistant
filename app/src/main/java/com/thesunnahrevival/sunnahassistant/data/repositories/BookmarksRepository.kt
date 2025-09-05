@@ -9,8 +9,8 @@ import com.thesunnahrevival.sunnahassistant.data.local.AyahDao
 import com.thesunnahrevival.sunnahassistant.data.local.PageBookmarkDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
-import com.thesunnahrevival.sunnahassistant.data.model.PageBookmark
-import com.thesunnahrevival.sunnahassistant.data.model.PageBookmarkWithSurah
+import com.thesunnahrevival.sunnahassistant.data.model.dto.PageBookmarkWithSurah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PageBookmark
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

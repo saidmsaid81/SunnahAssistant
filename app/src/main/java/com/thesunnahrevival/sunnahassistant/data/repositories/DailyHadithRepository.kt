@@ -5,10 +5,10 @@ import androidx.paging.PagingSource
 import com.prof18.rssparser.RssParser
 import com.thesunnahrevival.sunnahassistant.data.local.DailyHadithDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
+import com.thesunnahrevival.sunnahassistant.data.model.entity.DailyHadith
 import com.thesunnahrevival.sunnahassistant.utilities.THE_SUNNAH_REVIVAL_RSS_FEED
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 class DailyHadithRepository private constructor(private val applicationContext: Context) {
 

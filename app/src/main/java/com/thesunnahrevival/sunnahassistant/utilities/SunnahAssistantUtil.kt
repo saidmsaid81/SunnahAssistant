@@ -11,7 +11,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.dto.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget

@@ -1,6 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.remote
 
-import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.dto.GeocodingData
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

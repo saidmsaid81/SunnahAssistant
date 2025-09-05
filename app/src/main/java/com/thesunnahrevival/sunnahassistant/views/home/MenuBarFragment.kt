@@ -14,7 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openDeveloperPage
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore

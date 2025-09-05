@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.copyToClipboard
 import com.thesunnahrevival.sunnahassistant.utilities.shareText

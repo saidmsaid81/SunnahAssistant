@@ -14,8 +14,8 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
+import com.thesunnahrevival.sunnahassistant.data.model.dto.NotificationSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.updateToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups

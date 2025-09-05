@@ -5,8 +5,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapterWithPin
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.AdhkaarChapterWithPinEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarChapter
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,7 +25,7 @@ interface AdhkaarChapterDao {
         ORDER BY CASE WHEN pac.pin_order IS NULL THEN 1 ELSE 0 END, pac.pin_order ASC, ac.chapter_id ASC 
         LIMIT 3
     """)
-    fun getFirstThreeChapters(language: String): Flow<List<AdhkaarChapterWithPin>>
+    fun getFirstThreeChapters(language: String): Flow<List<AdhkaarChapterWithPinEmbedded>>
 
     @Query("""
         SELECT *
@@ -34,7 +34,7 @@ interface AdhkaarChapterDao {
         WHERE ac.language = :language 
         ORDER BY CASE WHEN pac.pin_order IS NULL THEN 1 ELSE 0 END, pac.pin_order ASC, ac.chapter_id ASC
     """)
-    fun getAllChaptersPagingSource(language: String): PagingSource<Int, AdhkaarChapterWithPin>
+    fun getAllChaptersPagingSource(language: String): PagingSource<Int, AdhkaarChapterWithPinEmbedded>
 
     @Query("""
         SELECT * 
@@ -43,7 +43,7 @@ interface AdhkaarChapterDao {
         WHERE ac.language = :language AND (ac.chapter_name LIKE :query OR ac.category_name LIKE :query) 
         ORDER BY CASE WHEN pac.pin_order IS NULL THEN 1 ELSE 0 END, pac.pin_order ASC, ac.chapter_id ASC
     """)
-    fun getChaptersByQuery(language: String, query: String): PagingSource<Int, AdhkaarChapterWithPin>
+    fun getChaptersByQuery(language: String, query: String): PagingSource<Int, AdhkaarChapterWithPinEmbedded>
 
     @Query("SELECT chapter_name FROM adhkaar_chapters WHERE chapter_id = :id AND language = :language")
     suspend fun getChapterNameByChapterId(id: Int, language: String): String?

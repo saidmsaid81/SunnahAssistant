@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.viewmodels.QuranReaderViewModel

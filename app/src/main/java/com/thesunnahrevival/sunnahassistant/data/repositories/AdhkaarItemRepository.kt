@@ -7,9 +7,9 @@ import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarChapterDao
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarItemBookmarkDao
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarItemDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItemBookmark
-import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.BookmarkedAdhkaarDataEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItem
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItemBookmark
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
 import kotlinx.coroutines.flow.Flow
@@ -93,11 +93,11 @@ class AdhkaarItemRepository private constructor(
         }
     }
 
-    fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarData>> {
+    fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarDataEmbedded>> {
         return adhkaarItemBookmarkDao.getBookmarkedAdhkaarData(language)
     }
 
-    fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarData>> {
+    fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarDataEmbedded>> {
         return adhkaarItemBookmarkDao.searchBookmarkedAdhkaarData(language, query)
     }
 

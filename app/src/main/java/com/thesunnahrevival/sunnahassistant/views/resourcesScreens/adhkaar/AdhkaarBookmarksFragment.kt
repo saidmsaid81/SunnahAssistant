@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.BookmarkedAdhkaarDataEmbedded
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarBookmarksViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
@@ -81,8 +81,8 @@ class AdhkaarBookmarksFragment : MenuBarFragment() {
 
 @Composable
 private fun AdhkaarBookmarksScreen(
-    items: List<BookmarkedAdhkaarData>,
-    onClick: (BookmarkedAdhkaarData) -> Unit
+    items: List<BookmarkedAdhkaarDataEmbedded>,
+    onClick: (BookmarkedAdhkaarDataEmbedded) -> Unit
 ) {
     SunnahAssistantTheme {
         Surface(

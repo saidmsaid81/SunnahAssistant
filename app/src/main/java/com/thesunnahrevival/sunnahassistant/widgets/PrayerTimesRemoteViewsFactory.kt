@@ -8,13 +8,9 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.utilities.TEXT_COLOR
-import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
-import com.thesunnahrevival.sunnahassistant.utilities.getDayDate
-import com.thesunnahrevival.sunnahassistant.utilities.getMonthNumber
-import com.thesunnahrevival.sunnahassistant.utilities.getYear
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import java.time.LocalDate
 
 class PrayerTimesRemoteViewsFactory(

@@ -3,7 +3,7 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItem
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItem
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarItemRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers

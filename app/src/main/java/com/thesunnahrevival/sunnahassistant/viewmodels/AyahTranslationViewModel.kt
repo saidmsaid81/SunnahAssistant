@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.model.Footnote
-import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.dto.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Footnote
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

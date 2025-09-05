@@ -26,9 +26,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentTodayBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.TreeSet
+import java.util.*
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 

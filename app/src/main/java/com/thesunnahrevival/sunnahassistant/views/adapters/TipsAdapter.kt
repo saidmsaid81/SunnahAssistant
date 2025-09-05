@@ -11,8 +11,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Tip
-import com.thesunnahrevival.sunnahassistant.data.model.TipDiffCallBack
+import com.thesunnahrevival.sunnahassistant.data.model.dto.Tip
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TipDiffCallBack
 import com.thesunnahrevival.sunnahassistant.utilities.DONATION_APPEALS
 import com.thesunnahrevival.sunnahassistant.utilities.isValidUrl
 

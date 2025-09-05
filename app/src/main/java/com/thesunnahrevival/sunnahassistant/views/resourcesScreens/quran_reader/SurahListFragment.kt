@@ -21,8 +21,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
-import com.thesunnahrevival.sunnahassistant.data.model.SurahWithPin
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.SurahWithPinEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
@@ -103,7 +103,7 @@ class SurahListFragment : MenuBarFragment() {
 
 @Composable
 private fun SurahListScreen(
-    surahsWithPins: LazyPagingItems<SurahWithPin>,
+    surahsWithPins: LazyPagingItems<SurahWithPinEmbedded>,
     firstVisiblePosition: Int,
     onScroll: (Int) -> Unit,
     onSurahClick: (Surah) -> Unit,

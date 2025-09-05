@@ -1,7 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.listeners
 
 import android.view.View
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 
 interface ToDoItemInteractionListener {
     fun onMarkAsComplete(userInitiated: Boolean, isChecked: Boolean?, toDo: ToDo)

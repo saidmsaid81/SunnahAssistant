@@ -5,7 +5,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.data.local.*
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.dto.toGroupedFullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AyahBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AyahTranslation
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Footnote
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.data.remote.ResourceApiInterface
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit

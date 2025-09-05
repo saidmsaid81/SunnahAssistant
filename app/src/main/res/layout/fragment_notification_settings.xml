@@ -8,11 +8,11 @@
     <import type="android.os.Build.VERSION_CODES" />
     <variable
         name="settings"
-        type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings"
+        type="com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings"
         />
     <variable
         name="notificationSettings"
-        type="com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings"
+        type="com.thesunnahrevival.sunnahassistant.data.model.dto.NotificationSettings"
         />
 
   </data>

@@ -5,13 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.liveData
+import androidx.paging.*
+import com.thesunnahrevival.sunnahassistant.data.model.entity.DailyHadith
 import com.thesunnahrevival.sunnahassistant.data.repositories.DailyHadithRepository
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

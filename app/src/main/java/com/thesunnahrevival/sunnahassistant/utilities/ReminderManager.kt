@@ -13,15 +13,13 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
 import androidx.annotation.RequiresApi
-import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
-import java.util.Calendar
-import java.util.GregorianCalendar
-import java.util.TimeZone
 import androidx.core.net.toUri
+import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
+import com.thesunnahrevival.sunnahassistant.receivers.ToDoBroadcastReceiver
+import java.util.*
 
 class ReminderManager private constructor() {
 

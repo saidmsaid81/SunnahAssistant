@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
-import com.thesunnahrevival.sunnahassistant.data.model.ResourceItem
-import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ResourceItem
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.toArabicNumbers
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesUIState

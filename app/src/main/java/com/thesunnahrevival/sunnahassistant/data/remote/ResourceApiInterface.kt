@@ -1,6 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.remote
 
-import com.thesunnahrevival.sunnahassistant.data.model.ResourceLinks
+import com.thesunnahrevival.sunnahassistant.data.model.dto.ResourceLinks
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET

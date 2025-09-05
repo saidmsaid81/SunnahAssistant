@@ -7,7 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.thesunnahrevival.sunnahassistant.data.model.SurahWithPin
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.SurahWithPinEmbedded
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -23,7 +23,7 @@ open class SurahListViewModel(application: Application) : AndroidViewModel(appli
     private val searchQuery = MutableStateFlow<String?>(null)
 
     @OptIn(FlowPreview::class)
-    val surahsFlow: Flow<PagingData<SurahWithPin>> = searchQuery
+    val surahsFlow: Flow<PagingData<SurahWithPinEmbedded>> = searchQuery
         .map { it?.trim().orEmpty() }
         .distinctUntilChanged()
         .flatMapLatest { query ->

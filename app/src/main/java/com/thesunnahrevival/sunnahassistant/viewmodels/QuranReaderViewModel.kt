@@ -3,7 +3,7 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.model.Line
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranPageRepository
 import kotlinx.coroutines.Dispatchers

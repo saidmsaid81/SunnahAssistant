@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 
 class MalformedToDosAdapter(private val listener: MalformedToDoInteractionListener) :
     RecyclerView.Adapter<MalformedToDosAdapter.ViewHolder>() {

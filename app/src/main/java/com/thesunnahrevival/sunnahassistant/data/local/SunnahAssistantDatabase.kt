@@ -6,7 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.entity.*
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP

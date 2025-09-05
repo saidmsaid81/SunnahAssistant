@@ -7,7 +7,7 @@
     <import type="android.view.View" />
     <variable
         name="settings"
-        type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings"
+        type="com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings"
         />
 
   </data>

@@ -5,7 +5,7 @@ import androidx.paging.PagingSource
 import com.thesunnahrevival.sunnahassistant.data.local.PinnedSurahDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
-import com.thesunnahrevival.sunnahassistant.data.model.PinnedSurah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PinnedSurah
 import kotlinx.coroutines.flow.map
 
 class SurahRepository private constructor(

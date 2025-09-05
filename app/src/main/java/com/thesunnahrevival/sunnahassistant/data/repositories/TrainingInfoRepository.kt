@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.thesunnahrevival.sunnahassistant.data.model.TrainingSection
-import com.thesunnahrevival.sunnahassistant.data.model.TrainingStep
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TrainingSection
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TrainingStep
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 

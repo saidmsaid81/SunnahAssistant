@@ -3,7 +3,11 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TrainingSection
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TrainingStep
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ResourceItem
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository

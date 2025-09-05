@@ -22,8 +22,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapterWithPin
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.AdhkaarChapterWithPinEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarChapter
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarChapterListViewModel
@@ -103,7 +103,7 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
 }
 @Composable
 private fun AdhkaarChapterListScreen(
-    adhkaarChaptersWithPin: LazyPagingItems<AdhkaarChapterWithPin>,
+    adhkaarChaptersWithPin: LazyPagingItems<AdhkaarChapterWithPinEmbedded>,
     firstVisiblePosition: Int,
     onScroll: (Int) -> Unit,
     onAdhkaarChapterClick: (AdhkaarChapter) -> Unit,

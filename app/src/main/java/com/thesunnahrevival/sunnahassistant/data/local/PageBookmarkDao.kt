@@ -2,7 +2,7 @@ package com.thesunnahrevival.sunnahassistant.data.local
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.thesunnahrevival.sunnahassistant.data.model.PageBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PageBookmark
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.*
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.entity.*
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

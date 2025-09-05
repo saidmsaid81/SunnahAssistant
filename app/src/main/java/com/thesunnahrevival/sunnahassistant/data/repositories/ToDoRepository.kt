@@ -7,11 +7,11 @@ import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
-import com.thesunnahrevival.sunnahassistant.data.model.PrayerTimeCalculator
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
+import com.thesunnahrevival.sunnahassistant.data.model.dto.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.dto.PrayerTimeCalculator
+import com.thesunnahrevival.sunnahassistant.data.model.dto.ToDoDate
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.remote.GeocodingInterface
 import com.thesunnahrevival.sunnahassistant.utilities.generateLocalDatefromDate
 import com.thesunnahrevival.sunnahassistant.utilities.retrofit
@@ -20,9 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.time.LocalDate
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
+import java.util.*
 
 
 class SunnahAssistantRepository private constructor(private val applicationContext: Context) {

@@ -34,7 +34,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
 import com.thesunnahrevival.sunnahassistant.utilities.*
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel

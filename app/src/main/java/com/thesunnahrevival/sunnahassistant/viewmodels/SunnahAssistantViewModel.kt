@@ -17,7 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import androidx.paging.*
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.*
+import com.thesunnahrevival.sunnahassistant.data.model.dto.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.entity.*
 import com.thesunnahrevival.sunnahassistant.data.repositories.*
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository.Companion.getInstance
 import com.thesunnahrevival.sunnahassistant.utilities.*

@@ -10,11 +10,10 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
+import com.thesunnahrevival.sunnahassistant.data.model.entity.DailyHadith
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
-import java.util.Date
-import java.util.GregorianCalendar
+import java.util.*
 
 class DailyHadithAdapter(private val showHijriDate: Boolean) : PagingDataAdapter<DailyHadith, DailyHadithAdapter.ViewHolder>(
     dailyHadithComparator) {

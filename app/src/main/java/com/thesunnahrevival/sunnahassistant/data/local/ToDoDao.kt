@@ -2,19 +2,14 @@ package com.thesunnahrevival.sunnahassistant.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
+import androidx.room.*
+import com.thesunnahrevival.sunnahassistant.data.model.dto.ToDoDate
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.PRAYER_TIMES_REMINDERS_ID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.util.TreeSet
+import java.util.*
 
 @Dao
 interface ToDoDao {

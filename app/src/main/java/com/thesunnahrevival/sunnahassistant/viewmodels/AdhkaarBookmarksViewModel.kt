@@ -2,7 +2,7 @@ package com.thesunnahrevival.sunnahassistant.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.BookmarkedAdhkaarDataEmbedded
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarItemRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.FlowPreview
@@ -14,7 +14,7 @@ class AdhkaarBookmarksViewModel(application: Application) : AndroidViewModel(app
     private val searchQuery = MutableStateFlow<String?>(null)
 
     @OptIn(FlowPreview::class)
-    val bookmarkedItemsFlow: Flow<List<BookmarkedAdhkaarData>> = searchQuery
+    val bookmarkedItemsFlow: Flow<List<BookmarkedAdhkaarDataEmbedded>> = searchQuery
         .map { it?.trim().orEmpty() }
         .distinctUntilChanged()
         .flatMapLatest { query ->

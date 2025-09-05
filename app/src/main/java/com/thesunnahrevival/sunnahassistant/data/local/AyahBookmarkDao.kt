@@ -1,7 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
 import androidx.room.*
-import com.thesunnahrevival.sunnahassistant.data.model.AyahBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AyahBookmark
 
 @Dao
 interface AyahBookmarkDao {

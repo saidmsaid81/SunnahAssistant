@@ -7,8 +7,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
-import com.thesunnahrevival.sunnahassistant.data.model.PageBookmarkWithSurah
+import com.thesunnahrevival.sunnahassistant.data.model.dto.PageBookmarkWithSurah
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.AyahWithSurahEmbedded
 import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -22,7 +22,7 @@ class BookmarksViewModel(application: Application) : AndroidViewModel(applicatio
     private val searchQuery = MutableStateFlow<String?>(null)
 
     @OptIn(FlowPreview::class)
-    val bookmarkedAyahsFlow: Flow<PagingData<AyahWithSurah>> = searchQuery
+    val bookmarkedAyahsFlow: Flow<PagingData<AyahWithSurahEmbedded>> = searchQuery
         .map { it?.trim().orEmpty() }
         .distinctUntilChanged()
         .flatMapLatest { query ->

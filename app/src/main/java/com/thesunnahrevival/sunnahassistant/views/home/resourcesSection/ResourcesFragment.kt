@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.TrainingSection
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TrainingSection
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository.PinResult
 import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesViewModel

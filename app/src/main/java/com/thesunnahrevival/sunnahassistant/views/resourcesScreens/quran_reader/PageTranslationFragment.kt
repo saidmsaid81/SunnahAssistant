@@ -25,9 +25,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Footnote
-import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetails
-import com.thesunnahrevival.sunnahassistant.data.model.Translation
+import com.thesunnahrevival.sunnahassistant.data.model.dto.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Footnote
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.viewmodels.PageTranslationViewModel

@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarItemBookmark
-import com.thesunnahrevival.sunnahassistant.data.model.BookmarkedAdhkaarData
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.BookmarkedAdhkaarDataEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItemBookmark
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -29,7 +29,7 @@ interface AdhkaarItemBookmarkDao {
         WHERE ai.language = :language AND ac.language = :language
         ORDER BY ai.chapter_id, ai.item_id
     """)
-    fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarData>>
+    fun getBookmarkedAdhkaarData(language: String): Flow<List<BookmarkedAdhkaarDataEmbedded>>
 
     @Query("""
         SELECT ai.chapter_id as chapterId, ac.chapter_name as chapterName, 
@@ -41,5 +41,5 @@ interface AdhkaarItemBookmarkDao {
         AND (ac.chapter_name LIKE :query OR ai.item_translation LIKE :query OR ai.item_translation LIKE :query)
         ORDER BY ai.chapter_id, ai.item_id
     """)
-    fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarData>>
+    fun searchBookmarkedAdhkaarData(language: String, query: String): Flow<List<BookmarkedAdhkaarDataEmbedded>>
 }

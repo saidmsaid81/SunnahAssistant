@@ -4,7 +4,7 @@ import android.content.Context
 import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarChapterDao
 import com.thesunnahrevival.sunnahassistant.data.local.PinnedAdhkaarChapterDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
-import com.thesunnahrevival.sunnahassistant.data.model.PinnedAdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PinnedAdhkaarChapter
 import kotlinx.coroutines.flow.map
 
 class AdhkaarChapterRepository private constructor(

@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.thesunnahrevival.sunnahassistant.data.model.DailyHadith
+import com.thesunnahrevival.sunnahassistant.data.model.entity.DailyHadith
 
 @Dao
 interface DailyHadithDao {

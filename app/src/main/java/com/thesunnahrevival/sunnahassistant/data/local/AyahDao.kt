@@ -5,9 +5,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.thesunnahrevival.sunnahassistant.data.model.Ayah
-import com.thesunnahrevival.sunnahassistant.data.model.AyahWithSurah
-import com.thesunnahrevival.sunnahassistant.data.model.FullAyahDetailsRaw
+import com.thesunnahrevival.sunnahassistant.data.model.dto.FullAyahDetailsRaw
+import com.thesunnahrevival.sunnahassistant.data.model.embedded.AyahWithSurahEmbedded
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Ayah
 
 @Dao
 interface AyahDao {
@@ -84,7 +84,7 @@ interface AyahDao {
     @Query("SELECT * FROM ayahs " +
             "JOIN ayah_bookmarks ab ON ab.ayah_id = ayahs.id " +
             "ORDER BY surah_id, number")
-    fun getBookmarkedAyahs(): PagingSource<Int, AyahWithSurah>
+    fun getBookmarkedAyahs(): PagingSource<Int, AyahWithSurahEmbedded>
 
     @Query("SELECT page_number FROM lines WHERE ayah_id = :ayahId LIMIT 1")
     suspend fun getPageNumberByAyahId(ayahId: Int): Int?
@@ -93,5 +93,5 @@ interface AyahDao {
             "JOIN ayah_bookmarks ab ON ab.ayah_id = a.id " +
             "JOIN surahs s ON a.surah_id = s.id " +
             "WHERE (s.arabic_name LIKE :query OR s.transliterated_name LIKE :query OR a.arabic_text LIKE :query) ORDER BY a.surah_id, a.number")
-    fun searchBookmarkedAyahs(query: String): PagingSource<Int, AyahWithSurah>
+    fun searchBookmarkedAyahs(query: String): PagingSource<Int, AyahWithSurahEmbedded>
 }

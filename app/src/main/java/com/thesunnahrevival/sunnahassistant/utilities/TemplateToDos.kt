@@ -2,10 +2,9 @@ package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.content.Context
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import java.util.Calendar
-import java.util.TreeSet
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import java.util.*
 
 class TemplateToDos {
     /**
