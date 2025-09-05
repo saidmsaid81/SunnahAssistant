@@ -22,6 +22,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.SurahWithPin
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.SurahListViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
@@ -41,7 +42,7 @@ class SurahListFragment : MenuBarFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 SurahListScreen(
-                    surahs = viewModel.surahsFlow.collectAsLazyPagingItems(),
+                    surahsWithPins = viewModel.surahsFlow.collectAsLazyPagingItems(),
                     firstVisiblePosition = viewModel.firstVisiblePosition,
                     onScroll = { index -> viewModel.firstVisiblePosition = index },
                     onSurahClick = { surah ->
@@ -102,7 +103,7 @@ class SurahListFragment : MenuBarFragment() {
 
 @Composable
 private fun SurahListScreen(
-    surahs: LazyPagingItems<Surah>,
+    surahsWithPins: LazyPagingItems<SurahWithPin>,
     firstVisiblePosition: Int,
     onScroll: (Int) -> Unit,
     onSurahClick: (Surah) -> Unit,
@@ -124,13 +125,13 @@ private fun SurahListScreen(
 
                 LazyColumn(state = lazyListState) {
                     items(
-                        count = surahs.itemCount,
+                        count = surahsWithPins.itemCount,
                         key = { index ->
-                            val surah = surahs[index]
+                            val surah = surahsWithPins[index]?.toSurah()
                             "surah_${surah?.id ?: "null"}_$index"
                         }
                     ) { index ->
-                        val surah = surahs[index]
+                        val surah = surahsWithPins[index]?.toSurah()
                         surah?.let {
                             SurahItem(surah, isArabic(), onSurahPinClick) { onSurahClick(surah) }
                         }

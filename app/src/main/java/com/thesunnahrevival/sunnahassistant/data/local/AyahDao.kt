@@ -36,12 +36,13 @@ interface AyahDao {
             "s.is_makki AS surah_is_makki," +
             "s.verse_count AS surah_verse_count," +
             "s.start_page AS surah_start_page," +
-            "s.pin_order AS surah_pin_order " +
+            "p.pin_order AS surah_pin_order " +
             "FROM ayahs a " +
             "LEFT JOIN ayah_translations at ON at.ayah_id = a.id AND at.translation_id IN (SELECT id FROM translations WHERE selected = 1) " +
             "LEFT JOIN translations t ON t.id = at.translation_id " +
             "LEFT JOIN ayah_bookmarks ab ON ab.ayah_id = a.id " +
             "JOIN surahs s ON s.id = a.surah_id " +
+            "LEFT JOIN pinned_surahs p ON p.surah_id = s.id " +
             "WHERE a.id = :ayahId")
     suspend fun getFullAyahDetailsById(ayahId: Int): List<FullAyahDetailsRaw>
 
@@ -68,12 +69,13 @@ interface AyahDao {
                 "s.is_makki AS surah_is_makki," +
                 "s.verse_count AS surah_verse_count," +
                 "s.start_page AS surah_start_page," +
-                "s.pin_order AS surah_pin_order " +
+                "p.pin_order AS surah_pin_order " +
                 "FROM ayahs a " +
                 "LEFT JOIN ayah_translations at ON at.ayah_id = a.id AND at.translation_id IN (SELECT id FROM translations WHERE selected = 1) " +
                 "LEFT JOIN translations t ON t.id = at.translation_id " +
                 "LEFT JOIN ayah_bookmarks ab ON ab.ayah_id = a.id " +
                 "JOIN surahs s ON s.id = a.surah_id " +
+                "LEFT JOIN pinned_surahs p ON p.surah_id = s.id " +
                 "WHERE a.id IN (SELECT l.ayah_id FROM lines l WHERE l.page_number = :pageNumber) ORDER BY t.`order` ASC"
     )
     suspend fun getFullAyahDetailsByPageNumber(pageNumber: Int): List<FullAyahDetailsRaw>

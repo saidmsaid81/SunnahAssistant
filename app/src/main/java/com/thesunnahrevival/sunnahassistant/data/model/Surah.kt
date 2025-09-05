@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
@@ -24,6 +25,15 @@ data class Surah(
     @ColumnInfo(name = "start_page")
     val startPage: Int,
 
-    @ColumnInfo(name = "pin_order")
-    val pinOrder: Int? = null
-) : Serializable
+    @Ignore
+    var pinOrder: Int? = null
+) : Serializable {
+    constructor(
+            id: Int,
+            arabicName: String,
+            transliteratedName: String,
+            isMakki: Boolean,
+            verseCount: Int,
+            startPage: Int
+    ) : this(id, arabicName, transliteratedName, isMakki, verseCount, startPage, null)
+}

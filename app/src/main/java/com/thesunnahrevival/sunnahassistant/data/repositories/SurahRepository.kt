@@ -1,12 +1,17 @@
 package com.thesunnahrevival.sunnahassistant.data.repositories
 
 import android.content.Context
+import androidx.paging.PagingSource
+import com.thesunnahrevival.sunnahassistant.data.local.PinnedSurahDao
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
+import com.thesunnahrevival.sunnahassistant.data.model.PinnedSurah
+import kotlinx.coroutines.flow.map
 
 class SurahRepository private constructor(
     private val applicationContext: Context
 ) {
+    private var activePagingSources = mutableSetOf<PagingSource<*, *>>()
 
     companion object {
         @Volatile
@@ -21,31 +26,35 @@ class SurahRepository private constructor(
 
     private val surahDao: SurahDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).surahDao()
+    
+    private val pinnedSurahDao: PinnedSurahDao
+        get() = SunnahAssistantDatabase.getInstance(applicationContext).pinnedSurahDao()
 
-    fun getAllSurahs() = surahDao.getAllSurahs()
+    fun getAllSurahs() = surahDao.getAllSurahsWithPin()
 
-    fun searchSurahs(query: String) = surahDao.searchSurahs(query)
+    fun searchSurahs(query: String)= surahDao.searchSurahsWithPin(query)
 
-    fun getFirst3Surahs() = surahDao.getFirst3Surahs()
+    fun getFirst3Surahs() = surahDao.getFirst3SurahsWithPin().map { surahs -> surahs.map { it.toSurah() } }
 
     suspend fun getSurahByPage(page: Int) = surahDao.getSurahByPage(page)
 
     suspend fun toggleSurahPin(surahId: Int): PinResult {
-        val surah = surahDao.getSurahById(surahId)
+        val existingPin = pinnedSurahDao.getPinnedSurahById(surahId)
         
-        return if (surah.pinOrder != null) {
-            surahDao.updatePinOrder(surahId, null)
+        val result = if (existingPin != null) {
+            pinnedSurahDao.deleteBysurahId(surahId)
             PinResult.Unpinned
         } else {
-            val pinnedCount = surahDao.getPinnedSurahCount()
+            val pinnedCount = pinnedSurahDao.getPinnedCount()
             if (pinnedCount >= 5) {
                 PinResult.LimitReached
             } else {
-                val nextPinOrder = (surahDao.getMaxPinOrder() ?: 0) + 1
-                surahDao.updatePinOrder(surahId, nextPinOrder)
+                val nextPinOrder = (pinnedSurahDao.getMaxPinOrder() ?: 0) + 1
+                pinnedSurahDao.insert(PinnedSurah(surahId = surahId, pinOrder = nextPinOrder))
                 PinResult.Pinned
             }
         }
+        return result
     }
 
     enum class PinResult {

@@ -22,7 +22,7 @@ import java.util.*
     entities = [
         ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class,
         Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class,
-        PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class
+        PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class, PinnedSurah::class
    ],
     version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
@@ -57,6 +57,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
     abstract fun ayahBookmarkDao(): AyahBookmarkDao
     abstract fun adhkaarItemBookmarkDao(): AdhkaarItemBookmarkDao
+    abstract fun pinnedSurahDao(): PinnedSurahDao
 
     fun closeDB() {
         INSTANCE?.close()
@@ -252,7 +253,6 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `arabicTextFontSize` INTEGER DEFAULT 18")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `translationTextFontSize` INTEGER DEFAULT 16")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `footnoteTextFontSize` INTEGER DEFAULT 12")
-                database.execSQL("ALTER TABLE surahs ADD COLUMN `pin_order` INTEGER")
 
                 // Create adhkaar_chapters table
                 database.execSQL("""
@@ -311,8 +311,18 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 )
                 """)
 
+                // Create pinned_surahs table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS pinned_surahs (
+                        surah_id INTEGER PRIMARY KEY NOT NULL,
+                        pin_order INTEGER NOT NULL,
+                        FOREIGN KEY(surah_id) REFERENCES surahs(id) ON DELETE CASCADE
+                    )
+                """)
+
             }
         }
+
 
         fun getInstance(context: Context): SunnahAssistantDatabase {
             return INSTANCE ?: synchronized(this) {
