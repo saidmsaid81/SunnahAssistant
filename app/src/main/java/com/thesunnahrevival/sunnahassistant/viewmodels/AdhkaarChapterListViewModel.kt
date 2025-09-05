@@ -7,7 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapterWithPin
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
@@ -24,7 +24,7 @@ class AdhkaarChapterListViewModel(application: Application) : AndroidViewModel(a
     private val searchQuery = MutableStateFlow<String?>(null)
 
     @OptIn(FlowPreview::class)
-    val chaptersFlow: Flow<PagingData<AdhkaarChapter>> = searchQuery
+    val chaptersFlow: Flow<PagingData<AdhkaarChapterWithPin>> = searchQuery
         .map { it?.trim().orEmpty() }
         .distinctUntilChanged()
         .flatMapLatest { query ->

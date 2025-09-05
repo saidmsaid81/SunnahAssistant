@@ -22,7 +22,7 @@ import java.util.*
     entities = [
         ToDo::class, AppSettings::class, DailyHadith::class, Surah::class, Ayah::class, AyahTranslation::class,
         Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class,
-        PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class, PinnedSurah::class
+        PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class, PinnedSurah::class, PinnedAdhkaarChapter::class
    ],
     version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
@@ -58,6 +58,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     abstract fun ayahBookmarkDao(): AyahBookmarkDao
     abstract fun adhkaarItemBookmarkDao(): AdhkaarItemBookmarkDao
     abstract fun pinnedSurahDao(): PinnedSurahDao
+    abstract fun pinnedAdhkaarChapterDao(): PinnedAdhkaarChapterDao
 
     fun closeDB() {
         INSTANCE?.close()
@@ -261,8 +262,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         chapter_id INTEGER NOT NULL,
                         language TEXT NOT NULL,
                         chapter_name TEXT NOT NULL,
-                        category_name TEXT NOT NULL,
-                        pin_order INTEGER
+                        category_name TEXT NOT NULL
                     )
                 """)
 
@@ -317,6 +317,14 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         surah_id INTEGER PRIMARY KEY NOT NULL,
                         pin_order INTEGER NOT NULL,
                         FOREIGN KEY(surah_id) REFERENCES surahs(id) ON DELETE CASCADE
+                    )
+                """)
+
+                // Create pinned_adhkaar_chapters table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS pinned_adhkaar_chapters (
+                        chapter_id INTEGER PRIMARY KEY NOT NULL,
+                        pin_order INTEGER NOT NULL
                     )
                 """)
 

@@ -23,6 +23,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.AdhkaarChapterWithPin
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarChapterRepository
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarChapterListViewModel
@@ -43,7 +44,7 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 AdhkaarChapterListScreen(
-                    adhkaarChapters = viewModel.chaptersFlow.collectAsLazyPagingItems(),
+                    adhkaarChaptersWithPin = viewModel.chaptersFlow.collectAsLazyPagingItems(),
                     firstVisiblePosition = viewModel.firstVisiblePosition,
                     onScroll = { index -> viewModel.firstVisiblePosition = index },
                     onAdhkaarChapterClick = { adhkaarChapter ->
@@ -102,7 +103,7 @@ class AdhkaarChapterListFragment : MenuBarFragment() {
 }
 @Composable
 private fun AdhkaarChapterListScreen(
-    adhkaarChapters: LazyPagingItems<AdhkaarChapter>,
+    adhkaarChaptersWithPin: LazyPagingItems<AdhkaarChapterWithPin>,
     firstVisiblePosition: Int,
     onScroll: (Int) -> Unit,
     onAdhkaarChapterClick: (AdhkaarChapter) -> Unit,
@@ -124,13 +125,13 @@ private fun AdhkaarChapterListScreen(
 
                 LazyColumn(state = lazyListState) {
                     items(
-                        count = adhkaarChapters.itemCount,
+                        count = adhkaarChaptersWithPin.itemCount,
                         key = { index ->
-                            val chapter = adhkaarChapters[index]
+                            val chapter = adhkaarChaptersWithPin[index]?.toAdhkaarChapter()
                             "adhkaar_chapter_${chapter?.chapterId ?: "null"}_$index"
                         }
                     ) { index ->
-                        val chapter = adhkaarChapters[index]
+                        val chapter = adhkaarChaptersWithPin[index]?.toAdhkaarChapter()
                         chapter?.let {
                             AdhkaarChapterItem(chapter, isArabic(), onAdhkaarChapterPin) { 
                                 onAdhkaarChapterClick(chapter) 

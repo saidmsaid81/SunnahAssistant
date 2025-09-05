@@ -1,9 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.data.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
@@ -32,6 +29,14 @@ data class AdhkaarChapter(
     @SerializedName("category_name")
     val categoryName: String,
 
-    @ColumnInfo(name = "pin_order")
-    val pinOrder: Int? = null
-) : Serializable
+    @Ignore
+    var pinOrder: Int? = null
+) : Serializable {
+    constructor(
+            id: Int,
+            chapterId: Int,
+            language: String,
+            chapterName: String,
+            categoryName: String
+    ) : this(id, chapterId, language, chapterName, categoryName, null)
+}
