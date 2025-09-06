@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "pinned_adhkaar_chapters")
 data class PinnedAdhkaarChapter(
     @PrimaryKey
-    @ColumnInfo(name = "chapter_id")
+    @ColumnInfo(name = "adhkaar_chapter_id")
     val chapterId: Int,
 
     @ColumnInfo(name = "pin_order")

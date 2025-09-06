@@ -323,7 +323,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 // Create pinned_adhkaar_chapters table
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS pinned_adhkaar_chapters (
-                        chapter_id INTEGER PRIMARY KEY NOT NULL,
+                        adhkaar_chapter_id INTEGER PRIMARY KEY NOT NULL,
                         pin_order INTEGER NOT NULL
                     )
                 """)

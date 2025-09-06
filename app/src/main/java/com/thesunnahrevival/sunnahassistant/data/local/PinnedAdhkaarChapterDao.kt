@@ -12,10 +12,10 @@ interface PinnedAdhkaarChapterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPinnedChapter(pinnedChapter: PinnedAdhkaarChapter)
 
-    @Query("DELETE FROM pinned_adhkaar_chapters WHERE chapter_id = :chapterId")
+    @Query("DELETE FROM pinned_adhkaar_chapters WHERE adhkaar_chapter_id = :chapterId")
     suspend fun deletePinnedChapterById(chapterId: Int)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM pinned_adhkaar_chapters WHERE chapter_id = :chapterId)")
+    @Query("SELECT EXISTS(SELECT 1 FROM pinned_adhkaar_chapters WHERE adhkaar_chapter_id = :chapterId)")
     suspend fun isChapterPinned(chapterId: Int): Boolean
 
     @Query("SELECT COALESCE(MAX(pin_order), 0) FROM pinned_adhkaar_chapters")

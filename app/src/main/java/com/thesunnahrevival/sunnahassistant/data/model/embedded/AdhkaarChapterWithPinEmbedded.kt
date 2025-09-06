@@ -11,7 +11,7 @@ data class AdhkaarChapterWithPinEmbedded(
 
     @Relation(
         parentColumn = "chapter_id",
-        entityColumn = "chapter_id"
+        entityColumn = "adhkaar_chapter_id"
     )
     val pinnedAdhkaarChapter: PinnedAdhkaarChapter?
 ) {

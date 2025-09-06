@@ -20,7 +20,7 @@ interface AdhkaarChapterDao {
     @Query("""
         SELECT *
         FROM adhkaar_chapters ac 
-        LEFT JOIN pinned_adhkaar_chapters pac ON ac.chapter_id = pac.chapter_id 
+        LEFT JOIN pinned_adhkaar_chapters pac ON ac.chapter_id = pac.adhkaar_chapter_id 
         WHERE ac.language = :language 
         ORDER BY CASE WHEN pac.pin_order IS NULL THEN 1 ELSE 0 END, pac.pin_order ASC, ac.chapter_id ASC 
         LIMIT 3
@@ -30,7 +30,7 @@ interface AdhkaarChapterDao {
     @Query("""
         SELECT *
         FROM adhkaar_chapters ac 
-        LEFT JOIN pinned_adhkaar_chapters pac ON ac.chapter_id = pac.chapter_id 
+        LEFT JOIN pinned_adhkaar_chapters pac ON ac.chapter_id = pac.adhkaar_chapter_id 
         WHERE ac.language = :language 
         ORDER BY CASE WHEN pac.pin_order IS NULL THEN 1 ELSE 0 END, pac.pin_order ASC, ac.chapter_id ASC
     """)
@@ -39,7 +39,7 @@ interface AdhkaarChapterDao {
     @Query("""
         SELECT * 
         FROM adhkaar_chapters ac 
-        LEFT JOIN pinned_adhkaar_chapters pac ON ac.chapter_id = pac.chapter_id 
+        LEFT JOIN pinned_adhkaar_chapters pac ON ac.chapter_id = pac.adhkaar_chapter_id 
         WHERE ac.language = :language AND (ac.chapter_name LIKE :query OR ac.category_name LIKE :query) 
         ORDER BY CASE WHEN pac.pin_order IS NULL THEN 1 ELSE 0 END, pac.pin_order ASC, ac.chapter_id ASC
     """)
