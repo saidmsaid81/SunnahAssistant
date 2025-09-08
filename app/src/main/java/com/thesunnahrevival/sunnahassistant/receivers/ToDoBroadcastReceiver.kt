@@ -10,30 +10,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.utilities.MARK_AS_COMPLETE
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_CATEGORY
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_DND_MINUTES
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_TEXT
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_TITLE
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_TONE_URI
-import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_VIBRATE
-import com.thesunnahrevival.sunnahassistant.utilities.ReminderManager
-import com.thesunnahrevival.sunnahassistant.utilities.SHARE
-import com.thesunnahrevival.sunnahassistant.utilities.TODO_REMINDER_SCHEDULER_WORK_TAG
-import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
-import com.thesunnahrevival.sunnahassistant.utilities.createNotification
-import com.thesunnahrevival.sunnahassistant.utilities.getMainActivityPendingIntent
-import com.thesunnahrevival.sunnahassistant.utilities.getToDoNotificationChannel
+import com.thesunnahrevival.sunnahassistant.utilities.*
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.workers.ReminderSchedulerWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class ToDoBroadcastReceiver : BroadcastReceiver() {
@@ -107,6 +97,19 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                     context.getString(R.string.share),
                     shareToDoNotificationAction(context, id)
                 )
+
+                val quranReaderIntent = getQuranReaderIntent(context, id)
+
+                val openQuranReaderFragmentAction = if (quranReaderIntent != null) {
+                    NotificationCompat.Action(
+                        R.drawable.ic_read,
+                        context.getString(R.string.read_quran),
+                        quranReaderIntent
+                    )
+                } else {
+                    null
+                }
+
                 notificationManager.notify(
                     id,
                     createNotification(
@@ -114,8 +117,8 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                         channel = getToDoNotificationChannel(context),
                         title = notificationTitle,
                         text = text,
-                        pendingIntent = getMainActivityPendingIntent(context),
-                        actions = listOf(markAsCompleteAction, snoozeNotificationAction, shareNotificationAction)
+                        pendingIntent = quranReaderIntent ?: getMainActivityPendingIntent(context),
+                        actions = if (openQuranReaderFragmentAction != null) listOf(openQuranReaderFragmentAction, snoozeNotificationAction, shareNotificationAction) else listOf(markAsCompleteAction, snoozeNotificationAction, shareNotificationAction)
                     )
                 )
                 Thread.sleep(5000) //Give time for the notification to ring
@@ -197,5 +200,31 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
         }
         val flag = PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getActivity(context, id, shareToDoIntent, flag)
+    }
+
+    private fun getQuranReaderIntent(context: Context, id: Int): PendingIntent? {
+        if (id >= 0) {
+            return null
+        }
+
+        val page = when (id) {
+            READING_SURATUL_KAHF_ID -> {
+                293
+            }
+            READING_SURATUL_MULK_ID -> {
+                562
+            }
+            else -> {
+                runBlocking {
+                    SunnahAssistantRepository.getInstance(context).getAppSettings().first()?.lastReadPage
+                }
+            }
+        }
+
+        return NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.navigation)
+            .setDestination(R.id.quranReaderFragment)
+            .setArguments(args = bundleOf(QURAN_PAGE_FROM_NOTIFICATION to page, NOTIFICATION_ID to id))
+            .createPendingIntent()
     }
 }

@@ -437,6 +437,7 @@
     <string name="search_surah">Search surah</string>
     <string name="search_bookmarks">Search bookmarks</string>
     <string name="search_adhkaar_bookmarks">Search adhkaar bookmarks</string>
+    <string name="read_quran">Read Quran</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

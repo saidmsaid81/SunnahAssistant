@@ -66,10 +66,10 @@ class TemplateToDos {
         )
 
 
-        toDoMap[-1005] = Pair(
+        toDoMap[READING_QURAN_ID] = Pair(
             R.drawable.ic_quran,
             createReminder(
-                id = -1005,
+                id = READING_QURAN_ID,
                 name = context.getString(R.string.reading_the_quran),
                 category = sunnah,
                 frequency = Frequency.Daily,
@@ -79,10 +79,10 @@ class TemplateToDos {
 
         var listOfDays = TreeSet<Int>()
         listOfDays.add(Calendar.FRIDAY)
-        toDoMap[-1006] = Pair(
+        toDoMap[READING_SURATUL_KAHF_ID] = Pair(
             R.drawable.ic_quran,
             createReminder(
-                id = -1006,
+                id = READING_SURATUL_KAHF_ID,
                 name = context.getString(R.string.reading_suratul_kahf),
                 category = sunnah,
                 frequency = Frequency.Weekly,
@@ -109,10 +109,10 @@ class TemplateToDos {
             )
         )
 
-        toDoMap[-1008] = Pair(
+        toDoMap[READING_SURATUL_MULK_ID] = Pair(
             R.drawable.ic_quran,
             createReminder(
-                id = -1008,
+                id = READING_SURATUL_MULK_ID,
                 name = context.getString(R.string.reading_suratul_mulk),
                 category = sunnah,
                 frequency = Frequency.Daily,

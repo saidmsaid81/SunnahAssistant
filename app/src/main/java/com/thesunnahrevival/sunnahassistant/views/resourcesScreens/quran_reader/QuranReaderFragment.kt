@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -21,6 +23,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
+import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_ID
+import com.thesunnahrevival.sunnahassistant.utilities.QURAN_PAGE_FROM_NOTIFICATION
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.viewmodels.QuranReaderViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -55,6 +59,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        setCurrentPageFromArgumentIfAvailable()
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
@@ -415,5 +421,19 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         val toolbar = activity?.findViewById<Toolbar>(R.id.toolbar)
         val menu = toolbar?.menu
         menu?.let { updateBookmarkIcon(it) }
+    }
+
+    private fun setCurrentPageFromArgumentIfAvailable() {
+        val page = arguments?.getInt(QURAN_PAGE_FROM_NOTIFICATION, -1) ?: -1
+
+        if (page != -1) {
+            mainActivityViewModel.updateCurrentPage(page, false)
+            val notificationId = arguments?.getInt(NOTIFICATION_ID, -1) ?: -1
+            if (notificationId != -1) {
+                val notificationManager =
+                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(notificationId)
+            }
+        }
     }
 }
