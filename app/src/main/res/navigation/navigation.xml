@@ -222,6 +222,10 @@
         android:name="scrollToItemId"
         app:argType="integer"
         android:defaultValue="-1" />
+    <argument
+        android:name="notificationId"
+        app:argType="integer"
+        android:defaultValue="-1"/>
   </fragment>
 
   <dialog

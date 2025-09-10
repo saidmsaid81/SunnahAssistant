@@ -99,12 +99,22 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                 )
 
                 val quranReaderIntent = getQuranReaderIntent(context, id)
-
                 val openQuranReaderFragmentAction = if (quranReaderIntent != null) {
                     NotificationCompat.Action(
                         R.drawable.ic_read,
                         context.getString(R.string.read_quran),
                         quranReaderIntent
+                    )
+                } else {
+                    null
+                }
+
+                val adhkaarReaderIntent = getAdhkaarReaderIntent(context, id)
+                val openAdhkaarReaderFragmentAction = if (adhkaarReaderIntent != null) {
+                    NotificationCompat.Action(
+                        R.drawable.ic_dua,
+                        context.getString(R.string.read_adhkaar),
+                        adhkaarReaderIntent
                     )
                 } else {
                     null
@@ -117,8 +127,20 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                         channel = getToDoNotificationChannel(context),
                         title = notificationTitle,
                         text = text,
-                        pendingIntent = quranReaderIntent ?: getMainActivityPendingIntent(context),
-                        actions = if (openQuranReaderFragmentAction != null) listOf(openQuranReaderFragmentAction, snoozeNotificationAction, shareNotificationAction) else listOf(markAsCompleteAction, snoozeNotificationAction, shareNotificationAction)
+                        pendingIntent = quranReaderIntent ?: adhkaarReaderIntent ?: getMainActivityPendingIntent(context),
+                        actions = when {
+                            openQuranReaderFragmentAction != null -> listOf(
+                                openQuranReaderFragmentAction,
+                                snoozeNotificationAction,
+                                shareNotificationAction
+                            )
+                            openAdhkaarReaderFragmentAction != null -> listOf(
+                                openAdhkaarReaderFragmentAction,
+                                snoozeNotificationAction,
+                                shareNotificationAction
+                            )
+                            else -> listOf(markAsCompleteAction, snoozeNotificationAction, shareNotificationAction)
+                        }
                     )
                 )
                 Thread.sleep(5000) //Give time for the notification to ring
@@ -202,29 +224,35 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
         return PendingIntent.getActivity(context, id, shareToDoIntent, flag)
     }
 
-    private fun getQuranReaderIntent(context: Context, id: Int): PendingIntent? {
-        if (id >= 0) {
-            return null
-        }
-
-        val page = when (id) {
-            READING_SURATUL_KAHF_ID -> {
-                293
+    private fun getQuranReaderIntent(context: Context, notificationId: Int): PendingIntent? {
+        val page = when (notificationId) {
+            READING_SURATUL_KAHF_ID -> 293
+            READING_SURATUL_MULK_ID -> 562
+            READING_QURAN_ID -> runBlocking {
+                SunnahAssistantRepository.getInstance(context).getAppSettings().first()?.lastReadPage
             }
-            READING_SURATUL_MULK_ID -> {
-                562
-            }
-            else -> {
-                runBlocking {
-                    SunnahAssistantRepository.getInstance(context).getAppSettings().first()?.lastReadPage
-                }
-            }
-        }
+            else -> return null
+        } ?: return null
 
         return NavDeepLinkBuilder(context)
             .setGraph(R.navigation.navigation)
             .setDestination(R.id.quranReaderFragment)
-            .setArguments(args = bundleOf(QURAN_PAGE_FROM_NOTIFICATION to page, NOTIFICATION_ID to id))
+            .setArguments(args = bundleOf(QURAN_PAGE_FROM_NOTIFICATION to page, NOTIFICATION_ID to notificationId))
+            .createPendingIntent()
+    }
+
+    private fun getAdhkaarReaderIntent(context: Context, notificationId: Int): PendingIntent? {
+        val chapterId = when (notificationId) {
+            READING_MORNING_ADHKAAR_ID -> 27
+            READING_EVENING_ADHKAAR_ID -> 28
+            READING_SLEEPING_ADHKAAR_ID -> 29
+            else -> return null
+        }
+
+        return NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.navigation)
+            .setDestination(R.id.adhkaarReaderFragment)
+            .setArguments(args = bundleOf(ADHKAAR_CHAPTER_FROM_NOTIFICATION to chapterId, NOTIFICATION_ID to notificationId))
             .createPendingIntent()
     }
 }

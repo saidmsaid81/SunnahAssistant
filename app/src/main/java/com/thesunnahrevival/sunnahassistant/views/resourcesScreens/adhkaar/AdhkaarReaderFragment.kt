@@ -1,5 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -52,6 +54,14 @@ class AdhkaarReaderFragment : MenuBarFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        val notificationId = args.notificationId
+
+        if (notificationId != -1) {
+            val notificationManager =
+                requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(notificationId)
+        }
 
         val initialChapterId = args.chapterId
         val scrollToItemId = args.scrollToItemId

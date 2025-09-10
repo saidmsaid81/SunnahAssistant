@@ -29,10 +29,10 @@ class TemplateToDos {
         )
 
 
-        toDoMap[-1002] = Pair(
+        toDoMap[READING_MORNING_ADHKAAR_ID] = Pair(
             R.drawable.ic_dua,
             createReminder(
-                id = -1002,
+                id = READING_MORNING_ADHKAAR_ID,
                 name = context.getString(R.string.morning_adhkar),
                 category = sunnah,
                 frequency = Frequency.Daily,
@@ -41,10 +41,10 @@ class TemplateToDos {
         )
 
 
-        toDoMap[-1003] = Pair(
+        toDoMap[READING_EVENING_ADHKAAR_ID] = Pair(
             R.drawable.ic_dua,
             createReminder(
-                id = -1003,
+                id = READING_EVENING_ADHKAAR_ID,
                 name = context.getString(R.string.evening_adhkar),
                 category = sunnah,
                 frequency = Frequency.Daily,
@@ -130,10 +130,10 @@ class TemplateToDos {
             )
         )
 
-        toDoMap[-1010] = Pair(
+        toDoMap[READING_SLEEPING_ADHKAAR_ID] = Pair(
             R.drawable.ic_sleep,
             createReminder(
-                id = -1010,
+                id = READING_SLEEPING_ADHKAAR_ID,
                 name = context.getString(R.string.sleeping),
                 category = uncategorized,
                 frequency = Frequency.Daily

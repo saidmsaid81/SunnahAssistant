@@ -438,6 +438,7 @@
     <string name="search_bookmarks">Search bookmarks</string>
     <string name="search_adhkaar_bookmarks">Search adhkaar bookmarks</string>
     <string name="read_quran">Read Quran</string>
+    <string name="read_adhkaar">Read Adhkaar</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
