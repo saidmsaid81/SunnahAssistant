@@ -36,7 +36,18 @@ class SettingsListFragment : SunnahAssistantFragment(), AdapterView.OnItemClickL
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://www.thesunnahrevival.com")
+                    Uri.parse("https://www.thesunnahrevival.com?" +
+                            "utm_source=${getString(R.string.app_name)}-Android-App" +
+                            "&utm_medium=social_icon" +
+                            "&utm_campaign=settings_list")
+                )
+            )
+        }
+        view.findViewById<ImageView>(R.id.whatsapp).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://whatsapp.com/channel/0029Va5ijm7DOQIV2hEgwu39")
                 )
             )
         }
