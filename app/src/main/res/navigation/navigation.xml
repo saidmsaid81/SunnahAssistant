@@ -232,4 +232,9 @@
       android:id="@+id/snooze_options"
       android:name="com.thesunnahrevival.sunnahassistant.views.dialogs.SnoozeOptionsFragment" />
 
+  <fragment
+      android:id="@+id/aboutAppFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.others.AboutAppFragment"
+      android:label="@string/about_app" />
+
 </navigation>

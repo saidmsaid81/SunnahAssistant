@@ -19,7 +19,6 @@ import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openDeveloperPage
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
-import com.thesunnahrevival.sunnahassistant.views.others.AboutAppFragment
 import com.thesunnahrevival.sunnahassistant.views.shareAppIntent
 import com.thesunnahrevival.sunnahassistant.views.translateLink
 
@@ -62,8 +61,7 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), MenuProvider {
                 return true
             }
             R.id.about -> {
-                val fragment = AboutAppFragment()
-                fragment.show(requireActivity().supportFragmentManager, "about")
+                findNavController().navigate(R.id.aboutAppFragment)
                 return true
             }
             R.id.share_app -> {
