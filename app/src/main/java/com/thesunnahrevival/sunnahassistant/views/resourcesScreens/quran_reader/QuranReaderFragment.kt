@@ -248,13 +248,16 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         _quranReaderBinding = null
         viewmodel.hasSeenDownloadFilesDialog = false
     }
+
     override fun handleEdgeToEdge() {
         val mainActivity = activity as MainActivity
 
         val appBarLayout = mainActivity.findViewById<AppBarLayout>(R.id.app_bar)
         val typedValue = TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-        appBarLayout.setBackgroundColor(typedValue.data)
+
+        val translucentColor = createTranslucentColor(typedValue.data)
+        appBarLayout.setBackgroundColor(translucentColor)
         appBarLayout.elevation = 4f
 
         mainActivityViewModel.statusBarHeight.observe(viewLifecycleOwner) { statusBarHeight ->
@@ -450,5 +453,10 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                 notificationManager.cancel(notificationId)
             }
         }
+    }
+
+    private fun createTranslucentColor(baseColor: Int, opacityPercentage: Float = 70f): Int {
+        val alpha = (255 * (opacityPercentage / 100f)).toInt().coerceIn(0, 255)
+        return (baseColor and 0x00FFFFFF) or (alpha shl 24)
     }
 }
