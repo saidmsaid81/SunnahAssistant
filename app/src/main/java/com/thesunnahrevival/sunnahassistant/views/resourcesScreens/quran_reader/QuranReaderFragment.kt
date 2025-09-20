@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
+import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -20,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
@@ -49,6 +51,9 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     private var isAyahTranslationShowing = false
 
     private val viewmodel by viewModels<QuranReaderViewModel>()
+
+    private var tapTutorialSnackbar: Snackbar? = null
+    private var longPressTutorialSnackbar: Snackbar? = null
 
     private lateinit var quranPageAdapter: QuranPageAdapter
 
@@ -87,8 +92,11 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             (activity as? MainActivity)?.supportActionBar?.title = title
         }
 
+
+        showTutorial()
         return quranReaderBinding?.root
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -126,6 +134,17 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     }
 
     override fun onQuranPageClick(view: View) {
+        tapTutorialSnackbar?.let { snackbar ->
+            snackbar.dismiss()
+            tapTutorialSnackbar = null
+            lifecycleScope.launch {
+                viewmodel.setHasSeenTapTutorial()
+                quranReaderBinding?.root?.let { rootView ->
+                    showLongPressTutorialIfNeeded(rootView)
+                }
+            }
+        }
+
         if (stayInImmersiveMode) {
             view.performLongClick()
             return
@@ -141,6 +160,13 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         view: View,
         highlightOverlay: HighlightOverlayView
     ) {
+        longPressTutorialSnackbar?.let { snackbar ->
+            snackbar.dismiss()
+            longPressTutorialSnackbar = null
+            lifecycleScope.launch {
+                viewmodel.setHasSeenLongPressTutorial()
+            }
+        }
         view.parent.requestDisallowInterceptTouchEvent(true)
 
         if (!stayInImmersiveMode) {
@@ -226,6 +252,10 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
 
     override fun onDestroyView() {
         super.onDestroyView()
+        tapTutorialSnackbar?.dismiss()
+        longPressTutorialSnackbar?.dismiss()
+        tapTutorialSnackbar = null
+        longPressTutorialSnackbar = null
         mainActivityViewModel.setSelectedAyahId(null)
         quranReaderBinding?.viewPager?.unregisterOnPageChangeCallback(pageChangeCallback)
         val mainActivity = activity as MainActivity
@@ -458,5 +488,53 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     private fun createTranslucentColor(baseColor: Int, opacityPercentage: Float = 70f): Int {
         val alpha = (255 * (opacityPercentage / 100f)).toInt().coerceIn(0, 255)
         return (baseColor and 0x00FFFFFF) or (alpha shl 24)
+    }
+
+    private fun showTutorial() {
+        lifecycleScope.launch {
+            val hasSeenTapTutorial = viewmodel.hasSeenTapTutorial()
+            val hasSeenLongPressTutorial = viewmodel.hasSeenLongPressTutorial()
+
+            quranReaderBinding?.root?.let { view ->
+                if (!hasSeenTapTutorial) {
+                    tapTutorialSnackbar = showTutorialSnackbar(
+                        view,
+                        getString(R.string.tap_the_page_to_enter_leave_full_screen_mode)
+                    ) {
+                        lifecycleScope.launch {
+                            tapTutorialSnackbar = null
+                            showLongPressTutorialIfNeeded(view)
+                        }
+                    }
+                } else if (!hasSeenLongPressTutorial) {
+                    showLongPressTutorialIfNeeded(view)
+                }
+            }
+        }
+    }
+
+    private suspend fun showLongPressTutorialIfNeeded(view: FrameLayout) {
+        if (!viewmodel.hasSeenLongPressTutorial()) {
+            longPressTutorialSnackbar = showTutorialSnackbar(
+                view,
+                getString(R.string.hold_long_tap_ayah_to_view_its_translation)
+            ) {
+                lifecycleScope.launch {
+                    longPressTutorialSnackbar = null
+                }
+            }
+        }
+    }
+
+    private fun showTutorialSnackbar(layout: FrameLayout, string: String, onAcknowledge: (View) -> Unit): Snackbar = Snackbar.make(
+        requireContext(),
+        layout,
+        string,
+        Snackbar.LENGTH_INDEFINITE
+    ).apply {
+        view.setBackgroundColor(ContextCompat.getColor(requireActivity(), R.color.fabColor))
+        setAction(getString(R.string.got_it), onAcknowledge)
+        setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+        show()
     }
 }

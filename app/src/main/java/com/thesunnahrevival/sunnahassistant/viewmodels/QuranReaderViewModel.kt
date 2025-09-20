@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranPageRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
 
     private val quranPageRepository = QuranPageRepository.getInstance(getApplication())
     private val bookmarksRepository = BookmarksRepository.getInstance(getApplication())
+    private val flagRepository = FlagRepository.getInstance(getApplication())
 
     private var _lines = listOf<Line>()
     val lines: List<Line>
@@ -61,4 +63,20 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
     suspend fun isPageBookmarked(pageNumber: Int) = bookmarksRepository.isPageBookmarked(pageNumber)
 
     suspend fun togglePageBookmark(pageNumber: Int) = bookmarksRepository.togglePageBookmark(pageNumber)
+
+    suspend fun hasSeenTapTutorial(): Boolean {
+        return flagRepository.getIntFlag("has_seen_tap_tutorial") == 1
+    }
+
+    suspend fun setHasSeenTapTutorial() {
+        flagRepository.setFlag("has_seen_tap_tutorial", 1)
+    }
+
+    suspend fun hasSeenLongPressTutorial(): Boolean {
+        return flagRepository.getIntFlag("has_seen_long_press_tutorial") == 1
+    }
+
+    suspend fun setHasSeenLongPressTutorial() {
+        flagRepository.setFlag("has_seen_long_press_tutorial", 1)
+    }
 }
