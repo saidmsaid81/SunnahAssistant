@@ -38,6 +38,7 @@ import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.sqrt
 
 class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListener, MenuProvider {
     private var _quranReaderBinding: FragmentQuranReaderBinding? = null
@@ -188,10 +189,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         val y = (rawY - highlightOverlay.getOffsetY()) / highlightOverlay.getScaleY()
 
         val lines = viewmodel.lines
-        val selectedLine = lines.find { line ->
-            (x >= line.minX) && (x <= line.maxX) &&
-                    (y >= line.minY) && (y <= line.maxY)
-        }
+        val selectedLine = getSelectedLine(lines, x, y)
+
         selectedLine?.let { mainActivityViewModel.setSelectedAyahId(it.ayahId) }
     }
 
@@ -536,5 +535,44 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         setAction(getString(R.string.got_it), onAcknowledge)
         setActionTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
         show()
+    }
+
+    private fun getSelectedLine(
+        lines: List<Line>,
+        x: Float,
+        y: Float
+    ): Line? {
+        val tolerance = 15f
+
+        val selectedLine = lines.minByOrNull { line ->
+            val distanceX = when {
+                x < line.minX -> line.minX - x
+                x > line.maxX -> x - line.maxX
+                else -> 0f
+            }
+
+            val distanceY = when {
+                y < line.minY -> line.minY - y
+                y > line.maxY -> y - line.maxY
+                else -> 0f
+            }
+
+            val totalDistance = sqrt(distanceX * distanceX + distanceY * distanceY)
+
+            if (totalDistance <= tolerance) totalDistance else Float.MAX_VALUE
+        }?.takeIf { line ->
+            val distanceX = when {
+                x < line.minX -> line.minX - x
+                x > line.maxX -> x - line.maxX
+                else -> 0f
+            }
+            val distanceY = when {
+                y < line.minY -> line.minY - y
+                y > line.maxY -> y - line.maxY
+                else -> 0f
+            }
+            sqrt(distanceX * distanceX + distanceY * distanceY) <= tolerance
+        }
+        return selectedLine
     }
 }
