@@ -8,6 +8,8 @@ import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepositor
 import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranPageRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -22,11 +24,22 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
     val lines: List<Line>
         get() = _lines
 
+    private var currentJob: Job? = null
     var hasSeenDownloadFilesDialog = false
 
     fun getLinesByPageNumber(pageNumber: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _lines = quranPageRepository.getLinesByPageNumber(pageNumber)
+        currentJob?.cancel()
+        currentJob = viewModelScope.launch(Dispatchers.IO) {
+            repeat(3) { attempt ->
+                val result = quranPageRepository.getLinesByPageNumber(pageNumber)
+                if (result.isNotEmpty() || attempt == 2) {
+                    _lines = result
+                    return@launch
+                }
+                if (attempt < 2) {
+                    delay(50)
+                }
+            }
         }
     }
 
