@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -47,6 +48,13 @@ class FlagRepository private constructor(private val applicationContext: Context
             .map { flag -> flag[flagKey] }
             .first()
     }
+
+    fun getIntFlagFlow(key: String): Flow<Int?> {
+        val flagKey = intPreferencesKey(key)
+        return applicationContext.dataStore.data
+            .map { flag -> flag[flagKey] }
+    }
+
 
     suspend fun clearIntFlag(key: String) {
         val flagKey = intPreferencesKey(key)

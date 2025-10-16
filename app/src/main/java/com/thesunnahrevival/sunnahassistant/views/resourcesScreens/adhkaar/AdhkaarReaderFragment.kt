@@ -5,14 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
@@ -36,6 +37,7 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTransl
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -73,6 +75,10 @@ class AdhkaarReaderFragment : MenuBarFragment() {
 
                 val pagerState = rememberPagerState(initialPage = initialChapterId - 1) { 133 }
                 val settings by mainActivityViewModel.getSettings().observeAsState()
+                
+                val snackbarHostState = remember { SnackbarHostState() }
+                val swipeAdhkaarTutorialStatus by viewModel.swipeAdhkaarTutorialStatus().collectAsState(initial = 0)
+
 
                 LaunchedEffect(pagerState) {
                     snapshotFlow { pagerState.currentPage }.collect { currentPage ->
@@ -85,111 +91,153 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                             currentChapterName = chapterName
                             (activity as? MainActivity)?.supportActionBar?.title = chapterName
                         }
+
+                        if (currentChapterId != initialChapterId && swipeAdhkaarTutorialStatus != 1) {
+                            viewModel.setHasSeenSwipeAdhkaarTutorial()
+                        }
+                    }
+                }
+
+
+                LaunchedEffect(swipeAdhkaarTutorialStatus) {
+                    if (snackbarHostState.currentSnackbarData == null && swipeAdhkaarTutorialStatus != 1) {
+                        snackbarHostState.showSnackbar(
+                            getString(R.string.swipe_to_navigate_between_adhkaar_chapters),
+                            getString(R.string.got_it),
+                            duration = SnackbarDuration.Indefinite
+                        )
                     }
                 }
 
 
                 SunnahAssistantTheme {
-                    Surface {
+                    Scaffold(
+                        snackbarHost = { SnackbarHost(snackbarHostState) },
+                        backgroundColor = MaterialTheme.colors.surface
+                    ) { paddingValues ->
                         HorizontalPager(
                             state = pagerState,
-                            beyondViewportPageCount = 1
+                            beyondViewportPageCount = 1,
+                            modifier = Modifier.padding(paddingValues)
+                                .fillMaxHeight()
+                                .fillMaxWidth()
                         ) { pageIndex ->
 
-                            val chapterId = pageIndex + 1
-                            val uiState by viewModel.getAdhkaarItemsByChapterId(chapterId).collectAsState()
-                            var chapterName by remember { mutableStateOf("") }
-                            val listState = rememberLazyListState()
-
-                            LaunchedEffect(chapterId) {
-                                chapterName = withContext(Dispatchers.IO) {
-                                    viewModel.getChapterNameByChapterId(chapterId) ?: ""
-                                }
-                            }
-
-                            LaunchedEffect(chapterId, scrollToItemId) {
-                                if (scrollToItemId != -1 && chapterId == initialChapterId) {
-                                    while (uiState.adhkaarItems.isEmpty() || uiState.isLoading) {
-                                        kotlinx.coroutines.delay(50)
-                                    }
-
-                                    val targetIndex = uiState.adhkaarItems.indexOfFirst { it.itemId == scrollToItemId }
-                                    listState.animateScrollToItem(targetIndex)
-                                }
-                            }
-
-                            LazyColumn(
-                                modifier = Modifier.padding(16.dp),
-                                state = listState
-                            ) {
-                                if (uiState.isLoading || settings == null) {
-                                    items(6) { index ->
-                                        ArabicTextWithTranslationShimmer(index)
-                                    }
-                                } else {
-                                    items(uiState.adhkaarItems.size) { index ->
-
-                                        if (index == 0) {
-                                            Text(
-                                                text = chapterName,
-                                                style = MaterialTheme.typography.h6,
-                                                modifier = Modifier.padding(bottom = 16.dp)
-                                            )
-                                        }
-
-                                        val adhkaarItem = uiState.adhkaarItems[index]
-
-                                        val translationTexts = if (adhkaarItem.englishText != null) {
-                                            listOf(
-                                                TranslationText(
-                                                    title = context.getLocale().displayLanguage,
-                                                    text = adhkaarItem.englishText.toAnnotatedString(),
-                                                    footnoteLabel = stringResource(R.string.reference),
-                                                    footnotes = if (adhkaarItem.reference != null) listOf((adhkaarItem.reference).toAnnotatedString()) else listOf()
-                                                )
-                                            )
-                                        } else {
-                                            listOf()
-                                        }
-
-                                        val currentLocale = context.getLocale()
-                                        val isArabicLocale = currentLocale.language == "ar"
-
-                                        val textToParse = if (isArabicLocale) {
-                                            adhkaarItem.arabicText
-                                        } else {
-                                            adhkaarItem.englishText
-                                        }
-
-                                        val times = extractTimesFromText(textToParse)
-
-                                        ArabicTextWithTranslation(
-                                            context = requireContext(),
-                                            index = index,
-                                            sectionMarker = times,
-                                            arabicText = adhkaarItem.arabicText ?: "",
-                                            translationTexts = translationTexts,
-                                            textToShare = "$chapterName ($times)\n\n" +
-                                                    "${adhkaarItem.arabicText}\n\n" +
-                                                    "${adhkaarItem.englishText}\n\n" +
-                                                    stringResource(R.string.reference) + ": ${adhkaarItem.reference}",
-                                            bookmarked = adhkaarItem.bookmarked,
-                                            onBookmarkClick = {
-                                                viewModel.toggleBookmark(adhkaarItem.itemId)
-                                            },
-                                            arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
-                                            translationTextFontSize = settings?.translationTextFontSize ?: 16,
-                                            footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
-                                        )
-
-                                    }
-                                }
-                            }
+                            AdhkaarReaderPage(pageIndex, scrollToItemId, initialChapterId, settings)
                         }
                     }
                 }
             }
         }
+    }
+
+    @Composable
+    private fun AdhkaarReaderPage(
+        pageIndex: Int,
+        scrollToItemId: Int,
+        initialChapterId: Int,
+        settings: AppSettings?
+    ) {
+        val chapterId = pageIndex + 1
+        val uiState by viewModel.getAdhkaarItemsByChapterId(chapterId).collectAsState()
+        var chapterName by remember { mutableStateOf("") }
+        val listState = rememberLazyListState()
+
+        LaunchedEffect(chapterId) {
+            chapterName = withContext(Dispatchers.IO) {
+                viewModel.getChapterNameByChapterId(chapterId) ?: ""
+            }
+        }
+
+        LaunchedEffect(chapterId, scrollToItemId) {
+            if (scrollToItemId != -1 && chapterId == initialChapterId) {
+                while (uiState.adhkaarItems.isEmpty() || uiState.isLoading) {
+                    delay(50)
+                }
+
+                val targetIndex = uiState.adhkaarItems.indexOfFirst { it.itemId == scrollToItemId }
+                listState.animateScrollToItem(targetIndex)
+            }
+        }
+
+        LazyColumn(
+            modifier = Modifier.padding(16.dp),
+            state = listState
+        ) {
+            if (uiState.isLoading || settings == null) {
+                items(6) { index ->
+                    ArabicTextWithTranslationShimmer(index)
+                }
+            } else {
+                items(uiState.adhkaarItems.size) { index ->
+
+                    if (index == 0) {
+                        Text(
+                            text = chapterName,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                    }
+
+                    AdhkaarItem(requireContext(), uiState, index, chapterName, settings)
+
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun AdhkaarItem(
+        context: Context,
+        uiState: AdhkaarViewModel.AdhkaarUiState,
+        index: Int,
+        chapterName: String,
+        settings: AppSettings?
+    ) {
+        val adhkaarItem = uiState.adhkaarItems[index]
+
+        val translationTexts = if (adhkaarItem.englishText != null) {
+            listOf(
+                TranslationText(
+                    title = context.getLocale().displayLanguage,
+                    text = adhkaarItem.englishText.toAnnotatedString(),
+                    footnoteLabel = stringResource(R.string.reference),
+                    footnotes = if (adhkaarItem.reference != null) listOf((adhkaarItem.reference).toAnnotatedString()) else listOf()
+                )
+            )
+        } else {
+            listOf()
+        }
+
+        val currentLocale = context.getLocale()
+        val isArabicLocale = currentLocale.language == "ar"
+
+        val textToParse = if (isArabicLocale) {
+            adhkaarItem.arabicText
+        } else {
+            adhkaarItem.englishText
+        }
+
+        val times = extractTimesFromText(textToParse)
+
+        ArabicTextWithTranslation(
+            context = requireContext(),
+            index = index,
+            sectionMarker = times,
+            arabicText = adhkaarItem.arabicText ?: "",
+            translationTexts = translationTexts,
+            textToShare = "$chapterName ($times)\n\n" +
+                    "${adhkaarItem.arabicText}\n\n" +
+                    "${adhkaarItem.englishText}\n\n" +
+                    stringResource(R.string.reference) + ": ${adhkaarItem.reference}",
+            bookmarked = adhkaarItem.bookmarked,
+            onBookmarkClick = {
+                viewModel.toggleBookmark(adhkaarItem.itemId)
+            },
+            arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
+            translationTextFontSize = settings?.translationTextFontSize ?: 16,
+            footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
+        )
     }
 
     private fun extractTimesFromText(text: String?): String {

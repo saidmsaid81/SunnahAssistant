@@ -5,14 +5,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItem
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarItemRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+private const val HAS_SEEN_SWIPE_ADHKAAR_TUTORIAL = "has_seen_swipe_adhkaar_tutorial"
+
 class AdhkaarViewModel(application: Application) : AndroidViewModel(application) {
     private val adhkaarItemRepository = AdhkaarItemRepository.getInstance(application)
     private val isLoading: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    private val flagRepository = FlagRepository.getInstance(getApplication())
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -40,6 +44,14 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             adhkaarItemRepository.toggleBookmark(itemId)
         }
+    }
+
+    suspend fun setHasSeenSwipeAdhkaarTutorial() {
+        flagRepository.setFlag(HAS_SEEN_SWIPE_ADHKAAR_TUTORIAL, 1)
+    }
+
+    fun swipeAdhkaarTutorialStatus(): Flow<Int?> {
+        return flagRepository.getIntFlagFlow(HAS_SEEN_SWIPE_ADHKAAR_TUTORIAL)
     }
     
     private fun processAdhkaarItems(items: List<AdhkaarItem>): List<AdhkaarDisplayItem> {

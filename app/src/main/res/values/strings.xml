@@ -442,6 +442,7 @@
     <string name="tap_the_page_to_enter_leave_full_screen_mode">Tap the page to enter/leave full screen mode</string>
     <string name="hold_long_tap_ayah_to_view_its_translation">Hold (Long Tap) ayah to view its translation</string>
     <string name="got_it">Got it</string>
+    <string name="swipe_to_navigate_between_adhkaar_chapters">Swipe to navigate between Adhkaar Chapters</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
