@@ -16,6 +16,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
@@ -112,7 +113,18 @@ class AdhkaarReaderFragment : MenuBarFragment() {
 
                 SunnahAssistantTheme {
                     Scaffold(
-                        snackbarHost = { SnackbarHost(snackbarHostState) },
+                        snackbarHost = {
+                            SnackbarHost(
+                                hostState = snackbarHostState
+                            ) {
+                                Snackbar(
+                                    snackbarData = it,
+                                    backgroundColor = MaterialTheme.colors.primary,
+                                    contentColor = MaterialTheme.colors.onPrimary,
+                                    actionColor = Color.Black
+                                )
+                            }
+                        },
                         backgroundColor = MaterialTheme.colors.surface
                     ) { paddingValues ->
                         HorizontalPager(
