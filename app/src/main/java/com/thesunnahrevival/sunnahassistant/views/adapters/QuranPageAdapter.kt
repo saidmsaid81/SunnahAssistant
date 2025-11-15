@@ -8,12 +8,17 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
+import com.thesunnahrevival.sunnahassistant.views.utilities.showQuranPageNextAction
 
 class QuranPageAdapter(
     var pageNumbers: List<Int>,
@@ -64,7 +69,9 @@ class QuranPageAdapter(
             hasTimedOut = false
             isLoading = false
             currentPageNumber = pageNumber
-            
+
+            showQuranPageNextAction(view, pageNumber)
+
             val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
             progressBar.visibility = View.GONE
 
