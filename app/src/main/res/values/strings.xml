@@ -448,6 +448,7 @@
     <string name="set_reminder_for_every_friday">Set reminder for every Friday</string>
     <string name="remind_others">Remind Others</string>
     <string name="remind_others_to_read_suratul_kahf">Remind others to read Suratul Kahf</string>
+    <string name="next_set_weekly_reminder">Next: Set Weekly Reminder</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

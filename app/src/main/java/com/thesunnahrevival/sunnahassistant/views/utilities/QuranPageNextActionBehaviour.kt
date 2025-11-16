@@ -16,6 +16,7 @@ fun showQuranPageNextAction(activity: FragmentActivity, view: View, page: Int) {
 
     if (page == 304) {
         nextActionView.visibility = View.VISIBLE
+        nextActionView.text = activity.resources.getString(R.string.next_set_weekly_reminder)
     } else {
         nextActionView.visibility = View.GONE
     }
