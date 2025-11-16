@@ -443,6 +443,11 @@
     <string name="hold_long_tap_ayah_to_view_its_translation">Hold (Long Tap) ayah to view its translation</string>
     <string name="got_it">Got it</string>
     <string name="swipe_to_navigate_between_adhkaar_chapters">Swipe to navigate between Adhkaar Chapters</string>
+    <string name="suggested_actions">Suggested Actions</string>
+    <string name="weekly_friday_reminder">Weekly Friday Reminder</string>
+    <string name="set_reminder_for_every_friday">Set reminder for every Friday</string>
+    <string name="remind_others">Remind Others</string>
+    <string name="remind_others_to_read_suratul_kahf">Remind others to read Suratul Kahf</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

@@ -5,7 +5,13 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
@@ -73,7 +79,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
 
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
 
-        quranPageAdapter = QuranPageAdapter((1..604).toList(), this)
+        quranPageAdapter = QuranPageAdapter(requireActivity(), (1..604).toList(), this)
         val viewPager = quranReaderBinding?.viewPager
         viewPager?.offscreenPageLimit = 2
         viewPager?.adapter = quranPageAdapter

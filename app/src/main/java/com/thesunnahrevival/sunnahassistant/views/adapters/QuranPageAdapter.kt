@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
@@ -21,6 +22,7 @@ import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteraction
 import com.thesunnahrevival.sunnahassistant.views.utilities.showQuranPageNextAction
 
 class QuranPageAdapter(
+    private val activity: FragmentActivity,
     var pageNumbers: List<Int>,
     private val listener: QuranPageInteractionListener
 ) :
@@ -33,7 +35,7 @@ class QuranPageAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.quran_page_view, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(activity, view)
     }
 
     override fun getItemCount(): Int = pageNumbers.size
@@ -47,7 +49,7 @@ class QuranPageAdapter(
         holder.cleanup()
     }
 
-    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(private val activity: FragmentActivity, private val view: View) : RecyclerView.ViewHolder(view) {
         // Timeout mechanism fields
         private var timeoutHandler: Handler? = null
         private var timeoutRunnable: Runnable? = null
@@ -70,7 +72,7 @@ class QuranPageAdapter(
             isLoading = false
             currentPageNumber = pageNumber
 
-            showQuranPageNextAction(view, pageNumber)
+            showQuranPageNextAction(activity, view, pageNumber)
 
             val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
             progressBar.visibility = View.GONE
