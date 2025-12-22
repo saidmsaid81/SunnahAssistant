@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
-import com.thesunnahrevival.sunnahassistant.views.utilities.showQuranPageNextAction
 
 class QuranPageAdapter(
     private val activity: FragmentActivity,
@@ -72,7 +71,7 @@ class QuranPageAdapter(
             isLoading = false
             currentPageNumber = pageNumber
 
-            showQuranPageNextAction(activity, view, pageNumber)
+            listener.showNextActionIfAvailable(view, pageNumber)
 
             val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
             progressBar.visibility = View.GONE

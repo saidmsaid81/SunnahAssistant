@@ -20,7 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
 
 
 class SunnahAssistantRepository private constructor(private val applicationContext: Context) {
@@ -60,7 +62,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
 
     fun getToDoLiveData(id: Int) = mToDoDao.getToDo(id)
 
-    fun getToDoById(id: Int) = mToDoDao.getToDoById(id)
+    suspend fun getToDoById(id: Int) = mToDoDao.getToDoById(id)
 
     fun getMalformedToDos() = mToDoDao.getMalformedToDos()
 

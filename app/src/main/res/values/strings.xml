@@ -448,7 +448,7 @@
     <string name="set_reminder_for_every_friday">Set reminder for every Friday</string>
     <string name="remind_others">Remind Others</string>
     <string name="remind_others_to_read_suratul_kahf">Remind others to read Suratul Kahf</string>
-    <string name="next_set_weekly_reminder">Next: Set Weekly Reminder</string>
+    <string name="set_weekly_reminder">Set Weekly Reminder</string>
     <string name="suratul_kahf_reminder_message">I am reminding you to read Surah Al Kahf its the Sunnah of our beloved Prophet Muhammad ﷺ.\n\nIt was narrated from Abu Sa\'eed al-Khduri that the Prophet (peace and blessings of Allaah be upon him) said:\n\n"Whoever reads Soorat al-Kahf on Friday, he will be illuminated with light between the two Fridays."\n\nNarrated by al-Haakim; classed as saheeh by al-Albaani in Saheeh al-Targheeb, 836\n\nSent from %1$s Android app\n\nHave a look at %1$s App\n\nLink:\n%2$s</string>
     <string name="reminder_to_read_suratul_kahf_title">Reminder to Read Suratul Kahf</string>
     <string-array name="categories">

@@ -2,14 +2,19 @@ package com.thesunnahrevival.sunnahassistant.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.thesunnahrevival.sunnahassistant.data.model.dto.ToDoDate
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.PRAYER_TIMES_REMINDERS_ID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.util.*
+import java.util.TreeSet
 
 @Dao
 interface ToDoDao {
@@ -50,7 +55,7 @@ interface ToDoDao {
     fun getToDo(id: Int): LiveData<ToDo?>
 
     @Query("SELECT * FROM reminders_table WHERE id = :id")
-    fun getToDoById(id: Int): ToDo?
+    suspend fun getToDoById(id: Int): ToDo?
 
     @Query("SELECT * FROM reminders_table WHERE day == 1 AND month == 0 AND year == 1 AND (frequency == 3 OR frequency == 0)")
     fun getMalformedToDos(): Flow<List<ToDo>>

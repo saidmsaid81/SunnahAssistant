@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -20,16 +22,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.ActionType
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
-import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
-import com.thesunnahrevival.sunnahassistant.utilities.SURATUL_KAHF_REMIND_OTHERS_ID
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
+import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesNextActionViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceCard
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceTitle
@@ -38,6 +42,8 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
     val mainActivityViewModel by activityViewModels<SunnahAssistantViewModel>()
+    private val viewmodel by viewModels<ResourcesNextActionViewModel>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,30 +51,34 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+        viewmodel.loadNextActions(mainActivityViewModel.getCurrentQuranPage())
+        
         return ComposeView(requireContext()).apply {
             setContent {
-                NextActionScreen { resourceNumber ->
-                    when(resourceNumber) {
-                        READING_SURATUL_KAHF_ID -> {
+                val nextActions by viewmodel.nextActions.collectAsState()
+                
+                NextActionScreen(nextActions) { nextAction ->
+                    when(nextAction.actionType) {
+                        ActionType.NavigateToTodo -> {
                             val selectedToDoTemplate =
-                                mainActivityViewModel.getTemplateToDos()[READING_SURATUL_KAHF_ID]?.second
+                                mainActivityViewModel.getTemplateToDos()[nextAction.actionId]?.second
                             navigateToToDoDetails(selectedToDoTemplate)
                         }
-                        SURATUL_KAHF_REMIND_OTHERS_ID -> {
-                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    getString(
-                                        R.string.suratul_kahf_reminder_message,
-                                        getString(R.string.app_name),
-                                        getSunnahAssistantAppLink()
-                                    )
+                        ActionType.ShareText -> {
+                            nextAction.shareTextResId?.let { textResId ->
+                                val shareText = getString(
+                                    textResId,
+                                    getString(R.string.app_name),
+                                    getSunnahAssistantAppLink()
                                 )
-                            }
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, shareText)
+                                }
 
-                            startActivity(Intent.createChooser(shareIntent,
-                                getString(R.string.reminder_to_read_suratul_kahf_title)))
+                                startActivity(Intent.createChooser(shareIntent,
+                                    getString(nextAction.titleResId)))
+                            }
                         }
                     }
                 }
@@ -109,7 +119,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 }
 
 @Composable
-fun NextActionScreen(onClick: (resourceNumber: Int) -> Unit) {
+fun NextActionScreen(nextActions: List<NextAction> = listOf(), onClick: (action: NextAction) -> Unit) {
     SunnahAssistantTheme {
         Surface {
             Column(
@@ -123,18 +133,13 @@ fun NextActionScreen(onClick: (resourceNumber: Int) -> Unit) {
                     title = stringResource(R.string.suggested_actions)
                 )
 
-                ResourceCard(
-                    title = stringResource(R.string.weekly_friday_reminder),
-                    subtitle = stringResource(R.string.set_reminder_for_every_friday)
-                ) {
-                    onClick(READING_SURATUL_KAHF_ID)
-                }
-
-                ResourceCard(
-                    title = stringResource(R.string.remind_others),
-                    subtitle = stringResource(R.string.remind_others_to_read_suratul_kahf)
-                ) {
-                    onClick(SURATUL_KAHF_REMIND_OTHERS_ID)
+                for (action in nextActions) {
+                    ResourceCard(
+                        title = stringResource(action.titleResId),
+                        subtitle = stringResource(action.subtitleResId)
+                    ) {
+                        onClick(action)
+                    }
                 }
             }
 

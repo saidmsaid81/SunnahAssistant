@@ -30,6 +30,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.QURAN_PAGE_FROM_NOTIFICATION
@@ -41,6 +42,7 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
+import com.thesunnahrevival.sunnahassistant.views.utilities.showQuranPageNextAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -79,7 +81,11 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
 
         _quranReaderBinding = FragmentQuranReaderBinding.inflate(inflater)
 
-        quranPageAdapter = QuranPageAdapter(requireActivity(), (1..604).toList(), this)
+        quranPageAdapter = QuranPageAdapter(
+            activity = requireActivity(),
+            pageNumbers = (1..604).toList(),
+            listener = this
+        )
         val viewPager = quranReaderBinding?.viewPager
         viewPager?.offscreenPageLimit = 2
         viewPager?.adapter = quranPageAdapter
@@ -252,6 +258,16 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     override fun onPageLoaded(pageNumber: Int) {
         if ((pageNumber - 1) == quranReaderBinding?.viewPager?.currentItem) {
             mainActivityViewModel.refreshSelectedAyahId()
+        }
+    }
+
+    override fun showNextActionIfAvailable(view: View, pageNumber: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            var nextAction: NextAction? = null
+            withContext(Dispatchers.IO) {
+                nextAction = viewmodel.getNextAction(pageNumber)
+            }
+            showQuranPageNextAction(requireActivity(), view, nextAction)
         }
     }
 

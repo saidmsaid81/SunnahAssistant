@@ -7,6 +7,8 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 import com.thesunnahrevival.sunnahassistant.data.repositories.BookmarksRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.QuranPageRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,6 +21,7 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
     private val quranPageRepository = QuranPageRepository.getInstance(getApplication())
     private val bookmarksRepository = BookmarksRepository.getInstance(getApplication())
     private val flagRepository = FlagRepository.getInstance(getApplication())
+    private val resourcesNextActionRepository = ResourcesNextActionRepository.getInstance(getApplication())
 
     private var _lines = listOf<Line>()
     val lines: List<Line>
@@ -91,5 +94,10 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
 
     suspend fun setHasSeenLongPressTutorial() {
         flagRepository.setFlag("has_seen_long_press_tutorial", 1)
+    }
+
+    suspend fun getNextAction(page: Int): NextAction? {
+        val nextActions = resourcesNextActionRepository.getNextActions(page)
+        return nextActions.firstOrNull()
     }
 }
