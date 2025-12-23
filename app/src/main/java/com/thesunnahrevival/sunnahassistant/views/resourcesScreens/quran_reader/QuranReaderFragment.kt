@@ -298,6 +298,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         (activity as? MainActivity)?.supportActionBar?.show()
         _quranReaderBinding = null
         viewmodel.hasSeenDownloadFilesDialog = false
+        leaveImmersiveMode()
     }
 
     override fun handleEdgeToEdge() {
