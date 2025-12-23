@@ -70,6 +70,7 @@ class QuranPageAdapter(
             hasTimedOut = false
             isLoading = false
             currentPageNumber = pageNumber
+            view.tag = pageNumber
 
             listener.showNextActionIfAvailable(view, pageNumber)
 

@@ -27,10 +27,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
-import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentQuranReaderBinding
 import com.thesunnahrevival.sunnahassistant.utilities.NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.QURAN_PAGE_FROM_NOTIFICATION
@@ -42,7 +42,6 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
-import com.thesunnahrevival.sunnahassistant.views.utilities.showQuranPageNextAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -262,12 +261,40 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     }
 
     override fun showNextActionIfAvailable(view: View, pageNumber: Int) {
+        val nextActionView = view.findViewById<MaterialButton>(R.id.next_action)
+
         viewLifecycleOwner.lifecycleScope.launch {
-            var nextAction: NextAction? = null
-            withContext(Dispatchers.IO) {
-                nextAction = viewmodel.getNextAction(pageNumber)
+            val nextAction = withContext(Dispatchers.IO) {
+                viewmodel.getNextAction(pageNumber)
             }
-            showQuranPageNextAction(requireActivity(), view, nextAction)
+
+            if (!isAdded || view.tag != pageNumber) {
+                return@launch
+            }
+
+            if (nextAction != null) {
+                val context = context ?: return@launch
+                val text = "${context.getString(R.string.next)}: ${context.getString(nextAction.actionResId)}"
+                
+                if (view.tag != pageNumber) {
+                    return@launch
+                }
+                
+                nextActionView.visibility = View.VISIBLE
+                nextActionView.text = text
+                nextActionView.setOnClickListener {
+                    if (isAdded) {
+                        val fragment = ResourcesNextActionFragment()
+                        fragment.show(
+                            requireActivity().supportFragmentManager,
+                            "resources_next_action"
+                        )
+                    }
+                }
+            } else {
+                nextActionView.visibility = View.INVISIBLE
+                nextActionView.setOnClickListener { }
+            }
         }
     }
 
