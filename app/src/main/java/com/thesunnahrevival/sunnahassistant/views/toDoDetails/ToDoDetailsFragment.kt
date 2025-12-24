@@ -8,7 +8,12 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -23,16 +28,31 @@ import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
-import com.thesunnahrevival.sunnahassistant.utilities.*
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
+import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
+import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
+import com.thesunnahrevival.sunnahassistant.utilities.getFormattedOffset
+import com.thesunnahrevival.sunnahassistant.utilities.getLocale
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
+import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
-import com.thesunnahrevival.sunnahassistant.views.dialogs.*
+import com.thesunnahrevival.sunnahassistant.views.dialogs.AddCategoryDialogFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.DatePickerFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.DeleteToDoFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.SelectDaysDialogFragment
+import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
 import java.net.MalformedURLException
 import java.text.DateFormatSymbols
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.TreeSet
 
 open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
     SelectDaysDialogFragment.SelectDaysDialogListener, DatePickerFragment.OnDateSelectedListener,
@@ -94,8 +114,13 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
         if (mToDo.isAutomaticPrayerTime()) {
             automaticPrayerTimeView()
-        } else
+        } else {
             mBinding.isAutomaticPrayerTime = false
+        }
+
+        if (savedInstanceState == null && mainActivityViewModel.isToDoTemplate) {
+            showTimePicker()
+        }
     }
 
     private fun automaticPrayerTimeView() {
@@ -394,13 +419,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             }
             R.id.to_do_time -> {
                 if (!isAutomaticPrayerTime(R.string.time_cannot_be_changed)) {
-                    val timePickerFragment = TimePickerFragment()
-                    timePickerFragment.arguments =
-                        Bundle().apply { putString(TimePickerFragment.TIMESET, mTimeString) }
-
-                    timePickerFragment.setListener(this)
-                    val fragmentManager = requireActivity().supportFragmentManager
-                    timePickerFragment.show(fragmentManager, "timePicker")
+                    showTimePicker()
                 }
             }
             R.id.mark_as_complete -> {
@@ -791,5 +810,15 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             getString(R.string.minutes),
             resources.getStringArray(R.array.notify_options)[1]
         )
+    }
+
+    private fun showTimePicker() {
+        val timePickerFragment = TimePickerFragment()
+        timePickerFragment.arguments =
+            Bundle().apply { putString(TimePickerFragment.TIMESET, mTimeString) }
+
+        timePickerFragment.setListener(this)
+        val fragmentManager = activity?.supportFragmentManager ?: return
+        timePickerFragment.show(fragmentManager, "timePicker")
     }
 }

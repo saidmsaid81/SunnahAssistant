@@ -36,19 +36,27 @@ import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
-import com.thesunnahrevival.sunnahassistant.utilities.*
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
+import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.SHARE
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
+import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
 import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranReaderFragment
 import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
+import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ToDoDetailsFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.util.*
+import java.util.Locale
 import kotlin.random.Random
 
 open class MainActivity : AppCompatActivity() {
@@ -360,7 +368,9 @@ open class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        listOf(R.id.todayFragment, R.id.calendarFragment)
+        if (getActiveFragment() is ToDoDetailsFragment) {
+            mViewModel.isToDoTemplate = false
+        }
         return if (!mainActivityBinding.bottomNavigationView.isVisible) {
             navController.navigateUp()
         } else {
