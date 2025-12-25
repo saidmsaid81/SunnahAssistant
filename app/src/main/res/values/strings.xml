@@ -454,7 +454,9 @@
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
+<!--        fragile-->
         <item>Prayer</item>
+<!--        fragile-->
         <item>Other</item>
     </string-array>
     <string-array name="frequency">

@@ -4,9 +4,15 @@ import android.content.Context
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
 import com.thesunnahrevival.sunnahassistant.utilities.SURATUL_KAHF_REMIND_OTHERS_ID
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+
+private const val MAGHRIB_INDEX = '3'
 
 class ResourcesNextActionRepository private constructor(
-    applicationContext: Context
+    private val applicationContext: Context
 ) {
 
     companion object {
@@ -26,39 +32,64 @@ class ResourcesNextActionRepository private constructor(
 
     suspend fun getNextActions(page: Int): List<NextAction> {
         return buildList {
-                when (page) {
-                    304 -> {
-                        populateSuratulKahfActions()
-                    }
+            when (page) {
+                304 -> {
+                    populateSuratulKahfActions()
                 }
             }
+        }
     }
 
     private suspend fun MutableList<NextAction>.populateSuratulKahfActions() {
+        val now = LocalDate.now()
+        val day = now.dayOfWeek
+
+        if (day != DayOfWeek.THURSDAY && day != DayOfWeek.FRIDAY) return
+
+        val categories = applicationContext.resources.getStringArray(R.array.categories)
+        val prayerTimes = toDoRepository.getPrayerTimesValue(
+            day = now.dayOfMonth,
+            month = now.month.ordinal, // Repo expects 0-indexed months
+            year = now.year,
+            categoryName = categories.getOrNull(2).orEmpty()
+        )
+
+        val maghribOffset = prayerTimes.find { it.id.toString().endsWith(MAGHRIB_INDEX) }?.timeInMilliseconds
+
+        if (day == DayOfWeek.THURSDAY) {
+            val maghribTime = maghribOffset?.let { getMidnightTime() + it } ?: return
+            if (System.currentTimeMillis() < maghribTime) return
+        }
+
         if (toDoRepository.getToDoById(READING_SURATUL_KAHF_ID) == null) {
             add(
                 NextAction(
-                    READING_SURATUL_KAHF_ID,
-                    R.string.weekly_friday_reminder,
-                    R.string.set_reminder_for_every_friday,
-                    R.string.set_weekly_reminder,
-                    ActionType.NavigateToTodo,
-                    null
+                    actionId = READING_SURATUL_KAHF_ID,
+                    titleResId = R.string.weekly_friday_reminder,
+                    subtitleResId = R.string.set_reminder_for_every_friday,
+                    actionResId = R.string.set_weekly_reminder,
+                    actionType = ActionType.NavigateToTodo,
+                    shareTextResId = null
                 )
             )
         }
 
         add(
             NextAction(
-                SURATUL_KAHF_REMIND_OTHERS_ID,
-                R.string.remind_others,
-                R.string.remind_others_to_read_suratul_kahf,
-                R.string.remind_others,
-                ActionType.ShareText,
-                R.string.suratul_kahf_reminder_message
+                actionId = SURATUL_KAHF_REMIND_OTHERS_ID,
+                titleResId = R.string.remind_others,
+                subtitleResId = R.string.remind_others_to_read_suratul_kahf,
+                actionResId = R.string.remind_others,
+                actionType = ActionType.ShareText,
+                shareTextResId = R.string.suratul_kahf_reminder_message
             )
         )
     }
+
+    private fun getMidnightTime(): Long =
+        Instant.now()
+            .truncatedTo(ChronoUnit.DAYS)
+            .toEpochMilli()
 
 
     data class NextAction(

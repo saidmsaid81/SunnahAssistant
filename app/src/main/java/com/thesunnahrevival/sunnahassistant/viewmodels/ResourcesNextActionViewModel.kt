@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +18,7 @@ class ResourcesNextActionViewModel(application: Application) : AndroidViewModel(
     val nextActions: StateFlow<List<NextAction>> = _nextActions.asStateFlow()
 
     fun loadNextActions(page: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _nextActions.value = resourcesNextActionRepository.getNextActions(page)
         }
     }
