@@ -1,5 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -12,7 +13,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
-import java.util.*
+import java.util.Locale
 
 fun showHelpTranslateBanner(todayFragment: TodayFragment) {
     if (!SUPPORTED_LOCALES.contains(Locale.getDefault().language)) {
@@ -71,8 +72,10 @@ fun showSendFeedbackBanner(todayFragment: TodayFragment) {
 
 fun showShareAppBanner(todayFragment: TodayFragment) {
     val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
+    val context = todayFragment.context ?: return
+    
     val onClickListener = BannerInterface.OnClickListener {
-        val shareAppIntent = shareAppIntent()
+        val shareAppIntent = shareAppIntent(context)
         todayFragment.startActivity(
             Intent.createChooser(
                 shareAppIntent,
@@ -90,12 +93,15 @@ fun showShareAppBanner(todayFragment: TodayFragment) {
     )
 }
 
-fun shareAppIntent(): Intent {
+fun shareAppIntent(context: Context): Intent {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"
     intent.putExtra(
         Intent.EXTRA_TEXT,
-        "I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To manage to-dos\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- ${getSunnahAssistantAppLink(utmCampaign = "Share-App-Link")} "
+        context.getString(
+            R.string.sunnah_assistant_promo,
+            getSunnahAssistantAppLink(utmCampaign = "Share-App-Link")
+        )
     )
     return intent
 }

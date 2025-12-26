@@ -66,11 +66,13 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                         }
                         ActionType.ShareText -> {
                             nextAction.shareTextResId?.let { textResId ->
-                                val shareText = getString(
-                                    textResId,
-                                    getString(R.string.app_name),
+                                val message = getString(textResId)
+                                val promotionalMessage = getString(
+                                    R.string.app_promotional_message,
                                     getSunnahAssistantAppLink()
                                 )
+                                val shareText = "$message\n\n$promotionalMessage"
+
                                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                     type = "text/plain"
                                     putExtra(Intent.EXTRA_TEXT, shareText)
