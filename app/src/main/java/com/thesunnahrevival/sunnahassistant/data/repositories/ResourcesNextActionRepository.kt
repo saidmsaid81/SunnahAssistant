@@ -55,11 +55,16 @@ class ResourcesNextActionRepository private constructor(
         )
 
         val maghribOffset = prayerTimes.find { it.id.toString().endsWith(MAGHRIB_INDEX) }?.timeInMilliseconds
+        val maghribTime = maghribOffset?.let { getMidnightTime() + it } ?: return
 
-        if (day == DayOfWeek.THURSDAY) {
-            val maghribTime = maghribOffset?.let { getMidnightTime() + it } ?: return
-            if (System.currentTimeMillis() < maghribTime) return
+        val currentTime = System.currentTimeMillis()
+        val isKahfTime = when (day) {
+            DayOfWeek.THURSDAY -> currentTime >= maghribTime
+            DayOfWeek.FRIDAY -> currentTime <= maghribTime
+            else -> false
         }
+
+        if (!isKahfTime) return
 
         if (toDoRepository.getToDoById(READING_SURATUL_KAHF_ID) == null) {
             add(
