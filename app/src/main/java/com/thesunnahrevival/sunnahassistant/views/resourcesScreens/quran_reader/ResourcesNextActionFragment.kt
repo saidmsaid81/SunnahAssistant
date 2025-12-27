@@ -37,6 +37,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesNextActionViewMo
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceCard
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceTitle
+import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ShimmerResourceCard
 import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 
 class ResourcesNextActionFragment : BottomSheetDialogFragment() {
@@ -135,12 +136,18 @@ fun NextActionScreen(nextActions: List<NextAction> = listOf(), onClick: (action:
                     title = stringResource(R.string.suggested_actions)
                 )
 
-                for (action in nextActions) {
-                    ResourceCard(
-                        title = stringResource(action.titleResId),
-                        subtitle = stringResource(action.subtitleResId)
-                    ) {
-                        onClick(action)
+                if (nextActions.isEmpty()) {
+                    repeat(2) {
+                        ShimmerResourceCard()
+                    }
+                } else {
+                    for (action in nextActions) {
+                        ResourceCard(
+                            title = stringResource(action.titleResId),
+                            subtitle = stringResource(action.subtitleResId)
+                        ) {
+                            onClick(action)
+                        }
                     }
                 }
             }
