@@ -119,11 +119,11 @@
     <string name="today_s_to_dos">Today\'s To-Dos</string>
     <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date used in this app is based on Umm al-Qura Calendar.\nIt should be noted that, Umm al-Qura calendar is a calculated calendar and may vary with your local moonsighting.\nTherefore, it is recommended to verify the dates here with your local moonsighting. \n\nTap to Read more on Umm al-Qura Calendar</string>
     <string name="read_more">Read more</string>
-    <string name="read_more_on_dhuha_prayer">      Tap to read more on Duha Prayer, its time and  number of rakaahs
+    <string name="read_more_on_dhuha_prayer">      Tap here to read more on Duha Prayer, its time and  number of rakaahs
     </string>
-    <string name="read_more_on_tahajjud_prayer">Tap to read more on Tahajjud prayer, its time and number of rakaahs</string>
-    <string name="read_more_on_suratul_kahf">Tap to read more on the importance of reading Suratul Kahf every Friday</string>
-    <string name="read_more_on_fasting_mondays_and_thursdays">Tap to read more on the importance of fasting on Mondays and Thursday</string>
+    <string name="read_more_on_tahajjud_prayer">Tap here to read more on Tahajjud prayer, its time and number of rakaahs</string>
+    <string name="read_more_on_suratul_kahf">Tap here to read more on the importance of reading Suratul Kahf every Friday</string>
+    <string name="read_more_on_fasting_mondays_and_thursdays">Tap here to read more on the importance of fasting on Mondays and Thursday</string>
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
@@ -461,6 +461,7 @@
     <string name="read_suratul_sajdah">Read Suratul Sajdah</string>
     <string name="read_suratul_mulk">Read Suratul Mulk</string>
     <string name="recommended_every_night">Recommended every night</string>
+    <string name="read_more_on_suratul_mulk">Tap here to read more on the importance of reading Suratul Mulk and Al Sajdah every night</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

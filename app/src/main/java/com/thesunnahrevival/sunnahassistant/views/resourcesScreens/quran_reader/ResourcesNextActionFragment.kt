@@ -23,13 +23,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +45,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.ActionType
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
-import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextActions
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextActionsData
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
@@ -74,7 +73,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         
         return ComposeView(requireContext()).apply {
             setContent {
-                val nextActionsData by viewmodel.nextActions.collectAsState()
+                val nextActionsData by viewmodel.nextActionsData.collectAsState()
 
                 if (nextActionsData?.nextActions?.size == 1) {
                     onNextActionClick(nextActionsData!!.nextActions.first())
@@ -82,7 +81,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                 }
 
                 NextActionScreen(
-                    nextActions = nextActionsData,
+                    nextActionsData = nextActionsData,
                     onInfoClick = { link ->
                         onInfoClick(link)
                     }
@@ -186,7 +185,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
 @Composable
 fun NextActionScreen(
-    nextActions: NextActions? = null,
+    nextActionsData: NextActionsData? = null,
     onInfoClick: (String) -> Unit = {},
     onClick: (action: NextAction) -> Unit
 ) {
@@ -203,12 +202,12 @@ fun NextActionScreen(
                     title = stringResource(R.string.suggested_actions)
                 )
 
-                if (nextActions == null) {
+                if (nextActionsData == null) {
                     repeat(2) {
                         ShimmerResourceCard()
                     }
                 } else {
-                    for (action in nextActions.nextActions) {
+                    for (action in nextActionsData.nextActions) {
                         ResourceCard(
                             title = stringResource(action.titleResId),
                             subtitle = stringResource(action.subtitleResId)
@@ -217,13 +216,13 @@ fun NextActionScreen(
                         }
                     }
 
-                    if (nextActions.predefinedReminderInfo.isNotBlank()) {
+                    if (nextActionsData.predefinedReminderInfo.isNotBlank()) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 24.dp)
-                                .clickable(enabled = Patterns.WEB_URL.matcher(nextActions.predefinedReminderLink).matches()) {
-                                    onInfoClick(nextActions.predefinedReminderLink)
+                                .clickable(enabled = Patterns.WEB_URL.matcher(nextActionsData.predefinedReminderLink).matches()) {
+                                    onInfoClick(nextActionsData.predefinedReminderLink)
                                 },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -234,10 +233,11 @@ fun NextActionScreen(
                             )
 
                             Text(
-                                text = nextActions.predefinedReminderInfo,
-                                fontSize = 14.sp,
+                                text = nextActionsData.predefinedReminderInfo,
+                                fontSize = 13.sp,
                                 fontWeight = FontWeight.Light,
-                                style = MaterialTheme.typography.body2
+                                fontFamily = FontFamily.SansSerif,
+                                style = MaterialTheme.typography.caption
                             )
                         }
                     }

@@ -59,7 +59,9 @@ class ResourcesNextActionRepository private constructor(
 
     private val toDoRepository = SunnahAssistantRepository.getInstance(applicationContext)
 
-    suspend fun getNextActions(page: Int): NextActions {
+    private val templateToDos = TemplateToDos().getTemplateToDos(applicationContext)
+
+    suspend fun getNextActions(page: Int): NextActionsData {
         trackReadSurahs(page)
         val nextActions = buildList {
             when (page) {
@@ -69,11 +71,10 @@ class ResourcesNextActionRepository private constructor(
             }
         }
 
-        val templateToDos = TemplateToDos().getTemplateToDos(applicationContext)
         val firstActionWithToDoId = nextActions.find { it.toDoId != null && templateToDos.containsKey(it.toDoId) }
         val templateToDo = firstActionWithToDoId?.toDoId?.let { templateToDos[it]?.second }
 
-        return NextActions(
+        return NextActionsData(
             predefinedReminderInfo = templateToDo?.predefinedToDoInfo ?: "",
             predefinedReminderLink = templateToDo?.predefinedToDoLink ?: "",
             nextActions = nextActions
@@ -222,7 +223,7 @@ class ResourcesNextActionRepository private constructor(
             .toEpochMilli()
 
 
-    data class NextActions(
+    data class NextActionsData(
         val predefinedReminderInfo: String = "",
         val predefinedReminderLink: String = "",
         val nextActions: List<NextAction>

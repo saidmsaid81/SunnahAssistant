@@ -4,7 +4,8 @@ import android.content.Context
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
-import java.util.*
+import java.util.Calendar
+import java.util.TreeSet
 
 class TemplateToDos {
     /**
@@ -116,6 +117,7 @@ class TemplateToDos {
                 name = context.getString(R.string.reading_suratul_mulk),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.read_more_on_suratul_mulk),
                 predefinedReminderLink = "https://thesunnahrevival.com/2016/04/23/revive-a-sunnah-series-reciting-surah-al-mulk-and-al-sajdah-every-night/"
             )
         )
