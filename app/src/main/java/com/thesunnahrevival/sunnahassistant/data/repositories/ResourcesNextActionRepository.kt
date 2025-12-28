@@ -7,6 +7,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_MULK_ID
 import com.thesunnahrevival.sunnahassistant.utilities.SURATUL_KAHF_REMIND_OTHERS_ID
 import com.thesunnahrevival.sunnahassistant.utilities.SURATUL_MULK_REMIND_OTHERS_ID
+import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -58,15 +59,25 @@ class ResourcesNextActionRepository private constructor(
 
     private val toDoRepository = SunnahAssistantRepository.getInstance(applicationContext)
 
-    suspend fun getNextActions(page: Int): List<NextAction> {
+    suspend fun getNextActions(page: Int): NextActions {
         trackReadSurahs(page)
-        return buildList {
+        val nextActions = buildList {
             when (page) {
                 SURATUL_KAHF_LAST_PAGE -> populateSuratulKahfActions()
                 SURATUL_MULK_LAST_PAGE -> populateSuratulMulkActions()
                 SURATUL_SAJDAH_LAST_PAGE -> populateSuratulSajdahActions()
             }
         }
+
+        val templateToDos = TemplateToDos().getTemplateToDos(applicationContext)
+        val firstActionWithToDoId = nextActions.find { it.toDoId != null && templateToDos.containsKey(it.toDoId) }
+        val templateToDo = firstActionWithToDoId?.toDoId?.let { templateToDos[it]?.second }
+
+        return NextActions(
+            predefinedReminderInfo = templateToDo?.predefinedToDoInfo ?: "",
+            predefinedReminderLink = templateToDo?.predefinedToDoLink ?: "",
+            nextActions = nextActions
+        )
     }
 
     private suspend fun trackReadSurahs(page: Int) {
@@ -210,6 +221,12 @@ class ResourcesNextActionRepository private constructor(
             .truncatedTo(ChronoUnit.DAYS)
             .toEpochMilli()
 
+
+    data class NextActions(
+        val predefinedReminderInfo: String = "",
+        val predefinedReminderLink: String = "",
+        val nextActions: List<NextAction>
+    )
 
     data class NextAction(
         val titleResId: Int,

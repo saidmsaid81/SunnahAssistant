@@ -98,6 +98,6 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
 
     suspend fun getNextAction(page: Int): NextAction? {
         val nextActions = resourcesNextActionRepository.getNextActions(page)
-        return nextActions.firstOrNull()
+        return nextActions.nextActions.firstOrNull()
     }
 }

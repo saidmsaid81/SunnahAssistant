@@ -5,25 +5,40 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
+import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -31,7 +46,9 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.ActionType
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextActions
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesNextActionViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -39,6 +56,7 @@ import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.Resource
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourceTitle
 import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ShimmerResourceCard
 import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
+import java.net.MalformedURLException
 
 class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
@@ -56,17 +74,39 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         
         return ComposeView(requireContext()).apply {
             setContent {
-                val nextActions by viewmodel.nextActions.collectAsState()
+                val nextActionsData by viewmodel.nextActions.collectAsState()
 
-                if (nextActions.size == 1) {
-                    onNextActionClick(nextActions.first())
+                if (nextActionsData?.nextActions?.size == 1) {
+                    onNextActionClick(nextActionsData!!.nextActions.first())
                     dismiss()
                 }
 
-                NextActionScreen(nextActions) { nextAction ->
+                NextActionScreen(
+                    nextActions = nextActionsData,
+                    onInfoClick = { link ->
+                        onInfoClick(link)
+                    }
+                ) { nextAction ->
                     onNextActionClick(nextAction)
                 }
             }
+        }
+    }
+
+    private fun onInfoClick(link: String) {
+        val inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
+        try {
+            inAppBrowser.launchInAppBrowser(
+                link,
+                findNavController()
+            )
+        } catch (exception: MalformedURLException) {
+            Log.e("MalformedURLException", exception.message.toString())
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.something_wrong),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -145,7 +185,11 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 }
 
 @Composable
-fun NextActionScreen(nextActions: List<NextAction> = listOf(), onClick: (action: NextAction) -> Unit) {
+fun NextActionScreen(
+    nextActions: NextActions? = null,
+    onInfoClick: (String) -> Unit = {},
+    onClick: (action: NextAction) -> Unit
+) {
     SunnahAssistantTheme {
         Surface {
             Column(
@@ -159,17 +203,42 @@ fun NextActionScreen(nextActions: List<NextAction> = listOf(), onClick: (action:
                     title = stringResource(R.string.suggested_actions)
                 )
 
-                if (nextActions.isEmpty()) {
+                if (nextActions == null) {
                     repeat(2) {
                         ShimmerResourceCard()
                     }
                 } else {
-                    for (action in nextActions) {
+                    for (action in nextActions.nextActions) {
                         ResourceCard(
                             title = stringResource(action.titleResId),
                             subtitle = stringResource(action.subtitleResId)
                         ) {
                             onClick(action)
+                        }
+                    }
+
+                    if (nextActions.predefinedReminderInfo.isNotBlank()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 24.dp)
+                                .clickable(enabled = Patterns.WEB_URL.matcher(nextActions.predefinedReminderLink).matches()) {
+                                    onInfoClick(nextActions.predefinedReminderLink)
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_info),
+                                contentDescription = stringResource(R.string.info),
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                            )
+
+                            Text(
+                                text = nextActions.predefinedReminderInfo,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Light,
+                                style = MaterialTheme.typography.body2
+                            )
                         }
                     }
                 }
@@ -182,7 +251,7 @@ fun NextActionScreen(nextActions: List<NextAction> = listOf(), onClick: (action:
 @Composable
 @Preview
 fun LightModePreview() {
-    NextActionScreen{}
+    NextActionScreen(onClick = {})
 }
 
 @Composable
@@ -191,5 +260,5 @@ fun LightModePreview() {
     locale = "en"
 )
 fun DarkModePreview() {
-    NextActionScreen{}
+    NextActionScreen(onClick = {})
 }
