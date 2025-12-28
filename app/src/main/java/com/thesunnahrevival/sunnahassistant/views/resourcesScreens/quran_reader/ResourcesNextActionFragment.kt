@@ -57,33 +57,47 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val nextActions by viewmodel.nextActions.collectAsState()
-                
+
+                if (nextActions.size == 1) {
+                    onNextActionClick(nextActions.first())
+                    dismiss()
+                }
+
                 NextActionScreen(nextActions) { nextAction ->
-                    when(nextAction.actionType) {
-                        ActionType.NavigateToTodo -> {
-                            val selectedToDoTemplate =
-                                mainActivityViewModel.getTemplateToDos()[nextAction.actionId]?.second
-                            navigateToToDoDetails(selectedToDoTemplate)
-                        }
-                        ActionType.ShareText -> {
-                            nextAction.shareTextResId?.let { textResId ->
-                                val message = getString(textResId)
-                                val promotionalMessage = getString(
-                                    R.string.app_promotional_message,
-                                    getSunnahAssistantAppLink()
-                                )
-                                val shareText = "$message\n\n$promotionalMessage"
+                    onNextActionClick(nextAction)
+                }
+            }
+        }
+    }
 
-                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                    type = "text/plain"
-                                    putExtra(Intent.EXTRA_TEXT, shareText)
-                                }
+    private fun onNextActionClick(nextAction: NextAction) {
+        when (nextAction.actionType) {
+            ActionType.NavigateToTodo -> {
+                val selectedToDoTemplate =
+                    mainActivityViewModel.getTemplateToDos()[nextAction.actionId]?.second
+                navigateToToDoDetails(selectedToDoTemplate)
+            }
 
-                                startActivity(Intent.createChooser(shareIntent,
-                                    getString(nextAction.titleResId)))
-                            }
-                        }
+            ActionType.ShareText -> {
+                nextAction.shareTextResId?.let { textResId ->
+                    val message = getString(textResId)
+                    val promotionalMessage = getString(
+                        R.string.app_promotional_message,
+                        getSunnahAssistantAppLink()
+                    )
+                    val shareText = "$message\n\n$promotionalMessage"
+
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
                     }
+
+                    startActivity(
+                        Intent.createChooser(
+                            shareIntent,
+                            getString(nextAction.titleResId)
+                        )
+                    )
                 }
             }
         }
