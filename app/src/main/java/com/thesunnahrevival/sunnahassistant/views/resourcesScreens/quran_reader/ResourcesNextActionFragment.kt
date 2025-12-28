@@ -74,7 +74,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         when (nextAction.actionType) {
             ActionType.NavigateToTodo -> {
                 val selectedToDoTemplate =
-                    mainActivityViewModel.getTemplateToDos()[nextAction.actionId]?.second
+                    mainActivityViewModel.getTemplateToDos()[nextAction.toDoId]?.second
                 navigateToToDoDetails(selectedToDoTemplate)
             }
 
@@ -99,6 +99,15 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                         )
                     )
                 }
+            }
+
+            ActionType.NavigateToSurah -> {
+                nextAction.surahPageNumber?.let {
+                    mainActivityViewModel.updateCurrentPage(it)
+                    requireActivity().findNavController(R.id.myNavHostFragment)
+                        .navigate(R.id.quranReaderFragment)
+                }
+                dismiss()
             }
         }
     }

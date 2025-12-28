@@ -63,6 +63,15 @@ class FlagRepository private constructor(private val applicationContext: Context
         }
     }
 
+    suspend fun clearFlagsMatching(regex: Regex) {
+        applicationContext.dataStore.edit { flags ->
+            val keysToRemove = flags.asMap().keys.filter { regex.matches(it.name) }
+            keysToRemove.forEach { key ->
+                flags.remove(key)
+            }
+        }
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: FlagRepository? = null

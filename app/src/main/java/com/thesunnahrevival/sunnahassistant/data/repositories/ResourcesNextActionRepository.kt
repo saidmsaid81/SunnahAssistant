@@ -16,9 +16,32 @@ private const val FAJR_INDEX = '0'
 private const val MAGHRIB_INDEX = '3'
 private const val ISHA_INDEX = '4'
 
+const val TRACK_READ_SURAH_PREFIX = "track-read-surah"
+
+private fun getTrackReadSurahKey(date: LocalDate = LocalDate.now()): String =
+    "$TRACK_READ_SURAH_PREFIX-$date"
+
+private val TRACK_READ_SURAH_MULK_KEY: String
+    get() = "${getTrackReadSurahKey()}-mulk"
+
+private val TRACK_READ_SURAH_SAJDAH_KEY: String
+    get() = "${getTrackReadSurahKey()}-sajdah"
+
+private const val SURATUL_KAHF_LAST_PAGE = 304
+
+private const val SURATUL_MULK_LAST_PAGE = 564
+
+private const val SURATUL_SAJDAH_LAST_PAGE = 417
+
+private const val SURATUL_MULK_FIRST_PAGE = 562
+
+private const val SURATUL_SAJDAH_FIRST_PAGE = 415
+
 class ResourcesNextActionRepository private constructor(
     private val applicationContext: Context
 ) {
+
+    private val flagRepository = FlagRepository.getInstance(applicationContext)
 
     companion object {
         @Volatile
@@ -36,15 +59,20 @@ class ResourcesNextActionRepository private constructor(
     private val toDoRepository = SunnahAssistantRepository.getInstance(applicationContext)
 
     suspend fun getNextActions(page: Int): List<NextAction> {
+        trackReadSurahs(page)
         return buildList {
             when (page) {
-                304 -> {
-                    populateSuratulKahfActions()
-                }
-                564 -> {
-                    populateSuratulMulkActions()
-                }
+                SURATUL_KAHF_LAST_PAGE -> populateSuratulKahfActions()
+                SURATUL_MULK_LAST_PAGE -> populateSuratulMulkActions()
+                SURATUL_SAJDAH_LAST_PAGE -> populateSuratulSajdahActions()
             }
+        }
+    }
+
+    private suspend fun trackReadSurahs(page: Int) {
+        when(page) {
+            in SURATUL_MULK_FIRST_PAGE..SURATUL_MULK_LAST_PAGE -> flagRepository.setFlag(TRACK_READ_SURAH_MULK_KEY, 1)
+            in SURATUL_SAJDAH_FIRST_PAGE..SURATUL_SAJDAH_LAST_PAGE -> flagRepository.setFlag(TRACK_READ_SURAH_SAJDAH_KEY , 1)
         }
     }
 
@@ -71,69 +99,100 @@ class ResourcesNextActionRepository private constructor(
         if (toDoRepository.getToDoById(READING_SURATUL_KAHF_ID) == null) {
             add(
                 NextAction(
-                    actionId = READING_SURATUL_KAHF_ID,
                     titleResId = R.string.weekly_friday_reminder,
                     subtitleResId = R.string.set_reminder_for_every_friday,
                     actionResId = R.string.set_weekly_reminder,
                     actionType = ActionType.NavigateToTodo,
-                    shareTextResId = null
+                    toDoId = READING_SURATUL_KAHF_ID
                 )
             )
         }
 
         add(
             NextAction(
-                actionId = SURATUL_KAHF_REMIND_OTHERS_ID,
                 titleResId = R.string.remind_others,
                 subtitleResId = R.string.remind_others_to_read_suratul_kahf,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
+                toDoId = SURATUL_KAHF_REMIND_OTHERS_ID,
                 shareTextResId = R.string.suratul_kahf_reminder_message
             )
         )
     }
 
     private suspend fun MutableList<NextAction>.populateSuratulMulkActions() {
-        val now = LocalDate.now()
+        if (!isNightTime()) return
+        populateDailySurahActions(TRACK_READ_SURAH_SAJDAH_KEY, ::getSuratulSajdahNavigateAction, { getDailySuraReadingAction(R.string.suratul_mulk_daily_reminder) })
+    }
 
-        val prayerTimes = getPrayerTimes(now)
+    private suspend fun MutableList<NextAction>.populateSuratulSajdahActions() {
+        if (!isNightTime()) return
+        populateDailySurahActions(TRACK_READ_SURAH_MULK_KEY, ::getSuratulMulkNavigateAction, { getDailySuraReadingAction(R.string.suratul_sajdah_daily_reminder) })
+    }
 
-        val ishaOffset = prayerTimes.find { it.id.toString().endsWith(ISHA_INDEX) }?.timeInMilliseconds
-        val ishaTime = ishaOffset?.let { getMidnightTime() + it } ?: return
+    private suspend fun MutableList<NextAction>.populateDailySurahActions(
+        flagKey: String,
+        firstAction: () -> NextAction,
+        secondAction: () -> NextAction
+    ) {
 
-        val fajrOffset = prayerTimes.find { it.id.toString().endsWith(FAJR_INDEX) }?.timeInMilliseconds
-        val fajrTime = fajrOffset?.let { getMidnightTime() + it } ?: return
-
-        val currentTime = System.currentTimeMillis()
-
-        if (currentTime in (fajrTime + 1)..<ishaTime) {
-            return
+        if (flagRepository.getIntFlag(flagKey) == null) {
+            add(firstAction())
         }
 
-        if (toDoRepository.getToDoById(READING_SURATUL_MULK_ID) == null) {
-            add(
-                NextAction(
-                    actionId = READING_SURATUL_MULK_ID,
-                    titleResId = R.string.suratul_mulk_daily_reminder,
-                    subtitleResId = R.string.set_daily_reminder,
-                    actionResId = R.string.set_daily_reminder,
-                    actionType = ActionType.NavigateToTodo,
-                    shareTextResId = null
-                )
-            )
+        if (toDoRepository.getToDoById(READING_SURATUL_MULK_ID) == null){
+            add(secondAction())
         }
 
         add(
             NextAction(
-                actionId = SURATUL_MULK_REMIND_OTHERS_ID,
                 titleResId = R.string.remind_others,
                 subtitleResId = R.string.remind_others_to_read_suratul_mulk,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
+                toDoId = SURATUL_MULK_REMIND_OTHERS_ID,
                 shareTextResId = R.string.suratul_mulk_and_sajdah_reminder_message
             )
         )
     }
+
+    private fun isNightTime(): Boolean {
+        val prayerTimes = getPrayerTimes(LocalDate.now())
+
+        val ishaOffset = prayerTimes.find { it.id.toString().endsWith(ISHA_INDEX) }?.timeInMilliseconds
+        val ishaTime = ishaOffset?.let { getMidnightTime() + it } ?: return false
+
+        val fajrOffset = prayerTimes.find { it.id.toString().endsWith(FAJR_INDEX) }?.timeInMilliseconds
+        val fajrTime = fajrOffset?.let { getMidnightTime() + it } ?: return false
+
+        val currentTime = System.currentTimeMillis()
+
+        return currentTime !in (fajrTime + 1)..< ishaTime
+    }
+
+    private fun getDailySuraReadingAction(titleResId: Int): NextAction = NextAction(
+        titleResId = titleResId,
+        subtitleResId = R.string.set_daily_reminder,
+        actionResId = R.string.set_daily_reminder,
+        actionType = ActionType.NavigateToTodo,
+        toDoId = READING_SURATUL_MULK_ID
+    )
+
+    private fun getSuratulMulkNavigateAction(): NextAction = NextAction(
+        titleResId = R.string.read_suratul_mulk,
+        subtitleResId = R.string.recommended_every_night,
+        actionResId = R.string.read_suratul_mulk,
+        actionType = ActionType.NavigateToSurah,
+        surahPageNumber = SURATUL_MULK_FIRST_PAGE
+    )
+
+    private fun getSuratulSajdahNavigateAction(): NextAction = NextAction(
+        titleResId = R.string.read_suratul_sajdah,
+        subtitleResId = R.string.recommended_every_night,
+        actionResId = R.string.read_suratul_sajdah,
+        actionType = ActionType.NavigateToSurah,
+        surahPageNumber = SURATUL_SAJDAH_FIRST_PAGE
+    )
 
     private fun getPrayerTimes(now: LocalDate): List<ToDo> {
         val categories = applicationContext.resources.getStringArray(R.array.categories)
@@ -153,16 +212,18 @@ class ResourcesNextActionRepository private constructor(
 
 
     data class NextAction(
-        val actionId: Int,
         val titleResId: Int,
         val subtitleResId: Int,
         val actionResId: Int,
         val actionType: ActionType,
-        val shareTextResId: Int?
+        val toDoId: Int? = null,
+        val shareTextResId: Int? = null,
+        val surahPageNumber: Int? = null
     )
 
     sealed class ActionType {
         data object NavigateToTodo : ActionType()
         data object ShareText : ActionType()
+        data object NavigateToSurah : ActionType()
     }
 }
