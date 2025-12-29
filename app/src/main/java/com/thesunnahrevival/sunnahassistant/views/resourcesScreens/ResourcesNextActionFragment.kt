@@ -1,9 +1,8 @@
-package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
+package com.thesunnahrevival.sunnahassistant.views.resourcesScreens
 
 import android.app.Dialog
 import android.content.Intent
 import android.content.res.Configuration
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -43,9 +42,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
-import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.ActionType
-import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
-import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextActionsData
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
@@ -70,7 +67,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         viewmodel.loadNextActions(mainActivityViewModel.getCurrentQuranPage())
-        
+
         return ComposeView(requireContext()).apply {
             setContent {
                 val nextActionsData by viewmodel.nextActionsData.collectAsState()
@@ -109,15 +106,15 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun onNextActionClick(nextAction: NextAction) {
+    private fun onNextActionClick(nextAction: ResourcesNextActionRepository.NextAction) {
         when (nextAction.actionType) {
-            ActionType.NavigateToTodo -> {
+            ResourcesNextActionRepository.ActionType.NavigateToTodo -> {
                 val selectedToDoTemplate =
                     mainActivityViewModel.getTemplateToDos()[nextAction.toDoId]?.second
                 navigateToToDoDetails(selectedToDoTemplate)
             }
 
-            ActionType.ShareText -> {
+            ResourcesNextActionRepository.ActionType.ShareText -> {
                 nextAction.shareTextResId?.let { textResId ->
                     val message = getString(textResId)
                     val promotionalMessage = getString(
@@ -140,7 +137,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            ActionType.NavigateToSurah -> {
+            ResourcesNextActionRepository.ActionType.NavigateToSurah -> {
                 nextAction.surahPageNumber?.let {
                     mainActivityViewModel.updateCurrentPage(it)
                     requireActivity().findNavController(R.id.myNavHostFragment)
@@ -161,7 +158,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                 val behavior = BottomSheetBehavior.from(it)
                 behavior.isDraggable = false
 
-                if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) {
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                     behavior.state = BottomSheetBehavior.STATE_EXPANDED
                     dialog.window?.setDimAmount(0f)
@@ -185,18 +182,18 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
 @Composable
 fun NextActionScreen(
-    nextActionsData: NextActionsData? = null,
+    nextActionsData: ResourcesNextActionRepository.NextActionsData? = null,
     onInfoClick: (String) -> Unit = {},
-    onClick: (action: NextAction) -> Unit
+    onClick: (action: ResourcesNextActionRepository.NextAction) -> Unit
 ) {
     SunnahAssistantTheme {
         Surface {
             Column(
-                modifier = Modifier
+                modifier = Modifier.Companion
                     .fillMaxWidth()
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
             ) {
-                GrayLine(modifier = Modifier.align(Alignment.CenterHorizontally))
+                GrayLine(modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally))
 
                 ResourceTitle(
                     title = stringResource(R.string.suggested_actions)
@@ -218,25 +215,28 @@ fun NextActionScreen(
 
                     if (nextActionsData.predefinedReminderInfo.isNotBlank()) {
                         Row(
-                            modifier = Modifier
+                            modifier = Modifier.Companion
                                 .fillMaxWidth()
                                 .padding(top = 24.dp)
-                                .clickable(enabled = Patterns.WEB_URL.matcher(nextActionsData.predefinedReminderLink).matches()) {
+                                .clickable(
+                                    enabled = Patterns.WEB_URL.matcher(nextActionsData.predefinedReminderLink)
+                                        .matches()
+                                ) {
                                     onInfoClick(nextActionsData.predefinedReminderLink)
                                 },
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.Companion.CenterVertically
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_info),
                                 contentDescription = stringResource(R.string.info),
-                                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                                modifier = Modifier.Companion.padding(start = 16.dp, end = 16.dp)
                             )
 
                             Text(
                                 text = nextActionsData.predefinedReminderInfo,
                                 fontSize = 13.sp,
-                                fontWeight = FontWeight.Light,
-                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.Companion.Light,
+                                fontFamily = FontFamily.Companion.SansSerif,
                                 style = MaterialTheme.typography.caption
                             )
                         }

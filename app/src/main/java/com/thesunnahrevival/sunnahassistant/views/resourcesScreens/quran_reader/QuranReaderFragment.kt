@@ -42,6 +42,7 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.ResourcesNextActionFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
