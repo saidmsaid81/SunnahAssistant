@@ -1,22 +1,22 @@
 package com.thesunnahrevival.sunnahassistant.data.model.dto
 
-import com.batoulapps.adhan.*
+import com.batoulapps.adhan.Coordinates
+import com.batoulapps.adhan.HighLatitudeRule
+import com.batoulapps.adhan.PrayerTimes
 import com.batoulapps.adhan.data.DateComponents
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import java.lang.Integer.parseInt
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.*
+import java.util.GregorianCalendar
+import java.util.Locale
 
 
 class PrayerTimeCalculator(
-    private val latitude: Double,
-    private val longitude: Double,
-    private val calculationMethod: CalculationMethod,
-    private val asrCalculationMethod: Madhab,
-    private val latitudeAdjustmentMethod: Int,
+    private val settings: AppSettings,
     private val prayerNames: Array<String>,
     private val categoryName: String
 ) {
@@ -92,12 +92,12 @@ class PrayerTimeCalculator(
         day: Int
     ): PrayerTimes {
         val dateObject = GregorianCalendar(year, month, day).time
-        val coordinates = Coordinates(latitude, longitude)
+        val coordinates = Coordinates(settings.latitude.toDouble(), settings.longitude.toDouble())
         val date = DateComponents.from(dateObject)
 
-        val params = calculationMethod.parameters
-        params.madhab = asrCalculationMethod
-        params.highLatitudeRule = HighLatitudeRule.entries.toTypedArray()[latitudeAdjustmentMethod]
+        val params = settings.calculationMethod.parameters
+        params.madhab = settings.asrCalculationMethod
+        params.highLatitudeRule = HighLatitudeRule.entries.toTypedArray()[settings.latitudeAdjustmentMethod]
 
         return PrayerTimes(coordinates, date, params)
     }

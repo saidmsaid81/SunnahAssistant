@@ -2,8 +2,6 @@ package com.thesunnahrevival.sunnahassistant.data.repositories
 
 import android.content.Context
 import androidx.paging.PagingSource
-import com.batoulapps.adhan.CalculationMethod
-import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
 import com.thesunnahrevival.sunnahassistant.data.local.ToDoDao
@@ -179,11 +177,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
                         day,
                         month,
                         year,
-                        settings.latitude,
-                        settings.longitude,
-                        settings.calculationMethod,
-                        settings.asrCalculationMethod,
-                        settings.latitudeAdjustmentMethod,
+                        settings,
                         prayerNames,
                         prayerCategory,
                         settings.enablePrayerTimeAlertsFor,
@@ -204,18 +198,14 @@ class SunnahAssistantRepository private constructor(private val applicationConte
 
             for (upcomingPrayerDate in upcomingPrayerDatesList) {
                 val prayerRemindersList = getPrayerRemindersList(
-                    upcomingPrayerDate.day,
-                    upcomingPrayerDate.month,
-                    upcomingPrayerDate.year,
-                    settings.latitude,
-                    settings.longitude,
-                    settings.calculationMethod,
-                    settings.asrCalculationMethod,
-                    settings.latitudeAdjustmentMethod,
-                    prayerNames,
-                    prayerCategory,
-                    settings.enablePrayerTimeAlertsFor,
-                    settings.prayerTimeOffsetsInMinutes
+                    day = upcomingPrayerDate.day,
+                    month = upcomingPrayerDate.month,
+                    year = upcomingPrayerDate.year,
+                    settings = settings,
+                    prayerNames = prayerNames,
+                    prayerCategory = prayerCategory,
+                    enablePrayerTimeAlertsFor = settings.enablePrayerTimeAlertsFor,
+                    offsetInMinutesForPrayer = settings.prayerTimeOffsetsInMinutes
                 )
                 for (prayerReminder in prayerRemindersList) {
                     mToDoDao.updateGeneratedPrayerTime(
@@ -238,23 +228,15 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     }
 
     fun getSunriseTime(
-        latitude: Double,
-        longitude: Double,
-        calculationMethod: CalculationMethod,
-        asrCalculationMethod: Madhab,
-        latitudeAdjustmentMethod: Int,
+        settings: AppSettings,
         day: Int,
         month: Int,
         year: Int
     ): Long {
         val prayerTimeCalculator = PrayerTimeCalculator(
-            latitude,
-            longitude,
-            calculationMethod,
-            asrCalculationMethod,
-            latitudeAdjustmentMethod,
-            prayerNames,
-            prayerCategory
+            settings = settings,
+            prayerNames = prayerNames,
+            categoryName = prayerCategory
         )
         return prayerTimeCalculator.getSunrise(day, month, year)
     }
@@ -263,11 +245,7 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         day: Int,
         month: Int,
         year: Int,
-        latitude: Float,
-        longitude: Float,
-        calculationMethod: CalculationMethod,
-        asrCalculationMethod: Madhab,
-        latitudeAdjustmentMethod: Int,
+        settings: AppSettings,
         prayerNames: Array<String>,
         prayerCategory: String,
         enablePrayerTimeAlertsFor: BooleanArray,
@@ -275,13 +253,9 @@ class SunnahAssistantRepository private constructor(private val applicationConte
     ): ArrayList<ToDo> {
 
         val prayerTimeCalculator = PrayerTimeCalculator(
-            latitude.toDouble(),
-            longitude.toDouble(),
-            calculationMethod,
-            asrCalculationMethod,
-            latitudeAdjustmentMethod,
-            prayerNames,
-            prayerCategory
+            settings = settings,
+            prayerNames = prayerNames,
+            categoryName = prayerCategory
         )
         return prayerTimeCalculator.getPrayerTimeToDos(
             day,

@@ -143,11 +143,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
     private suspend fun getPrayerTimesCalculator(): PrayerTimeCalculator? {
         val settings = toDoRepository.getAppSettingsValue() ?: return null
         return PrayerTimeCalculator(
-            latitude = settings.latitude.toDouble(),
-            longitude = settings.longitude.toDouble(),
-            calculationMethod = settings.calculationMethod,
-            asrCalculationMethod = settings.asrCalculationMethod,
-            latitudeAdjustmentMethod = settings.latitudeAdjustmentMethod,
+            settings = settings,
             prayerNames = applicationContext.resources.getStringArray(R.array.categories),
             categoryName = applicationContext.resources.getStringArray(R.array.categories)[2]
         )

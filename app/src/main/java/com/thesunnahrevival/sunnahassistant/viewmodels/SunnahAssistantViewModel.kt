@@ -211,11 +211,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val settings = settingsValue
         if (settings != null) {
             return mRepository.getSunriseTime(
-                settings.latitude.toDouble(),
-                settings.longitude.toDouble(),
-                settings.calculationMethod,
-                settings.asrCalculationMethod,
-                settings.latitudeAdjustmentMethod,
+                settings = settings,
                 selectedToDoDate.dayOfMonth,
                 selectedToDoDate.month.ordinal,
                 selectedToDoDate.year
@@ -291,7 +287,8 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
             if (System.currentTimeMillis() < clientRetryFromTimeMilliseconds) {
                 message = String.format(
                     tooManyRequestString,
-                    formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds)
+                    formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds),
+                    SUPPORT_EMAIL
                 )
             } else {
                 val response =
