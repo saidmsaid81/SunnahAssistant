@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.extractNumber
@@ -29,9 +30,11 @@ import java.lang.Integer.parseInt
 import java.util.Date
 
 open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener,
-    EnterOffsetFragment.EnterOffsetFragmentListener {
+    EnterOffsetFragment.EnterOffsetFragmentListener,
+    EnterLocationDialogFragment.EnterLocationDialogListener {
 
     private val yesNoOptions = arrayOf("", "")
+    private var pendingPrayerAlertsActivation = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,25 +69,18 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 val settingsValue = mainActivityViewModel.settingsValue ?: return@setOnCheckedChangeListener
-                binding.activatePrayerTimeAlerts.isChecked =
-                    settingsValue.isAutomaticPrayerAlertsEnabled
-                settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
-                if (isChecked) {
-                    settingsValue.generatePrayerToDosAfter =
-                        Date(System.currentTimeMillis() - 86400000)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            android.Manifest.permission.POST_NOTIFICATIONS
-                        ) == PackageManager.PERMISSION_DENIED
-                    ) {
-                        mainActivityViewModel.incrementNotificationPermissionRequestsCount()
-                        requireActivity().requestPermissions(
-                            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                            REQUEST_NOTIFICATION_PERMISSION_CODE
-                        )
-                    }
+
+                if (isChecked && settingsValue.formattedAddress.isNullOrBlank()) {
+                    // Location not set - show dialog first
+                    pendingPrayerAlertsActivation = true
+                    binding.activatePrayerTimeAlerts.isChecked = false
+                    val dialogFragment = EnterLocationDialogFragment()
+                    dialogFragment.setListener(this)
+                    dialogFragment.show(requireActivity().supportFragmentManager, "location_dialog")
+                    return@setOnCheckedChangeListener
                 }
-                updateSettings()
+
+                activatePrayerTimeAlerts(settingsValue, isChecked)
             }
         }
 
@@ -210,6 +206,39 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             mainActivityViewModel.updateSettings(it)
             mainActivityViewModel.isPrayerSettingsUpdated = true
         }
+    }
+
+    private fun activatePrayerTimeAlerts(settingsValue: AppSettings, isChecked: Boolean) {
+        settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
+        if (isChecked) {
+            settingsValue.generatePrayerToDosAfter =
+                Date(System.currentTimeMillis() - 86400000)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                mainActivityViewModel.incrementNotificationPermissionRequestsCount()
+                requireActivity().requestPermissions(
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_NOTIFICATION_PERMISSION_CODE
+                )
+            }
+        }
+        updateSettings()
+    }
+
+    override fun onLocationSaved() {
+        if (pendingPrayerAlertsActivation) {
+            pendingPrayerAlertsActivation = false
+            mainActivityViewModel.settingsValue?.let { settingsValue ->
+                activatePrayerTimeAlerts(settingsValue, true)
+            }
+        }
+    }
+
+    override fun onLocationDialogCancelled() {
+        pendingPrayerAlertsActivation = false
     }
 
 
