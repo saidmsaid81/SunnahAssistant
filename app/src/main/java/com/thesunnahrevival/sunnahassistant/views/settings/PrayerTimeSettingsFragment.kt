@@ -26,15 +26,17 @@ import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFrag
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment.Companion.CURRENT_VALUE
-import java.lang.Integer.parseInt
+import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
 import java.util.Date
 
 open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener,
     EnterOffsetFragment.EnterOffsetFragmentListener,
-    EnterLocationDialogFragment.EnterLocationDialogListener {
+    EnterLocationDialogFragment.EnterLocationDialogListener,
+    TimePickerFragment.OnTimeSetListener {
 
     private val yesNoOptions = arrayOf("", "")
     private var pendingPrayerAlertsActivation = false
+    private var pendingCustomTimePrayerIndex = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +54,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         binding.hoursLabel = getString(R.string.hours)
         binding.minutesLabel = getString(R.string.minutes)
         binding.onTimeLabel = resources.getStringArray(R.array.notify_options)[1]
+        binding.timeModeOptions = resources.getStringArray(R.array.prayer_time_mode_options)
 
         mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
             if (it != null) {
@@ -127,15 +130,105 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         binding.asrNotificationSettings.setOnClickListener(this)
         binding.maghribNotificationSettings.setOnClickListener(this)
         binding.ishaNotificationSettings.setOnClickListener(this)
+
+        binding.fajrTimeModeSettings.setOnClickListener(this)
+        binding.dhuhrTimeModeSettings.setOnClickListener(this)
+        binding.asrTimeModeSettings.setOnClickListener(this)
+        binding.maghribTimeModeSettings.setOnClickListener(this)
+        binding.ishaTimeModeSettings.setOnClickListener(this)
+
+        binding.fajrCustomTimeSettings.setOnClickListener(this)
+        binding.dhuhrCustomTimeSettings.setOnClickListener(this)
+        binding.asrCustomTimeSettings.setOnClickListener(this)
+        binding.maghribCustomTimeSettings.setOnClickListener(this)
+        binding.ishaCustomTimeSettings.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
-        if (view != null) {
-            val notifyOptions = resources.getStringArray(R.array.notify_options)
-            showPopup(
-                notifyOptions,
-                view.id, view.id
-            )
+        if (view == null) {
+            return
+        }
+        when (view.id) {
+            R.id.fajr_time_mode_settings -> showTimeModePopup(0, view.id)
+            R.id.dhuhr_time_mode_settings -> showTimeModePopup(1, view.id)
+            R.id.asr_time_mode_settings -> showTimeModePopup(2, view.id)
+            R.id.maghrib_time_mode_settings -> showTimeModePopup(3, view.id)
+            R.id.isha_time_mode_settings -> showTimeModePopup(4, view.id)
+            R.id.fajr_custom_time_settings -> showCustomTimePicker(0)
+            R.id.dhuhr_custom_time_settings -> showCustomTimePicker(1)
+            R.id.asr_custom_time_settings -> showCustomTimePicker(2)
+            R.id.maghrib_custom_time_settings -> showCustomTimePicker(3)
+            R.id.isha_custom_time_settings -> showCustomTimePicker(4)
+            else -> {
+                val notifyOptions = resources.getStringArray(R.array.notify_options)
+                showPopup(notifyOptions, view.id, view.id)
+            }
+        }
+    }
+
+    private fun showTimeModePopup(prayerIndex: Int, viewId: Int) {
+        pendingCustomTimePrayerIndex = prayerIndex
+        val timeModeOptions = resources.getStringArray(R.array.prayer_time_mode_options)
+        showPopup(timeModeOptions, viewId, viewId)
+    }
+
+    private fun showCustomTimePicker(prayerIndex: Int) {
+        pendingCustomTimePrayerIndex = prayerIndex
+        val currentTime = getCustomTimeForPrayer(prayerIndex)
+        val timePickerFragment = TimePickerFragment()
+        timePickerFragment.arguments = Bundle().apply {
+            putString(TimePickerFragment.TIMESET, currentTime)
+        }
+        timePickerFragment.setListener(this)
+        timePickerFragment.show(requireActivity().supportFragmentManager, "customTimePicker")
+    }
+
+    private fun getCustomTimeForPrayer(prayerIndex: Int): String? {
+        return when (prayerIndex) {
+            0 -> mainActivityViewModel.settingsValue?.fajrCustomTime
+            1 -> mainActivityViewModel.settingsValue?.dhuhrCustomTime
+            2 -> mainActivityViewModel.settingsValue?.asrCustomTime
+            3 -> mainActivityViewModel.settingsValue?.maghribCustomTime
+            4 -> mainActivityViewModel.settingsValue?.ishaCustomTime
+            else -> null
+        }
+    }
+
+    override fun onTimeSet(timeString: String) {
+        if (pendingCustomTimePrayerIndex >= 0) {
+            val timeIn24Hour = convertTo24HourFormat(timeString)
+            setCustomTimeForPrayer(pendingCustomTimePrayerIndex, timeIn24Hour)
+            pendingCustomTimePrayerIndex = -1
+            updateSettings()
+        }
+    }
+
+    private fun convertTo24HourFormat(timeString: String): String {
+        return try {
+            if (timeString.contains("am", ignoreCase = true) || timeString.contains("pm", ignoreCase = true)) {
+                val inputFormat = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH)
+                val outputFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.ENGLISH)
+                val date = inputFormat.parse(timeString)
+                if (date != null) {
+                    outputFormat.format(date)
+                } else {
+                    timeString
+                }
+            } else {
+                timeString
+            }
+        } catch (_: Exception) {
+            timeString.replace(" am", "").replace(" pm", "").replace(" AM", "").replace(" PM", "")
+        }
+    }
+
+    private fun setCustomTimeForPrayer(prayerIndex: Int, time: String?) {
+        when (prayerIndex) {
+            0 -> mainActivityViewModel.settingsValue?.fajrCustomTime = time
+            1 -> mainActivityViewModel.settingsValue?.dhuhrCustomTime = time
+            2 -> mainActivityViewModel.settingsValue?.asrCustomTime = time
+            3 -> mainActivityViewModel.settingsValue?.maghribCustomTime = time
+            4 -> mainActivityViewModel.settingsValue?.ishaCustomTime = time
         }
     }
 
@@ -182,9 +275,26 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             R.id.asr_notification_settings -> setPrayerOffset(2, item)
             R.id.maghrib_notification_settings -> setPrayerOffset(3, item)
             R.id.isha_notification_settings -> setPrayerOffset(4, item)
+            R.id.fajr_time_mode_settings,
+            R.id.dhuhr_time_mode_settings,
+            R.id.asr_time_mode_settings,
+            R.id.maghrib_time_mode_settings,
+            R.id.isha_time_mode_settings -> {
+                handleTimeModeSelection(item)
+            }
         }
         updateSettings()
         return true
+    }
+
+    private fun handleTimeModeSelection(item: MenuItem) {
+        val timeModeOptions = resources.getStringArray(R.array.prayer_time_mode_options)
+        val selectedIndex = timeModeOptions.indexOf(item.title.toString())
+        if (selectedIndex == 0) {
+            setCustomTimeForPrayer(pendingCustomTimePrayerIndex, null)
+        } else if (selectedIndex == 1) {
+            showCustomTimePicker(pendingCustomTimePrayerIndex)
+        }
     }
 
     private fun setPrayerOffset(prayerTimeIndex: Int, item: MenuItem) {

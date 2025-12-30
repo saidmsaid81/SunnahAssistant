@@ -47,6 +47,10 @@
         name="onTimeLabel"
         type="java.lang.String"
         />
+    <variable
+        name="timeModeOptions"
+        type="java.lang.String[]"
+        />
   </data>
 
   <ScrollView
@@ -207,12 +211,90 @@
           android:visibility="@{(settings.automaticPrayerAlertsEnabled &amp;&amp; settings.formattedAddress != null &amp;&amp; !settings.formattedAddress.trim().isEmpty()) ? View.VISIBLE : View.GONE}"
           />
 
+      <TextView
+          android:id="@+id/disclaimer_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/default_dimen"
+          android:drawablePadding="@dimen/default_dimen"
+          android:fontFamily="sans-serif-light"
+          android:gravity="center_vertical"
+          android:text="@string/prayer_time_changes_disclaimer"
+          android:visibility="@{(settings.automaticPrayerAlertsEnabled &amp;&amp; settings.formattedAddress != null &amp;&amp; !settings.formattedAddress.trim().isEmpty()) ? View.VISIBLE : View.GONE}"
+          app:drawableStartCompat="@drawable/ic_info"
+          />
+
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
           android:visibility="@{(settings.automaticPrayerAlertsEnabled &amp;&amp; settings.formattedAddress != null &amp;&amp; !settings.formattedAddress.trim().isEmpty()) ? View.VISIBLE : View.GONE}"
           >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:text="@{prayers[0]}"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="Fajr Prayer"
+            />
+
+        <LinearLayout
+            android:id="@+id/fajr_time_mode_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/prayer_time_mode"
+              />
+
+          <TextView
+              android:id="@+id/fajr_time_mode_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.fajrCustomTime != null ? timeModeOptions[1] : timeModeOptions[0]}"
+              tools:text="Automatic"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fajr_custom_time_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="@{settings.fajrCustomTime != null ? View.VISIBLE : View.GONE}"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/custom_time"
+              />
+
+          <TextView
+              android:id="@+id/fajr_custom_time_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.fajrCustomTime}"
+              tools:text="05:30"
+              />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/fajr_notification_settings"
@@ -251,6 +333,71 @@
         </LinearLayout>
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:text="@{prayers[1]}"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="Dhuhr Prayer"
+            />
+
+        <LinearLayout
+            android:id="@+id/dhuhr_time_mode_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/prayer_time_mode"
+              />
+
+          <TextView
+              android:id="@+id/dhuhr_time_mode_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.dhuhrCustomTime != null ? timeModeOptions[1] : timeModeOptions[0]}"
+              tools:text="Automatic"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dhuhr_custom_time_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="@{settings.dhuhrCustomTime != null ? View.VISIBLE : View.GONE}"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/custom_time"
+              />
+
+          <TextView
+              android:id="@+id/dhuhr_custom_time_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.dhuhrCustomTime}"
+              tools:text="12:30"
+              />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/dhuhr_notification_settings"
             android:layout_width="match_parent"
@@ -288,6 +435,71 @@
               />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:text="@{prayers[2]}"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="Asr Prayer"
+            />
+
+        <LinearLayout
+            android:id="@+id/asr_time_mode_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/prayer_time_mode"
+              />
+
+          <TextView
+              android:id="@+id/asr_time_mode_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.asrCustomTime != null ? timeModeOptions[1] : timeModeOptions[0]}"
+              tools:text="Automatic"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/asr_custom_time_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="@{settings.asrCustomTime != null ? View.VISIBLE : View.GONE}"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/custom_time"
+              />
+
+          <TextView
+              android:id="@+id/asr_custom_time_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.asrCustomTime}"
+              tools:text="15:30"
+              />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/asr_notification_settings"
             android:layout_width="match_parent"
@@ -322,7 +534,71 @@
               android:text="@{TimeDateUtil.getFormattedOffset(settings.prayerTimeOffsetsInMinutes[2], offsetOptions, hoursLabel, minutesLabel, onTimeLabel)}"
               android:visibility="@{settings.enablePrayerTimeAlertsFor[2] ? View.VISIBLE : View.GONE}"
               tools:text="5 Minutes Before"
+              />
+        </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:text="@{prayers[3]}"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="Maghrib Prayer"
+            />
+
+        <LinearLayout
+            android:id="@+id/maghrib_time_mode_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/prayer_time_mode"
+              />
+
+          <TextView
+              android:id="@+id/maghrib_time_mode_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.maghribCustomTime != null ? timeModeOptions[1] : timeModeOptions[0]}"
+              tools:text="Automatic"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/maghrib_custom_time_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="@{settings.maghribCustomTime != null ? View.VISIBLE : View.GONE}"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/custom_time"
+              />
+
+          <TextView
+              android:id="@+id/maghrib_custom_time_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.maghribCustomTime}"
+              tools:text="18:30"
               />
         </LinearLayout>
 
@@ -359,6 +635,71 @@
               android:text="@{TimeDateUtil.getFormattedOffset(settings.prayerTimeOffsetsInMinutes[3], offsetOptions, hoursLabel, minutesLabel, onTimeLabel)}"
               android:visibility="@{settings.enablePrayerTimeAlertsFor[3] ? View.VISIBLE : View.GONE}"
               tools:visibility="gone"
+              />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:text="@{prayers[4]}"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            tools:text="Isha Prayer"
+            />
+
+        <LinearLayout
+            android:id="@+id/isha_time_mode_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/prayer_time_mode"
+              />
+
+          <TextView
+              android:id="@+id/isha_time_mode_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.ishaCustomTime != null ? timeModeOptions[1] : timeModeOptions[0]}"
+              tools:text="Automatic"
+              />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/isha_custom_time_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_dimen"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="@{settings.ishaCustomTime != null ? View.VISIBLE : View.GONE}"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textAppearance="@style/TextAppearance.AppCompat.Widget.DropDownItem"
+              android:text="@string/custom_time"
+              />
+
+          <TextView
+              android:id="@+id/isha_custom_time_value"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@{settings.ishaCustomTime}"
+              tools:text="20:00"
               />
         </LinearLayout>
 

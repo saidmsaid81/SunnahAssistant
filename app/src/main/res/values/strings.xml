@@ -467,6 +467,9 @@
     <string name="read_suratul_mulk">Read Suratul Mulk</string>
     <string name="recommended_every_night">Recommended every night</string>
     <string name="read_more_on_suratul_mulk">Tap here to read more on the importance of reading Suratul Mulk and Al Sajdah every night</string>
+    <string name="prayer_time_mode">Time Mode</string>
+    <string name="custom_time">Custom Time</string>
+    <string name="prayer_time_changes_disclaimer">Changes here will apply to upcoming (future) prayer times only, not past ones.</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>
@@ -599,5 +602,9 @@
     <string-array name="offset_options">
         <item>Before</item>
         <item>After</item>
+    </string-array>
+    <string-array name="prayer_time_mode_options">
+        <item>Automatic</item>
+        <item>Custom</item>
     </string-array>
 </resources>

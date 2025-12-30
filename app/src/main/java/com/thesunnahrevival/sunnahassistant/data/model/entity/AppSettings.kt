@@ -55,7 +55,17 @@ data class AppSettings(
     @ColumnInfo(defaultValue = "16")
     var translationTextFontSize: Int = 16,
     @ColumnInfo(defaultValue = "12")
-    var footnoteTextFontSize: Int = 12
+    var footnoteTextFontSize: Int = 12,
+    @ColumnInfo(defaultValue = "null")
+    var fajrCustomTime: String? = null,
+    @ColumnInfo(defaultValue = "null")
+    var dhuhrCustomTime: String? = null,
+    @ColumnInfo(defaultValue = "null")
+    var asrCustomTime: String? = null,
+    @ColumnInfo(defaultValue = "null")
+    var maghribCustomTime: String? = null,
+    @ColumnInfo(defaultValue = "null")
+    var ishaCustomTime: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -103,6 +113,11 @@ data class AppSettings(
         if (arabicTextFontSize != other.arabicTextFontSize) return false
         if (translationTextFontSize != other.translationTextFontSize) return false
         if (footnoteTextFontSize != other.footnoteTextFontSize) return false
+        if (fajrCustomTime != other.fajrCustomTime) return false
+        if (dhuhrCustomTime != other.dhuhrCustomTime) return false
+        if (asrCustomTime != other.asrCustomTime) return false
+        if (maghribCustomTime != other.maghribCustomTime) return false
+        if (ishaCustomTime != other.ishaCustomTime) return false
 
         return true
     }
@@ -148,6 +163,11 @@ data class AppSettings(
         result = 31 * result + arabicTextFontSize
         result = 31 * result + translationTextFontSize
         result = 31 * result + footnoteTextFontSize
+        result = 31 * result + (fajrCustomTime?.hashCode() ?: 0)
+        result = 31 * result + (dhuhrCustomTime?.hashCode() ?: 0)
+        result = 31 * result + (asrCustomTime?.hashCode() ?: 0)
+        result = 31 * result + (maghribCustomTime?.hashCode() ?: 0)
+        result = 31 * result + (ishaCustomTime?.hashCode() ?: 0)
         return result
     }
 }

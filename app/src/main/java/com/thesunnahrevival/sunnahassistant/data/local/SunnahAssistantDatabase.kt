@@ -328,6 +328,12 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     )
                 """)
 
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `fajrCustomTime` TEXT DEFAULT null")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `dhuhrCustomTime` TEXT DEFAULT null")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `asrCustomTime` TEXT DEFAULT null")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `maghribCustomTime` TEXT DEFAULT null")
+                database.execSQL("ALTER TABLE app_settings ADD COLUMN `ishaCustomTime` TEXT DEFAULT null")
+
             }
         }
 

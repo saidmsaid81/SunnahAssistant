@@ -80,9 +80,11 @@ class PrayerTimeCalculator(
 
         val formatter = SimpleDateFormat("HH:mm", Locale.ENGLISH)
         return arrayOf(
-            formatter.format(prayerTimes.fajr),
-            formatter.format(prayerTimes.dhuhr), formatter.format(prayerTimes.asr),
-            formatter.format(prayerTimes.maghrib), formatter.format(prayerTimes.isha)
+            settings.fajrCustomTime ?: formatter.format(prayerTimes.fajr),
+            settings.dhuhrCustomTime ?: formatter.format(prayerTimes.dhuhr),
+            settings.asrCustomTime ?: formatter.format(prayerTimes.asr),
+            settings.maghribCustomTime ?: formatter.format(prayerTimes.maghrib),
+            settings.ishaCustomTime ?: formatter.format(prayerTimes.isha)
         )
     }
 
