@@ -78,8 +78,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
                     titleResId = R.string.evening_adhkaar_daily_reminder,
                     subtitleResId = R.string.set_daily_reminder,
                     actionResId = R.string.set_daily_reminder,
-                    actionType = ActionType.NavigateToTodo,
-                    toDoId = READING_EVENING_ADHKAAR_ID
+                    actionType = ActionType.NavigateToTodo
                 )
             )
         }
@@ -90,7 +89,6 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 subtitleResId = R.string.remind_others_to_read_evening_adhkaar,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
-                toDoId = READING_EVENING_ADHKAAR_ID,
                 shareTextResId = R.string.morning_evening_adhkaar_reminder_message
             )
         )

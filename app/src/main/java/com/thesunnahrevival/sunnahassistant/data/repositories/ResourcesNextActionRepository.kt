@@ -5,8 +5,6 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_MULK_ID
-import com.thesunnahrevival.sunnahassistant.utilities.SURATUL_KAHF_REMIND_OTHERS_ID
-import com.thesunnahrevival.sunnahassistant.utilities.SURATUL_MULK_REMIND_OTHERS_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import java.time.DayOfWeek
 import java.time.Instant
@@ -131,7 +129,6 @@ class ResourcesNextActionRepository private constructor(
                 subtitleResId = R.string.remind_others_to_read_suratul_kahf,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
-                toDoId = SURATUL_KAHF_REMIND_OTHERS_ID,
                 shareTextResId = R.string.suratul_kahf_reminder_message
             )
         )
@@ -167,7 +164,6 @@ class ResourcesNextActionRepository private constructor(
                 subtitleResId = R.string.remind_others_to_read_suratul_mulk,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
-                toDoId = SURATUL_MULK_REMIND_OTHERS_ID,
                 shareTextResId = R.string.suratul_mulk_and_sajdah_reminder_message
             )
         )
