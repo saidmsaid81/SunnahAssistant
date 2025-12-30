@@ -20,6 +20,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -54,6 +55,8 @@ import com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ShimmerR
 import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 import java.net.MalformedURLException
 
+const val ADHKAAR_CHAPTER_ID = "adhkaarChapterId"
+
 class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
     val mainActivityViewModel by activityViewModels<SunnahAssistantViewModel>()
@@ -66,15 +69,25 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        viewmodel.loadNextActions(mainActivityViewModel.getCurrentQuranPage())
+
+        val adhkaarChapterId = arguments?.getInt(ADHKAAR_CHAPTER_ID)
+        if (adhkaarChapterId != null) {
+            viewmodel.loadAdhkaarNextActions(adhkaarChapterId)
+        } else {
+            viewmodel.loadQuranNextActions(mainActivityViewModel.getCurrentQuranPage())
+        }
 
         return ComposeView(requireContext()).apply {
             setContent {
                 val nextActionsData by viewmodel.nextActionsData.collectAsState()
 
-                if (nextActionsData?.nextActions?.size == 1) {
-                    onNextActionClick(nextActionsData!!.nextActions.first())
-                    dismiss()
+                LaunchedEffect(nextActionsData) {
+                    nextActionsData?.let {
+                        if (it.nextActions.size == 1) {
+                            onNextActionClick(it.nextActions.first())
+                            dismiss()
+                        }
+                    }
                 }
 
                 NextActionScreen(

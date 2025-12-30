@@ -5,10 +5,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItem
 import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarItemRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.AdhkaarResourcesNextActionRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextActionsData
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val HAS_SEEN_SWIPE_ADHKAAR_TUTORIAL = "has_seen_swipe_adhkaar_tutorial"
@@ -17,6 +26,7 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     private val adhkaarItemRepository = AdhkaarItemRepository.getInstance(application)
     private val isLoading: MutableSharedFlow<Boolean> = MutableSharedFlow()
     private val flagRepository = FlagRepository.getInstance(getApplication())
+    private val adhkaarResourcesNextActionRepository = AdhkaarResourcesNextActionRepository.getInstance(application)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,8 +37,15 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getAdhkaarItemsByChapterId(chapterId: Int): StateFlow<AdhkaarUiState> {
-        return adhkaarItemRepository.getAdhkaarItemsByChapterId(chapterId).map { adhkaarItems ->
-            AdhkaarUiState(processAdhkaarItems(adhkaarItems), isLoading = adhkaarItems.isEmpty())
+        return combine(
+            adhkaarItemRepository.getAdhkaarItemsByChapterId(chapterId).onStart { emit(listOf()) },
+            adhkaarResourcesNextActionRepository.getAdhkaarNextActions(chapterId).onStart { emit(NextActionsData()) }
+        ){ adhkaarItems, nextActions ->
+            AdhkaarUiState(
+                adhkaarItems = processAdhkaarItems(items = adhkaarItems),
+                isLoading = adhkaarItems.isEmpty(),
+                nextAction = nextActions.nextActions.firstOrNull()
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -77,7 +94,8 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     
     data class AdhkaarUiState(
         val adhkaarItems: List<AdhkaarDisplayItem> = emptyList(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val nextAction: NextAction? = null
     )
     
     data class AdhkaarDisplayItem(

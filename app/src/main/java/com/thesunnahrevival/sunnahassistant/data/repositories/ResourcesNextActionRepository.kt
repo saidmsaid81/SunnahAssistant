@@ -13,9 +13,11 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-private const val FAJR_INDEX = '0'
-private const val MAGHRIB_INDEX = '3'
-private const val ISHA_INDEX = '4'
+const val FAJR_INDEX = '0'
+const val DHUHR_INDEX = '1'
+const val ASR_INDEX = '2'
+const val MAGHRIB_INDEX = '3'
+const val ISHA_INDEX = '4'
 
 const val TRACK_READ_SURAH_PREFIX = "track-read-surah"
 
@@ -42,8 +44,6 @@ class ResourcesNextActionRepository private constructor(
     private val applicationContext: Context
 ) {
 
-    private val flagRepository = FlagRepository.getInstance(applicationContext)
-
     companion object {
         @Volatile
         private var instance: ResourcesNextActionRepository? = null
@@ -58,6 +58,8 @@ class ResourcesNextActionRepository private constructor(
     }
 
     private val toDoRepository = SunnahAssistantRepository.getInstance(applicationContext)
+
+    private val flagRepository = FlagRepository.getInstance(applicationContext)
 
     private val templateToDos = TemplateToDos().getTemplateToDos(applicationContext)
 
@@ -94,7 +96,10 @@ class ResourcesNextActionRepository private constructor(
 
         if (day != DayOfWeek.THURSDAY && day != DayOfWeek.FRIDAY) return
 
-        val prayerTimes = getPrayerTimes(now)
+        val prayerTimes = getPrayerTimes(
+            context = applicationContext,
+            toDoRepository = toDoRepository
+        )
 
         val maghribOffset = prayerTimes.find { it.id.toString().endsWith(MAGHRIB_INDEX) }?.timeInMilliseconds
         val maghribTime = maghribOffset?.let { getMidnightTime() + it } ?: return
@@ -169,7 +174,10 @@ class ResourcesNextActionRepository private constructor(
     }
 
     private fun isNightTime(): Boolean {
-        val prayerTimes = getPrayerTimes(LocalDate.now())
+        val prayerTimes = getPrayerTimes(
+            context = applicationContext,
+            toDoRepository = toDoRepository
+        )
 
         val ishaOffset = prayerTimes.find { it.id.toString().endsWith(ISHA_INDEX) }?.timeInMilliseconds
         val ishaTime = ishaOffset?.let { getMidnightTime() + it } ?: return false
@@ -206,16 +214,6 @@ class ResourcesNextActionRepository private constructor(
         surahPageNumber = SURATUL_SAJDAH_FIRST_PAGE
     )
 
-    private fun getPrayerTimes(now: LocalDate): List<ToDo> {
-        val categories = applicationContext.resources.getStringArray(R.array.categories)
-        val prayerTimes = toDoRepository.getPrayerTimesValue(
-            day = now.dayOfMonth,
-            month = now.month.ordinal, // Repo expects 0-indexed months
-            year = now.year,
-            categoryName = categories.getOrNull(2).orEmpty()
-        )
-        return prayerTimes
-    }
 
     private fun getMidnightTime(): Long =
         Instant.now()
@@ -226,7 +224,7 @@ class ResourcesNextActionRepository private constructor(
     data class NextActionsData(
         val predefinedReminderInfo: String = "",
         val predefinedReminderLink: String = "",
-        val nextActions: List<NextAction>
+        val nextActions: List<NextAction> = listOf()
     )
 
     data class NextAction(
@@ -244,4 +242,16 @@ class ResourcesNextActionRepository private constructor(
         data object ShareText : ActionType()
         data object NavigateToSurah : ActionType()
     }
+}
+
+fun getPrayerTimes(context: Context, toDoRepository: SunnahAssistantRepository): List<ToDo> {
+    val now = LocalDate.now()
+    val categories = context.resources.getStringArray(R.array.categories)
+    val prayerTimes = toDoRepository.getPrayerTimesValue(
+        day = now.dayOfMonth,
+        month = now.month.ordinal, // Repo expects 0-indexed months
+        year = now.year,
+        categoryName = categories.getOrNull(2).orEmpty()
+    )
+    return prayerTimes
 }

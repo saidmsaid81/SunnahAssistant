@@ -85,6 +85,7 @@
         android:layout_gravity="start"
         android:visibility="invisible"
         android:paddingStart="@dimen/default_dimen"
+        android:paddingEnd="@dimen/default_dimen"
         android:textColor="@android:color/white"
         android:textSize="12sp"
         android:textAllCaps="false"

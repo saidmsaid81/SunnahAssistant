@@ -4,23 +4,47 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -34,6 +58,8 @@ import com.thesunnahrevival.sunnahassistant.utilities.toAnnotatedString
 import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.ADHKAAR_CHAPTER_ID
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.ResourcesNextActionFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
 import com.thesunnahrevival.sunnahassistant.views.utilities.TranslationText
@@ -192,6 +218,38 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                     }
 
                     AdhkaarItem(requireContext(), uiState, index, chapterName, settings)
+
+                    if (index == (uiState.adhkaarItems.size - 1)) {
+                        uiState.nextAction?.let {
+                            Button(
+                                onClick = {
+                                    val fragment = ResourcesNextActionFragment()
+                                    fragment.show(
+                                        requireActivity().supportFragmentManager,
+                                        "resources_next_action"
+                                    )
+                                    val bundle = Bundle()
+                                    bundle.putInt(ADHKAAR_CHAPTER_ID, chapterId)
+                                    fragment.arguments = bundle
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(align = Alignment.End)
+                                    .padding(top = 16.dp),
+                                elevation = ButtonDefaults.elevation(
+                                    defaultElevation = 4.dp,
+                                ),
+                                shape = MaterialTheme.shapes.medium.copy(all = CornerSize(24.dp))
+                            ) {
+                                Text(
+                                    text = "${getString(R.string.next)}: ${getString(it.actionResId)}",
+                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                    }
 
                 }
             }
