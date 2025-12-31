@@ -172,10 +172,10 @@ interface ToDoDao {
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<ToDo>
 
     @Query(
-        "SELECT day, month, year FROM reminders_table WHERE " +
+        "SELECT DISTINCT day, month, year FROM reminders_table WHERE " +
                 "((day >= :day AND month == :month AND year == :year) OR " +
                 "(day >= 1 AND month > :month AND year == :year) OR " +
-                "(day >= 1 AND month >= 1 AND year > :year)) " +
+                "(day >= 1 AND month >= 0 AND year > :year)) " +
                 "AND id <= $PRAYER_TIMES_REMINDERS_ID "
     )
     fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ToDoDate>
