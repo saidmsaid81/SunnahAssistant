@@ -7,6 +7,9 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import java.util.Calendar
 import java.util.TreeSet
 
+
+
+
 class TemplateToDos {
     /**
      * @return [MutableMap] of template to-dos where the key is the id of the [ToDo] and the value is a [Pair]
@@ -17,13 +20,13 @@ class TemplateToDos {
         val uncategorized = context.resources.getStringArray(R.array.categories)[0]
         val toDoMap = mutableMapOf<Int, Pair<Int, ToDo>>()
 
-        toDoMap[-1001] = Pair(
+        toDoMap[PRAYING_DHUHA_ID] = Pair(
             R.drawable.ic_dhuha,
             createReminder(
                 name = context.getString(R.string.dhuha_prayer),
                 frequency = Frequency.Daily,
                 category = sunnah,
-                id = -1001,
+                id = PRAYING_DHUHA_ID,
                 predefinedReminderInfo = context.getString(R.string.read_more_on_dhuha_prayer),
                 predefinedReminderLink = "https://thesunnahrevival.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips"
             )
@@ -54,10 +57,10 @@ class TemplateToDos {
         )
 
 
-        toDoMap[-1004] = Pair(
+        toDoMap[TAHAJJUD_ID] = Pair(
             R.drawable.ic_tahajjud,
             createReminder(
-                id = -1004,
+                id = TAHAJJUD_ID,
                 name = context.getString(R.string.tahajjud),
                 category = sunnah,
                 frequency = Frequency.Daily,
@@ -97,10 +100,10 @@ class TemplateToDos {
         listOfDays = TreeSet<Int>()
         listOfDays.add(Calendar.SUNDAY)
         listOfDays.add(Calendar.WEDNESDAY)
-        toDoMap[-1007] = Pair(
+        toDoMap[FASTING_MONDAYS_THURSDAYS_ID] = Pair(
             R.drawable.ic_fasting,
             createReminder(
-                id = -1007,
+                id = FASTING_MONDAYS_THURSDAYS_ID,
                 name = context.getString(R.string.fasting_on_monday_and_thursday),
                 category = sunnah,
                 frequency = Frequency.Weekly,
@@ -122,10 +125,10 @@ class TemplateToDos {
             )
         )
 
-        toDoMap[-1009] = Pair(
+        toDoMap[READING_ID] = Pair(
             R.drawable.ic_read,
             createReminder(
-                id = -1009,
+                id = READING_ID,
                 name = context.getString(R.string.reading),
                 category = uncategorized,
                 frequency = Frequency.Daily
@@ -141,28 +144,28 @@ class TemplateToDos {
                 frequency = Frequency.Daily
             )
         )
-        toDoMap[-1011] = Pair(
+        toDoMap[EXERCISE_ID] = Pair(
             R.drawable.ic_exercise,
             createReminder(
-                id = -1011,
+                id = EXERCISE_ID,
                 name = context.getString(R.string.exercising),
                 category = uncategorized,
                 frequency = Frequency.Daily
             )
         )
-        toDoMap[-1012] = Pair(
+        toDoMap[PILL_ID] = Pair(
             R.drawable.ic_pill_reminder,
             createReminder(
-                id = -1012,
+                id = PILL_ID,
                 name = context.getString(R.string.pill),
                 category = uncategorized,
                 frequency = Frequency.Daily
             )
         )
-        toDoMap[-1013] = Pair(
+        toDoMap[DRINK_WATER_ID] = Pair(
             R.drawable.ic_water,
             createReminder(
-                id = -1013,
+                id = DRINK_WATER_ID,
                 name = context.getString(R.string.drink_water),
                 category = uncategorized,
                 frequency = Frequency.Daily
