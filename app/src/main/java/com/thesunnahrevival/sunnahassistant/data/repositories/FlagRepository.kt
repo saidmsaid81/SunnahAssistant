@@ -35,6 +35,12 @@ class FlagRepository private constructor(private val applicationContext: Context
         }
     }
 
+    fun getLongFlagFlow(key: String): Flow<Long?> {
+        val flagKey = longPreferencesKey(key)
+        return applicationContext.dataStore.data
+            .map { flag -> flag[flagKey] }
+    }
+
     suspend fun setFlag(key: String, value: Int) {
         val flagKey = intPreferencesKey(key)
         applicationContext.dataStore.edit { flags ->

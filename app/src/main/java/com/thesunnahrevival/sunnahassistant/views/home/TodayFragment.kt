@@ -15,7 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
@@ -29,8 +32,10 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.repositories.ToDoNudgeRepository
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentTodayBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
+import com.thesunnahrevival.sunnahassistant.viewmodels.TodayViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
@@ -39,6 +44,7 @@ import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionL
 import com.thesunnahrevival.sunnahassistant.views.showBanner
 import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,6 +55,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     lateinit var mBinding: FragmentTodayBinding
     private lateinit var concatAdapter: ConcatAdapter
     private var fabAnimator: ObjectAnimator? = null
+    private val todayViewModel: TodayViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +78,60 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             showNotificationRequestBanner()
         }
 
+        observeNudge()
+
         return mBinding.root
+    }
+
+    private fun observeNudge() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                todayViewModel.nudge.collectLatest { nudge ->
+                    if (nudge != null) {
+                        displayNudge(nudge)
+                    } else {
+                        mBinding.nudgeContainer.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun displayNudge(nudge: ToDoNudgeRepository.Nudge) {
+        mBinding.nudgeContainer.visibility = View.VISIBLE
+
+        val nudgeText = if (nudge.textArg != null) {
+            getString(nudge.textResId, nudge.textArg)
+        } else {
+            getString(nudge.textResId)
+        }
+        mBinding.nudgeText.text = nudgeText
+
+        mBinding.nudgeText.setOnClickListener {
+            handleNudgeAction(nudge)
+        }
+
+        mBinding.nudgeDismiss.setOnClickListener {
+            todayViewModel.dismissNudgesForToday()
+        }
+    }
+
+    private fun handleNudgeAction(nudge: ToDoNudgeRepository.Nudge) {
+        when (nudge.actionType) {
+            is ToDoNudgeRepository.NudgeActionType.NavigateToPrayerSettings -> {
+                findNavController().navigate(R.id.prayerTimeSettingsFragment)
+            }
+            is ToDoNudgeRepository.NudgeActionType.NavigateToToDoDetails -> {
+                nudge.toDoId?.let { toDoId ->
+                    val templateToDos = mainActivityViewModel.getTemplateToDos()
+                    templateToDos[toDoId]?.let { template ->
+                        mainActivityViewModel.selectedToDo = template.second
+                        mainActivityViewModel.isToDoTemplate = true
+                        findNavController().navigate(R.id.toDoDetailsFragment)
+                    }
+                }
+            }
+        }
     }
 
     private fun getSettings() {
@@ -87,6 +147,11 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                 }
                 setupCategoryChips()
                 mBinding.toDoList.visibility = View.VISIBLE
+
+                todayViewModel.updateSettings(
+                    isPrayerAlertsEnabled = settings.isAutomaticPrayerAlertsEnabled,
+                    hasLocation = !settings.formattedAddress.isNullOrBlank()
+                )
 
                 if (this !is CalendarFragment) {
                     when {
