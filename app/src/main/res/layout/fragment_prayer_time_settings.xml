@@ -781,10 +781,11 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
-          android:textSize="12sp"
+          android:fontFamily="sans-serif-light"
           android:visibility="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.M ? View.GONE : View.VISIBLE  }"
           android:drawablePadding="@dimen/default_dimen"
           android:text="@string/use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered"
+          android:gravity="center_vertical"
           app:drawableStartCompat="@drawable/ic_info"
           />
 
