@@ -17,7 +17,7 @@ class InAppBrowserBroadcastReceiver : BroadcastReceiver() {
             shareIntent.putExtra(
                 Intent.EXTRA_TEXT,
                 "$link\n\n" +
-                        "${context.getString(R.string.get_sunnah_assistant)}\n${getSunnahAssistantAppLink(utmCampaign = "In-App-Browser")}"
+                        context.getString(R.string.app_promotional_message, getSunnahAssistantAppLink(utmCampaign = "In-App-Browser"))
             )
             val chooserIntent = Intent.createChooser(
                 shareIntent,

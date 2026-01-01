@@ -213,9 +213,8 @@ open class MainActivity : AppCompatActivity() {
                                         applicationContext,
                                         toDo.timeInMilliseconds
                                     )
-                                }\n" +
-                                "${getString(R.string.powered_by_sunnah_assistant)}\n\n" +
-                                "Get Sunnah Assistant App at\n${getSunnahAssistantAppLink(utmCampaign = "ToDo")}"
+                                }\n\n" +
+                                getString(R.string.app_promotional_message, getSunnahAssistantAppLink(utmCampaign = "Share-To-Do"))
                     )
                     val chooserIntent = Intent.createChooser(
                         shareIntent,

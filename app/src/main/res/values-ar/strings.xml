@@ -289,9 +289,6 @@
     <string name="info">معلومة</string>
     <string name="share_to_do">حفظ و مشاركة المهام</string>
     <string name="completed">مكتمل</string>
-    <string name="powered_by_sunnah_assistant">مدعوم من التطبيق المساعد السُنة</string>
-    <string name="get_sunnah_assistant">احصل على تطبيق مساعد السنة في</string>
-    <string name="sent_from_sunnah_assistant_app">أرسلت من تطبيق مساعد السنة.</string>
     <string name="reminder_on">تذكير: تشغيل</string>
     <string name="reminder_off">تذكير: إيقاف</string>
     <string name="repeating_to_do">تكرار المهام</string>

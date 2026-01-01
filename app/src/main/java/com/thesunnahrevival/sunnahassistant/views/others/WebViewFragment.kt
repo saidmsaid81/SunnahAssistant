@@ -5,7 +5,12 @@ import android.graphics.Bitmap
 import android.net.MailTo
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -85,11 +90,8 @@ open class WebViewFragment : SunnahAssistantFragment() {
                 intent.type = "text/plain"
                 intent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "${getLink()} \n\n${getString(R.string.sent_from_sunnah_assistant_app)}\n\n${
-                        getString(
-                            R.string.get_sunnah_assistant
-                        )
-                    } ${getSunnahAssistantAppLink(utmCampaign = "Share-Page-Link")} "
+                    "${getLink()} \n\n" +
+                            getString(R.string.app_promotional_message, getSunnahAssistantAppLink(utmCampaign = "Share-Page-Link"))
                 )
                 startActivity(
                     Intent.createChooser(

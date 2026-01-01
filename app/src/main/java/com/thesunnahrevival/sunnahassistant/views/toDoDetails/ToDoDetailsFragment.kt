@@ -569,8 +569,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 "${getString(R.string.date)}: $date\n" +
                 "${getString(R.string.time_label)}: $time\n" +
                 "${getString(R.string.completed)}: $completed\n\n" +
-                "${getString(R.string.powered_by_sunnah_assistant)}\n" +
-                "Get Sunnah Assistant App at\n${getSunnahAssistantAppLink(utmCampaign = "Share-To-Do")}"
+                getString(R.string.app_promotional_message, getSunnahAssistantAppLink(utmCampaign = "Share-To-Do"))
 
     }
 

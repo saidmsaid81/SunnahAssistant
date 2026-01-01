@@ -502,12 +502,11 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                     }
 
                     appendLine()
-                    appendLine(getString(R.string.sent_from_sunnah_assistant_app))
-                    appendLine("${getString(R.string.get_sunnah_assistant)} ${getSunnahAssistantAppLink(
+                    appendLine(getString(R.string.app_promotional_message, getSunnahAssistantAppLink(
                         utmSource = "app",
                         utmMedium = "share", 
                         utmCampaign = "adhkaar_share"
-                    )}")
+                    )))
                 }.toString()
 
                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
