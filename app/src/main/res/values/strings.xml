@@ -469,6 +469,9 @@
     <string name="prayer_time_changes_disclaimer">Changes here will apply to upcoming (future) prayer times only, not past ones.</string>
     <string name="nudge_enable_prayer_alerts">Tap here to enable prayer time alerts</string>
     <string name="nudge_add_template_todo">Tap here to add "%1$s" to your to-do list</string>
+    <string name="tap_here_to_read_more_on_morning_adhkaar">Tap here to read more on the importance of reading Morning Adhkaar</string>
+    <string name="tap_here_to_read_more_on_evening_adhkaar">Tap here to read more on the importance of reading Evening Adhkaar</string>
+    <string name="tap_here_to_read_more_on_quran">Tap here to read more on the importance of reading Quran</string>
     <string-array name="categories">
         <item>Uncategorized</item>
         <item>Sunnah</item>

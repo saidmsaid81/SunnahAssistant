@@ -40,6 +40,7 @@ class TemplateToDos {
                 name = context.getString(R.string.morning_adhkar),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.tap_here_to_read_more_on_morning_adhkaar),
                 predefinedReminderLink = "https://islamqa.info/en/answers/217496/morning-and-evening-adhkar"
             )
         )
@@ -52,6 +53,7 @@ class TemplateToDos {
                 name = context.getString(R.string.evening_adhkar),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.tap_here_to_read_more_on_evening_adhkaar),
                 predefinedReminderLink = "https://islamqa.info/en/answers/217496/morning-and-evening-adhkar"
             )
         )
@@ -77,6 +79,7 @@ class TemplateToDos {
                 name = context.getString(R.string.reading_the_quran),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.tap_here_to_read_more_on_quran),
                 predefinedReminderLink = "https://thesunnahrevival.com/2020/06/07/virtues-of-reading-quran/"
             )
         )
