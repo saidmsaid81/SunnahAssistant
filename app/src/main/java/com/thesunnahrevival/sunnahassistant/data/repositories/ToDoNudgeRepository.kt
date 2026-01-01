@@ -78,7 +78,7 @@ class ToDoNudgeRepository private constructor(
 
         val missingTemplates = templateToDos.filter { !existingTemplateIds.contains(it.key) }
         val appropriateTemplates = missingTemplates.filter {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 isAppropriateTimeForTemplate(it.key)
             }
         }
@@ -99,39 +99,31 @@ class ToDoNudgeRepository private constructor(
 
     private suspend fun isAppropriateTimeForTemplate(templateId: Int): Boolean {
         return when (templateId) {
-            PRAYING_DHUHA_ID -> isFajrToDhuhr()
+            PRAYING_DHUHA_ID -> isDhuhaTime()
             READING_MORNING_ADHKAAR_ID -> isFajrToSunrise()
             READING_EVENING_ADHKAAR_ID -> isAsrToIsha()
             TAHAJJUD_ID, READING_SURATUL_MULK_ID, READING_SLEEPING_ADHKAAR_ID -> isIshaToFajr()
-            READING_SURATUL_KAHF_ID -> isThursdayNightOrFriday()
+            READING_SURATUL_KAHF_ID -> isThursdayNightToFridayMaghrib()
             FASTING_MONDAYS_THURSDAYS_ID -> isSundayOrWednesday()
             READING_QURAN_ID, READING_ID, EXERCISE_ID -> true
             else -> false
         }
     }
 
-    private fun isFajrToDhuhr(): Boolean {
+    private suspend fun isDhuhaTime(): Boolean {
+        val sunrise = getSunrise() ?: return false
+
         val prayerTimes = getPrayerTimes(applicationContext, toDoRepository)
-
-        val fajrOffset = prayerTimes.find { it.id.toString().endsWith(FAJR_INDEX) }?.timeInMilliseconds
-        val fajrTime = fajrOffset?.let { getMidnightTime() + it } ?: return false
-
         val dhuhrOffset = prayerTimes.find { it.id.toString().endsWith(DHUHR_INDEX) }?.timeInMilliseconds
         val dhuhrTime = dhuhrOffset?.let { getMidnightTime() + it } ?: return false
 
         val currentTime = System.currentTimeMillis()
-        return currentTime in fajrTime..dhuhrTime
+        val twentyMinutes = (20 * 60 * 1000)
+        return currentTime in (sunrise + twentyMinutes)..(dhuhrTime - twentyMinutes)
     }
 
     private suspend fun isFajrToSunrise(): Boolean {
-        val prayerTimeCalculator = getPrayerTimesCalculator() ?: return false
-
-        val now = LocalDate.now()
-        val sunrise = prayerTimeCalculator.getSunrise(
-            day = now.dayOfMonth,
-            month = now.month.ordinal,
-            year = now.year
-        )
+        val sunrise = getSunrise() ?: return false
 
         val prayerTimes = getPrayerTimes(applicationContext, toDoRepository)
         val fajrOffset = prayerTimes.find { it.id.toString().endsWith(FAJR_INDEX) }?.timeInMilliseconds
@@ -167,7 +159,7 @@ class ToDoNudgeRepository private constructor(
         return currentTime !in (fajrTime + 1)..<ishaTime
     }
 
-    private fun isThursdayNightOrFriday(): Boolean {
+    private fun isThursdayNightToFridayMaghrib(): Boolean {
         val now = LocalDate.now()
         val day = now.dayOfWeek
 
@@ -205,6 +197,17 @@ class ToDoNudgeRepository private constructor(
         Instant.now()
             .truncatedTo(ChronoUnit.DAYS)
             .toEpochMilli()
+
+    private suspend fun getSunrise(): Long? {
+        val prayerTimeCalculator = getPrayerTimesCalculator() ?: return null
+
+        val now = LocalDate.now()
+        return prayerTimeCalculator.getSunrise(
+            day = now.dayOfMonth,
+            month = now.month.ordinal,
+            year = now.year
+        )
+    }
 
     suspend fun dismissNudgesForToday() {
         flagRepository.setFlag(NUDGE_DISMISSED_DATE_KEY, LocalDate.now().toEpochDay())
