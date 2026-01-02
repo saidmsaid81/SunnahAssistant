@@ -5,11 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sergivonavi.materialbanner.Banner
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
@@ -50,24 +53,28 @@ fun translateLink(fragment: Fragment) {
 }
 
 fun showSendFeedbackBanner(todayFragment: TodayFragment) {
-    val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
-    val onClickListener = BannerInterface.OnClickListener {
-        val browserIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://forms.gle/78xZW7hqSE6SS4Ko6")
-        )
-        if (todayFragment.activity?.packageManager?.let { it1 -> browserIntent.resolveActivity(it1) } != null) {
-            todayFragment.startActivity(browserIntent)
+    todayFragment.context?.let {
+        val banner = todayFragment.view?.findViewById<Banner>(R.id.banner)
+        val onClickListener = BannerInterface.OnClickListener {_ ->
+            val inAppBrowser = InAppBrowser(
+                context = it,
+                lifecycleScope = todayFragment.viewLifecycleOwner.lifecycleScope
+            )
+            inAppBrowser.launchInAppBrowser(
+                link = "https://forms.gle/78xZW7hqSE6SS4Ko6",
+                findNavController = todayFragment.findNavController(),
+                showShareIcon = false
+            )
+            banner?.dismiss()
         }
-        banner?.dismiss()
+        showBanner(
+            banner,
+            todayFragment.getString(R.string.help_improve_app),
+            R.drawable.feedback,
+            todayFragment.getString(R.string.send_feedback),
+            onClickListener
+        )
     }
-    showBanner(
-        banner,
-        todayFragment.getString(R.string.help_improve_app),
-        R.drawable.feedback,
-        todayFragment.getString(R.string.send_feedback),
-        onClickListener
-    )
 }
 
 fun showShareAppBanner(todayFragment: TodayFragment) {
