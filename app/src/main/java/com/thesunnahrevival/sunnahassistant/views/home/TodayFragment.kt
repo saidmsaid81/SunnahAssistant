@@ -48,7 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.TreeSet
 
 open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
@@ -78,7 +78,9 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             showNotificationRequestBanner()
         }
 
-        observeNudge()
+        if (this !is CalendarFragment) {
+            observeNudge()
+        }
 
         return mBinding.root
     }
