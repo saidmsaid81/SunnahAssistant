@@ -354,7 +354,7 @@
     <string name="copy_label">Ayah</string>
     <string name="copy_message">Copied to clipboard</string>
     <string name="share_via">Share via</string>
-    <string name="select_translation">Select Translation</string>
+    <string name="select_translation">Tap here to Select Translation</string>
     <string name="translation">Translation: %s</string>
     <string name="translations_selected">%d translations selected</string>
     <string name="ayah_number">Ayah %d</string>

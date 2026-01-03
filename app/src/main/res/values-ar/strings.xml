@@ -148,7 +148,7 @@
     <string name="copy_label">آية</string>
     <string name="copy_message">تم النسخ إلى الحافظة</string>
     <string name="share_via">شارك عبر</string>
-    <string name="select_translation">اختر الترجمة</string>
+    <string name="select_translation">انقر هنا لاختيار الترجمة</string>
     <string name="translation">الترجمة: %s</string>
     <string name="translations_selected">تم تحديد %d ترجمة</string>
     <string name="ayah_number">آية %d</string>
