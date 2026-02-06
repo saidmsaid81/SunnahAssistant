@@ -15,6 +15,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_MULK_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TAHAJJUD_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
+import com.thesunnahrevival.sunnahassistant.utilities.getPrayerTimes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

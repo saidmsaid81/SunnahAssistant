@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget
@@ -265,3 +266,15 @@ val retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .client(okHttpClient)
     .build()
+
+fun getPrayerTimes(context: Context, toDoRepository: SunnahAssistantRepository): List<ToDo> {
+    val now = LocalDate.now()
+    val categories = context.resources.getStringArray(R.array.categories)
+    val prayerTimes = toDoRepository.getPrayerTimesValue(
+        day = now.dayOfMonth,
+        month = now.month.ordinal, // Repo expects 0-indexed months
+        year = now.year,
+        categoryName = categories.getOrNull(2).orEmpty()
+    )
+    return prayerTimes
+}

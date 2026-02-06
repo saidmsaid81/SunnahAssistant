@@ -2,10 +2,10 @@ package com.thesunnahrevival.sunnahassistant.data.repositories
 
 import android.content.Context
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
 import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_MULK_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
+import com.thesunnahrevival.sunnahassistant.utilities.getPrayerTimes
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -240,14 +240,3 @@ class ResourcesNextActionRepository private constructor(
     }
 }
 
-fun getPrayerTimes(context: Context, toDoRepository: SunnahAssistantRepository): List<ToDo> {
-    val now = LocalDate.now()
-    val categories = context.resources.getStringArray(R.array.categories)
-    val prayerTimes = toDoRepository.getPrayerTimesValue(
-        day = now.dayOfMonth,
-        month = now.month.ordinal, // Repo expects 0-indexed months
-        year = now.year,
-        categoryName = categories.getOrNull(2).orEmpty()
-    )
-    return prayerTimes
-}
