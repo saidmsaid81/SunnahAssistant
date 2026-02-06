@@ -36,6 +36,7 @@ interface ToDoDao {
     @Query(
         "SELECT EXISTS (SELECT * FROM reminders_table WHERE (" +
                 "category != :excludeCategory " +
+                "AND isAutomaticToDo == 0 " +
                 "AND ((day == :day AND month == :month AND year == :year) OR " +
                 " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  ) OR " +
                 " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  ) OR " +
@@ -60,7 +61,7 @@ interface ToDoDao {
     @Query("SELECT * FROM reminders_table WHERE day == 1 AND month == 0 AND year == 1 AND (frequency == 3 OR frequency == 0)")
     fun getMalformedToDos(): Flow<List<ToDo>>
 
-    @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999")
+    @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999 AND isAutomaticToDo = 0")
     fun getTemplateToDoIds(): LiveData<List<Int>>
 
     @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999")
@@ -73,7 +74,7 @@ interface ToDoDao {
                 " (day == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
                 " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' )" +
                 ") " +
-                " AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
+                " AND isAutomaticToDo == 0 AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
     )
     fun getIncompleteToDosOnDay(
         numberOfTheWeekDay: String,
@@ -91,7 +92,7 @@ interface ToDoDao {
                 " (day == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
                 " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' )" +
                 ") " +
-                " AND (category LIKE '%' || :category || '%') " +
+                " AND isAutomaticToDo == 0 AND (category LIKE '%' || :category || '%') " +
                 " AND (completedDates LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
     )
     fun getCompleteToDosOnDay(

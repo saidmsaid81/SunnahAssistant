@@ -29,7 +29,8 @@ data class ToDo(
     @ColumnInfo(name = "predefinedReminderLink") var predefinedToDoLink: String = "",
     var repeatsFromDate: String = "",
     var endsOnDate: String = "",
-    var deletedDates: TreeSet<String> = TreeSet()
+    var deletedDates: TreeSet<String> = TreeSet(),
+    @ColumnInfo(name = "isAutomaticToDo") var isAutomaticToDo: Boolean = false
 ) : Serializable {
 
     @Ignore

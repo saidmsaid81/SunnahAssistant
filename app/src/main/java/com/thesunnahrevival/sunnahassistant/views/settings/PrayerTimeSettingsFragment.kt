@@ -14,20 +14,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.dto.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
+import com.thesunnahrevival.sunnahassistant.utilities.FASTING_MONDAYS_THURSDAYS_ID
+import com.thesunnahrevival.sunnahassistant.utilities.PRAYING_DHUHA_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_EVENING_ADHKAAR_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_MORNING_ADHKAAR_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_QURAN_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_MULK_ID
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.extractNumber
+import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment.Companion.CURRENT_VALUE
 import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.Date
+import java.util.TreeSet
 
 open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener,
     EnterOffsetFragment.EnterOffsetFragmentListener,
@@ -334,8 +350,119 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
                     REQUEST_NOTIFICATION_PERMISSION_CODE
                 )
             }
+            createAutomaticSunnahToDos(settingsValue)
         }
         updateSettings()
+    }
+
+    private fun createAutomaticSunnahToDos(settingsValue: AppSettings) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val prayerTimes = getPrayerTimesForToday(settingsValue) ?: return@launch
+            val today = LocalDate.now()
+            val templateToDos = TemplateToDos().getTemplateToDos(requireContext())
+
+            val fajrTime = prayerTimes[0]
+            val dhuhrTime = prayerTimes[1]
+            val asrTime = prayerTimes[2]
+            val maghribTime = prayerTimes[3]
+            val ishaTime = prayerTimes[4]
+
+            val dhuhaTime = getDhuhaTime(fajrTime, dhuhrTime)
+
+            val timeByTemplateId = mutableMapOf(
+                READING_QURAN_ID to addMinutes(fajrTime, 30),
+                FASTING_MONDAYS_THURSDAYS_ID to addMinutes(maghribTime, 30),
+                READING_MORNING_ADHKAAR_ID to addMinutes(fajrTime, 25),
+                READING_EVENING_ADHKAAR_ID to addMinutes(asrTime, 25),
+                READING_SURATUL_KAHF_ID to addMinutes(fajrTime, 45),
+                READING_SURATUL_MULK_ID to addMinutes(ishaTime, 30)
+            )
+
+            if (dhuhaTime != null) {
+                timeByTemplateId[PRAYING_DHUHA_ID] = dhuhaTime
+            }
+
+            for ((templateId, timeInSeconds) in timeByTemplateId) {
+                val existingToDo = mainActivityViewModel.getToDoById(templateId)
+                if (existingToDo != null) {
+                    continue
+                }
+
+                val template = templateToDos[templateId]?.second ?: continue
+                val endsOnDate =
+                    calculateEndsOnDate(today, template.frequency, template.customScheduleDays)
+
+                val automaticToDo = template.copy(
+                    timeInSeconds = timeInSeconds,
+                    isReminderEnabled = true,
+                    offsetInMinutes = 0,
+                    repeatsFromDate = today.toString(),
+                    endsOnDate = endsOnDate,
+                    completedDates = TreeSet(),
+                    deletedDates = TreeSet(),
+                    isAutomaticToDo = true
+                )
+                mainActivityViewModel.insertToDo(automaticToDo)
+            }
+        }
+    }
+
+    private fun getPrayerTimesForToday(settingsValue: AppSettings): List<Long>? {
+        val prayerNames = resources.getStringArray(R.array.prayer_names)
+        val categoryName = resources.getStringArray(R.array.categories).getOrNull(2) ?: return null
+        val calculator = PrayerTimeCalculator(settingsValue, prayerNames, categoryName)
+        val today = LocalDate.now()
+        val prayerToDos = calculator.getPrayerTimeToDos(
+            today.dayOfMonth,
+            today.month.ordinal,
+            today.year,
+            BooleanArray(5) { true },
+            IntArray(5)
+        )
+        if (prayerToDos.size < 5) {
+            return null
+        }
+        return prayerToDos.map { it.timeInSeconds }
+    }
+
+    private fun addMinutes(timeInSeconds: Long, minutes: Int): Long {
+        return timeInSeconds + (minutes * 60L)
+    }
+
+    private fun getDhuhaTime(fajrTime: Long, dhuhrTime: Long): Long? {
+        val eightAmTime = getTimestampInSeconds("08:00")
+        return if (eightAmTime in fajrTime..dhuhrTime) {
+            eightAmTime
+        } else {
+            null
+        }
+    }
+
+    private fun calculateEndsOnDate(
+        startDate: LocalDate,
+        frequency: Frequency?,
+        customScheduleDays: TreeSet<Int>?
+    ): String {
+        if (frequency == Frequency.Daily) {
+            return startDate.plusDays(2).toString()
+        }
+
+        if (frequency == Frequency.Weekly && !customScheduleDays.isNullOrEmpty()) {
+            var currentDate = startDate
+            var occurrences = 0
+            while (occurrences < 3) {
+                val dayOfWeek = ((currentDate.dayOfWeek.value % 7) + 1)
+                if (customScheduleDays.contains(dayOfWeek)) {
+                    occurrences += 1
+                    if (occurrences == 3) {
+                        return currentDate.toString()
+                    }
+                }
+                currentDate = currentDate.plusDays(1)
+            }
+        }
+
+        return startDate.plusDays(2).toString()
     }
 
     override fun onLocationSaved() {

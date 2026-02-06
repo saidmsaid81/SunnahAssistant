@@ -333,6 +333,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `asrCustomTime` TEXT DEFAULT null")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `maghribCustomTime` TEXT DEFAULT null")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `ishaCustomTime` TEXT DEFAULT null")
+                database.execSQL("ALTER TABLE reminders_table ADD COLUMN `isAutomaticToDo` INTEGER DEFAULT 0 NOT NULL")
 
             }
         }
