@@ -336,6 +336,8 @@
     <string name="don_t_show_this">Don\'t Show This</string>
     <string name="fix_alarms_and_reminders">Sunnah Assistant is blocked from scheduling reminders by the system</string>
     <string name="tap_to_fix_this">Tap to fix this</string>
+    <string name="enable_alarms_and_reminders_title">Enable Alarms and Reminders</string>
+    <string name="enable_alarms_and_reminders_message">To receive reminders at the correct time, please allow Sunnah Assistant to schedule alarms and reminders in the next screen.</string>
     <string name="refreshing_notifications">Refreshing notifications…</string>
     <string name="resources">Resources</string>
     <string name="hadith">Hadith</string>

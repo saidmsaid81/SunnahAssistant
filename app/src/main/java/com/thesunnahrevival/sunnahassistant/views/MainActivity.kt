@@ -1,18 +1,23 @@
 package com.thesunnahrevival.sunnahassistant.views
 
+import android.app.AlarmManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -361,7 +366,29 @@ open class MainActivity : AppCompatActivity() {
                     if (activeFragment is TodayFragment) {
                         activeFragment.mBinding.banner.dismiss()
                     }
+                    showAlarmPermissionDialogIfNeeded()
                 }
+            }
+        }
+    }
+
+    private fun showAlarmPermissionDialogIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.enable_alarms_and_reminders_title))
+                    .setMessage(getString(R.string.enable_alarms_and_reminders_message))
+                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                            data = "package:$packageName".toUri()
+                        }
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
             }
         }
     }

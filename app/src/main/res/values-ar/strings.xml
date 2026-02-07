@@ -363,6 +363,8 @@
     <string name="don_t_show_this">لا تعرض هذا</string>
     <string name="fix_alarms_and_reminders">قام النظام بحظر تطبيق مساعد السنة من تشغيل إشعارات التذكيرات</string>
     <string name="tap_to_fix_this">انقر لإصلاح هذا</string>
+    <string name="enable_alarms_and_reminders_title">تفعيل المنبهات والتذكيرات</string>
+    <string name="enable_alarms_and_reminders_message">لتلقي التذكيرات في الوقت الصحيح، يرجى السماح لمساعد السنة بجدولة المنبهات والتذكيرات في الشاشة التالية.</string>
     <string name="translations">التراجم</string>
     <string name="bookmark_page">إضافة إشارة مرجعية للصفحة</string>
     <string name="makki_verse_count">مكية - %s آية</string>
