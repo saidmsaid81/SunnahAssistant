@@ -111,7 +111,9 @@ class ResourcesNextActionRepository private constructor(
 
         if (!isKahfTime) return
 
-        if (toDoRepository.getToDoById(READING_SURATUL_KAHF_ID) == null) {
+        val readingSuratulKahfReminder = toDoRepository.getToDoById(READING_SURATUL_KAHF_ID)
+
+        if (readingSuratulKahfReminder == null || readingSuratulKahfReminder.isAutomaticToDo) {
             add(
                 NextAction(
                     titleResId = R.string.weekly_friday_reminder,
@@ -154,7 +156,9 @@ class ResourcesNextActionRepository private constructor(
             add(firstAction())
         }
 
-        if (toDoRepository.getToDoById(READING_SURATUL_MULK_ID) == null){
+        val readingSuratulMulkReminder = toDoRepository.getToDoById(READING_SURATUL_MULK_ID)
+
+        if (readingSuratulMulkReminder == null || readingSuratulMulkReminder.isAutomaticToDo){
             add(secondAction())
         }
 

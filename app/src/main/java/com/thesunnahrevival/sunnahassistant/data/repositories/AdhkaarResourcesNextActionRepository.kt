@@ -73,7 +73,9 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         if (currentTime !in asrTime..ishaTime) return
 
-        if (toDoRepository.getToDoById(READING_EVENING_ADHKAAR_ID) == null) {
+        val eveningAdhkaarReminder = toDoRepository.getToDoById(READING_EVENING_ADHKAAR_ID)
+
+        if (eveningAdhkaarReminder == null || eveningAdhkaarReminder.isAutomaticToDo) {
             add(
                 NextAction(
                     titleResId = R.string.evening_adhkaar_daily_reminder,
@@ -117,7 +119,9 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         if (currentTime !in fajrTime..sunrise) return
 
-        if (toDoRepository.getToDoById(READING_MORNING_ADHKAAR_ID) == null) {
+        val isMorningAdhkaar = toDoRepository.getToDoById(READING_MORNING_ADHKAAR_ID)
+
+        if (isMorningAdhkaar == null || isMorningAdhkaar.isAutomaticToDo) {
             add(
                 NextAction(
                     titleResId = R.string.morning_adhkaar_daily_reminder,
