@@ -13,6 +13,8 @@ const val DB_NAME_TEMP = "SunnahAssistant_temp.db"
 const val SHARE = "SHARE"
 const val LINK = "link"
 const val MARK_AS_COMPLETE = "com.thesunnahrevival.sunnahassitant.MARK_AS_COMPLETE"
+const val DISABLE_NUDGE = "com.thesunnahrevival.sunnahassitant.DISABLE_NUDGE"
+const val DISABLE_ALL_NUDGES = "com.thesunnahrevival.sunnahassitant.DISABLE_ALL_NUDGES"
 const val TO_DO_ID = "com.thesunnahrevival.sunnahassitant.TO_DO_ID"
 const val NOTIFICATION_TITLE =
     "com.thesunnahrevival.sunnahassistant.utilities.notificationTitle"
@@ -30,6 +32,7 @@ const val NOTIFICATION_DND_MINUTES =
 const val TODO_REMINDER_SCHEDULER_WORK_TAG = "todo_reminder_scheduler_work"
 
 const val TODO_NOTIFICATION_CHANNEL_PREFIX = "ToDo_"
+const val NUDGE_NOTIFICATION_CHANNEL_ID = "Nudges"
 
 const val DEVELOPER_MESSAGES_CHANNEL_ID = "Developer"
 

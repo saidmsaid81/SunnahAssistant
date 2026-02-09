@@ -34,6 +34,12 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
             if (action == MARK_AS_COMPLETE) {
                 val id = intent.getIntExtra(TO_DO_ID, 0)
                 markAsComplete(context, id)
+            } else if (action == DISABLE_NUDGE) {
+                val id = intent.getIntExtra(TO_DO_ID, 0)
+                disableNudge(context, id)
+            } else if (action == DISABLE_ALL_NUDGES) {
+                val id = intent.getIntExtra(TO_DO_ID, 0)
+                disableAllNudges(context, id)
             } else {
                 showNotifications(context, intent)
             }
@@ -59,6 +65,30 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
         }
     }
 
+    private fun disableNudge(context: Context, id: Int) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(id)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val repository = SunnahAssistantRepository.getInstance(context)
+            repository.disableReminder(id)
+        }
+    }
+
+    private fun disableAllNudges(context: Context, id: Int) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (id != 0) {
+            notificationManager.cancel(id)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val repository = SunnahAssistantRepository.getInstance(context)
+            repository.disableAllAutomaticToDos()
+        }
+    }
+
     private fun showNotifications(context: Context, intent: Intent) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -80,10 +110,20 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
 
         if (!TextUtils.isEmpty(notificationTitle)) {
             notificationText?.forEach { (id, text) ->
+                val toDo = runBlocking {
+                    SunnahAssistantRepository.getInstance(context).getToDoById(id)
+                }
+                val isAutomaticToDo = toDo?.isAutomaticToDo == true
                 val markAsCompleteAction = NotificationCompat.Action(
                     R.drawable.ic_check,
                     context.getString(R.string.mark_as_complete),
                     getMarkAsCompletePendingIntent(context, id)
+                )
+
+                val disableNudgeAction = NotificationCompat.Action(
+                    R.drawable.ic_notifications_off,
+                    context.getString(R.string.disable_this_nudge),
+                    getDisableNudgePendingIntent(context, id)
                 )
 
                 val snoozeNotificationAction = NotificationCompat.Action(
@@ -96,6 +136,12 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                     R.drawable.ic_share,
                     context.getString(R.string.share),
                     shareToDoNotificationAction(context, id)
+                )
+
+                val disableAllNudgesAction = NotificationCompat.Action(
+                    R.drawable.ic_notifications_off,
+                    context.getString(R.string.disable_all_nudges),
+                    getDisableAllNudgesPendingIntent(context, id)
                 )
 
                 val quranReaderIntent = getQuranReaderIntent(context, id)
@@ -120,15 +166,26 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                     null
                 }
 
+                val titleForNotification =
+                    if (isAutomaticToDo) context.getString(R.string.suggested) else notificationTitle
+
                 notificationManager.notify(
                     id,
                     createNotification(
                         context = context,
-                        channel = getToDoNotificationChannel(context),
-                        title = notificationTitle,
+                        channel = if (isAutomaticToDo)
+                            getNudgeNotificationChannel(context)
+                        else
+                            getToDoNotificationChannel(context),
+                        title = titleForNotification,
                         text = text,
                         pendingIntent = quranReaderIntent ?: adhkaarReaderIntent ?: getMainActivityPendingIntent(context),
                         actions = when {
+                            isAutomaticToDo -> listOf(
+                                disableNudgeAction,
+                                snoozeNotificationAction,
+                                disableAllNudgesAction
+                            )
                             openQuranReaderFragmentAction != null -> listOf(
                                 openQuranReaderFragmentAction,
                                 snoozeNotificationAction,
@@ -205,6 +262,24 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
         val flag = PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getBroadcast(context, id, markAsCompleteIntent, flag)
 
+    }
+
+    private fun getDisableNudgePendingIntent(context: Context, id: Int): PendingIntent? {
+        val disableNudgeIntent = Intent(context, ToDoBroadcastReceiver::class.java).apply {
+            action = DISABLE_NUDGE
+            putExtra(TO_DO_ID, id)
+        }
+        val flag = PendingIntent.FLAG_IMMUTABLE
+        return PendingIntent.getBroadcast(context, id, disableNudgeIntent, flag)
+    }
+
+    private fun getDisableAllNudgesPendingIntent(context: Context, id: Int): PendingIntent? {
+        val disableAllIntent = Intent(context, ToDoBroadcastReceiver::class.java).apply {
+            action = DISABLE_ALL_NUDGES
+            putExtra(TO_DO_ID, id)
+        }
+        val flag = PendingIntent.FLAG_IMMUTABLE
+        return PendingIntent.getBroadcast(context, id, disableAllIntent, flag)
     }
 
     private fun snoozeNotificationAction(context: Context, id: Int): PendingIntent {

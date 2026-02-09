@@ -387,9 +387,15 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
             }
 
+            val notificationTitle = if (toDo.isAutomaticToDo) {
+                getContext().getString(R.string.suggested)
+            } else {
+                getContext().getString(R.string.reminder)
+            }
+
             ReminderManager.getInstance().scheduleReminder(
                 getContext(),
-                getContext().getString(R.string.reminder),
+                notificationTitle,
                 mapOf(Pair(id, "${getContext().getString(R.string.snooze)}: ${toDo.name}")),
                 mapOf(Pair(id, toDo.category ?: "Uncategorized")),
                 System.currentTimeMillis() + (timeInMinutes * 60 * 1000),

@@ -149,6 +149,10 @@ class SunnahAssistantRepository private constructor(private val applicationConte
         newToDo?.let { updateToDo(it) }
     }
 
+    suspend fun disableReminder(id: Int) = mToDoDao.disableReminder(id)
+
+    suspend fun disableAllAutomaticToDos() = mToDoDao.disableAllAutomaticToDos()
+
     suspend fun updatePrayerDetails(oldPrayerDetails: ToDo, newPrayerDetails: ToDo) {
         mToDoDao.updatePrayerTimeDetails(
             newPrayerDetails.additionalInfo,

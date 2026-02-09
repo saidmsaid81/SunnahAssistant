@@ -242,6 +242,8 @@
     <string name="pick_date">Pick Date</string>
     <string name="gregorian_dates">Gregorian Dates</string>
     <string name="mark_as_complete">Mark as Complete</string>
+    <string name="disable_this_nudge">Disable this suggestion</string>
+    <string name="disable_all_nudges">Disable all suggestions</string>
     <string name="notify">Notify</string>
     <string name="tap_to_change">(Tap to Change)</string>
     <string name="repeat_cannot_be_changed">Repeat frequency for automatic prayer time cannot be changed</string>
@@ -327,6 +329,9 @@
     <string name="snooze_for">Snooze for: </string>
     <string name="snooze">Snooze</string>
     <string name="share">Share</string>
+    <string name="nudges">Suggestions</string>
+    <string name="sunnah_nudges_channel_description">Sunnah suggestions</string>
+    <string name="suggested">Suggested</string>
     <string name="reminder">Reminder</string>
     <string name="too_many_requests">Too many requests. Please try again after %s. If you think this is a mistake please contact us at %s</string>
     <string name="an_error_occurred">An error occurred. Please try again. If this persists please contact us at %s</string>

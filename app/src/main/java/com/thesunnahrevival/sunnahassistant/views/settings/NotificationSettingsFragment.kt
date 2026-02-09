@@ -17,6 +17,7 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.dto.NotificationSettings
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
+import com.thesunnahrevival.sunnahassistant.utilities.updateNudgeNotificationChannel
 import com.thesunnahrevival.sunnahassistant.utilities.updateToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 
@@ -127,6 +128,9 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mainActivityViewModel.settingsValue?.let { settings: AppSettings ->
                     updateToDoNotificationChannel(
+                        requireContext(), settings.notificationToneUri, settings.isVibrate, settings.priority
+                    )
+                    updateNudgeNotificationChannel(
                         requireContext(), settings.notificationToneUri, settings.isVibrate, settings.priority
                     )
                 }

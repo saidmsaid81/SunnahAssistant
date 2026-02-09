@@ -78,6 +78,29 @@ fun getToDoNotificationChannel(context: Context): NotificationChannel? {
     return notificationChannel
 }
 
+fun getNudgeNotificationChannel(context: Context): NotificationChannel? {
+    var notificationChannel: NotificationChannel? = null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val manager = getNotificationManager(context)
+        notificationChannel = manager.notificationChannels
+            .find { it.id == NUDGE_NOTIFICATION_CHANNEL_ID }
+
+        if (notificationChannel == null) {
+            notificationChannel = NotificationChannel(
+                NUDGE_NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.nudges),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.description =
+                context.getString(R.string.sunnah_nudges_channel_description)
+            manager.createNotificationChannel(notificationChannel)
+            return notificationChannel
+        }
+    }
+
+    return notificationChannel
+}
+
 fun getDeveloperMessagesNotificationChannel(context: Context): NotificationChannel? {
     var notificationChannel: NotificationChannel? = null
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -137,6 +160,7 @@ private fun deleteObsoleteNotificationChannels(notificationManager: Notification
         for (channel in it.notificationChannels) {
             if (
                 !channel.id.startsWith(TODO_NOTIFICATION_CHANNEL_PREFIX) &&
+                channel.id != NUDGE_NOTIFICATION_CHANNEL_ID &&
                 !channel.id.matches(DEVELOPER_MESSAGES_CHANNEL_ID.toRegex()) &&
                 !channel.id.matches(LOW_PRIORITY_MAINTENANCE_NOTIFICATION_CHANNEL_ID.toRegex())
             ) {
@@ -165,6 +189,35 @@ fun updateToDoNotificationChannel(
             context.getString(R.string.to_dos),
             priority
         )
+
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+
+        notificationChannel.setSound(notificationToneUri, attributes)
+        notificationChannel.enableVibration(isVibrate)
+        notificationManager.createNotificationChannel(notificationChannel)
+    }
+}
+
+fun updateNudgeNotificationChannel(
+    context: Context,
+    notificationToneUri: Uri?,
+    isVibrate: Boolean,
+    priority: Int
+) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val notificationManager = getNotificationManager(context)
+        notificationManager.deleteNotificationChannel(NUDGE_NOTIFICATION_CHANNEL_ID)
+
+        val notificationChannel = NotificationChannel(
+            NUDGE_NOTIFICATION_CHANNEL_ID,
+            context.getString(R.string.nudges),
+            priority
+        )
+        notificationChannel.description =
+            context.getString(R.string.sunnah_nudges_channel_description)
 
         val attributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_NOTIFICATION)

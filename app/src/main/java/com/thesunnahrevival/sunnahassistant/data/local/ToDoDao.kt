@@ -220,6 +220,12 @@ interface ToDoDao {
     @Query("UPDATE reminders_table SET category =:newCategory WHERE category == :deletedCategory")
     suspend fun updateCategory(deletedCategory: String, newCategory: String)
 
+    @Query("UPDATE reminders_table SET isEnabled = 0 WHERE id == :id")
+    suspend fun disableReminder(id: Int)
+
+    @Query("UPDATE reminders_table SET isEnabled = 0 WHERE isAutomaticToDo == 1")
+    suspend fun disableAllAutomaticToDos()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSettings(settings: AppSettings)
 
