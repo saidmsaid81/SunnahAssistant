@@ -72,11 +72,13 @@ class ResourcesNextActionRepository private constructor(
         }
 
         val firstActionWithToDoId = nextActions.find { it.toDoId != null && templateToDos.containsKey(it.toDoId) }
-        val templateToDo = firstActionWithToDoId?.toDoId?.let { templateToDos[it]?.second }
+        val templateToDoId = firstActionWithToDoId?.toDoId
+        val templateToDo = templateToDoId?.let { templateToDos[it]?.second }
 
         return NextActionsData(
             predefinedReminderInfo = templateToDo?.predefinedToDoInfo ?: "",
             predefinedReminderLink = templateToDo?.predefinedToDoLink ?: "",
+            predefinedReminderToDoId = templateToDoId,
             nextActions = nextActions
         )
     }
@@ -224,6 +226,7 @@ class ResourcesNextActionRepository private constructor(
     data class NextActionsData(
         val predefinedReminderInfo: String = "",
         val predefinedReminderLink: String = "",
+        val predefinedReminderToDoId: Int? = null,
         val nextActions: List<NextAction> = listOf()
     )
 
@@ -243,4 +246,3 @@ class ResourcesNextActionRepository private constructor(
         data object NavigateToSurah : ActionType()
     }
 }
-

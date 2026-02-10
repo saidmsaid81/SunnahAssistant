@@ -48,11 +48,13 @@ class AdhkaarResourcesNextActionRepository private constructor(
         }
 
         val firstActionWithToDoId = nextActions.find { it.toDoId != null && templateToDos.containsKey(it.toDoId) }
-        val templateToDo = firstActionWithToDoId?.toDoId?.let { templateToDos[it]?.second }
+        val templateToDoId = firstActionWithToDoId?.toDoId
+        val templateToDo = templateToDoId?.let { templateToDos[it]?.second }
 
         emit(NextActionsData(
             predefinedReminderInfo = templateToDo?.predefinedToDoInfo ?: "",
             predefinedReminderLink = templateToDo?.predefinedToDoLink ?: "",
+            predefinedReminderToDoId = templateToDoId,
             nextActions = nextActions
         ))
     }.flowOn(Dispatchers.IO)

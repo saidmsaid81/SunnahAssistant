@@ -92,8 +92,8 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
                 NextActionScreen(
                     nextActionsData = nextActionsData,
-                    onInfoClick = { link ->
-                        onInfoClick(link)
+                    onInfoClick = { link, toDoId ->
+                        onInfoClick(link, toDoId)
                     }
                 ) { nextAction ->
                     onNextActionClick(nextAction)
@@ -102,12 +102,13 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun onInfoClick(link: String) {
+    private fun onInfoClick(link: String, toDoId: Int?) {
         val inAppBrowser = InAppBrowser(requireContext(), lifecycleScope)
         try {
             inAppBrowser.launchInAppBrowser(
                 link,
-                findNavController()
+                findNavController(),
+                predefinedToDoId = toDoId
             )
         } catch (exception: MalformedURLException) {
             Log.e("MalformedURLException", exception.message.toString())
@@ -196,7 +197,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 @Composable
 fun NextActionScreen(
     nextActionsData: ResourcesNextActionRepository.NextActionsData? = null,
-    onInfoClick: (String) -> Unit = {},
+    onInfoClick: (String, Int?) -> Unit = { _, _ -> },
     onClick: (action: ResourcesNextActionRepository.NextAction) -> Unit
 ) {
     SunnahAssistantTheme {
@@ -235,7 +236,10 @@ fun NextActionScreen(
                                     enabled = Patterns.WEB_URL.matcher(nextActionsData.predefinedReminderLink)
                                         .matches()
                                 ) {
-                                    onInfoClick(nextActionsData.predefinedReminderLink)
+                                    onInfoClick(
+                                        nextActionsData.predefinedReminderLink,
+                                        nextActionsData.predefinedReminderToDoId
+                                    )
                                 },
                             verticalAlignment = Alignment.Companion.CenterVertically
                         ) {

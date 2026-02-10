@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentWebViewBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.PREDEFINED_TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 
@@ -26,6 +27,7 @@ open class WebViewFragment : SunnahAssistantFragment() {
 
     private var _webViewFragmentBinding: FragmentWebViewBinding? = null
     private val webViewFragmentBinding get() = _webViewFragmentBinding!!
+    private var predefinedToDoId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +42,11 @@ open class WebViewFragment : SunnahAssistantFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        predefinedToDoId = if (arguments?.containsKey(PREDEFINED_TO_DO_ID) == true) {
+            arguments?.getInt(PREDEFINED_TO_DO_ID)
+        } else {
+            null
+        }
         webViewFragmentBinding.webview.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 webViewFragmentBinding.progressBar.visibility = View.VISIBLE
@@ -80,11 +87,23 @@ open class WebViewFragment : SunnahAssistantFragment() {
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.web_view_menu, menu)
+        menu.findItem(R.id.set_reminder)?.isVisible = predefinedToDoId != null
     }
 
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.set_reminder -> {
+                predefinedToDoId?.let { toDoId ->
+                    val templateToDos = mainActivityViewModel.getTemplateToDos()
+                    templateToDos[toDoId]?.let { template ->
+                        mainActivityViewModel.selectedToDo = template.second
+                        mainActivityViewModel.isToDoTemplate = true
+                        findNavController().navigate(R.id.toDoDetailsFragment)
+                    }
+                }
+                return true
+            }
             R.id.share_page -> {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"

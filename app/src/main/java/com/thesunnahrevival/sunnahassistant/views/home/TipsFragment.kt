@@ -126,9 +126,14 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
         findNavController().navigate(launchFragment)
     }
 
-    override fun onInfoClickListener(link: String) {
+    override fun onInfoClickListener(link: String, toDoId: Int?) {
         try {
-            browser.launchInAppBrowser(link, findNavController(), true)
+            browser.launchInAppBrowser(
+                link,
+                findNavController(),
+                true,
+                toDoId
+            )
         } catch (exception: MalformedURLException) {
             Log.e("MalformedURLException", exception.message.toString())
             Toast.makeText(requireContext(), getString(R.string.something_wrong), Toast.LENGTH_LONG)
@@ -143,4 +148,3 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
     }
 
 }
-

@@ -46,6 +46,7 @@ import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.SHARE
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.PREDEFINED_TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
@@ -97,14 +98,29 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIntents(intent: Intent?) {
+        val predefinedToDoId = if (intent?.extras?.containsKey(PREDEFINED_TO_DO_ID) == true) {
+            intent.extras?.getInt(PREDEFINED_TO_DO_ID)
+        } else {
+            null
+        }
         val link = intent?.extras?.getString("link")
         if (link != null) {
-            launchInAppBrowser(link)
+            launchInAppBrowser(link, predefinedToDoId)
         }
 
         if (intent?.action == SHARE) {
             showShareToDo()
         }
+
+        if (link == null && predefinedToDoId != null) {
+            openTemplateToDo(predefinedToDoId)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntents(intent)
     }
 
     private fun setupNavigation() {
@@ -231,7 +247,7 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchInAppBrowser(link: String) {
+    private fun launchInAppBrowser(link: String, predefinedToDoId: Int? = null) {
         if (link.contains("market://details")) {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_VIEW
@@ -242,8 +258,19 @@ open class MainActivity : AppCompatActivity() {
         } else
             InAppBrowser(this, lifecycleScope).launchInAppBrowser(
                 link,
-                findNavController(R.id.myNavHostFragment)
+                findNavController(R.id.myNavHostFragment),
+                predefinedToDoId = predefinedToDoId
             )
+    }
+
+    private fun openTemplateToDo(toDoId: Int) {
+        val templateToDos = mViewModel.getTemplateToDos()
+        val template = templateToDos[toDoId] ?: return
+        mViewModel.selectedToDo = template.second
+        mViewModel.isToDoTemplate = true
+        if (navController.currentDestination?.id != R.id.toDoDetailsFragment) {
+            navController.navigate(R.id.toDoDetailsFragment)
+        }
     }
 
     private fun getSettings() {

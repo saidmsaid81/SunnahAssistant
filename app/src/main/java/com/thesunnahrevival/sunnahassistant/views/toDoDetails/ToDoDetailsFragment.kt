@@ -432,7 +432,8 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 try {
                     inAppBrowser?.launchInAppBrowser(
                         mToDo.predefinedToDoLink,
-                        findNavController()
+                        findNavController(),
+                        predefinedToDoId = mToDo.id
                     )
                 } catch (exception: MalformedURLException) {
                     Log.e("MalformedURLException", exception.message.toString())

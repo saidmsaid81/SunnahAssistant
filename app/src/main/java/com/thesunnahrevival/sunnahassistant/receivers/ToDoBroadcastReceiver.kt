@@ -155,6 +155,14 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                     null
                 }
 
+                val predefinedLinkIntent = if (isAutomaticToDo &&
+                    (id == PRAYING_DHUHA_ID)
+                ) {
+                    getPredefinedLinkPendingIntent(context, id)
+                } else {
+                    null
+                }
+
                 val adhkaarReaderIntent = getAdhkaarReaderIntent(context, id)
                 val openAdhkaarReaderFragmentAction = if (adhkaarReaderIntent != null) {
                     NotificationCompat.Action(
@@ -179,7 +187,10 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
                             getToDoNotificationChannel(context),
                         title = titleForNotification,
                         text = text,
-                        pendingIntent = quranReaderIntent ?: adhkaarReaderIntent ?: getMainActivityPendingIntent(context),
+                        pendingIntent = predefinedLinkIntent
+                            ?: quranReaderIntent
+                            ?: adhkaarReaderIntent
+                            ?: getMainActivityPendingIntent(context),
                         actions = when {
                             isAutomaticToDo -> listOf(
                                 disableNudgeAction,
@@ -297,6 +308,21 @@ class ToDoBroadcastReceiver : BroadcastReceiver() {
         }
         val flag = PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getActivity(context, id, shareToDoIntent, flag)
+    }
+
+    private fun getPredefinedLinkPendingIntent(context: Context, toDoId: Int): PendingIntent? {
+        val templateToDo = TemplateToDos().getTemplateToDos(context)[toDoId]?.second
+        val link = templateToDo?.predefinedToDoLink ?: return null
+        if (!isValidUrl(link)) {
+            return null
+        }
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            putExtra(LINK, link)
+            putExtra(PREDEFINED_TO_DO_ID, toDoId)
+        }
+        val flag = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        return PendingIntent.getActivity(context, toDoId, intent, flag)
     }
 
     private fun getQuranReaderIntent(context: Context, notificationId: Int): PendingIntent? {
