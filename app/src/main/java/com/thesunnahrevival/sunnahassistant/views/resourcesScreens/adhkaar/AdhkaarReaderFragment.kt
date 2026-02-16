@@ -345,13 +345,25 @@ class AdhkaarReaderFragment : MenuBarFragment() {
         times: String,
         group: AdhkaarViewModel.AdhkaarDisplayGroup
     ): String {
-        val arabicText = group.items.mapNotNull { it.arabicText?.takeIf { text -> text.isNotBlank() } }.joinToString("\n\n")
-        val englishText = group.items.mapNotNull { it.englishText?.takeIf { text -> text.isNotBlank() } }.joinToString("\n\n")
         val referenceText = group.reference ?: ""
+        val content = buildString {
+            group.items.forEachIndexed { index, item ->
+                item.arabicText?.takeIf { text -> text.isNotBlank() }?.let { arabic ->
+                    appendLine(arabic)
+                    appendLine()
+                }
+                item.englishText?.takeIf { text -> text.isNotBlank() }?.let { english ->
+                    appendLine(english)
+                    appendLine()
+                }
+                if (index < group.items.size - 1) {
+                    appendLine()
+                }
+            }
+        }.trim()
 
         return "$chapterName ($times)\n\n" +
-                "$arabicText\n\n" +
-                "$englishText\n\n" +
+                "$content\n\n" +
                 stringResource(R.string.reference) + ": $referenceText"
     }
 
