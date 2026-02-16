@@ -61,13 +61,16 @@ fun ArabicTextWithTranslation(
     onBookmarkClick: () -> Unit = {},
     arabicTextFontSize: Int = 18,
     translationTextFontSize: Int = 16,
-    footnoteTextFontSize: Int = 12
+    footnoteTextFontSize: Int = 12,
+    showTopDivider: Boolean = index > 0,
+    showSectionMarker: Boolean = true,
+    showActions: Boolean = true
 ) {
 
     val uthmaniFont = FontLoader.loadUthmaniFont()
     val arabicTextScale = 1.4f
 
-    if (index > 0) {
+    if (showTopDivider) {
         Divider(
             color = Color.LightGray,
             thickness = 1.dp,
@@ -75,12 +78,14 @@ fun ArabicTextWithTranslation(
         )
     }
 
-    Text(
-        text = sectionMarker,
-        style = MaterialTheme.typography.subtitle1,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colors.primary
-    )
+    if (showSectionMarker) {
+        Text(
+            text = sectionMarker,
+            style = MaterialTheme.typography.subtitle1,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.primary
+        )
+    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -136,40 +141,42 @@ fun ArabicTextWithTranslation(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
+        if (showActions) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
 
-            ShareIcon(
-                context = context,
-                textToShare = textToShare,
-                modifier = Modifier.size(24.dp)
-            )
+                ShareIcon(
+                    context = context,
+                    textToShare = textToShare,
+                    modifier = Modifier.size(24.dp)
+                )
 
-            Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.width(24.dp))
 
-            CopyIcon(
-                context,
-                textToShare,
-                stringResource(R.string.copy_label),
-                stringResource(R.string.copy_message),
-                Modifier.size(24.dp)
-            )
+                CopyIcon(
+                    context,
+                    textToShare,
+                    stringResource(R.string.copy_label),
+                    stringResource(R.string.copy_message),
+                    Modifier.size(24.dp)
+                )
 
-            Spacer(modifier = Modifier.width(24.dp))
+                Spacer(modifier = Modifier.width(24.dp))
 
-            BookmarkIcon(icon = if (bookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
-                onBookmarkClick()
+                BookmarkIcon(icon = if (bookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkAdd, modifier = Modifier.size(24.dp)) {
+                    onBookmarkClick()
+                }
+
+                Spacer(modifier = Modifier.width(24.dp))
+
+                ReportIssueIcon(
+                    context = context,
+                    textToReport = textToShare,
+                    modifier = Modifier.size(24.dp)
+                )
             }
-
-            Spacer(modifier = Modifier.width(24.dp))
-
-            ReportIssueIcon(
-                context = context,
-                textToReport = textToShare,
-                modifier = Modifier.size(24.dp)
-            )
         }
     }
 }

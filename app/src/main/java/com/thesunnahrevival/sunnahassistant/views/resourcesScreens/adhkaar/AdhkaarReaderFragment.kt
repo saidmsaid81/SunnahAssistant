@@ -189,12 +189,16 @@ class AdhkaarReaderFragment : MenuBarFragment() {
 
         LaunchedEffect(chapterId, scrollToItemId) {
             if (scrollToItemId != -1 && chapterId == initialChapterId) {
-                while (uiState.adhkaarItems.isEmpty() || uiState.isLoading) {
+                while (uiState.adhkaarGroups.isEmpty() || uiState.isLoading) {
                     delay(50)
                 }
 
-                val targetIndex = uiState.adhkaarItems.indexOfFirst { it.itemId == scrollToItemId }
-                listState.animateScrollToItem(targetIndex)
+                val targetIndex = uiState.adhkaarGroups.indexOfFirst { group ->
+                    group.itemIds.contains(scrollToItemId)
+                }
+                if (targetIndex >= 0) {
+                    listState.animateScrollToItem(targetIndex)
+                }
             }
         }
 
@@ -207,7 +211,7 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                     ArabicTextWithTranslationShimmer(index)
                 }
             } else {
-                items(uiState.adhkaarItems.size) { index ->
+                items(uiState.adhkaarGroups.size) { index ->
 
                     if (index == 0) {
                         Text(
@@ -217,9 +221,15 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                         )
                     }
 
-                    AdhkaarItem(requireContext(), uiState, index, chapterName, settings)
+                    AdhkaarGroup(
+                        context = requireContext(),
+                        uiState = uiState,
+                        groupIndex = index,
+                        chapterName = chapterName,
+                        settings = settings
+                    )
 
-                    if (index == (uiState.adhkaarItems.size - 1)) {
+                    if (index == (uiState.adhkaarGroups.size - 1)) {
                         uiState.nextAction?.let {
                             Button(
                                 onClick = {
@@ -257,57 +267,92 @@ class AdhkaarReaderFragment : MenuBarFragment() {
     }
 
     @Composable
-    private fun AdhkaarItem(
+    private fun AdhkaarGroup(
         context: Context,
         uiState: AdhkaarViewModel.AdhkaarUiState,
-        index: Int,
+        groupIndex: Int,
         chapterName: String,
         settings: AppSettings?
     ) {
-        val adhkaarItem = uiState.adhkaarItems[index]
-
-        val translationTexts = if (adhkaarItem.englishText != null) {
-            listOf(
-                TranslationText(
-                    title = context.getLocale().displayLanguage,
-                    text = adhkaarItem.englishText.toAnnotatedString(),
-                    footnoteLabel = stringResource(R.string.reference),
-                    footnotes = if (adhkaarItem.reference != null) listOf((adhkaarItem.reference).toAnnotatedString()) else listOf()
-                )
-            )
-        } else {
-            listOf()
-        }
-
+        val adhkaarGroup = uiState.adhkaarGroups[groupIndex]
         val currentLocale = context.getLocale()
         val isArabicLocale = currentLocale.language == "ar"
 
-        val textToParse = if (isArabicLocale) {
-            adhkaarItem.arabicText
-        } else {
-            adhkaarItem.englishText
+        val itemTimes = adhkaarGroup.items.map { item ->
+            val textToParse = if (isArabicLocale) {
+                item.arabicText
+            } else {
+                item.englishText
+            }
+            extractTimesFromText(textToParse)
         }
+        val groupedFrequency = if (itemTimes.distinct().size == 1) itemTimes.firstOrNull() else null
+        val shareFrequency = groupedFrequency ?: "Multiple Times"
 
-        val times = extractTimesFromText(textToParse)
+        adhkaarGroup.items.forEachIndexed { itemIndex, adhkaarItem ->
+            val translationTexts = if (adhkaarItem.englishText != null) {
+                listOf(
+                    TranslationText(
+                        title = context.getLocale().displayLanguage,
+                        text = adhkaarItem.englishText.toAnnotatedString(),
+                        footnoteLabel = stringResource(R.string.reference),
+                        footnotes = if (itemIndex == (adhkaarGroup.items.size - 1) && adhkaarGroup.reference != null) {
+                            listOf(adhkaarGroup.reference.toAnnotatedString())
+                        } else {
+                            listOf()
+                        }
+                    )
+                )
+            } else {
+                listOf()
+            }
 
-        ArabicTextWithTranslation(
-            context = requireContext(),
-            index = index,
-            sectionMarker = times,
-            arabicText = adhkaarItem.arabicText ?: "",
-            translationTexts = translationTexts,
-            textToShare = "$chapterName ($times)\n\n" +
-                    "${adhkaarItem.arabicText}\n\n" +
-                    "${adhkaarItem.englishText}\n\n" +
-                    stringResource(R.string.reference) + ": ${adhkaarItem.reference}",
-            bookmarked = adhkaarItem.bookmarked,
-            onBookmarkClick = {
-                viewModel.toggleBookmark(adhkaarItem.itemId)
-            },
-            arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
-            translationTextFontSize = settings?.translationTextFontSize ?: 16,
-            footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12
-        )
+            val sectionMarker = groupedFrequency ?: itemTimes[itemIndex]
+            val shouldShowGroupActions = itemIndex == (adhkaarGroup.items.size - 1)
+            val shouldShowSectionMarker = groupedFrequency == null || itemIndex == 0
+
+            ArabicTextWithTranslation(
+                context = requireContext(),
+                index = groupIndex,
+                sectionMarker = sectionMarker,
+                arabicText = adhkaarItem.arabicText ?: "",
+                translationTexts = translationTexts,
+                textToShare = getGroupShareText(
+                    chapterName = chapterName,
+                    times = shareFrequency,
+                    group = adhkaarGroup
+                ),
+                bookmarked = adhkaarGroup.bookmarked,
+                onBookmarkClick = {
+                    viewModel.setBookmarks(
+                        items = adhkaarGroup.items,
+                        shouldBookmark = !adhkaarGroup.bookmarked
+                    )
+                },
+                arabicTextFontSize = settings?.arabicTextFontSize ?: 18,
+                translationTextFontSize = settings?.translationTextFontSize ?: 16,
+                footnoteTextFontSize = settings?.footnoteTextFontSize ?: 12,
+                showTopDivider = groupIndex > 0 && itemIndex == 0,
+                showSectionMarker = shouldShowSectionMarker,
+                showActions = shouldShowGroupActions
+            )
+        }
+    }
+
+    @Composable
+    private fun getGroupShareText(
+        chapterName: String,
+        times: String,
+        group: AdhkaarViewModel.AdhkaarDisplayGroup
+    ): String {
+        val arabicText = group.items.mapNotNull { it.arabicText?.takeIf { text -> text.isNotBlank() } }.joinToString("\n\n")
+        val englishText = group.items.mapNotNull { it.englishText?.takeIf { text -> text.isNotBlank() } }.joinToString("\n\n")
+        val referenceText = group.reference ?: ""
+
+        return "$chapterName ($times)\n\n" +
+                "$arabicText\n\n" +
+                "$englishText\n\n" +
+                stringResource(R.string.reference) + ": $referenceText"
     }
 
     private fun extractTimesFromText(text: String?): String {
@@ -460,12 +505,12 @@ class AdhkaarReaderFragment : MenuBarFragment() {
     private fun shareAllAdhkaar() {
         lifecycleScope.launch {
             try {
-                val adhkaarItems = viewModel.getAdhkaarItemsByChapterId(currentChapterId)
-                    .filter { !it.isLoading && it.adhkaarItems.isNotEmpty() }
+                val adhkaarGroups = viewModel.getAdhkaarItemsByChapterId(currentChapterId)
+                    .filter { !it.isLoading && it.adhkaarGroups.isNotEmpty() }
                     .first()
-                    .adhkaarItems
+                    .adhkaarGroups
 
-                if (adhkaarItems.isEmpty()) {
+                if (adhkaarGroups.isEmpty()) {
                     return@launch
                 }
 
@@ -474,26 +519,32 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                     appendLine("=".repeat(currentChapterName.length))
                     appendLine()
 
-                    adhkaarItems.forEachIndexed { index, item ->
+                    adhkaarGroups.forEachIndexed { index, group ->
                         val currentLocale = requireContext().getLocale()
-                        val textToParse = if (currentLocale.language == "ar") {
-                            item.arabicText
-                        } else {
-                            item.englishText
+                        val times = group.items.map { item ->
+                            val textToParse = if (currentLocale.language == "ar") {
+                                item.arabicText
+                            } else {
+                                item.englishText
+                            }
+                            extractTimesFromText(textToParse)
                         }
-                        val times = extractTimesFromText(textToParse)
+                        val groupedFrequency = if (times.distinct().size == 1) times.firstOrNull() else null
 
-                        appendLine("${if (adhkaarItems.size > 1) "${index + 1}." else ""} ($times)")
+                        val frequencyLabel = groupedFrequency ?: "Multiple Times"
+                        appendLine("${if (adhkaarGroups.size > 1) "${index + 1}." else ""} ($frequencyLabel)")
                         appendLine()
-                        item.arabicText?.let {
-                            appendLine(it)
-                            appendLine()
+                        group.items.forEach { item ->
+                            item.arabicText?.let {
+                                appendLine(it)
+                                appendLine()
+                            }
+                            item.englishText?.let {
+                                appendLine(it)
+                                appendLine()
+                            }
                         }
-                        item.englishText?.let {
-                            appendLine(it)
-                            appendLine()
-                        }
-                        item.reference?.let {
+                        group.reference?.let {
                             appendLine("${getString(R.string.reference)}: $it")
                             appendLine()
                         }

@@ -41,8 +41,10 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
             adhkaarItemRepository.getAdhkaarItemsByChapterId(chapterId).onStart { emit(listOf()) },
             adhkaarResourcesNextActionRepository.getAdhkaarNextActions(chapterId).onStart { emit(NextActionsData()) }
         ){ adhkaarItems, nextActions ->
+            val processedAdhkaarItems = processAdhkaarItems(items = adhkaarItems)
             AdhkaarUiState(
-                adhkaarItems = processAdhkaarItems(items = adhkaarItems),
+                adhkaarItems = processedAdhkaarItems,
+                adhkaarGroups = groupAdhkaarItemsByReference(processedAdhkaarItems),
                 isLoading = adhkaarItems.isEmpty(),
                 nextAction = nextActions.nextActions.firstOrNull()
             )
@@ -60,6 +62,16 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     fun toggleBookmark(itemId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             adhkaarItemRepository.toggleBookmark(itemId)
+        }
+    }
+
+    fun setBookmarks(items: List<AdhkaarDisplayItem>, shouldBookmark: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            items.forEach { item ->
+                if (item.bookmarked != shouldBookmark) {
+                    adhkaarItemRepository.toggleBookmark(item.itemId)
+                }
+            }
         }
     }
 
@@ -91,9 +103,47 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
             )
         }.sortedBy { it.itemId }
     }
+
+    private fun groupAdhkaarItemsByReference(items: List<AdhkaarDisplayItem>): List<AdhkaarDisplayGroup> {
+        val groups = mutableListOf<MutableList<AdhkaarDisplayItem>>()
+        var currentGroup = mutableListOf<AdhkaarDisplayItem>()
+        var previousReferenceKey: String? = null
+
+        items.forEach { item ->
+            val currentReferenceKey = item.reference?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }
+
+            if (currentGroup.isNotEmpty()) {
+                if (currentReferenceKey != null && previousReferenceKey == currentReferenceKey) {
+                    currentGroup.add(item)
+                } else {
+                    groups.add(currentGroup)
+                    currentGroup = mutableListOf(item)
+                }
+            } else {
+                currentGroup.add(item)
+            }
+
+            previousReferenceKey = currentReferenceKey
+        }
+
+        if (currentGroup.isNotEmpty()) {
+            groups.add(currentGroup)
+        }
+
+        return groups.map { groupItems ->
+            val groupItemIds = groupItems.map { it.itemId }
+            AdhkaarDisplayGroup(
+                itemIds = groupItemIds,
+                items = groupItems,
+                reference = groupItems.firstOrNull { !it.reference.isNullOrBlank() }?.reference,
+                bookmarked = groupItems.all { it.bookmarked }
+            )
+        }
+    }
     
     data class AdhkaarUiState(
         val adhkaarItems: List<AdhkaarDisplayItem> = emptyList(),
+        val adhkaarGroups: List<AdhkaarDisplayGroup> = emptyList(),
         val isLoading: Boolean = false,
         val nextAction: NextAction? = null
     )
@@ -104,5 +154,12 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         val englishText: String?,
         val reference: String?,
         val bookmarked: Boolean = false
+    )
+
+    data class AdhkaarDisplayGroup(
+        val itemIds: List<Int>,
+        val items: List<AdhkaarDisplayItem>,
+        val reference: String?,
+        val bookmarked: Boolean
     )
 }
