@@ -49,11 +49,10 @@
     <string name="credits">Credits</string>
     <string name="about">    Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/&gt;@saidmsaid81&lt;/a&gt;)
   </string>
-    <string name="app_icon_credit">    App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/&gt;https://www.flaticon.com/authors/sbts2018&lt;/a&gt;&lt;br&gt;
-    Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/&gt;https://www.flaticon.com/authors/bzzrincantation&lt;/a&gt;&lt;br&gt;
-    Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/&gt;https://www.flaticon.com/authors/shmain&lt;/a&gt;&lt;br&gt;
-    Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;https://www.flaticon.com/authors/freepik&lt;/a&gt;
-  </string>
+    <string name="app_icon_credit">App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/&gt;sbts2018&lt;/a&gt;&lt;br&gt;Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/&gt;bzzrincantation&lt;/a&gt;&lt;br&gt;Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/&gt;shmai&lt;/a&gt;&lt;br&gt;Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;Freepik&lt;/a&gt;</string>
+    <string name="content_credits">Quran Madani Pages: &lt;a href=https://github.com/quran/quran.com-images&gt;quran.com-images&lt;/a&gt;&lt;br&gt;Quran Translations: &lt;a href=https://quranenc.com&gt;Quranenc.com&lt;/a&gt;&lt;br&gt;Adhkaar (Hisnul Muslim): &lt;a href=https://github.com/my-prayers/muslim-data-android&gt;muslim-data-android&lt;/a&gt;</string>
+    <string name="icons">Icons</string>
+    <string name="content">Content</string>
     <string name="we_are_social">Join Us on Social Media</string>
     <string name="facebook_logo">Facebook logo</string>
     <string name="no_email_app_installed">No Email App Installed</string>

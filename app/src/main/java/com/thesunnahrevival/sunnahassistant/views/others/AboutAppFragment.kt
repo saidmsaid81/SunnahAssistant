@@ -116,9 +116,9 @@ fun AboutAppScreen(
             }
             
             item {
-                InfoSection(
-                    title = stringResource(R.string.credits),
-                    content = stringResource(R.string.app_icon_credit),
+                CreditsSection(
+                    iconCredits = stringResource(R.string.app_icon_credit),
+                    contentCredits = stringResource(R.string.content_credits),
                     onUrlClick = { url -> onUrlClick(url) }
                 )
             }
@@ -254,6 +254,82 @@ fun InfoSection(
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         lineHeight = 20.sp,
+                        color = MaterialTheme.colors.onSurface
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    onUrlClick = onUrlClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CreditsSection(
+    iconCredits: String,
+    contentCredits: String,
+    onUrlClick: (String) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.credits),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            elevation = 4.dp
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.content),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                HtmlText(
+                    html = contentCredits,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 22.sp,
+                        color = MaterialTheme.colors.onSurface
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    onUrlClick = onUrlClick
+                )
+
+                Divider(
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
+                    thickness = 1.dp
+                )
+
+                Text(
+                    text = stringResource(R.string.icons),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                HtmlText(
+                    html = iconCredits,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 22.sp,
                         color = MaterialTheme.colors.onSurface
                     ),
                     modifier = Modifier.fillMaxWidth(),
