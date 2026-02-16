@@ -437,7 +437,7 @@ class AdhkaarReaderFragment : MenuBarFragment() {
         val englishPatterns = listOf(
             Regex("\\b(\\d+) times?\\b", RegexOption.IGNORE_CASE),
             Regex(
-                "\\b(thirty-three|thirty-two|thirty-one|twenty-nine|twenty-eight|twenty-seven|twenty-six|twenty-five|twenty-four|twenty-three|twenty-two|twenty-one) times?\\b",
+                "\\b(thirty-five|thirty-four|thirty-three|thirty-two|thirty-one|twenty-nine|twenty-eight|twenty-seven|twenty-six|twenty-five|twenty-four|twenty-three|twenty-two|twenty-one) times?\\b",
                 RegexOption.IGNORE_CASE
             ),
             Regex("\\b(once|one time?)s?\\b", RegexOption.IGNORE_CASE),
