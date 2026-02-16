@@ -550,4 +550,10 @@
     <string name="maintenance_notifications_channel_title">إشعارات الصيانة</string>
     <string name="maintenance_notifications_channel_description">إشعارات يستخدمها التطبيق لضمان التسليم الموثوق للتذكيرات المجدولة</string>
     <string name="downloading_translation_please_wait">جاري تنزيل ترجمة %s… الرجاء الانتظار.</string>
+    <string name="checking_translation_updates">جارٍ التحقق من تحديثات الترجمة…</string>
+    <string name="updating_translations">جارٍ تحديث الترجمات…</string>
+    <string name="update_installed_translations">تحديث الترجمات المثبّتة</string>
+    <string name="update_translation">تحديث الترجمة</string>
+    <string name="translations_updates_available">تتوفر %d تحديثات للترجمة</string>
+    <string name="translations_up_to_date">الترجمات محدثة</string>
 </resources>

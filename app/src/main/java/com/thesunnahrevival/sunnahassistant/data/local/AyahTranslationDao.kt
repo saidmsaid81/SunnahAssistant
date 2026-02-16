@@ -13,4 +13,10 @@ interface AyahTranslationDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM ayah_translations WHERE translation_id = :translationId)")
     suspend fun exists(translationId: Int): Boolean
+
+    @Query("SELECT DISTINCT translation_id FROM ayah_translations")
+    suspend fun getInstalledTranslationIds(): List<Int>
+
+    @Query("DELETE FROM ayah_translations WHERE translation_id = :translationId")
+    suspend fun deleteByTranslationId(translationId: Int)
 }

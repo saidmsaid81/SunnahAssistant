@@ -2,7 +2,12 @@ package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,14 +16,25 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.viewModels
@@ -79,9 +95,14 @@ class PageTranslationFragment : MenuBarFragment() {
                     val pagerState = rememberPagerState(initialPage = 604 - initialPage) { 604 }
                     val currentPage = 604 - pagerState.currentPage
                     val expanded = remember { mutableStateOf(false) }
+                    val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
 
                     LaunchedEffect(currentPage) {
                         mainActivityViewModel.updateCurrentPage(currentPage)
+                    }
+
+                    LaunchedEffect(Unit) {
+                        viewModel.refreshInstalledTranslationUpdates()
                     }
 
                     Surface(
@@ -100,7 +121,6 @@ class PageTranslationFragment : MenuBarFragment() {
 
                             val pageNumber = 604 - pageIndex
 
-                            val translationUiState by viewModel.translationUiState.collectAsState(initial = TranslationViewModel.TranslationUiState())
                             val allTranslations = translationUiState.allTranslations
                             val selectedTranslations = translationUiState.selectedTranslations
                             val translationsDownloadInProgress = translationUiState.translationsDownloadInProgress
@@ -122,7 +142,17 @@ class PageTranslationFragment : MenuBarFragment() {
                                         allTranslations,
                                         selectedTranslations,
                                         translationsDownloadInProgress,
-                                        expanded
+                                        translationUiState.translationsWithUpdatesAvailable,
+                                        translationUiState.updatesAvailableCount,
+                                        translationUiState.isCheckingForUpdates,
+                                        translationUiState.isUpdatingInstalledTranslations,
+                                        expanded,
+                                        {
+                                            viewModel.updateInstalledTranslations()
+                                        },
+                                        { translation ->
+                                            viewModel.updateSingleInstalledTranslation(translation)
+                                        }
                                     ) { translation: Translation ->
                                         viewModel.toggleTranslationSelection(
                                             translation,
@@ -184,6 +214,11 @@ class PageTranslationFragment : MenuBarFragment() {
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.page_translation_menu, menu)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshInstalledTranslationUpdates()
     }
 }
 

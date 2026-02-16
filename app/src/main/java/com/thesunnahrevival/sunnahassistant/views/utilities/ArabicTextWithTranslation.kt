@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ReportProblem
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -273,10 +274,17 @@ fun TranslationDropdown(
     translations: List<Translation>,
     selectedTranslations: List<Translation>,
     translationsDownloadInProgress: List<Translation>,
+    translationsWithUpdatesAvailable: List<Translation>,
+    updatesAvailableCount: Int,
+    isCheckingForUpdates: Boolean,
+    isUpdatingInstalledTranslations: Boolean,
     expanded: MutableState<Boolean>,
+    onUpdateInstalledTranslations: () -> Unit,
+    onUpdateSingleTranslation: (Translation) -> Unit,
     onSelection: (Translation) -> Unit
 ) {
     val translationsDownloadInProgressIds = translationsDownloadInProgress.map { it.id }.toSet()
+    val translationsWithUpdatesAvailableIds = translationsWithUpdatesAvailable.map { it.id }.toSet()
 
     Column(
         modifier = Modifier
@@ -310,6 +318,51 @@ fun TranslationDropdown(
             )
         }
 
+        if (isCheckingForUpdates || isUpdatingInstalledTranslations || updatesAvailableCount > 0) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colors.onError)
+                    .clickable {
+                        if (!isCheckingForUpdates && !isUpdatingInstalledTranslations && updatesAvailableCount > 0) {
+                            onUpdateInstalledTranslations()
+                        }
+                    }
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Sync,
+                    contentDescription = stringResource(R.string.update_installed_translations),
+                    tint = MaterialTheme.colors.primary
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = when {
+                        isUpdatingInstalledTranslations -> {
+                            stringResource(R.string.updating_translations)
+                        }
+                        isCheckingForUpdates -> {
+                            stringResource(R.string.checking_translation_updates)
+                        }
+                        else -> {
+                            stringResource(R.string.translations_updates_available, updatesAvailableCount)
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (isCheckingForUpdates || isUpdatingInstalledTranslations) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                }
+            }
+        }
+
         if (expanded.value) {
             Column(
                 modifier = Modifier
@@ -328,11 +381,29 @@ fun TranslationDropdown(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (!translationsDownloadInProgressIds.contains(translation.id)) {
-                            SunnahAssistantCheckbox(
-                                text = translation.name,
-                                checked = translation.selected,
-                                onSelection = { onSelection(translation) }
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                SunnahAssistantCheckbox(
+                                    text = translation.name,
+                                    checked = translation.selected,
+                                    onSelection = { onSelection(translation) }
+                                )
+
+                                if (translationsWithUpdatesAvailableIds.contains(translation.id)) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Sync,
+                                        contentDescription = stringResource(R.string.update_translation),
+                                        tint = MaterialTheme.colors.primary,
+                                        modifier = Modifier
+                                            .padding(start = 8.dp)
+                                            .clickable {
+                                                onUpdateSingleTranslation(translation)
+                                            }
+                                    )
+                                }
+                            }
                         } else {
                             Box {
                                 SunnahAssistantCheckbox(

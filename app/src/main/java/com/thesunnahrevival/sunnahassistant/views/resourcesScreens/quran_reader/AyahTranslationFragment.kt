@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -94,6 +95,10 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                         val expanded = remember { mutableStateOf(false) }
                         val settings by mainActivityViewModel.getSettings().observeAsState()
 
+                        LaunchedEffect(Unit) {
+                            viewModel.refreshInstalledTranslationUpdates()
+                        }
+
                         if (settings == null) {
                             ArabicTextWithTranslationShimmer(0)
                         } else {
@@ -122,7 +127,25 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                                         translationUiState.allTranslations,
                                         translationUiState.selectedTranslations,
                                         translationUiState.translationsDownloadInProgress,
-                                        expanded
+                                        translationUiState.translationsWithUpdatesAvailable,
+                                        translationUiState.updatesAvailableCount,
+                                        translationUiState.isCheckingForUpdates,
+                                        translationUiState.isUpdatingInstalledTranslations,
+                                        expanded,
+                                        {
+                                            viewModel.updateInstalledTranslations {
+                                                withContext(Dispatchers.Main) {
+                                                    mainActivityViewModel.refreshSelectedAyahId()
+                                                }
+                                            }
+                                        },
+                                        { translation ->
+                                            viewModel.updateSingleInstalledTranslation(translation) {
+                                                withContext(Dispatchers.Main) {
+                                                    mainActivityViewModel.refreshSelectedAyahId()
+                                                }
+                                            }
+                                        }
                                     ) { translation: Translation ->
                                         viewModel.toggleTranslationSelection(
                                             translation,
@@ -199,6 +222,11 @@ class AyahTranslationFragment : BottomSheetDialogFragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshInstalledTranslationUpdates()
     }
 
     private fun leaveImmersiveMode() {
