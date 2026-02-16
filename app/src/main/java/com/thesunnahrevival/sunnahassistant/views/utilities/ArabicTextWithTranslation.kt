@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -93,13 +94,14 @@ fun ArabicTextWithTranslation(
             fontSize = (arabicTextFontSize * arabicTextScale).sp,
             fontFamily = uthmaniFont,
             textAlign = TextAlign.Right,
-            letterSpacing = 1.sp,
+            letterSpacing = 0.sp,
             lineHeight = (arabicTextFontSize * arabicTextScale * 1.6f).sp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
             style = MaterialTheme.typography.body1.copy(
-                fontFeatureSettings = "liga"
+                fontFeatureSettings = "liga",
+                textDirection = TextDirection.ContentOrRtl
             )
         )
 
