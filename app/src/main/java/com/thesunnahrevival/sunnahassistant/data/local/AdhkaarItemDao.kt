@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.thesunnahrevival.sunnahassistant.data.model.embedded.AdhkaarItemWithBookmarkEmbedded
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItem
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,15 @@ interface AdhkaarItemDao {
     @Query("SELECT EXISTS(SELECT 1 FROM adhkaar_items)")
     suspend fun doesAdhkaarItemsExist(): Boolean
 
+    @Query("DELETE FROM adhkaar_items")
+    suspend fun deleteAllAdhkaarItems()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(adhkaarItems: List<AdhkaarItem>)
+
+    @Transaction
+    suspend fun replaceAllAdhkaarItems(adhkaarItems: List<AdhkaarItem>) {
+        deleteAllAdhkaarItems()
+        insertAll(adhkaarItems)
+    }
 }
