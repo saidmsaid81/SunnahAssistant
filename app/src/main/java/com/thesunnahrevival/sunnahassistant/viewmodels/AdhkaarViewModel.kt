@@ -93,15 +93,20 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         return groupedItems.map { (itemId, itemList) ->
             val arabicItem = itemList.find { it.language == "ar" }
             val englishItem = itemList.find { it.language == "en" }
+            val itemOrder = arabicItem?.itemOrder ?: englishItem?.itemOrder
             
             AdhkaarDisplayItem(
                 itemId = itemId,
                 arabicText = arabicItem?.itemTranslation,
                 englishText = if (!isDeviceArabic) englishItem?.itemTranslation else null,
                 reference = if (!isDeviceArabic) englishItem?.reference else arabicItem?.reference,
+                itemOrder = itemOrder,
                 bookmarked = arabicItem?.bookmarked ?: englishItem?.bookmarked ?: false
             )
-        }.sortedBy { it.itemId }
+        }.sortedWith(
+            compareBy<AdhkaarDisplayItem> { it.itemOrder ?: it.itemId }
+                .thenBy { it.itemId }
+        )
     }
 
     private fun groupAdhkaarItemsByReference(items: List<AdhkaarDisplayItem>): List<AdhkaarDisplayGroup> {
@@ -153,6 +158,7 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         val arabicText: String?,
         val englishText: String?,
         val reference: String?,
+        val itemOrder: Int?,
         val bookmarked: Boolean = false
     )
 

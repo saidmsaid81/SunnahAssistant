@@ -14,7 +14,8 @@ interface AdhkaarItemDao {
             "CASE WHEN aib.id IS NOT NULL THEN 1 ELSE 0 END AS bookmarked " +
             "FROM adhkaar_items a " +
             "LEFT JOIN adhkaar_item_bookmarks aib ON aib.adhkaar_item_id = a.item_id " +
-            "WHERE a.chapter_id = :chapterId")
+            "WHERE a.chapter_id = :chapterId " +
+            "ORDER BY CASE WHEN a.item_order IS NULL THEN a.item_id ELSE a.item_order END, a.item_id, a.language")
     fun getAdhkaarItemsByChapterId(chapterId: Int): Flow<List<AdhkaarItemWithBookmarkEmbedded>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM adhkaar_items)")

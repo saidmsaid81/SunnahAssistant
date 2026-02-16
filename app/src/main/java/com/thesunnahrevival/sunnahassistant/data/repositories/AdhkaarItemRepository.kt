@@ -76,6 +76,7 @@ class AdhkaarItemRepository private constructor(
                     itemTranslation = itemWithBookmark.item.itemTranslation,
                     chapterId = itemWithBookmark.item.chapterId,
                     reference = itemWithBookmark.item.reference,
+                    itemOrder = itemWithBookmark.item.itemOrder,
                     bookmarked = itemWithBookmark.bookmarked
                 )
             }

@@ -1,12 +1,32 @@
 package com.thesunnahrevival.sunnahassistant.data.local
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.AutoMigration
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.entity.*
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItem
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarItemBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Ayah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AyahBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AyahTranslation
+import com.thesunnahrevival.sunnahassistant.data.model.entity.DailyHadith
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Footnote
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Language
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PageBookmark
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PinnedAdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.entity.PinnedSurah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.RoomTypeConverter
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
@@ -16,7 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.*
+import java.util.TreeSet
 
 @Database(
     entities = [
@@ -24,7 +44,7 @@ import java.util.*
         Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class,
         PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class, PinnedSurah::class, PinnedAdhkaarChapter::class
    ],
-    version = 10,
+    version = 11,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
     )
@@ -338,6 +358,12 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_10_11: Migration = object : Migration(10, 11) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE adhkaar_items ADD COLUMN `item_order` INTEGER")
+            }
+        }
+
 
         fun getInstance(context: Context): SunnahAssistantDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -378,7 +404,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
-                MIGRATION_9_10
+                MIGRATION_9_10,
+                MIGRATION_10_11
             )
             .build()
     }

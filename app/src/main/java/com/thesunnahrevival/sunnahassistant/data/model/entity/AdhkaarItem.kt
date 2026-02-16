@@ -35,6 +35,10 @@ data class AdhkaarItem(
     @SerializedName("reference")
     val reference: String?,
 
+    @ColumnInfo(name = "item_order")
+    @SerializedName("item_order")
+    val itemOrder: Int?,
+
     @Ignore
     val bookmarked: Boolean = false
 ) : Serializable {
@@ -45,5 +49,6 @@ data class AdhkaarItem(
             itemTranslation: String,
             chapterId: Int,
             reference: String?,
-    ) : this(id, itemId, language, itemTranslation, chapterId, reference, false)
+            itemOrder: Int?
+    ) : this(id, itemId, language, itemTranslation, chapterId, reference, itemOrder, false)
 }
