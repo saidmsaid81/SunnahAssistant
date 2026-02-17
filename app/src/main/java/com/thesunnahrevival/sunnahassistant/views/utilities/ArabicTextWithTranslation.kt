@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -308,8 +311,7 @@ fun TranslationDropdown(
                     )
                 },
                 modifier = Modifier.weight(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
                 color = if (selectedTranslations.isEmpty()) MaterialTheme.colors.primary else Color.Unspecified
             )
             Icon(
@@ -364,11 +366,14 @@ fun TranslationDropdown(
         }
 
         if (expanded.value) {
+            val scrollState = rememberScrollState()
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colors.onError)
+                    .heightIn(max = 280.dp)
+                    .verticalScroll(scrollState)
             ) {
                 translations.forEach { translation ->
                     Row(
@@ -387,7 +392,9 @@ fun TranslationDropdown(
                             ) {
                                 SunnahAssistantCheckbox(
                                     text = translation.name,
+                                    modifier = Modifier.weight(1f),
                                     checked = translation.selected,
+                                    maxLines = Int.MAX_VALUE,
                                     onSelection = { onSelection(translation) }
                                 )
 
@@ -408,7 +415,9 @@ fun TranslationDropdown(
                             Box {
                                 SunnahAssistantCheckbox(
                                     text = translation.name,
+                                    modifier = Modifier.fillMaxWidth(),
                                     checked = translation.selected,
+                                    maxLines = Int.MAX_VALUE,
                                     onSelection = {  }
                                 )
                                 CircularProgressIndicator(
@@ -421,6 +430,18 @@ fun TranslationDropdown(
                         }
                     }
                 }
+            }
+
+            if (translations.size > 5) {
+                Text(
+                    text = stringResource(R.string.scroll_for_more_translations),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp),
+                    style = MaterialTheme.typography.caption,
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }

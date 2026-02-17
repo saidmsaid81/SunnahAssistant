@@ -404,6 +404,7 @@
     <string name="downloading_translation_please_wait">Downloading %s translation… Please wait.</string>
     <string name="checking_translation_updates">Checking translation updates…</string>
     <string name="updating_translations">Updating translations…</string>
+    <string name="scroll_for_more_translations">Scroll to view more translations</string>
     <string name="update_installed_translations">Update installed translations</string>
     <string name="update_translation">Update translation</string>
     <string name="translations_updates_available">%d translation updates available</string>
