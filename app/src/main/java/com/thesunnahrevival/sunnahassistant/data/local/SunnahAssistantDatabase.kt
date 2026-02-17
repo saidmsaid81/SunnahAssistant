@@ -44,7 +44,7 @@ import java.util.TreeSet
         Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class,
         PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class, PinnedSurah::class, PinnedAdhkaarChapter::class
    ],
-    version = 11,
+    version = 10,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
     )
@@ -354,13 +354,8 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `maghribCustomTime` TEXT DEFAULT null")
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN `ishaCustomTime` TEXT DEFAULT null")
                 database.execSQL("ALTER TABLE reminders_table ADD COLUMN `isAutomaticToDo` INTEGER DEFAULT 0 NOT NULL")
-
-            }
-        }
-
-        private val MIGRATION_10_11: Migration = object : Migration(10, 11) {
-            override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE adhkaar_items ADD COLUMN `item_order` INTEGER")
+
             }
         }
 
@@ -404,8 +399,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
-                MIGRATION_9_10,
-                MIGRATION_10_11
+                MIGRATION_9_10
             )
             .build()
     }
