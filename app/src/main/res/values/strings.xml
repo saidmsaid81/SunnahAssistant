@@ -150,15 +150,12 @@
         ‣ More soon In shaa Allah.
     </string>
     <string name="updated">Updated</string>
-    <string name="updated_details">        ‣ Updated and optimized all widgets.\n
-        ‣ Updated the Prayer Time Settings section\n
-        ‣ Improved the more details section when adding a To-Do.\n
-        ‣ Improved "Filter To-Do by category" feature
+    <string name="updated_details">        ‣ Prayer Time Settings got a major upgrade for faster, cleaner setup.\n
+        ‣ Choose prayer-time mode per prayer and set precise custom times when needed.\n
+        ‣ Better activation flow now guides location setup before enabling automatic prayer alerts.
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">        ‣ Improved app stability and overall performance.\n
-    ‣ Improved loading speed and reliability in Quran and Adhkaar screens.\n
-    ‣ Improved Arabic text display and translation experience.\n
     ‣ Fixed reminder and notification issues for a smoother daily experience.
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
@@ -206,7 +203,7 @@
     <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
     <string name="translate">Translate</string>
     <string name="translators">Translators</string>
-    <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313\n
+    <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313 and Said (The Developer)\n
     Indonesian Translation by: Ilham Syahid S</string>
     <string name="to_do">To-Do</string>
     <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>

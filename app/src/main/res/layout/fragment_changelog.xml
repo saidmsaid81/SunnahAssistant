@@ -95,23 +95,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/fixes"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:lineSpacingExtra="2dp"
-                    android:text="@string/fixes_details"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:text="@string/new_features"
                     android:textColor="?android:attr/textColorPrimary"
@@ -137,7 +120,7 @@
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="17sp"
                     android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -147,7 +130,25 @@
                     android:text="@string/updated_details"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/fixes"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:lineSpacingExtra="2dp"
+                    android:text="@string/fixes_details"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

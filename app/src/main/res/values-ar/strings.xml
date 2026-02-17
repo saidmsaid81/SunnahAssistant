@@ -185,15 +185,12 @@
 
     ‣ تقديم خيار \"مشاركة المهام\" عند تشغيل إعلام. \n.    </string>
     <string name="updated">تم التحديث</string>
-    <string name="updated_details">
-    ‣ تم تحديث وتحسين كافة عناصر واجهة المستخدم.\n
-        ‣ تم تحديث قسم إعدادات مواقيت الصلاة \n
-        ‣ تم تحسين قسم المزيد من التفاصيل عند إضافة المهام. \n
-        ‣ تحسين ميزة \"تصفية المهام حسب الفئة\"    </string>
+    <string name="updated_details">        ‣ حصلت إعدادات مواقيت الصلاة على ترقية كبيرة لإعداد أسرع وتنظيم أوضح.\n
+        ‣ يمكنك اختيار وضع الوقت لكل صلاة وتحديد أوقات مخصصة بدقة عند الحاجة.\n
+        ‣ تم تحسين خطوات التفعيل لتوجيهك لإعداد الموقع قبل تشغيل تنبيهات الصلاة التلقائية.
+    </string>
     <string name="fixes">الإصلاحات</string>
     <string name="fixes_details">        ‣ تحسين استقرار التطبيق والأداء بشكل عام.\n
-    ‣ تحسين سرعة التحميل والاعتمادية في شاشات القرآن والأذكار.\n
-    ‣ تحسين عرض النص العربي وتجربة الترجمات.\n
     ‣ إصلاح مشكلات التذكيرات والإشعارات لتجربة يومية أكثر سلاسة.
     </string>
     <string name="add_or_delete_categories">إضافة أو حذف الفئة</string>
@@ -241,7 +238,7 @@
     <string name="please_write_feedback_in_english">يرجى كتابة ملاحظاتك أدناه باللغة الإنجليزية</string>
     <string name="translate">ترجمة</string>
     <string name="translators">المترجمين</string>
-    <string name="arabic_translation_by_malkalashter313">الترجمة العربية: MalkAlashter313\n
+    <string name="arabic_translation_by_malkalashter313">الترجمة العربية: MalkAlashter313 و Said (The Developer)\n
     الترجمة الإندونيسية:  Ilham Syahid S</string>
     <string name="to_do">المهام</string>
     <string name="server_error_occured">عذرا ، فشل الطلب بسبب خطأ في الخادم. تم إخطار المطور وسيتم إصلاحه قريبًا.</string>
