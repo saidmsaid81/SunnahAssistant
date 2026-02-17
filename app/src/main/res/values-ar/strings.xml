@@ -547,6 +547,76 @@
         <item>قبل</item>
         <item>بعد</item>
     </string-array>
+    <string name="adhkaar">الأذكار</string>
+    <string name="adhkaar_chapter_number">الباب %1$d</string>
+    <string name="app_promotional_message">📱 تم الإرسال من تطبيق مساعد السنة:\n\nيساعدك مساعد السنة على إدارة مهامك، واستقبال تنبيهات أوقات الصلاة، وضبط تذكيرات السنن.\n\nحمّله من هنا: %s</string>
+    <string name="arabic_text_font_size">حجم خط النص العربي</string>
+    <string name="content">المحتوى</string>
+    <string name="content_credits">صفحات القرآن المدنية: &lt;a href=https://github.com/quran/quran.com-images&gt;quran.com-images&lt;/a&gt;&lt;br&gt;ترجمات القرآن: &lt;a href=https://quranenc.com&gt;Quranenc.com&lt;/a&gt;&lt;br&gt;الأذكار (حصن المسلم): &lt;a href=https://github.com/my-prayers/muslim-data-android&gt;muslim-data-android&lt;/a&gt;</string>
+    <string name="custom_time">وقت مخصص</string>
+    <string name="donate">تبرع</string>
+    <string name="evening_adhkaar_daily_reminder">تذكير يومي بأذكار المساء</string>
+    <string name="font_settings">إعدادات الخط</string>
+    <string name="font_settings_subtitle">خصّص أحجام النصوص في ترجمات القرآن والأذكار لتجربة قراءة أفضل</string>
+    <string name="footnote_text_font_size">حجم خط الحاشية</string>
+    <string name="got_it">فهمت</string>
+    <string name="hold_long_tap_ayah_to_view_its_translation">اضغط مطولًا على الآية لعرض ترجمتها</string>
+    <string name="icons">الأيقونات</string>
+    <string name="large">كبير</string>
+    <string name="morning_adhkaar_daily_reminder">تذكير يومي بأذكار الصباح</string>
+    <string name="morning_evening_adhkaar_reminder_message">أذكّرك بالمحافظة على أذكار الصباح والمساء، فهي من سنن نبينا محمد ﷺ.\n\nقال الله تعالى في سورة ق (50:39):\n\nفَٱصْبِرْ عَلَىٰ مَا يَقُولُونَ وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ ٱلشَّمْسِ وَقَبْلَ ٱلْغُرُوبِ\n\nوقال تعالى في سورة الأحزاب (33:41):\n\nيَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ ٱذْكُرُوا۟ ٱللَّهَ ذِكْرًۭا كَثِيرًۭا</string>
+    <string name="no_bookmarked_adhkaar">لا توجد أذكار محفوظة</string>
+    <string name="page"> صفحة %1$d</string>
+    <string name="pin_surah">تثبيت السورة</string>
+    <string name="pinned_surahs_limit_reached">يمكن تثبيت 5 سور كحد أقصى. الرجاء إلغاء تثبيت سورة أولًا.</string>
+    <string name="prayer_time_changes_disclaimer">التغييرات هنا ستُطبّق على أوقات الصلاة القادمة فقط، وليس على الأوقات السابقة.</string>
+    <string name="prayer_time_mode">وضع الوقت</string>
+    <string name="preparing_quran_data_please_wait">يتم تجهيز بيانات القرآن للإعداد لأول مرة. الرجاء الانتظار.</string>
+    <string name="preview">معاينة</string>
+    <string name="read_adhkaar">اقرأ الأذكار</string>
+    <string name="read_more_on_suratul_mulk">اضغط هنا لقراءة المزيد عن أهمية قراءة سورتي الملك والسجدة كل ليلة</string>
+    <string name="read_quran">اقرأ القرآن</string>
+    <string name="read_suratul_mulk">اقرأ سورة الملك</string>
+    <string name="read_suratul_sajdah">اقرأ سورة السجدة</string>
+    <string name="recommended_every_night">مستحب كل ليلة</string>
+    <string name="reference">المرجع</string>
+    <string name="remind_others">ذكّر الآخرين</string>
+    <string name="remind_others_to_read_evening_adhkaar">ذكّر الآخرين بقراءة أذكار المساء</string>
+    <string name="remind_others_to_read_morning_adhkaar">ذكّر الآخرين بقراءة أذكار الصباح</string>
+    <string name="remind_others_to_read_suratul_kahf">ذكّر الآخرين بقراءة سورة الكهف</string>
+    <string name="remind_others_to_read_suratul_mulk">ذكّر الآخرين بقراءة سورتي الملك والسجدة</string>
+    <string name="reminder_to_read_suratul_kahf_title">تذكير بقراءة سورة الكهف</string>
+    <string name="reset_to_defaults">إعادة التعيين للوضع الافتراضي</string>
+    <string name="scroll_for_more_translations">مرّر لعرض المزيد من الترجمات</string>
+    <string name="search_adhkaar_bookmarks">ابحث في مفضلات الأذكار</string>
+    <string name="search_bookmarks">ابحث في المفضلة</string>
+    <string name="search_surah">ابحث عن سورة</string>
+    <string name="set_daily_reminder">تعيين تذكير يومي</string>
+    <string name="set_reminder">تعيين تذكير</string>
+    <string name="set_reminder_for_every_friday">تعيين تذكير لكل يوم جمعة</string>
+    <string name="set_weekly_reminder">تعيين تذكير أسبوعي</string>
+    <string name="share_all">مشاركة الكل</string>
+    <string name="small">صغير</string>
+    <string name="suggested_actions">إجراءات مقترحة</string>
+    <string name="sunnah_assistant_promo">أدعوك لتحميل تطبيق مساعد السنة للأندرويد. يتيح لك التطبيق:\n\n- إدارة المهام\n- خيار استقبال تنبيهات أوقات الصلاة\n- خيار إضافة تذكيرات السنن مثل الصيام يومي الاثنين والخميس وقراءة سورة الكهف يوم الجمعة\n- والعديد من الميزات الأخرى\n\nحمّله مجانًا من هنا:- %1$s</string>
+    <string name="suratul_kahf_reminder_message">أذكّرك بقراءة سورة الكهف، فهي من سنن نبينا محمد ﷺ.\n\nعن أبي سعيد الخدري رضي الله عنه أن النبي ﷺ قال:\n\nمن قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين.\n\nرواه الحاكم وصححه الألباني في صحيح الترغيب (836).</string>
+    <string name="suratul_mulk_and_sajdah_reminder_message">أذكّرك بقراءة سورتي الملك والسجدة، فهي من السنن الواردة عن نبينا ﷺ.\n\nعن عبد الله بن مسعود رضي الله عنه قال:\n\nمن قرأ تبارك الذي بيده الملك كل ليلة منعه الله بها من عذاب القبر.\n\nرواه النسائي.\n\nوعن جابر رضي الله عنه أن النبي ﷺ كان لا ينام حتى يقرأ الم تنزيل السجدة وتبارك الذي بيده الملك.\n\nرواه الترمذي وأحمد، وصححه الألباني.</string>
+    <string name="suratul_mulk_daily_reminder">تذكير يومي بسورة الملك</string>
+    <string name="suratul_sajdah_daily_reminder">تذكير يومي بسورة السجدة</string>
+    <string name="swipe_to_navigate_between_adhkaar_chapters">اسحب للتنقل بين أبواب الأذكار</string>
+    <string name="tap_here_to_read_more_on_evening_adhkaar">اضغط هنا لقراءة المزيد عن أهمية أذكار المساء</string>
+    <string name="tap_here_to_read_more_on_morning_adhkaar">اضغط هنا لقراءة المزيد عن أهمية أذكار الصباح</string>
+    <string name="tap_here_to_read_more_on_quran">اضغط هنا لقراءة المزيد عن أهمية قراءة القرآن</string>
+    <string name="tap_the_page_to_enter_leave_full_screen_mode">اضغط على الصفحة للدخول أو الخروج من وضع ملء الشاشة</string>
+    <string name="tap_to_view_all_adhkaar_chapters">اضغط لعرض جميع أبواب الأذكار</string>
+    <string name="training_double_tap_to_pin_adhkaar">انقر نقرتين لتثبيت باب</string>
+    <string name="training_double_tap_to_pin_surah">انقر نقرتين لتثبيت سورة</string>
+    <string name="training_tap_to_read_adhkaar">اضغط على الباب لقراءة الأذكار</string>
+    <string name="training_tap_to_read_quran">اضغط على السورة لقراءة القرآن</string>
+    <string name="translation_text_font_size">حجم خط الترجمة</string>
+    <string name="unpin_surah">إلغاء تثبيت السورة</string>
+    <string name="weekly_friday_reminder">تذكير أسبوعي ليوم الجمعة</string>
+    <string name="you_can_only_pin_up_to_5_chapters">يمكنك تثبيت حتى 5 أبواب فقط</string>
     <string name="refreshing_notifications">جارٍ تحديث الإشعارات…</string>
     <string name="maintenance_notifications_channel_title">إشعارات الصيانة</string>
     <string name="maintenance_notifications_channel_description">إشعارات يستخدمها التطبيق لضمان التسليم الموثوق للتذكيرات المجدولة</string>
