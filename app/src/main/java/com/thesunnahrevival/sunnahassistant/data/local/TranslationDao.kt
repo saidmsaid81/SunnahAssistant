@@ -13,10 +13,10 @@ interface TranslationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(translation: Translation)
 
-    @Query("SELECT * FROM translations ")
+    @Query("SELECT * FROM translations ORDER BY name")
     fun getTranslations(): Flow<List<Translation>>
 
-    @Query("SELECT * FROM translations")
+    @Query("SELECT * FROM translations ORDER BY name")
     suspend fun getTranslationsList(): List<Translation>
 
     @Update
