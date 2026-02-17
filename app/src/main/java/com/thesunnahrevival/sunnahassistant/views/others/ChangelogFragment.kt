@@ -38,6 +38,7 @@ class ChangelogFragment : SunnahAssistantFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        changelogFragmentBinding.changelogVersion.text = getString(R.string.version, BuildConfig.VERSION_NAME)
         changelogFragmentBinding.helpTranslateApp.setOnClickListener {
             translateLink(this)
         }

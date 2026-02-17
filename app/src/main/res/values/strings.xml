@@ -126,8 +126,12 @@
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
-    <string name="important_changes">We updated our Privacy Policy to indicate that if you provide City/town for automatic prayer time alerts, the app sends that to our server which uses Geocoding Api by Google Maps to determine latitude and longitude of the city/town provided( used in calculating prayer times).
-\n\nOur server only logs your IP Address if you exceed our rate limits to prevent abuse. The code for our backend can be viewed on github at github.com/saidmsaid81/Sunnah-Assistant-Backend .\n\nBy continuing to use this app you agree to the New Privacy Policy. Tap the "Privacy Policy " button below to read it
+    <string name="important_changes">This is the first update that introduces the new Resources tab.
+\n\n        ‣ You can now access Quran and Adhkaar from one place.
+\n        ‣ Added Quran reading with translations and helpful reading actions.
+\n        ‣ Added Adhkaar reading with bookmarking, sharing, and easier navigation.
+\n        ‣ Added a new bookmarks area and search to quickly find saved content.
+\n        ‣ Added guidance nudges to help you keep up with daily Sunnah habits.
   </string>
     <string name="new_features">New Features</string>
     <string name="new_features_details">        ‣ Major redesign of the app.\n
@@ -152,8 +156,10 @@
         ‣ Improved "Filter To-Do by category" feature
     </string>
     <string name="fixes">Fixes</string>
-    <string name="fixes_details">        ‣ Fixed bugs related to notifications on some devices.\n
-    ‣ More exciting features coming soon in shaa Allah
+    <string name="fixes_details">        ‣ Improved app stability and overall performance.\n
+    ‣ Improved loading speed and reliability in Quran and Adhkaar screens.\n
+    ‣ Improved Arabic text display and translation experience.\n
+    ‣ Fixed reminder and notification issues for a smoother daily experience.
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
     <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>
