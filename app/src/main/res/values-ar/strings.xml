@@ -133,6 +133,7 @@
     <string name="new_features">ميزات جديدة</string>
 
     <string name="resources">المصادر</string>
+    <string name="resources_menu_beta">المصادر <span><sup><small>BETA</small></sup></span></string>
     <string name="hadith">حديث</string>
     <string name="daily_hadith">الحديث اليومي</string>
     <string name="quran">القرآن</string>

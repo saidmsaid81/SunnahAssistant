@@ -344,6 +344,7 @@
     <string name="enable_alarms_and_reminders_message">To receive reminders at the correct time, please allow Sunnah Assistant to schedule alarms and reminders in the next screen.</string>
     <string name="refreshing_notifications">Refreshing notifications…</string>
     <string name="resources">Resources</string>
+    <string name="resources_menu_beta">Resources <span><sup><small>BETA</small></sup></span></string>
     <string name="hadith">Hadith</string>
     <string name="daily_hadith">Daily Hadith</string>
     <string name="quran">Quran</string>
