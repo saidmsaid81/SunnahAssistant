@@ -13,8 +13,8 @@ android {
         applicationId "com.thesunnahrevival.sunnahassistant"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 17
-        versionName "1.0.6-NIGHTLY.1"
+        versionCode 20
+        versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -65,7 +65,7 @@ android {
     flavorDimensions "build"
     productFlavors {
         dev {
-            resourceConfigurations += ['en', 'xxhdpi']
+            resourceConfigurations += ['en', 'ar', 'xxhdpi']
 
             // The following configuration limits the "dev" flavor to using
             // English string resources and xxhdpi screen-density resources.
