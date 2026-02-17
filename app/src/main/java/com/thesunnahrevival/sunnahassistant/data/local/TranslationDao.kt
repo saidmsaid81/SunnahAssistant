@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TranslationDao {
+    @Query("SELECT count(*) FROM translations")
+    suspend fun countTranslations(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(translation: Translation)
 

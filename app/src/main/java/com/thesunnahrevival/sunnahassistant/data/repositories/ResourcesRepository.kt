@@ -5,10 +5,25 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.local.*
-import com.thesunnahrevival.sunnahassistant.data.model.entity.*
+import com.thesunnahrevival.sunnahassistant.data.local.AdhkaarChapterDao
+import com.thesunnahrevival.sunnahassistant.data.local.AyahDao
+import com.thesunnahrevival.sunnahassistant.data.local.LanguageDao
+import com.thesunnahrevival.sunnahassistant.data.local.LineDao
+import com.thesunnahrevival.sunnahassistant.data.local.SunnahAssistantDatabase
+import com.thesunnahrevival.sunnahassistant.data.local.SurahDao
+import com.thesunnahrevival.sunnahassistant.data.local.TranslationDao
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AdhkaarChapter
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Ayah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Language
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ResourceItem
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
 import com.thesunnahrevival.sunnahassistant.data.typeconverters.BooleanAsIntDeserializer
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class ResourcesRepository private constructor(
@@ -16,6 +31,8 @@ class ResourcesRepository private constructor(
 ) {
 
     companion object {
+        const val QURAN_DATA_PREPOPULATED_FLAG = "quran_data_prepopulated"
+
         @Volatile
         private var instance: ResourcesRepository? = null
 
@@ -44,6 +61,8 @@ class ResourcesRepository private constructor(
     private val adhkaarChapterDao: AdhkaarChapterDao
         get() = SunnahAssistantDatabase.getInstance(applicationContext).adhkaarChapterDao()
 
+    private val flagRepository = FlagRepository.getInstance(applicationContext)
+
     fun resourceItems(): List<ResourceItem> {
         return listOf(
             ResourceItem(
@@ -55,7 +74,15 @@ class ResourcesRepository private constructor(
         )
     }
 
+    fun isQuranDataPrepopulatedFlow(): Flow<Boolean> {
+        return flagRepository.getIntFlagFlow(QURAN_DATA_PREPOPULATED_FLAG)
+            .map { value -> value == 1 }
+            .distinctUntilChanged()
+    }
+
     suspend fun prepopulateResourcesData() = coroutineScope {
+        updateQuranDataPrepopulatedFlag()
+
         val surahJob = launch {
             if (surahDao.countSurah() == 0) {
                 prepopulateSurahData()
@@ -74,6 +101,24 @@ class ResourcesRepository private constructor(
 
         surahJob.join()
         adhkaarJob.join()
+        updateQuranDataPrepopulatedFlag()
+    }
+
+    private suspend fun updateQuranDataPrepopulatedFlag() {
+        val isQuranDataReady = surahDao.countSurah() > 0 &&
+                ayahDao.countAyahs() > 0 &&
+                lineDao.countLines() > 0 &&
+                languageDao.countLanguages() > 0 &&
+                translationDao.countTranslations() > 0
+
+        flagRepository.setFlag(
+            QURAN_DATA_PREPOPULATED_FLAG,
+            if (isQuranDataReady) {
+                1
+            } else {
+                0
+            }
+        )
     }
 
 

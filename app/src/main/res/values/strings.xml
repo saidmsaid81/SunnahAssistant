@@ -397,6 +397,7 @@
     <string name="downloading_failed">Downloading Quran files failed</string>
     <string name="notifications_for_download_completion_and_errors">Notifications for download completion and errors</string>
     <string name="page_loading_timeout_message">Page taking longer to load? Download all Quran pages for faster access and offline reading.</string>
+    <string name="preparing_quran_data_please_wait">Preparing Quran data for first-time setup. Please wait.</string>
     <string name="download_all_pages">Download All Pages</string>
     <string name="retry">Retry</string>
     <string name="network_error">An error occurred. Please ensure you have a stable internet connection</string>

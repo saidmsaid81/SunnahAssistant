@@ -8,6 +8,9 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.Line
 
 @Dao
 interface LineDao {
+    @Query("SELECT count(*) FROM lines")
+    suspend fun countLines(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(line: Line)
 

@@ -11,6 +11,9 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.Ayah
 
 @Dao
 interface AyahDao {
+    @Query("SELECT count(*) FROM ayahs")
+    suspend fun countAyahs(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(ayah: Ayah)
 

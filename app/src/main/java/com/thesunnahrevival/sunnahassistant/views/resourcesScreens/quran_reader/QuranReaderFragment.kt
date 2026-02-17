@@ -24,6 +24,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
@@ -58,6 +59,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     private var lastTouchY: Float = 0f
 
     private var isAyahTranslationShowing = false
+    private var isQuranDataReady = false
+    private var isViewPagerInitialized = false
 
     private val viewmodel by viewModels<QuranReaderViewModel>()
 
@@ -86,12 +89,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             pageNumbers = (1..604).toList(),
             listener = this
         )
-        val viewPager = quranReaderBinding?.viewPager
-        viewPager?.offscreenPageLimit = 2
-        viewPager?.adapter = quranPageAdapter
-        viewPager?.reduceDragSensitivity(4)
-        viewPager?.registerOnPageChangeCallback(pageChangeCallback)
-        handleAyahSelection()
+        observeQuranDataPrepopulation()
         handleBackPressed()
 
         mainActivityViewModel.selectedSurah.observe(viewLifecycleOwner) { surah ->
@@ -113,8 +111,10 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
 
     override fun onResume() {
         super.onResume()
-        val currentPage = mainActivityViewModel.getCurrentQuranPage()
-        quranReaderBinding?.viewPager?.setCurrentItem((currentPage - 1), false)
+        if (isQuranDataReady) {
+            val currentPage = mainActivityViewModel.getCurrentQuranPage()
+            quranReaderBinding?.viewPager?.setCurrentItem((currentPage - 1), false)
+        }
     }
 
     private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -135,6 +135,10 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (!isQuranDataReady) {
+            return true
+        }
+
         when (menuItem.itemId) {
             R.id.translations -> {
                 findNavController().navigate(R.id.pageTranslationFragment)
@@ -306,7 +310,9 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         tapTutorialSnackbar = null
         longPressTutorialSnackbar = null
         mainActivityViewModel.setSelectedAyahId(null)
-        quranReaderBinding?.viewPager?.unregisterOnPageChangeCallback(pageChangeCallback)
+        if (isViewPagerInitialized) {
+            quranReaderBinding?.viewPager?.unregisterOnPageChangeCallback(pageChangeCallback)
+        }
         val mainActivity = activity as MainActivity
 
         val toolbar = mainActivity.findViewById<Toolbar>(R.id.toolbar)
@@ -326,6 +332,8 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         (activity as? MainActivity)?.supportActionBar?.show()
         _quranReaderBinding = null
         viewmodel.hasSeenDownloadFilesDialog = false
+        isQuranDataReady = false
+        isViewPagerInitialized = false
         leaveImmersiveMode()
     }
 
@@ -542,6 +550,10 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
 
     private fun showTutorial() {
         lifecycleScope.launch {
+            if (!isQuranDataReady) {
+                return@launch
+            }
+
             val hasSeenTapTutorial = viewmodel.hasSeenTapTutorial()
             val hasSeenLongPressTutorial = viewmodel.hasSeenLongPressTutorial()
 
@@ -625,5 +637,54 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
             sqrt(distanceX * distanceX + distanceY * distanceY) <= tolerance
         }
         return selectedLine
+    }
+
+    private fun observeQuranDataPrepopulation() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.isQuranDataPrepopulatedFlow().collect { isReady ->
+                    isQuranDataReady = isReady
+                    updateQuranDataLoadingUi(isReady)
+                    if (isReady) {
+                        setupViewPagerIfNeeded()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupViewPagerIfNeeded() {
+        if (isViewPagerInitialized) {
+            val currentPage = mainActivityViewModel.getCurrentQuranPage()
+            quranReaderBinding?.viewPager?.setCurrentItem(currentPage - 1, false)
+            return
+        }
+
+        val viewPager = quranReaderBinding?.viewPager ?: return
+
+        viewPager.offscreenPageLimit = 2
+        viewPager.adapter = quranPageAdapter
+        viewPager.reduceDragSensitivity(4)
+        viewPager.registerOnPageChangeCallback(pageChangeCallback)
+        handleAyahSelection()
+
+        isViewPagerInitialized = true
+        val currentPage = mainActivityViewModel.getCurrentQuranPage()
+        viewPager.setCurrentItem(currentPage - 1, false)
+        showTutorial()
+    }
+
+    private fun updateQuranDataLoadingUi(isReady: Boolean) {
+        quranReaderBinding?.quranDataLoadingContainer?.visibility = if (isReady) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+
+        quranReaderBinding?.viewPager?.visibility = if (isReady) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 }
