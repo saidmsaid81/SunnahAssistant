@@ -278,16 +278,20 @@ class AdhkaarReaderFragment : MenuBarFragment() {
         val currentLocale = context.getLocale()
         val isArabicLocale = currentLocale.language == "ar"
 
-        val itemTimes = adhkaarGroup.items.map { item ->
-            val textToParse = if (isArabicLocale) {
-                item.arabicText
-            } else {
-                item.englishText
+        val itemTimes = if (isArabicLocale) {
+            emptyList()
+        } else {
+            adhkaarGroup.items.map { item ->
+                val textToParse = item.englishText
+                extractTimesFromText(textToParse)
             }
-            extractTimesFromText(textToParse)
         }
         val groupedFrequency = if (itemTimes.distinct().size == 1) itemTimes.firstOrNull() else null
-        val shareFrequency = groupedFrequency ?: "Multiple Times"
+        val shareFrequency = if (isArabicLocale) {
+            null
+        } else {
+            groupedFrequency ?: ""
+        }
 
         adhkaarGroup.items.forEachIndexed { itemIndex, adhkaarItem ->
             val translationTexts = if (adhkaarItem.englishText != null) {
@@ -307,9 +311,17 @@ class AdhkaarReaderFragment : MenuBarFragment() {
                 listOf()
             }
 
-            val sectionMarker = groupedFrequency ?: itemTimes[itemIndex]
+            val sectionMarker = if (isArabicLocale) {
+                ""
+            } else {
+                groupedFrequency ?: itemTimes[itemIndex]
+            }
             val shouldShowGroupActions = itemIndex == (adhkaarGroup.items.size - 1)
-            val shouldShowSectionMarker = groupedFrequency == null || itemIndex == 0
+            val shouldShowSectionMarker = if (isArabicLocale) {
+                false
+            } else {
+                groupedFrequency == null || itemIndex == 0
+            }
 
             ArabicTextWithTranslation(
                 context = requireContext(),
@@ -342,7 +354,7 @@ class AdhkaarReaderFragment : MenuBarFragment() {
     @Composable
     private fun getGroupShareText(
         chapterName: String,
-        times: String,
+        times: String?,
         group: AdhkaarViewModel.AdhkaarDisplayGroup
     ): String {
         val referenceText = group.reference ?: ""
@@ -362,7 +374,13 @@ class AdhkaarReaderFragment : MenuBarFragment() {
             }
         }.trim()
 
-        return "$chapterName ($times)\n\n" +
+        val title = if (times.isNullOrBlank()) {
+            chapterName
+        } else {
+            "$chapterName ($times)"
+        }
+
+        return "$title\n\n" +
                 "$content\n\n" +
                 stringResource(R.string.reference) + ": $referenceText"
     }
@@ -533,19 +551,21 @@ class AdhkaarReaderFragment : MenuBarFragment() {
 
                     adhkaarGroups.forEachIndexed { index, group ->
                         val currentLocale = requireContext().getLocale()
-                        val times = group.items.map { item ->
-                            val textToParse = if (currentLocale.language == "ar") {
-                                item.arabicText
-                            } else {
-                                item.englishText
+                        val isArabicLocale = currentLocale.language == "ar"
+                        if (!isArabicLocale) {
+                            val times = group.items.map { item ->
+                                extractTimesFromText(item.englishText)
                             }
-                            extractTimesFromText(textToParse)
+                            val groupedFrequency = if (times.distinct().size == 1) times.firstOrNull() else null
+                            val frequencyLabel = groupedFrequency ?: ""
+                            appendLine("${if (adhkaarGroups.size > 1) "${index + 1}." else ""} ($frequencyLabel)")
+                            appendLine()
+                        } else {
+                            if (adhkaarGroups.size > 1) {
+                                appendLine("${index + 1}.")
+                                appendLine()
+                            }
                         }
-                        val groupedFrequency = if (times.distinct().size == 1) times.firstOrNull() else null
-
-                        val frequencyLabel = groupedFrequency ?: "Multiple Times"
-                        appendLine("${if (adhkaarGroups.size > 1) "${index + 1}." else ""} ($frequencyLabel)")
-                        appendLine()
                         group.items.forEach { item ->
                             item.arabicText?.let {
                                 appendLine(it)
