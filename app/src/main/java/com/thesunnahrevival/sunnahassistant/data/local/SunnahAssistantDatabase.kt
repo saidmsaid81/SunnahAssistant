@@ -88,6 +88,22 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: SunnahAssistantDatabase? = null
+
+        private fun hasColumn(database: SupportSQLiteDatabase, tableName: String, columnName: String): Boolean {
+            database.query("PRAGMA table_info(`$tableName`)").use { cursor ->
+                val nameColumnIndex = cursor.getColumnIndex("name")
+                if (nameColumnIndex == -1) {
+                    return false
+                }
+                while (cursor.moveToNext()) {
+                    if (cursor.getString(nameColumnIndex) == columnName) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
         private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE app_settings ADD COLUMN isDisplayHijriDate INTEGER DEFAULT 1 NOT NULL")
@@ -269,11 +285,21 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
 
         private val MIGRATION_9_10: Migration = object : Migration(9, 10) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE translations ADD COLUMN `order` INTEGER")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `lastReadPage` INTEGER")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `arabicTextFontSize` INTEGER DEFAULT 18")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `translationTextFontSize` INTEGER DEFAULT 16")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `footnoteTextFontSize` INTEGER DEFAULT 12")
+                if (!hasColumn(database, "translations", "order")) {
+                    database.execSQL("ALTER TABLE translations ADD COLUMN `order` INTEGER")
+                }
+                if (!hasColumn(database, "app_settings", "lastReadPage")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `lastReadPage` INTEGER DEFAULT null")
+                }
+                if (!hasColumn(database, "app_settings", "arabicTextFontSize")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `arabicTextFontSize` INTEGER NOT NULL DEFAULT 18")
+                }
+                if (!hasColumn(database, "app_settings", "translationTextFontSize")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `translationTextFontSize` INTEGER NOT NULL DEFAULT 16")
+                }
+                if (!hasColumn(database, "app_settings", "footnoteTextFontSize")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `footnoteTextFontSize` INTEGER NOT NULL DEFAULT 12")
+                }
 
                 // Create adhkaar_chapters table
                 database.execSQL("""
@@ -295,12 +321,12 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                         item_translation TEXT NOT NULL,
                         chapter_id INTEGER NOT NULL,
                         reference TEXT NULL,
-                        bookmarked INTEGER NOT NULL DEFAULT 0,
-                        FOREIGN KEY(chapter_id) REFERENCES adhkaar_chapters(chapter_id) ON DELETE CASCADE
+                        item_order INTEGER
                     )
                 """)
 
-                database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_adhkaar_chapters_chapter_id` ON `adhkaar_chapters` (`chapter_id`)")
+                database.execSQL("DROP INDEX IF EXISTS `index_adhkaar_chapters_chapter_id`")
+                database.execSQL("CREATE INDEX IF NOT EXISTS `index_adhkaar_chapters_chapter_id` ON `adhkaar_chapters` (`chapter_id`)")
 
                 // Create page_bookmarks table
                 database.execSQL("""
@@ -312,7 +338,7 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     )
                 """)
 
-                database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_page_bookmarks_page_number` ON `page_bookmarks` (`page_number`)")
+                database.execSQL("DROP INDEX IF EXISTS `index_page_bookmarks_page_number`")
                 
                 // Create ayah_bookmarks table
                 database.execSQL("""
@@ -348,13 +374,136 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                     )
                 """)
 
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `fajrCustomTime` TEXT DEFAULT null")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `dhuhrCustomTime` TEXT DEFAULT null")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `asrCustomTime` TEXT DEFAULT null")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `maghribCustomTime` TEXT DEFAULT null")
-                database.execSQL("ALTER TABLE app_settings ADD COLUMN `ishaCustomTime` TEXT DEFAULT null")
-                database.execSQL("ALTER TABLE reminders_table ADD COLUMN `isAutomaticToDo` INTEGER DEFAULT 0 NOT NULL")
-                database.execSQL("ALTER TABLE adhkaar_items ADD COLUMN `item_order` INTEGER")
+                if (!hasColumn(database, "app_settings", "fajrCustomTime")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `fajrCustomTime` TEXT DEFAULT null")
+                }
+                if (!hasColumn(database, "app_settings", "dhuhrCustomTime")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `dhuhrCustomTime` TEXT DEFAULT null")
+                }
+                if (!hasColumn(database, "app_settings", "asrCustomTime")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `asrCustomTime` TEXT DEFAULT null")
+                }
+                if (!hasColumn(database, "app_settings", "maghribCustomTime")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `maghribCustomTime` TEXT DEFAULT null")
+                }
+                if (!hasColumn(database, "app_settings", "ishaCustomTime")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `ishaCustomTime` TEXT DEFAULT null")
+                }
+                if (!hasColumn(database, "reminders_table", "isAutomaticToDo")) {
+                    database.execSQL("ALTER TABLE reminders_table ADD COLUMN `isAutomaticToDo` INTEGER DEFAULT 0 NOT NULL")
+                }
+                if (!hasColumn(database, "adhkaar_items", "item_order")) {
+                    database.execSQL("ALTER TABLE adhkaar_items ADD COLUMN `item_order` INTEGER")
+                }
+                if (hasColumn(database, "adhkaar_items", "bookmarked")) {
+                    database.execSQL(
+                        """
+                        CREATE TABLE IF NOT EXISTS `adhkaar_items_new` (
+                            `id` INTEGER PRIMARY KEY NOT NULL,
+                            `item_id` INTEGER NOT NULL,
+                            `language` TEXT NOT NULL,
+                            `item_translation` TEXT NOT NULL,
+                            `chapter_id` INTEGER NOT NULL,
+                            `reference` TEXT,
+                            `item_order` INTEGER
+                        )
+                        """.trimIndent()
+                    )
+                    database.execSQL(
+                        """
+                        INSERT INTO `adhkaar_items_new` (
+                            `id`, `item_id`, `language`, `item_translation`, `chapter_id`, `reference`, `item_order`
+                        )
+                        SELECT
+                            `id`, `item_id`, `language`, `item_translation`, `chapter_id`, `reference`, `item_order`
+                        FROM `adhkaar_items`
+                        """.trimIndent()
+                    )
+                    database.execSQL("DROP TABLE `adhkaar_items`")
+                    database.execSQL("ALTER TABLE `adhkaar_items_new` RENAME TO `adhkaar_items`")
+                }
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `app_settings_new` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `formattedAddress` TEXT,
+                        `latitude` REAL NOT NULL,
+                        `longitude` REAL NOT NULL,
+                        `method` INTEGER NOT NULL,
+                        `asrCalculationMethod` INTEGER NOT NULL,
+                        `isAutomatic` INTEGER NOT NULL,
+                        `enablePrayerTimeAlertsFor` TEXT NOT NULL,
+                        `prayerTimeOffsetsInMinutes` TEXT NOT NULL,
+                        `month` INTEGER NOT NULL,
+                        `hijriOffSet` INTEGER NOT NULL,
+                        `isLightMode` INTEGER NOT NULL,
+                        `isFirstLaunch` INTEGER NOT NULL,
+                        `showNextReminderNotification` INTEGER NOT NULL,
+                        `showOnBoardingTutorial` INTEGER NOT NULL,
+                        `isDisplayHijriDate` INTEGER NOT NULL,
+                        `savedSpinnerPosition` INTEGER NOT NULL,
+                        `isExpandedLayout` INTEGER NOT NULL,
+                        `notificationToneUri` TEXT,
+                        `isVibrate` INTEGER NOT NULL,
+                        `priority` INTEGER NOT NULL,
+                        `latitudeAdjustmentMethod` INTEGER NOT NULL,
+                        `isShowHijriDateWidget` INTEGER NOT NULL,
+                        `isShowNextReminderWidget` INTEGER NOT NULL,
+                        `isAfterUpdate` INTEGER NOT NULL,
+                        `appVersionCode` INTEGER NOT NULL,
+                        `appVersion` TEXT NOT NULL,
+                        `categories` TEXT,
+                        `language` TEXT NOT NULL,
+                        `doNotDisturbMinutes` INTEGER NOT NULL,
+                        `useReliableAlarms` INTEGER NOT NULL,
+                        `numberOfLaunches` INTEGER NOT NULL,
+                        `shareAnonymousUsageData` INTEGER NOT NULL,
+                        `generatePrayerRemindersAfter` INTEGER NOT NULL,
+                        `includeHijriDateInCalendar` INTEGER NOT NULL,
+                        `hideDownloadFilePrompt` INTEGER NOT NULL DEFAULT 0,
+                        `lastReadPage` INTEGER DEFAULT null,
+                        `arabicTextFontSize` INTEGER NOT NULL DEFAULT 18,
+                        `translationTextFontSize` INTEGER NOT NULL DEFAULT 16,
+                        `footnoteTextFontSize` INTEGER NOT NULL DEFAULT 12,
+                        `fajrCustomTime` TEXT DEFAULT null,
+                        `dhuhrCustomTime` TEXT DEFAULT null,
+                        `asrCustomTime` TEXT DEFAULT null,
+                        `maghribCustomTime` TEXT DEFAULT null,
+                        `ishaCustomTime` TEXT DEFAULT null
+                    )
+                    """.trimIndent()
+                )
+                database.execSQL(
+                    """
+                    INSERT INTO `app_settings_new` (
+                        `id`, `formattedAddress`, `latitude`, `longitude`, `method`, `asrCalculationMethod`, `isAutomatic`,
+                        `enablePrayerTimeAlertsFor`, `prayerTimeOffsetsInMinutes`, `month`, `hijriOffSet`, `isLightMode`,
+                        `isFirstLaunch`, `showNextReminderNotification`, `showOnBoardingTutorial`, `isDisplayHijriDate`,
+                        `savedSpinnerPosition`, `isExpandedLayout`, `notificationToneUri`, `isVibrate`, `priority`,
+                        `latitudeAdjustmentMethod`, `isShowHijriDateWidget`, `isShowNextReminderWidget`, `isAfterUpdate`,
+                        `appVersionCode`, `appVersion`, `categories`, `language`, `doNotDisturbMinutes`, `useReliableAlarms`,
+                        `numberOfLaunches`, `shareAnonymousUsageData`, `generatePrayerRemindersAfter`,
+                        `includeHijriDateInCalendar`, `hideDownloadFilePrompt`, `lastReadPage`, `arabicTextFontSize`,
+                        `translationTextFontSize`, `footnoteTextFontSize`, `fajrCustomTime`, `dhuhrCustomTime`,
+                        `asrCustomTime`, `maghribCustomTime`, `ishaCustomTime`
+                    )
+                    SELECT
+                        `id`, `formattedAddress`, `latitude`, `longitude`, `method`, `asrCalculationMethod`, `isAutomatic`,
+                        `enablePrayerTimeAlertsFor`, `prayerTimeOffsetsInMinutes`, `month`, `hijriOffSet`, `isLightMode`,
+                        `isFirstLaunch`, `showNextReminderNotification`, `showOnBoardingTutorial`, `isDisplayHijriDate`,
+                        `savedSpinnerPosition`, `isExpandedLayout`, `notificationToneUri`, `isVibrate`, `priority`,
+                        `latitudeAdjustmentMethod`, `isShowHijriDateWidget`, `isShowNextReminderWidget`, `isAfterUpdate`,
+                        `appVersionCode`, `appVersion`, `categories`, `language`, `doNotDisturbMinutes`, `useReliableAlarms`,
+                        `numberOfLaunches`, `shareAnonymousUsageData`, `generatePrayerRemindersAfter`,
+                        `includeHijriDateInCalendar`, COALESCE(`hideDownloadFilePrompt`, 0), `lastReadPage`,
+                        COALESCE(`arabicTextFontSize`, 18), COALESCE(`translationTextFontSize`, 16),
+                        COALESCE(`footnoteTextFontSize`, 12), `fajrCustomTime`, `dhuhrCustomTime`, `asrCustomTime`,
+                        `maghribCustomTime`, `ishaCustomTime`
+                    FROM `app_settings`
+                    """.trimIndent()
+                )
+                database.execSQL("DROP TABLE `app_settings`")
+                database.execSQL("ALTER TABLE `app_settings_new` RENAME TO `app_settings`")
 
             }
         }
