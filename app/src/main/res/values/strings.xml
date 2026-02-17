@@ -447,6 +447,9 @@
     <string name="training_tap_to_read_adhkaar">Tap a Chapter to Read Adhkaar</string>
     <string name="training_double_tap_to_pin_adhkaar">Double Tap to pin a Chapter</string>
     <string name="donate">Donate</string>
+    <string name="donation_disclosure_title">Third-party donation</string>
+    <string name="donation_disclosure_message">You are leaving Sunnah Assistant and opening a charity website. Donations are processed by the external organization on their website, not by this app.</string>
+    <string name="donation_disclosure_continue">Continue</string>
     <string name="search">Search</string>
     <string name="search_chapter_or_category">Search by chapter or category</string>
     <string name="search_surah">Search surah</string>

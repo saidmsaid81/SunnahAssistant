@@ -71,7 +71,7 @@ class TipsAdapter(private val listener: TipsItemInteractionListener) :
             } else if (tip.id in DONATION_APPEALS) {
                 setupTextView.text = view.context.getString(R.string.donate)
                 setupTextView.setOnClickListener {
-                    listener.onInfoClickListener(tip.infoLink, tip.toDoId)
+                    listener.onInfoClickListener(tip.infoLink, tip.toDoId, tip.id)
                 }
                 setupTextView.visibility = View.VISIBLE
             } else {
@@ -83,7 +83,7 @@ class TipsAdapter(private val listener: TipsItemInteractionListener) :
                 infoView.visibility = View.INVISIBLE
             } else if (isValidUrl(tip.infoLink)) {
                 infoView.setOnClickListener {
-                    listener.onInfoClickListener(tip.infoLink, tip.toDoId)
+                    listener.onInfoClickListener(tip.infoLink, tip.toDoId, tip.id)
                 }
                 infoView.visibility = View.VISIBLE
             } else {
@@ -94,7 +94,7 @@ class TipsAdapter(private val listener: TipsItemInteractionListener) :
 
     interface TipsItemInteractionListener {
         fun onSetupClickListener(launchFragment: Int, toDoId: Int?)
-        fun onInfoClickListener(link: String, toDoId: Int?)
+        fun onInfoClickListener(link: String, toDoId: Int?, tipId: Int)
     }
 
 }

@@ -6,13 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.dto.Tip
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentTipsBinding
-import com.thesunnahrevival.sunnahassistant.utilities.*
+import com.thesunnahrevival.sunnahassistant.utilities.DONATION_APPEALS
+import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.TIP_ISLAMIC_RELIEF_GAZA_APPEAL_ID
+import com.thesunnahrevival.sunnahassistant.utilities.TIP_PRAYER_TIME_ALERTS_ID
+import com.thesunnahrevival.sunnahassistant.utilities.TIP_PRCS_PALESTINE_APPEAL_ID
+import com.thesunnahrevival.sunnahassistant.utilities.TIP_UNRWA_GAZA_APPEAL_ID
 import com.thesunnahrevival.sunnahassistant.views.adapters.TipsAdapter
 import java.net.MalformedURLException
 
@@ -100,7 +106,7 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
                 TIP_PRCS_PALESTINE_APPEAL_ID,
                 "PRCS Palestine Appeal",
                 R.drawable.heart,
-                "https://www.palestinercs.org/en/Donation",
+                "https://www.palestinercs.org/en",
                 null,
                 null
             ),
@@ -126,7 +132,11 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
         findNavController().navigate(launchFragment)
     }
 
-    override fun onInfoClickListener(link: String, toDoId: Int?) {
+    override fun onInfoClickListener(link: String, toDoId: Int?, tipId: Int) {
+        if (tipId in DONATION_APPEALS) {
+            showDonationDisclosure(link)
+            return
+        }
         try {
             browser.launchInAppBrowser(
                 link,
@@ -140,6 +150,32 @@ class TipsFragment : MenuBarFragment(), TipsAdapter.TipsItemInteractionListener 
                 .show()
         }
 
+    }
+
+    private fun showDonationDisclosure(link: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.donation_disclosure_title))
+            .setMessage(getString(R.string.donation_disclosure_message))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(getString(R.string.donation_disclosure_continue)) { _, _ ->
+                launchDonationLink(link)
+            }
+            .show()
+    }
+
+    private fun launchDonationLink(link: String) {
+        try {
+            browser.launchInAppBrowser(
+                link,
+                findNavController(),
+                false,
+                null
+            )
+        } catch (exception: MalformedURLException) {
+            Log.e("MalformedURLException", exception.message.toString())
+            Toast.makeText(requireContext(), getString(R.string.something_wrong), Toast.LENGTH_LONG)
+                .show()
+        }
     }
 
     override fun onDestroyView() {

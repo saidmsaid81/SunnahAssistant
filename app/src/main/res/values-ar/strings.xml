@@ -560,6 +560,9 @@
     <string name="content_credits">صفحات القرآن المدنية: &lt;a href=https://github.com/quran/quran.com-images&gt;quran.com-images&lt;/a&gt;&lt;br&gt;ترجمات القرآن: &lt;a href=https://quranenc.com&gt;Quranenc.com&lt;/a&gt;&lt;br&gt;الأذكار (حصن المسلم): &lt;a href=https://github.com/my-prayers/muslim-data-android&gt;muslim-data-android&lt;/a&gt;</string>
     <string name="custom_time">وقت مخصص</string>
     <string name="donate">تبرع</string>
+    <string name="donation_disclosure_title">تبرع عبر جهة خارجية</string>
+    <string name="donation_disclosure_message">ستغادر تطبيق مساعد السنة وسيتم فتح موقع جهة خيرية. تتم معالجة التبرعات بواسطة الجهة الخارجية على موقعها، وليس من خلال هذا التطبيق.</string>
+    <string name="donation_disclosure_continue">متابعة</string>
     <string name="evening_adhkaar_daily_reminder">تذكير يومي بأذكار المساء</string>
     <string name="font_settings">إعدادات الخط</string>
     <string name="font_settings_subtitle">خصّص أحجام النصوص في ترجمات القرآن والأذكار لتجربة قراءة أفضل</string>
