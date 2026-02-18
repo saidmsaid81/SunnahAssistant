@@ -55,6 +55,15 @@
             />
 
         <ImageView
+                android:id="@+id/whatsapp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="@dimen/default_dimen"
+                android:contentDescription="Whatsapp Logo"
+                android:src="@drawable/ic_whatsapp"
+        />
+
+        <ImageView
             android:id="@+id/facebook"
             android:layout_width="24dp"
             android:layout_height="24dp"

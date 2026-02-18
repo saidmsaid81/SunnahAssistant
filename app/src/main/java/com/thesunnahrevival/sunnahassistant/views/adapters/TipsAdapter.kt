@@ -11,8 +11,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Tip
-import com.thesunnahrevival.sunnahassistant.data.model.TipDiffCallBack
+import com.thesunnahrevival.sunnahassistant.data.model.dto.Tip
+import com.thesunnahrevival.sunnahassistant.data.model.dto.TipDiffCallBack
+import com.thesunnahrevival.sunnahassistant.utilities.DONATION_APPEALS
 import com.thesunnahrevival.sunnahassistant.utilities.isValidUrl
 
 class TipsAdapter(private val listener: TipsItemInteractionListener) :
@@ -67,14 +68,22 @@ class TipsAdapter(private val listener: TipsItemInteractionListener) :
                     listener.onSetupClickListener(tip.launchFragment, tip.toDoId)
                 }
                 setupTextView.visibility = View.VISIBLE
+            } else if (tip.id in DONATION_APPEALS) {
+                setupTextView.text = view.context.getString(R.string.donate)
+                setupTextView.setOnClickListener {
+                    listener.onInfoClickListener(tip.infoLink, tip.toDoId, tip.id)
+                }
+                setupTextView.visibility = View.VISIBLE
             } else {
                 setupTextView.visibility = View.GONE
             }
 
             val infoView = view.findViewById<ImageView>(R.id.info)
-            if (isValidUrl(tip.infoLink)) {
+            if (tip.id in DONATION_APPEALS) {
+                infoView.visibility = View.INVISIBLE
+            } else if (isValidUrl(tip.infoLink)) {
                 infoView.setOnClickListener {
-                    listener.onInfoClickListener(tip.infoLink)
+                    listener.onInfoClickListener(tip.infoLink, tip.toDoId, tip.id)
                 }
                 infoView.visibility = View.VISIBLE
             } else {
@@ -85,7 +94,7 @@ class TipsAdapter(private val listener: TipsItemInteractionListener) :
 
     interface TipsItemInteractionListener {
         fun onSetupClickListener(launchFragment: Int, toDoId: Int?)
-        fun onInfoClickListener(link: String)
+        fun onInfoClickListener(link: String, toDoId: Int?, tipId: Int)
     }
 
 }

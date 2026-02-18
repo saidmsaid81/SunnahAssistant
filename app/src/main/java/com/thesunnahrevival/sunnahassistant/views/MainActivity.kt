@@ -1,18 +1,23 @@
 package com.thesunnahrevival.sunnahassistant.views
 
+import android.app.AlarmManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -34,22 +39,24 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.SHARE
-import com.thesunnahrevival.sunnahassistant.utilities.SUNNAH_ASSISTANT_APP_LINK
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
+import com.thesunnahrevival.sunnahassistant.utilities.PREDEFINED_TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
-import com.thesunnahrevival.sunnahassistant.utilities.createNotificationChannels
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.home.CalendarFragment
 import com.thesunnahrevival.sunnahassistant.views.home.TodayFragment
 import com.thesunnahrevival.sunnahassistant.views.others.WelcomeFragment
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranReaderFragment
 import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment
+import com.thesunnahrevival.sunnahassistant.views.toDoDetails.ToDoDetailsFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,7 +79,6 @@ open class MainActivity : AppCompatActivity() {
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainActivityBinding.root)
         mViewModel = ViewModelProvider(this)[SunnahAssistantViewModel::class.java]
-        createNotificationChannels(this)
         setSupportActionBar(findViewById(R.id.toolbar))
 
         navController = findNavController(R.id.myNavHostFragment)
@@ -92,14 +98,29 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIntents(intent: Intent?) {
+        val predefinedToDoId = if (intent?.extras?.containsKey(PREDEFINED_TO_DO_ID) == true) {
+            intent.extras?.getInt(PREDEFINED_TO_DO_ID)
+        } else {
+            null
+        }
         val link = intent?.extras?.getString("link")
         if (link != null) {
-            launchInAppBrowser(link)
+            launchInAppBrowser(link, predefinedToDoId)
         }
 
         if (intent?.action == SHARE) {
             showShareToDo()
         }
+
+        if (link == null && predefinedToDoId != null) {
+            openTemplateToDo(predefinedToDoId)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntents(intent)
     }
 
     private fun setupNavigation() {
@@ -112,6 +133,7 @@ open class MainActivity : AppCompatActivity() {
                 R.id.today -> navController.navigate(R.id.todayFragment)
                 R.id.calendar -> navController.navigate(R.id.calendarFragment)
                 R.id.tips -> navController.navigate(R.id.tipsFragment)
+                R.id.resources -> navController.navigate(R.id.resourcesFragment)
             }
             true
         }
@@ -121,13 +143,15 @@ open class MainActivity : AppCompatActivity() {
         when (destination.id) {
             R.id.todayFragment,
             R.id.calendarFragment,
-            R.id.tipsFragment -> {
+            R.id.tipsFragment,
+            R.id.resourcesFragment -> {
                 mainActivityBinding.bottomNavigationView.visibility = View.VISIBLE
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
 
             R.id.welcomeFragment,
-            R.id.resolveMalformedToDosFragment -> {
+            R.id.resolveMalformedToDosFragment,
+            R.id.quranReaderFragment -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 mainActivityBinding.bottomNavigationView.visibility = View.GONE
             }
@@ -135,7 +159,6 @@ open class MainActivity : AppCompatActivity() {
             else -> mainActivityBinding.bottomNavigationView.visibility = View.GONE
         }
     }
-
     private fun registerBackPressCallback() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -144,7 +167,6 @@ open class MainActivity : AppCompatActivity() {
                     currentFragment is WelcomeFragment || currentFragment is ResolveMalformedToDosFragment -> {
                         finish()
                     }
-
                     else -> {
                         isEnabled = false
                         onSupportNavigateUp()
@@ -158,14 +180,26 @@ open class MainActivity : AppCompatActivity() {
     private fun handleEdgeToEdge() {
         ViewCompat.setOnApplyWindowInsetsListener(mainActivityBinding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            getActiveFragment()
-            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                bottomMargin = insets.bottom
-                rightMargin = insets.right
-                topMargin = insets.top
-            }
 
+            mViewModel.statusBarHeight.value = insets.top
+            mViewModel.navBarHeight.value = insets.bottom
+
+            val activeFragment = getActiveFragment()
+            if (activeFragment !is QuranReaderFragment) {
+                v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    leftMargin = insets.left
+                    bottomMargin = insets.bottom
+                    rightMargin = insets.right
+                    topMargin = insets.top
+                }
+            } else {
+                v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    leftMargin = 0
+                    bottomMargin = 0
+                    rightMargin = 0
+                    topMargin = 0
+                }
+            }
 
             WindowInsetsCompat.CONSUMED
         }
@@ -200,9 +234,8 @@ open class MainActivity : AppCompatActivity() {
                                         applicationContext,
                                         toDo.timeInMilliseconds
                                     )
-                                }\n" +
-                                "${getString(R.string.powered_by_sunnah_assistant)}\n\n" +
-                                "Get Sunnah Assistant App at\n$SUNNAH_ASSISTANT_APP_LINK"
+                                }\n\n" +
+                                getString(R.string.app_promotional_message, getSunnahAssistantAppLink(utmCampaign = "Share-To-Do"))
                     )
                     val chooserIntent = Intent.createChooser(
                         shareIntent,
@@ -214,7 +247,7 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchInAppBrowser(link: String) {
+    private fun launchInAppBrowser(link: String, predefinedToDoId: Int? = null) {
         if (link.contains("market://details")) {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_VIEW
@@ -225,8 +258,19 @@ open class MainActivity : AppCompatActivity() {
         } else
             InAppBrowser(this, lifecycleScope).launchInAppBrowser(
                 link,
-                findNavController(R.id.myNavHostFragment)
+                findNavController(R.id.myNavHostFragment),
+                predefinedToDoId = predefinedToDoId
             )
+    }
+
+    private fun openTemplateToDo(toDoId: Int) {
+        val templateToDos = mViewModel.getTemplateToDos()
+        val template = templateToDos[toDoId] ?: return
+        mViewModel.selectedToDo = template.second
+        mViewModel.isToDoTemplate = true
+        if (navController.currentDestination?.id != R.id.toDoDetailsFragment) {
+            navController.navigate(R.id.toDoDetailsFragment)
+        }
     }
 
     private fun getSettings() {
@@ -349,13 +393,37 @@ open class MainActivity : AppCompatActivity() {
                     if (activeFragment is TodayFragment) {
                         activeFragment.mBinding.banner.dismiss()
                     }
+                    showAlarmPermissionDialogIfNeeded()
                 }
             }
         }
     }
 
+    private fun showAlarmPermissionDialogIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.enable_alarms_and_reminders_title))
+                    .setMessage(getString(R.string.enable_alarms_and_reminders_message))
+                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                            data = "package:$packageName".toUri()
+                        }
+                        startActivity(intent)
+                    }
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
-        listOf(R.id.todayFragment, R.id.calendarFragment)
+        if (getActiveFragment() is ToDoDetailsFragment) {
+            mViewModel.isToDoTemplate = false
+        }
         return if (!mainActivityBinding.bottomNavigationView.isVisible) {
             navController.navigateUp()
         } else {

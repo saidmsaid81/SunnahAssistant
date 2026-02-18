@@ -3,7 +3,12 @@ package com.thesunnahrevival.sunnahassistant.views.home
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
@@ -14,12 +19,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
 import com.thesunnahrevival.sunnahassistant.utilities.openDeveloperPage
 import com.thesunnahrevival.sunnahassistant.utilities.openPlayStore
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
-import com.thesunnahrevival.sunnahassistant.views.others.AboutAppFragment
 import com.thesunnahrevival.sunnahassistant.views.shareAppIntent
 import com.thesunnahrevival.sunnahassistant.views.translateLink
 
@@ -54,7 +58,7 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), MenuProvider {
                 }
                 val status = mAppSettings?.isLightMode ?: true
                 mAppSettings?.isLightMode = !status
-                mAppSettings?.let { mViewModel.updateSettings(it) }
+                mAppSettings?.let { mainActivityViewModel.updateSettings(it) }
                 return true
             }
             R.id.settings -> {
@@ -62,18 +66,20 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), MenuProvider {
                 return true
             }
             R.id.about -> {
-                val fragment = AboutAppFragment()
-                fragment.show(requireActivity().supportFragmentManager, "about")
+                findNavController().navigate(R.id.aboutAppFragment)
                 return true
             }
             R.id.share_app -> {
-                val shareAppIntent = shareAppIntent()
-                startActivity(
-                    Intent.createChooser(
-                        shareAppIntent,
-                        getString(R.string.share_app)
+                context?.let {
+                    val shareAppIntent = shareAppIntent(it)
+                    startActivity(
+                        Intent.createChooser(
+                            shareAppIntent,
+                            getString(R.string.share_app)
+                        )
                     )
-                )
+                }
+
                 return true
             }
             R.id.feedback -> {

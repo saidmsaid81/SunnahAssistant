@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/today"
       android:icon="@drawable/ic_today"
-      app:labelVisibilityMode="unlabeled"
       android:title="@string/today" />
 
   <item
       android:id="@+id/calendar"
       android:icon="@drawable/ic_calendar"
-      app:labelVisibilityMode="unlabeled"
       android:title="@string/calendar" />
 
   <item
       android:id="@+id/tips"
       android:icon="@drawable/ic_tips"
-      app:labelVisibilityMode="unlabeled"
       android:title="@string/tips" />
+
+  <item
+      android:id="@+id/resources"
+      android:icon="@drawable/ic_resources"
+      android:title="@string/resources_menu_beta" />
 
 </menu>

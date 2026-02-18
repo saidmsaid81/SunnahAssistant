@@ -15,7 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.PagingData
@@ -26,11 +29,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.sergivonavi.materialbanner.BannerInterface
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.repositories.ToDoNudgeRepository
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentTodayBinding
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
+import com.thesunnahrevival.sunnahassistant.viewmodels.TodayViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SwipeGesturesCallback
 import com.thesunnahrevival.sunnahassistant.views.adapters.ToDoListAdapter
@@ -39,6 +44,7 @@ import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionL
 import com.thesunnahrevival.sunnahassistant.views.showBanner
 import com.thesunnahrevival.sunnahassistant.views.utilities.ShowcaseView
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,6 +55,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     lateinit var mBinding: FragmentTodayBinding
     private lateinit var concatAdapter: ConcatAdapter
     private var fabAnimator: ObjectAnimator? = null
+    private val todayViewModel: TodayViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,22 +78,82 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             showNotificationRequestBanner()
         }
 
+        if (this !is CalendarFragment) {
+            observeNudge()
+        }
+
         return mBinding.root
     }
 
+    private fun observeNudge() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                todayViewModel.nudge.collectLatest { nudge ->
+                    if (nudge != null) {
+                        displayNudge(nudge)
+                    } else {
+                        mBinding.nudgeContainer.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun displayNudge(nudge: ToDoNudgeRepository.Nudge) {
+        mBinding.nudgeContainer.visibility = View.VISIBLE
+
+        val nudgeText = if (nudge.textArg != null) {
+            getString(nudge.textResId, nudge.textArg)
+        } else {
+            getString(nudge.textResId)
+        }
+        mBinding.nudgeText.text = nudgeText
+
+        mBinding.nudgeText.setOnClickListener {
+            handleNudgeAction(nudge)
+        }
+
+        mBinding.nudgeDismiss.setOnClickListener {
+            todayViewModel.dismissNudgesForToday()
+        }
+    }
+
+    private fun handleNudgeAction(nudge: ToDoNudgeRepository.Nudge) {
+        when (nudge.actionType) {
+            is ToDoNudgeRepository.NudgeActionType.NavigateToPrayerSettings -> {
+                findNavController().navigate(R.id.prayerTimeSettingsFragment)
+            }
+            is ToDoNudgeRepository.NudgeActionType.NavigateToToDoDetails -> {
+                nudge.toDoId?.let { toDoId ->
+                    val templateToDos = mainActivityViewModel.getTemplateToDos()
+                    templateToDos[toDoId]?.let { template ->
+                        mainActivityViewModel.selectedToDo = template.second
+                        mainActivityViewModel.isToDoTemplate = true
+                        findNavController().navigate(R.id.toDoDetailsFragment)
+                    }
+                }
+            }
+        }
+    }
+
     private fun getSettings() {
-        mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings != null) {
                 mAppSettings = settings
-                mViewModel.settingsValue = settings
+                mainActivityViewModel.settingsValue = settings
                 concatAdapter.adapters.getOrNull(0)?.let {
-                    (it as ToDoListAdapter).setSunriseTime(mViewModel.getSunriseTime())
+                    (it as ToDoListAdapter).setSunriseTime(mainActivityViewModel.getSunriseTime())
                 }
                 concatAdapter.adapters.getOrNull(1)?.let {
-                    (it as ToDoListAdapter).setSunriseTime(mViewModel.getSunriseTime())
+                    (it as ToDoListAdapter).setSunriseTime(mainActivityViewModel.getSunriseTime())
                 }
                 setupCategoryChips()
                 mBinding.toDoList.visibility = View.VISIBLE
+
+                todayViewModel.updateSettings(
+                    isPrayerAlertsEnabled = settings.isAutomaticPrayerAlertsEnabled,
+                    hasLocation = !settings.formattedAddress.isNullOrBlank()
+                )
 
                 if (this !is CalendarFragment) {
                     when {
@@ -100,7 +167,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                                     concatAdapter
                                 )
                                 settings.showOnBoardingTutorial = false
-                                mViewModel.updateSettings(settings)
+                                mainActivityViewModel.updateSettings(settings)
                             }
                         }
                     }
@@ -115,7 +182,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         val categories = mAppSettings?.categories
         if (categories != null) {
             val displayAllCategoriesChip = createCategoryChip(getString(R.string.display_all))
-            displayAllCategoriesChip.isChecked = mViewModel.categoryToDisplay.isBlank()
+            displayAllCategoriesChip.isChecked = mainActivityViewModel.categoryToDisplay.isBlank()
             mBinding.categoryChips.addView(displayAllCategoriesChip)
 
             val prayerCategory = resources.getStringArray(R.array.categories)[2]
@@ -134,7 +201,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     private fun createCategoryChip(category: String): Chip {
         val categoryChip =
             layoutInflater.inflate(R.layout.choice_chip, mBinding.categoryChips, false) as Chip
-        categoryChip.isChecked = mViewModel.categoryToDisplay.matches(category.toRegex())
+        categoryChip.isChecked = mainActivityViewModel.categoryToDisplay.matches(category.toRegex())
         categoryChip.text = category
         categoryChip.setOnCheckedChangeListener { button: CompoundButton, isChecked: Boolean ->
             if (button.isPressed && isChecked) {
@@ -143,7 +210,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                         ""
                     else
                         category
-                mViewModel.setToDoParameters(category = categoryToDisplay)
+                mainActivityViewModel.setToDoParameters(category = categoryToDisplay)
             }
         }
         return categoryChip
@@ -170,19 +237,19 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
         itemTouchHelper.attachToRecyclerView(null)
         itemTouchHelper.attachToRecyclerView(toDoRecyclerView)
 
-        mViewModel.getIncompleteToDos()
+        mainActivityViewModel.getIncompleteToDos()
             .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
                 if (mAppSettings?.isAutomaticPrayerAlertsEnabled == true)
-                    incompleteToDoRecyclerAdapter.setSunriseTime(mViewModel.getSunriseTime())
+                    incompleteToDoRecyclerAdapter.setSunriseTime(mainActivityViewModel.getSunriseTime())
                 incompleteToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
                 if (this !is CalendarFragment)
                     displayHijriDate()
             }
 
-        mViewModel.getCompleteToDos()
+        mainActivityViewModel.getCompleteToDos()
             .observe(viewLifecycleOwner) { toDos: PagingData<ToDo> ->
                 if (mAppSettings?.isAutomaticPrayerAlertsEnabled == true)
-                    completeToDoRecyclerAdapter.setSunriseTime(mViewModel.getSunriseTime())
+                    completeToDoRecyclerAdapter.setSunriseTime(mainActivityViewModel.getSunriseTime())
                 completeToDoRecyclerAdapter.submitData(viewLifecycleOwner.lifecycle, toDos)
                 if (this !is CalendarFragment)
                     displayHijriDate()
@@ -210,7 +277,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     private fun displayHijriDate() {
-        val includeHijriDate = mViewModel.settingsValue?.isDisplayHijriDate ?: true
+        val includeHijriDate = mainActivityViewModel.settingsValue?.isDisplayHijriDate ?: true
         mBinding.date.text = HtmlCompat.fromHtml(
             getString(
                 R.string.hijri_date,
@@ -267,7 +334,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             )
             setAction(getString(R.string.undo_delete)) {
                 val newToDo = toDo.copy()
-                mViewModel.insertToDo(newToDo)
+                mainActivityViewModel.insertToDo(newToDo)
             }
             setActionTextColor(
                 ContextCompat.getColor(
@@ -303,37 +370,37 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             val completedDates = TreeSet<String>()
             completedDates.addAll(toDo.completedDates)
             if (isChecked == true)
-                completedDates.add(mViewModel.selectedToDoDate.toString())
+                completedDates.add(mainActivityViewModel.selectedToDoDate.toString())
             else if (isChecked == false)
-                completedDates.remove(mViewModel.selectedToDoDate.toString())
+                completedDates.remove(mainActivityViewModel.selectedToDoDate.toString())
             else {
-                if (completedDates.contains(mViewModel.selectedToDoDate.toString()))
-                    completedDates.remove(mViewModel.selectedToDoDate.toString())
+                if (completedDates.contains(mainActivityViewModel.selectedToDoDate.toString()))
+                    completedDates.remove(mainActivityViewModel.selectedToDoDate.toString())
                 else
-                    completedDates.add(mViewModel.selectedToDoDate.toString())
+                    completedDates.add(mainActivityViewModel.selectedToDoDate.toString())
             }
 
             val toDoCopy = toDo.copy(completedDates = completedDates)
-            mViewModel.updateToDo(toDoCopy)
+            mainActivityViewModel.updateToDo(toDoCopy)
         }
     }
 
     override fun launchToDoDetailsFragment(v: View, toDo: ToDo?) {
         val categoriesTreeSet = mAppSettings?.categories
         val uncategorized = resources.getStringArray(R.array.categories).getOrNull(0)
-        val category = if (mViewModel.categoryToDisplay.isBlank())
+        val category = if (mainActivityViewModel.categoryToDisplay.isBlank())
             categoriesTreeSet?.find { it == uncategorized }
         else {
-            categoriesTreeSet?.find { it == mViewModel.categoryToDisplay } ?: uncategorized
+            categoriesTreeSet?.find { it == mainActivityViewModel.categoryToDisplay } ?: uncategorized
         }
         if (category != null) {
-            mViewModel.selectedToDo = toDo
+            mainActivityViewModel.selectedToDo = toDo
                 ?: ToDo(
                     name = "", frequency = Frequency.OneTime,
                     category = category,
-                    day = mViewModel.selectedToDoDate.dayOfMonth,
-                    month = mViewModel.selectedToDoDate.month.ordinal,
-                    year = mViewModel.selectedToDoDate.year
+                    day = mainActivityViewModel.selectedToDoDate.dayOfMonth,
+                    month = mainActivityViewModel.selectedToDoDate.month.ordinal,
+                    year = mainActivityViewModel.selectedToDoDate.year
                 )
 
             findNavController().navigate(R.id.toDoDetailsFragment)
@@ -342,7 +409,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     }
 
     private suspend fun checkIfThereAreMalformedToDos() {
-        val malformedToDos = mViewModel.getMalformedToDos().firstOrNull()
+        val malformedToDos = mainActivityViewModel.getMalformedToDos().firstOrNull()
         if (!malformedToDos.isNullOrEmpty()) {
             withContext(Dispatchers.Main) {
                 findNavController().navigate(R.id.resolveMalformedToDosFragment)
@@ -357,7 +424,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
             ) == PackageManager.PERMISSION_DENIED
         ) {
             val notificationPermissionRequestsCount =
-                mViewModel.getNotificationPermissionRequestsCount()
+                mainActivityViewModel.getNotificationPermissionRequestsCount()
             if (notificationPermissionRequestsCount > 0) {
                 withContext(Dispatchers.Main) {
                     val openSettingsListener = BannerInterface.OnClickListener {
@@ -369,7 +436,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
                     }
 
                     val hideBannerListener = BannerInterface.OnClickListener {
-                        mViewModel.hideFixNotificationsBanner()
+                        mainActivityViewModel.hideFixNotificationsBanner()
                         mBinding.banner.dismiss()
                     }
 
@@ -391,7 +458,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
     override fun onResume() {
         super.onResume()
         if (this !is CalendarFragment) {
-            mViewModel.setToDoParameters(System.currentTimeMillis())
+            mainActivityViewModel.setToDoParameters(System.currentTimeMillis())
         }
     }
 }

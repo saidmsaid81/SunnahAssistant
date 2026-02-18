@@ -39,6 +39,51 @@
       tools:layout="@layout/fragment_tips">
 
   </fragment>
+
+  <fragment
+      android:id="@+id/resourcesFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.home.resourcesSection.ResourcesFragment"
+      android:label="@string/app_name">
+
+      <action
+              android:id="@+id/to_quran_reader_fragment"
+              app:destination="@id/quranReaderFragment"/>
+      <action
+              android:id="@+id/to_bookmarks_fragment"
+              app:destination="@id/bookmarksFragment"/>
+      <action
+              android:id="@+id/to_adhkaarReaderFragment"
+              app:destination="@id/adhkaarReaderFragment"/>
+  </fragment>
+
+  <fragment
+      android:id="@+id/bookmarksFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranBookmarksFragment"
+      android:label="@string/bookmarks">
+  </fragment>
+
+  <fragment
+      android:id="@+id/adhkaarBookmarksFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar.AdhkaarBookmarksFragment"
+      android:label="@string/bookmarks">
+  </fragment>
+
+  <fragment
+      android:id="@+id/dailyHadithFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.DailyHadithFragment"
+      android:label="@string/daily_hadith"
+      tools:layout="@layout/fragment_daily_hadith">
+
+  </fragment>
+
+  <fragment
+      android:id="@+id/quranReaderFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.QuranReaderFragment"
+      android:label="@string/quran"
+      tools:layout="@layout/fragment_quran_reader">
+  </fragment>
+
+
   <fragment
       android:id="@+id/settingsListFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.settings.SettingsListFragment"
@@ -62,6 +107,9 @@
     <action
         android:id="@+id/action_settingsListFragment_to_privacySettingsFragment"
         app:destination="@id/privacySettingsFragment" />
+    <action
+        android:id="@+id/action_settingsListFragment_to_fontSettingsFragment"
+        app:destination="@id/fontSettingsFragment" />
   </fragment>
   <fragment
       android:id="@+id/welcomeFragment"
@@ -118,6 +166,12 @@
       android:label="@string/privacy_settings" />
 
   <fragment
+      android:id="@+id/fontSettingsFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.settings.FontSettingsFragment"
+      android:label="@string/font_settings"
+      tools:layout="@layout/fragment_font_settings" />
+
+  <fragment
       android:id="@+id/webviewFragment"
       android:name="com.thesunnahrevival.sunnahassistant.views.others.WebViewFragment"
       android:label="@string/developers_messages" />
@@ -137,8 +191,50 @@
       android:name="com.thesunnahrevival.sunnahassistant.views.toDoDetails.ResolveMalformedToDosFragment"
       android:label="@string/resolve_malformed_to_dos" />
 
+  <fragment
+      android:id="@+id/pageTranslationFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.PageTranslationFragment">
+  </fragment>
+
+  <fragment
+      android:id="@+id/surahList"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader.SurahListFragment"
+      android:label="@string/quran">
+  </fragment>
+
+  <fragment
+      android:id="@+id/adhkaarChaptersList"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar.AdhkaarChapterListFragment"
+      android:label="@string/adhkaar">
+    <action
+        android:id="@+id/action_adhkaarChaptersList_to_adhkaarReaderFragment"
+        app:destination="@id/adhkaarReaderFragment" />
+  </fragment>
+
+  <fragment
+      android:id="@+id/adhkaarReaderFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.resourcesScreens.adhkaar.AdhkaarReaderFragment"
+      android:label="@string/adhkaar">
+    <argument
+        android:name="chapterId"
+        app:argType="integer" />
+    <argument
+        android:name="scrollToItemId"
+        app:argType="integer"
+        android:defaultValue="-1" />
+    <argument
+        android:name="notificationId"
+        app:argType="integer"
+        android:defaultValue="-1"/>
+  </fragment>
+
   <dialog
       android:id="@+id/snooze_options"
       android:name="com.thesunnahrevival.sunnahassistant.views.dialogs.SnoozeOptionsFragment" />
+
+  <fragment
+      android:id="@+id/aboutAppFragment"
+      android:name="com.thesunnahrevival.sunnahassistant.views.others.AboutAppFragment"
+      android:label="@string/about_app" />
 
 </navigation>

@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "name": "English",
+    "isRtl": 0
+  },
+  {
+    "id": 2,
+    "name": "French",
+    "isRtl": 0
+  },
+  {
+    "id": 3,
+    "name": "German",
+    "isRtl": 0
+  },
+  {
+    "id": 4,
+    "name": "Arabic",
+    "isRtl": 1
+  },
+  {
+    "id": 5,
+    "name": "Hausa",
+    "isRtl": 0
+  },
+  {
+    "id": 6,
+    "name": "Hindi",
+    "isRtl": 0
+  },
+  {
+    "id": 7,
+    "name": "Indonesian",
+    "isRtl": 0
+  },
+  {
+    "id": 8,
+    "name": "Malay",
+    "isRtl": 0
+  },
+  {
+    "id": 9,
+    "name": "Malayalam",
+    "isRtl": 0
+  },
+  {
+    "id": 11,
+    "name": "Russsian",
+    "isRtl": 0
+  },
+  {
+    "id": 12,
+    "name": "Somali",
+    "isRtl": 0
+  },
+  {
+    "id": 13,
+    "name": "Spanish",
+    "isRtl": 0
+  },
+  {
+    "id": 14,
+    "name": "Swahili",
+    "isRtl": 0
+  },
+  {
+    "id": 15,
+    "name": "Tamil",
+    "isRtl": 0
+  },
+  {
+    "id": 16,
+    "name": "Urdu",
+    "isRtl": 1
+  }
+]

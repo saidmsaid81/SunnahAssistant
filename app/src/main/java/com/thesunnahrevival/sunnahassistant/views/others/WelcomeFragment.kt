@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentWelcomeBinding
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
@@ -29,7 +29,7 @@ class WelcomeFragment : SunnahAssistantFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) { settings: AppSettings? ->
             if (settings?.isFirstLaunch == false) {
                 findNavController().navigate(R.id.todayFragment)
             }
@@ -54,7 +54,7 @@ class WelcomeFragment : SunnahAssistantFragment() {
                     (requireActivity() as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
                         welcomeFragmentBinding.checkbox.isChecked
                     )
-                    mViewModel.updateSettings(settings)
+                    mainActivityViewModel.updateSettings(settings)
                 }
             }
         }

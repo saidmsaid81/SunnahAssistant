@@ -2,9 +2,13 @@ package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.content.Context
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import java.util.*
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import java.util.Calendar
+import java.util.TreeSet
+
+
+
 
 class TemplateToDos {
     /**
@@ -16,47 +20,49 @@ class TemplateToDos {
         val uncategorized = context.resources.getStringArray(R.array.categories)[0]
         val toDoMap = mutableMapOf<Int, Pair<Int, ToDo>>()
 
-        toDoMap[-1001] = Pair(
+        toDoMap[PRAYING_DHUHA_ID] = Pair(
             R.drawable.ic_dhuha,
             createReminder(
                 name = context.getString(R.string.dhuha_prayer),
                 frequency = Frequency.Daily,
                 category = sunnah,
-                id = -1001,
+                id = PRAYING_DHUHA_ID,
                 predefinedReminderInfo = context.getString(R.string.read_more_on_dhuha_prayer),
                 predefinedReminderLink = "https://thesunnahrevival.com/2015/11/18/sunnah-of-the-weekduha-prayer-its-importance-and-practical-tips"
             )
         )
 
 
-        toDoMap[-1002] = Pair(
+        toDoMap[READING_MORNING_ADHKAAR_ID] = Pair(
             R.drawable.ic_dua,
             createReminder(
-                id = -1002,
+                id = READING_MORNING_ADHKAAR_ID,
                 name = context.getString(R.string.morning_adhkar),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.tap_here_to_read_more_on_morning_adhkaar),
                 predefinedReminderLink = "https://islamqa.info/en/answers/217496/morning-and-evening-adhkar"
             )
         )
 
 
-        toDoMap[-1003] = Pair(
+        toDoMap[READING_EVENING_ADHKAAR_ID] = Pair(
             R.drawable.ic_dua,
             createReminder(
-                id = -1003,
+                id = READING_EVENING_ADHKAAR_ID,
                 name = context.getString(R.string.evening_adhkar),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.tap_here_to_read_more_on_evening_adhkaar),
                 predefinedReminderLink = "https://islamqa.info/en/answers/217496/morning-and-evening-adhkar"
             )
         )
 
 
-        toDoMap[-1004] = Pair(
+        toDoMap[TAHAJJUD_ID] = Pair(
             R.drawable.ic_tahajjud,
             createReminder(
-                id = -1004,
+                id = TAHAJJUD_ID,
                 name = context.getString(R.string.tahajjud),
                 category = sunnah,
                 frequency = Frequency.Daily,
@@ -66,23 +72,24 @@ class TemplateToDos {
         )
 
 
-        toDoMap[-1005] = Pair(
+        toDoMap[READING_QURAN_ID] = Pair(
             R.drawable.ic_quran,
             createReminder(
-                id = -1005,
+                id = READING_QURAN_ID,
                 name = context.getString(R.string.reading_the_quran),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.tap_here_to_read_more_on_quran),
                 predefinedReminderLink = "https://thesunnahrevival.com/2020/06/07/virtues-of-reading-quran/"
             )
         )
 
         var listOfDays = TreeSet<Int>()
         listOfDays.add(Calendar.FRIDAY)
-        toDoMap[-1006] = Pair(
+        toDoMap[READING_SURATUL_KAHF_ID] = Pair(
             R.drawable.ic_quran,
             createReminder(
-                id = -1006,
+                id = READING_SURATUL_KAHF_ID,
                 name = context.getString(R.string.reading_suratul_kahf),
                 category = sunnah,
                 frequency = Frequency.Weekly,
@@ -96,10 +103,10 @@ class TemplateToDos {
         listOfDays = TreeSet<Int>()
         listOfDays.add(Calendar.SUNDAY)
         listOfDays.add(Calendar.WEDNESDAY)
-        toDoMap[-1007] = Pair(
+        toDoMap[FASTING_MONDAYS_THURSDAYS_ID] = Pair(
             R.drawable.ic_fasting,
             createReminder(
-                id = -1007,
+                id = FASTING_MONDAYS_THURSDAYS_ID,
                 name = context.getString(R.string.fasting_on_monday_and_thursday),
                 category = sunnah,
                 frequency = Frequency.Weekly,
@@ -109,58 +116,59 @@ class TemplateToDos {
             )
         )
 
-        toDoMap[-1008] = Pair(
+        toDoMap[READING_SURATUL_MULK_ID] = Pair(
             R.drawable.ic_quran,
             createReminder(
-                id = -1008,
-                name = context.getString(R.string.suratul_mulk),
+                id = READING_SURATUL_MULK_ID,
+                name = context.getString(R.string.reading_suratul_mulk),
                 category = sunnah,
                 frequency = Frequency.Daily,
+                predefinedReminderInfo = context.getString(R.string.read_more_on_suratul_mulk),
                 predefinedReminderLink = "https://thesunnahrevival.com/2016/04/23/revive-a-sunnah-series-reciting-surah-al-mulk-and-al-sajdah-every-night/"
             )
         )
 
-        toDoMap[-1009] = Pair(
+        toDoMap[READING_ID] = Pair(
             R.drawable.ic_read,
             createReminder(
-                id = -1009,
+                id = READING_ID,
                 name = context.getString(R.string.reading),
                 category = uncategorized,
                 frequency = Frequency.Daily
             )
         )
 
-        toDoMap[-1010] = Pair(
+        toDoMap[READING_SLEEPING_ADHKAAR_ID] = Pair(
             R.drawable.ic_sleep,
             createReminder(
-                id = -1010,
+                id = READING_SLEEPING_ADHKAAR_ID,
                 name = context.getString(R.string.sleeping),
                 category = uncategorized,
                 frequency = Frequency.Daily
             )
         )
-        toDoMap[-1011] = Pair(
+        toDoMap[EXERCISE_ID] = Pair(
             R.drawable.ic_exercise,
             createReminder(
-                id = -1011,
+                id = EXERCISE_ID,
                 name = context.getString(R.string.exercising),
                 category = uncategorized,
                 frequency = Frequency.Daily
             )
         )
-        toDoMap[-1012] = Pair(
+        toDoMap[PILL_ID] = Pair(
             R.drawable.ic_pill_reminder,
             createReminder(
-                id = -1012,
+                id = PILL_ID,
                 name = context.getString(R.string.pill),
                 category = uncategorized,
                 frequency = Frequency.Daily
             )
         )
-        toDoMap[-1013] = Pair(
+        toDoMap[DRINK_WATER_ID] = Pair(
             R.drawable.ic_water,
             createReminder(
-                id = -1013,
+                id = DRINK_WATER_ID,
                 name = context.getString(R.string.drink_water),
                 category = uncategorized,
                 frequency = Frequency.Daily

@@ -1,6 +1,7 @@
 package com.thesunnahrevival.sunnahassistant.views.dialogs
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -14,12 +15,22 @@ import com.thesunnahrevival.sunnahassistant.databinding.FragmentAddLocationBindi
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
 
-class EnterLocationDialogFragment :DialogFragment() {
+class EnterLocationDialogFragment : DialogFragment() {
+
+    interface EnterLocationDialogListener {
+        fun onLocationSaved()
+        fun onLocationDialogCancelled()
+    }
 
     private var mViewModel: SunnahAssistantViewModel? = null
+    private var listener: EnterLocationDialogListener? = null
 
     private var _enterLocationDialogFragmentBinding: FragmentAddLocationBinding? = null
     private val enterLocationDialogFragmentBinding get() = _enterLocationDialogFragmentBinding!!
+
+    fun setListener(listener: EnterLocationDialogListener) {
+        this.listener = listener
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         mViewModel = ViewModelProvider(requireActivity()).get(SunnahAssistantViewModel::class.java)
@@ -43,6 +54,11 @@ class EnterLocationDialogFragment :DialogFragment() {
         return dialog ?: super.onCreateDialog(savedInstanceState)
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        listener?.onLocationDialogCancelled()
+    }
+
     private fun handleDialogButtonClicks(dialog: AlertDialog, view: View, viewModel: SunnahAssistantViewModel?) {
         val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         positiveButton.setOnClickListener {
@@ -63,6 +79,7 @@ class EnterLocationDialogFragment :DialogFragment() {
                             R.string.location_updated_successfully,
                             Toast.LENGTH_LONG
                         ).show()
+                        listener?.onLocationSaved()
                         dialog.dismiss()
                     } else {
                         messagesTextView.text = message

@@ -7,7 +7,7 @@ import android.text.format.DateFormat
 import android.util.Log
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate

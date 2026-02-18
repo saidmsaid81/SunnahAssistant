@@ -31,22 +31,22 @@ class HijriDateSettingsFragment : SunnahAssistantFragment() {
         )
 
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
-            mViewModel.settingsValue = it
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
+            mainActivityViewModel.settingsValue = it
             binding.settings = it
         }
 
         binding.displayHijriDateSwitch.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
             if (buttonView.isPressed) {
-                mViewModel.settingsValue?.isDisplayHijriDate = isChecked
-                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                mainActivityViewModel.settingsValue?.isDisplayHijriDate = isChecked
+                mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
             }
         }
 
         binding.includeHijriDateInCalendar.setOnCheckedChangeListener { buttonView: CompoundButton, isChecked: Boolean ->
             if (buttonView.isPressed) {
-                mViewModel.settingsValue?.includeHijriDateInCalendar = isChecked
-                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                mainActivityViewModel.settingsValue?.includeHijriDateInCalendar = isChecked
+                mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
             }
         }
 

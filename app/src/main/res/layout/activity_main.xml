@@ -42,6 +42,7 @@
         app:elevation="0dp"
         app:menu="@menu/bottom_navigation"
         android:theme="@style/ThemeOverlay.BottomNavView"
+        app:labelVisibilityMode="labeled"
         />
 
 </FrameLayout>

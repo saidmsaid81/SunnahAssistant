@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "English: Saheeh International",
+    "languageId": 1,
+    "key": "english_saheeh"
+  },
+  {
+    "id": 2,
+    "name": "English: Hilali & Muhsin Khan",
+    "languageId": 1,
+    "key": "english_hilali_khan"
+  },
+  {
+    "id": 3,
+    "name": "French: Muhammad Hamidullah ",
+    "languageId": 2,
+    "key": "french_hameedullah"
+  },
+  {
+    "id": 4,
+    "name": "German: Frank Bubenheim",
+    "languageId": 3,
+    "key": "german_bubenheim"
+  },
+  {
+    "id": 5,
+    "name": "Arabic: Muyassar",
+    "languageId": 4,
+    "key": "arabic_moyassar"
+  },
+  {
+    "id": 6,
+    "name": "Hausa: Abubakar Mahmud Gumi",
+    "languageId": 5,
+    "key": "hausa_gummi"
+  },
+  {
+    "id": 7,
+    "name": "Hindi: Azizul Haq Al-Omari ",
+    "languageId": 6,
+    "key": "hindi_omari"
+  },
+  {
+    "id": 8,
+    "name": "Indonesian: Ministry of Religious Affairs ",
+    "languageId": 7,
+    "key": "indonesian_affairs"
+  },
+  {
+    "id": 9,
+    "name": "Malay: Abdullah Basumayyah",
+    "languageId": 8,
+    "key": "malay_basumayyah"
+  },
+  {
+    "id": 10,
+    "name": "Malayalam: Abdulhamid Haidar Al-Madany & Kunhi Muhammad ",
+    "languageId": 9,
+    "key": "malayalam_kunhi"
+  },
+  {
+    "id": 11,
+    "name": "Russsian: Abu Adel",
+    "languageId": 11,
+    "key": "russian_aboadel"
+  },
+  {
+    "id": 12,
+    "name": "Somali: Abdullah Hasan Yaqoub",
+    "languageId": 12,
+    "key": "somali_yacob"
+  },
+  {
+    "id": 13,
+    "name": "Spanish: Isa Garcia",
+    "languageId": 13,
+    "key": "spanish_garcia"
+  },
+  {
+    "id": 14,
+    "name": "Swahili: Ali Muhsin Al-Barwani ",
+    "languageId": 14,
+    "key": "swahili_barawani"
+  },
+  {
+    "id": 15,
+    "name": "Tamil: Omar Sharif",
+    "languageId": 15,
+    "key": "tamil_omar"
+  },
+  {
+    "id": 16,
+    "name": "Urdu: Muhammad Junagarhi ",
+    "languageId": 16,
+    "key": "urdu_junagarhi"
+  }
+]

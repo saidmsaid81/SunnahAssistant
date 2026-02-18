@@ -7,14 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 
 open class SunnahAssistantFragment : Fragment() {
-    protected lateinit var mViewModel: SunnahAssistantViewModel
+    val mainActivityViewModel by activityViewModels<SunnahAssistantViewModel>()
 
     @CallSuper
     override fun onCreateView(
@@ -22,7 +22,6 @@ open class SunnahAssistantFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -56,7 +55,7 @@ open class SunnahAssistantFragment : Fragment() {
 
     }
 
-    protected fun handleEdgeToEdge() {
+    protected open fun handleEdgeToEdge() {
         val actionBarHeight = getActionBarSize()
         val bottomNavigationView =
             (requireActivity() as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation_view)

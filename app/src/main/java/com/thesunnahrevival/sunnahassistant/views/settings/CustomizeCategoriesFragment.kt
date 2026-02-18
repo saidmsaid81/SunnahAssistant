@@ -29,8 +29,8 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
             inflater, R.layout.fragment_customize_categories, container, false
         )
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
-            mViewModel.settingsValue = it
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
+            mainActivityViewModel.settingsValue = it
             mBinding.settings = it
             if (it != null) {
                 mBinding.categoriesList.adapter = it.categories?.let { categories ->
@@ -65,8 +65,8 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
             deleteInfo = getString(R.string.confirm_delete_category, category)
             categoriesList.remove(category)
             deletedCategories.add(category)
-            mViewModel.settingsValue?.categories = categoriesList
-            mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+            mainActivityViewModel.settingsValue?.categories = categoriesList
+            mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
         } else
             deleteInfo = getString(R.string.category_cannot_be_deleted, category)
 
@@ -82,8 +82,8 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
             snackBar.setAction(R.string.undo_delete) {
                 categoriesList.add(category)
                 deletedCategories.remove(category)
-                mViewModel.settingsValue?.categories = categoriesList
-                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                mainActivityViewModel.settingsValue?.categories = categoriesList
+                mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
             }
 
         snackBar.show()
@@ -92,6 +92,6 @@ class CustomizeCategoriesFragment : SunnahAssistantFragment(),
 
     override fun onPause() {
         super.onPause()
-        mViewModel.updatedDeletedCategories(deletedCategories)
+        mainActivityViewModel.updatedDeletedCategories(deletedCategories)
     }
 }

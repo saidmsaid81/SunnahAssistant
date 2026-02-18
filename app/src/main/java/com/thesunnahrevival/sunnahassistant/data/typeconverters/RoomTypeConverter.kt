@@ -4,9 +4,8 @@ import android.net.Uri
 import androidx.room.TypeConverter
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import java.util.Date
-import java.util.TreeSet
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import java.util.*
 
 class RoomTypeConverter {
     @TypeConverter
