@@ -10,6 +10,8 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.thesunnahrevival.sunnahassistant.utilities.FIREBASE_NOTIFICATION_ID
 import com.thesunnahrevival.sunnahassistant.utilities.createNotification
+import com.thesunnahrevival.sunnahassistant.utilities.getDeveloperMessagesNotificationChannel
+import com.thesunnahrevival.sunnahassistant.utilities.getMainActivityPendingIntent
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 
 class SAFirebaseMessagingService : FirebaseMessagingService() {
@@ -17,31 +19,23 @@ class SAFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage.notification?.let {
             val notification = createNotification(
-                applicationContext,
-                null,
-                it.title,
-                it.body,
-                NotificationCompat.PRIORITY_DEFAULT,
-                null,
-                isVibrate = false,
-                isFCMMessage = true
+                context = applicationContext,
+                channel = getDeveloperMessagesNotificationChannel(applicationContext),
+                title = it.title,
+                text = it.body
             )
 
             // Check if message contains a data payload.
             if (remoteMessage.data.isNotEmpty() && remoteMessage.data["link"] != null) {
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.putExtra("link", remoteMessage.data["link"])
-                val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    PendingIntent.FLAG_IMMUTABLE
-                } else {
-                    0
-                }
+                val flag = PendingIntent.FLAG_IMMUTABLE
                 val activity =
                     PendingIntent.getActivity(applicationContext, 0, intent, flag)
                 notification.contentIntent = activity
             }
             val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.notify(FIREBASE_NOTIFICATION_ID, notification)
         }
 

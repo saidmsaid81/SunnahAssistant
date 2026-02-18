@@ -1,0 +1,1864 @@
+[
+  {
+    "_id": 134,
+    "chapter_id": 1,
+    "language": "ar",
+    "chapter_name": "أَذْكَارُ الاسْـتِيقَاظِ مِنَ النَّـومِ",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 135,
+    "chapter_id": 2,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ لُبْسِ الثَّـــوْبِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 136,
+    "chapter_id": 3,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ لُبْسِ الثَّوْبِ الجَــدِيدِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 137,
+    "chapter_id": 4,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ لِمَنْ لَبِسَ ثـَوْباً جَـدِيداً",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 138,
+    "chapter_id": 5,
+    "language": "ar",
+    "chapter_name": "مَا يَقُــولُ إِذَا وَضَــعَ ثـــَـوْبَهُ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 139,
+    "chapter_id": 6,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ دُخُـولِ الْخَــلاءِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 140,
+    "chapter_id": 7,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ الْخُـرُوجِ مِنَ الْخَـلاَءِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 141,
+    "chapter_id": 8,
+    "language": "ar",
+    "chapter_name": "الذِّكْرُ قَبْـلَ الْوُضُـوءِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 142,
+    "chapter_id": 9,
+    "language": "ar",
+    "chapter_name": "الذِّكْرُ بَعْدَ الْفَــرَاغِ مِنَ الْوُضُوءِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 143,
+    "chapter_id": 10,
+    "language": "ar",
+    "chapter_name": "الذِّكْرُ عِنْدَ الْخُرُوجِ مِنَ الْمَنْزِلِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 144,
+    "chapter_id": 11,
+    "language": "ar",
+    "chapter_name": "الذِّكْرُ عِنْـدَ دُخُـولِ الـمَنْــزِلِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 145,
+    "chapter_id": 12,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الذَّهَابِ إِلَى الْـمَسْــجِدِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 146,
+    "chapter_id": 13,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ دُخُولِ المَسْجِدِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 147,
+    "chapter_id": 14,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ الْخُرُوجِ مِنَ الْـمَسْـجِدِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 148,
+    "chapter_id": 15,
+    "language": "ar",
+    "chapter_name": "أَذكَارُ الأَذَانِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 149,
+    "chapter_id": 16,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الاسْـتِفْتَاحِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 150,
+    "chapter_id": 17,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الرُّكُــوعِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 151,
+    "chapter_id": 18,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الرَّفْــعِ مِنَ الرُّكُــوعِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 152,
+    "chapter_id": 19,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ السُّــجُودِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 153,
+    "chapter_id": 20,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الْجلْسَةِ بَيْنَ السَّجْدَتَيْنِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 154,
+    "chapter_id": 21,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ سُـجُودِ التِّـلاَوَةِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 155,
+    "chapter_id": 22,
+    "language": "ar",
+    "chapter_name": "التَّشَـــهُّدُ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 156,
+    "chapter_id": 23,
+    "language": "ar",
+    "chapter_name": "الصَّلاةُ عَلَى النَّبيِّ صلى الله عليه وسلم بَعْدَ التَّشَهُّدِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 157,
+    "chapter_id": 24,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ بَعْدَ التَّشَهُّدِ الأَخِيرِ قَبْلَ السَّلاَمِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 158,
+    "chapter_id": 25,
+    "language": "ar",
+    "chapter_name": "الأَذْكَارُ بَعْــدَ السَّــلاَمِ مِنَ الصَّــلاَةِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 159,
+    "chapter_id": 26,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ صَـلاَةِ الاسْتِــخَارَةِ",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 160,
+    "chapter_id": 27,
+    "language": "ar",
+    "chapter_name": "أَذْكَارُ الصَّـبَاحِ ",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 161,
+    "chapter_id": 28,
+    "language": "ar",
+    "chapter_name": "أَذْكَارُ الْمَسَــاءِ",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 162,
+    "chapter_id": 29,
+    "language": "ar",
+    "chapter_name": "أَذْكَارُ النَّــوْمِ",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 163,
+    "chapter_id": 30,
+    "language": "ar",
+    "chapter_name": "الدُّعَـاءُ إِذَا تَقَـلَّبَ لَيْــلاً",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 164,
+    "chapter_id": 31,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ الْفَزَعِ فِي النَّوْمِ وَمَنْ بُلِيَ بِالْوِحْشَةِ",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 165,
+    "chapter_id": 32,
+    "language": "ar",
+    "chapter_name": "مَا يَفْعَلُ مَنْ رَأَى الرُّؤْيَا أَوِ الْحُلْمَ",
+    "category_name": "اليوم و الليلة"
+  },
+  {
+    "_id": 166,
+    "chapter_id": 33,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ قُنُـوتِ الْوِتْـرِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 167,
+    "chapter_id": 34,
+    "language": "ar",
+    "chapter_name": "الذِّكْرُ عَقِــبَ السَّـلاَمِ مِنَ الْوِتْرِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 168,
+    "chapter_id": 35,
+    "language": "ar",
+    "chapter_name": "دُعَـــاءُ الْهَــمِّ وَالْحُــزْنِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 169,
+    "chapter_id": 36,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الْكَـــرْبِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 170,
+    "chapter_id": 37,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ لِقَاءِ الْعَدُوِّ وَذِي السُّــلْطَانِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 171,
+    "chapter_id": 38,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ مَنْ خَافَ ظُلْمَ السُّـلْطَانِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 172,
+    "chapter_id": 39,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ عَـلَى الْعَـــدُوِّ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 173,
+    "chapter_id": 40,
+    "language": "ar",
+    "chapter_name": "مَــا يَقُـولُ مَـنْ خَــافَ قَوْماً",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 174,
+    "chapter_id": 41,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ مَنْ أَصَابَهُ وَسْوَسَةٌ فِي الإِيمَانِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 175,
+    "chapter_id": 42,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ قَضَــاءِ الدَّيْــنِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 176,
+    "chapter_id": 43,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ الوَسْوَسَةِ فِي الصَّلاَةِ وَالْقِرَاءَةِ",
+    "category_name": "الوضوء و الصلاة"
+  },
+  {
+    "_id": 177,
+    "chapter_id": 44,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ مَنِ اسْتَصْعَبَ عَلَيْهِ أَمْرٌ",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 178,
+    "chapter_id": 45,
+    "language": "ar",
+    "chapter_name": "مَا يَقُولُ وَيَفْعَلُ مَنْ أَذْنَبَ ذَنْباً",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 179,
+    "chapter_id": 46,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ طَرْدِ الشَّيطَانِ وَوَسَاوِسِهِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 180,
+    "chapter_id": 47,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ حِينَمَا يَقَعُ مَا لاَ يَرْضَاهُ أَوْ غُلِبَ عَلَى أَمْرِهِ",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 181,
+    "chapter_id": 48,
+    "language": "ar",
+    "chapter_name": "تَهْنِـئَةُ الـمَــوْلُودِ لَهُ وَجَوَابُهُ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 182,
+    "chapter_id": 49,
+    "language": "ar",
+    "chapter_name": "مَــا يُعــوَّذُ بِــهِ الأَوْلاَدُ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 183,
+    "chapter_id": 50,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ لِلْمَـرِيضِ فِي عِيَادَتِهِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 184,
+    "chapter_id": 51,
+    "language": "ar",
+    "chapter_name": "فَضْـلُ عِيَــادَةِ الـمَــرِيضِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 185,
+    "chapter_id": 52,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ المَرِيضِ الَّذِي يَئِسَ مِنْ حَيَاتِهِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 186,
+    "chapter_id": 53,
+    "language": "ar",
+    "chapter_name": "تَلْقِــينُ الـمُحْتــَضَرِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 187,
+    "chapter_id": 54,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ مَن أُصِيبَ بِمُصِيـبَةٍ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 188,
+    "chapter_id": 55,
+    "language": "ar",
+    "chapter_name": "الدُّعَـاءُ عِنْــدَ إِغْمَــاضِ الـمَيِّــتِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 189,
+    "chapter_id": 56,
+    "language": "ar",
+    "chapter_name": "الدُّعَـاءُ لِلمَيِّتِ فِي الصَّلاَةِ عَلَيْهِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 190,
+    "chapter_id": 57,
+    "language": "ar",
+    "chapter_name": "الدُّعَـاءُ لِلْفَرَطِ فِي الصَّلاَةِ عَلَيْهِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 191,
+    "chapter_id": 58,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ التَّعْـزِيَةِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 192,
+    "chapter_id": 59,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ عِنْدَ إِدْخَالِ الـميِّـتِ الْقَبْرَ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 193,
+    "chapter_id": 60,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ بَعْـدَ دَفْنِ الـمَيِّــتِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 194,
+    "chapter_id": 61,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ زِيَـارَةِ الْقُــبُورِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 195,
+    "chapter_id": 62,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الرِّيــحِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 196,
+    "chapter_id": 63,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الرَّعْـدِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 197,
+    "chapter_id": 64,
+    "language": "ar",
+    "chapter_name": "مِــنْ أَدْعِيَـةِ الاسْــتِسْقَاءِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 198,
+    "chapter_id": 65,
+    "language": "ar",
+    "chapter_name": "الــدُّعَاءُ إِذَا رَأَى الْـمَطَــرَ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 199,
+    "chapter_id": 66,
+    "language": "ar",
+    "chapter_name": "الذِّكْرُ بَعْـدَ نُزُولِ الْـمَطَــرِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 200,
+    "chapter_id": 67,
+    "language": "ar",
+    "chapter_name": "مِــنْ أَدْعِيَــةِ الاسْـتِصْحَاءِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 201,
+    "chapter_id": 68,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ رُؤيَــةِ الهِــلاَلِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 202,
+    "chapter_id": 69,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ عِنْدَ إِفْطَـارِ الصَّـائِمِ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 203,
+    "chapter_id": 70,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ قَبْـلَ الطَّــعَامِ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 204,
+    "chapter_id": 71,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ عِنْدَ الْفَـرَاغِ مِنَ الطَّــعَامِ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 205,
+    "chapter_id": 72,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الضَّيْفِ لِصَـاحِبِ الطَّعَامِ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 206,
+    "chapter_id": 73,
+    "language": "ar",
+    "chapter_name": "التَّعْرِيضُ بِالدُّعَاءُ لِطَلَبِ الطَّعَامِ أَوِ الشَّرَابِ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 207,
+    "chapter_id": 74,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ إِذَا أَفْطَرَ عِنْدَ أَهْــلِ بَيْتٍ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 208,
+    "chapter_id": 75,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ الصَّائِمِ إِذَا حَضَرَ الطَّعَامُ وَلَمْ يُفْطِرْ",
+    "category_name": "الطعام و الشراب"
+  },
+  {
+    "_id": 209,
+    "chapter_id": 76,
+    "language": "ar",
+    "chapter_name": "مَا يَقُولُ الصَّــائِمُ إِذَا سَــابَّهُ أَحَدٌ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 210,
+    "chapter_id": 77,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ عِنْــدَ رُؤْيَــةِ بَاكُورَةِ الثَّــمَرِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 211,
+    "chapter_id": 78,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الْعُــطَاسِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 212,
+    "chapter_id": 79,
+    "language": "ar",
+    "chapter_name": "مَا يُقَالُ لِلْكَافِرِ إِذَا عَطَسَ فَحَمِدَ اللهَ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 213,
+    "chapter_id": 80,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ لِلْمُتَــزَوِّجِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 214,
+    "chapter_id": 81,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الـمُــتَزَوِّجِ وَشِــرَاءِ الدَّابَّةِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 215,
+    "chapter_id": 82,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ قَبْلَ إِتْيَانِ الزَّوْجَةِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 216,
+    "chapter_id": 83,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الغَـضَبِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 217,
+    "chapter_id": 84,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ مَنْ رَأَى مُبْتَلَىً",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 218,
+    "chapter_id": 85,
+    "language": "ar",
+    "chapter_name": "مَــا يُقَــالُ فِي المَجْلِسِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 219,
+    "chapter_id": 86,
+    "language": "ar",
+    "chapter_name": "كَفَّــارَةُ الـمَــجْلِسِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 220,
+    "chapter_id": 87,
+    "language": "ar",
+    "chapter_name": "الدُّعَـاءُ لِمَنْ قَالَ غَفَــرَ اللهُ لَكَ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 221,
+    "chapter_id": 88,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ لِمَنْ صَنَعَ إِلَيْكَ مَعْرُوفاً",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 222,
+    "chapter_id": 89,
+    "language": "ar",
+    "chapter_name": "مَا يَعْصِمُ اللَّهُ بِهِ مِنَ الدَّجَّالِ",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 223,
+    "chapter_id": 90,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ لِمَنْ قَالَ إِنِّي أُحِبُّكَ فِي اللَّهِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 224,
+    "chapter_id": 91,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ لِمَنْ عَرَضَ عَلَيْكَ مَالَهُ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 225,
+    "chapter_id": 92,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ لِمَنْ أَقْرَضَ عِنْدَ القَضَاءِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 226,
+    "chapter_id": 93,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الْخَــوْفِ مِــنَ الشِّــرْكِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 227,
+    "chapter_id": 94,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ لِمَنْ قَالَ بَارَكَ اللَّهُ فِيكَ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 228,
+    "chapter_id": 95,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ كَرَاهِيَــةِ الطِّيـــَرَةِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 229,
+    "chapter_id": 96,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الرُّكُـوبِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 230,
+    "chapter_id": 97,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ السَّـفَرِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 231,
+    "chapter_id": 98,
+    "language": "ar",
+    "chapter_name": "دُعــاءُ دُخُـولِ القريَةِ أَوِ البَلْدَةِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 232,
+    "chapter_id": 99,
+    "language": "ar",
+    "chapter_name": "دُعـاءُ دُخُـولِ السُّـوقِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 233,
+    "chapter_id": 100,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ إِذَا تَعِــسَ الـمَــرْكُوبُ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 234,
+    "chapter_id": 101,
+    "language": "ar",
+    "chapter_name": "دُعَــاءُ الـمُسَـافِرِ لِلْمُقــيمِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 235,
+    "chapter_id": 102,
+    "language": "ar",
+    "chapter_name": "دُعَـاءُ الـمُقِـيمِ لِلْمُسَـافِرِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 236,
+    "chapter_id": 103,
+    "language": "ar",
+    "chapter_name": "التَّكبيرُ والتَّسبِيحُ في سَيْرِ السَّفَرِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 237,
+    "chapter_id": 104,
+    "language": "ar",
+    "chapter_name": "دُعاءُ الـمُسَـافِرِ إِذَا أَسْحَــرَ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 238,
+    "chapter_id": 105,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ إِذَا نَزَلَ مَنْزِلاً فِي سَفَرٍ أَوْ غَيْرِهِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 239,
+    "chapter_id": 106,
+    "language": "ar",
+    "chapter_name": "ذِكْــرُ الرُّجُـوعِ مِــنَ السَّــفَرِ",
+    "category_name": "التنقل و السفر"
+  },
+  {
+    "_id": 240,
+    "chapter_id": 107,
+    "language": "ar",
+    "chapter_name": "مَا يَقُولُ مَنْ أَتَاهُ أَمْرٌ يَسُرُّهُ أَوْ يَكْرَهُهُ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 241,
+    "chapter_id": 108,
+    "language": "ar",
+    "chapter_name": "فَضْــلُ الصَّــلاَةِ عَــلَى النَّبيِّ صلى الله عليه وسلم",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 242,
+    "chapter_id": 109,
+    "language": "ar",
+    "chapter_name": "إِفْشَـاءُ السَّـلاَمِ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 243,
+    "chapter_id": 110,
+    "language": "ar",
+    "chapter_name": "ـ  كَيْفَ يَرُدُّ السَّلاَمَ عَلَى الْكَافِرِ إِذَا سَلَّمَ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 244,
+    "chapter_id": 111,
+    "language": "ar",
+    "chapter_name": "الدُّعاءُ عِنْدَ سَمَاعِ صِياحِ الدِّيكِ ونَهِيقِ الْحِمَارِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 245,
+    "chapter_id": 112,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ عِنْدَ سَمَاعِ نُبَاحِ الْكِلاَبِ بِاللَّيْلِ",
+    "category_name": "الطبيعة"
+  },
+  {
+    "_id": 246,
+    "chapter_id": 113,
+    "language": "ar",
+    "chapter_name": "الدُّعَــاءُ لِمَــنْ سَـبَبْتَهُ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 247,
+    "chapter_id": 114,
+    "language": "ar",
+    "chapter_name": "مَا يَقُولُ المُسْلِمُ إِذَا مَدَحَ المُسْلِمَ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 248,
+    "chapter_id": 115,
+    "language": "ar",
+    "chapter_name": "مَــا يَقُـولُ الـمُسْــلِمُ إِذَا زُكِّيَ",
+    "category_name": "الآداب و التعامل"
+  },
+  {
+    "_id": 249,
+    "chapter_id": 116,
+    "language": "ar",
+    "chapter_name": "ـ  كَيْفَ يُلَبِّي المُحْرِمُ فِي الْحَجِّ أَوِ الْعُمْرَةِ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 250,
+    "chapter_id": 117,
+    "language": "ar",
+    "chapter_name": "التَّكْبــِيرُ إِذَا أَتَى الْحَجَرَ الأَسْوَدَ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 251,
+    "chapter_id": 118,
+    "language": "ar",
+    "chapter_name": "الدُّعَاءُ بَيْنَ الرُّكْنِ الْيَمَانِيِّ وَالْحَجَرِ الأَسْوَدِ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 252,
+    "chapter_id": 119,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ الْوُقُوفِ عَلَى الصَّفَا وَالمَرْوَةِ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 253,
+    "chapter_id": 120,
+    "language": "ar",
+    "chapter_name": "الدُّعَـاءُ يَــوْمَ عَـرَفَةَ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 254,
+    "chapter_id": 121,
+    "language": "ar",
+    "chapter_name": "الذِّكْـرُ عِنْــدَ الـمَشْـعَرِ الْحَرَامِ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 255,
+    "chapter_id": 122,
+    "language": "ar",
+    "chapter_name": "التَّكْبِيرُ عِنْدَ رَمْي ِ الْجِمَارِ مَعَ كُلِّ حَصَاةٍ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 256,
+    "chapter_id": 123,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ التَّعَــجُّبِ وَالأَمْرِ السَّــارِّ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 257,
+    "chapter_id": 124,
+    "language": "ar",
+    "chapter_name": "مَا يَفْـعَلُ مَنْ أَتَاهُ أَمْرٌ يَسُـرُّهُ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 258,
+    "chapter_id": 125,
+    "language": "ar",
+    "chapter_name": "مَا يَفْعَلُ وَيَقُولُ مَنْ أَحَسَّ وَجَعاً فِي جَسَدِهِ",
+    "category_name": "المرض و الجنائز"
+  },
+  {
+    "_id": 259,
+    "chapter_id": 126,
+    "language": "ar",
+    "chapter_name": "دُعَاءُ مَنْ خَشِيَ أَنْ يُصِيبَ شَيْئاً بِعَيْنِهِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 260,
+    "chapter_id": 127,
+    "language": "ar",
+    "chapter_name": "مَا يُقَـالُ عِنْــدَ الْفَــزَعِ",
+    "category_name": "الفرح و الخوف"
+  },
+  {
+    "_id": 261,
+    "chapter_id": 128,
+    "language": "ar",
+    "chapter_name": "مَا يَقُولُ عِنْدَ الذَّبْحِ أَوِ النَّحْرِ",
+    "category_name": "الحج و العمرة"
+  },
+  {
+    "_id": 262,
+    "chapter_id": 129,
+    "language": "ar",
+    "chapter_name": "مَا يَقُولُ لِرَدِّ كَيْدِ مَرَدَةِ الشَّيَاطِينِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 263,
+    "chapter_id": 130,
+    "language": "ar",
+    "chapter_name": "الاسـتِغْفَارُ والتَّـوبَةُ",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 264,
+    "chapter_id": 131,
+    "language": "ar",
+    "chapter_name": "فَضْلُ التَّسْبِيحِ وَالتَّحْمِيدِ، وَالتَّهْلِيلِ، وَالتَّكْبِيرِ",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 265,
+    "chapter_id": 132,
+    "language": "ar",
+    "chapter_name": "كَيْفَ كَانَ النَّبيُّ صلى الله عليه وسلم يُسَبِّحُ؟",
+    "category_name": "التسابيح"
+  },
+  {
+    "_id": 266,
+    "chapter_id": 133,
+    "language": "ar",
+    "chapter_name": "مِنْ أَنْوَاعِ الْخَيْرِ وَالآدَابِ الْجَامِعَةِ",
+    "category_name": "البيت و الأهل"
+  },
+  {
+    "_id": 267,
+    "chapter_id": 1,
+    "language": "en",
+    "chapter_name": "When waking up",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 268,
+    "chapter_id": 2,
+    "language": "en",
+    "chapter_name": "When wearing a garment",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 269,
+    "chapter_id": 3,
+    "language": "en",
+    "chapter_name": "When wearing a new garment",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 270,
+    "chapter_id": 4,
+    "language": "en",
+    "chapter_name": "To someone wearing a new garment",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 271,
+    "chapter_id": 5,
+    "language": "en",
+    "chapter_name": "Before undressing",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 272,
+    "chapter_id": 6,
+    "language": "en",
+    "chapter_name": "Before entering the toilet",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 273,
+    "chapter_id": 7,
+    "language": "en",
+    "chapter_name": "After leaving the toilet",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 274,
+    "chapter_id": 8,
+    "language": "en",
+    "chapter_name": "When starting ablution",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 275,
+    "chapter_id": 9,
+    "language": "en",
+    "chapter_name": "Upon completing the ablution",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 276,
+    "chapter_id": 10,
+    "language": "en",
+    "chapter_name": "Upon leaving the home",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 277,
+    "chapter_id": 11,
+    "language": "en",
+    "chapter_name": "When entering the home",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 278,
+    "chapter_id": 12,
+    "language": "en",
+    "chapter_name": "When going to the mosque",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 279,
+    "chapter_id": 13,
+    "language": "en",
+    "chapter_name": "Upon entering the mosque",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 280,
+    "chapter_id": 14,
+    "language": "en",
+    "chapter_name": "Upon leaving the mosque",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 281,
+    "chapter_id": 15,
+    "language": "en",
+    "chapter_name": "Upon hearing the athan",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 282,
+    "chapter_id": 16,
+    "language": "en",
+    "chapter_name": "Supplication at the start of the prayer",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 283,
+    "chapter_id": 17,
+    "language": "en",
+    "chapter_name": "While rukoo",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 284,
+    "chapter_id": 18,
+    "language": "en",
+    "chapter_name": "Upon rising from the rukoo",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 285,
+    "chapter_id": 19,
+    "language": "en",
+    "chapter_name": "While sujood",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 286,
+    "chapter_id": 20,
+    "language": "en",
+    "chapter_name": "Sitting between the two sujood",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 287,
+    "chapter_id": 21,
+    "language": "en",
+    "chapter_name": "When sujood due to recitation of the Quran",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 288,
+    "chapter_id": 22,
+    "language": "en",
+    "chapter_name": "The tashahhud",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 289,
+    "chapter_id": 23,
+    "language": "en",
+    "chapter_name": "Prayers upon the Prophet saw after the tashahhud",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 290,
+    "chapter_id": 24,
+    "language": "en",
+    "chapter_name": "After the final tashahhud and before salam",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 291,
+    "chapter_id": 25,
+    "language": "en",
+    "chapter_name": "Remembrance after salam",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 292,
+    "chapter_id": 26,
+    "language": "en",
+    "chapter_name": "For seeking guidance in forming a decision",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 293,
+    "chapter_id": 27,
+    "language": "en",
+    "chapter_name": "Remembrance In the morning",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 294,
+    "chapter_id": 28,
+    "language": "en",
+    "chapter_name": "Remembrance In the evening",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 295,
+    "chapter_id": 29,
+    "language": "en",
+    "chapter_name": "Before sleeping",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 296,
+    "chapter_id": 30,
+    "language": "en",
+    "chapter_name": "When turning over during the night",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 297,
+    "chapter_id": 31,
+    "language": "en",
+    "chapter_name": "Upon experience unrest, fear, apprehensiveness during sleep",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 298,
+    "chapter_id": 32,
+    "language": "en",
+    "chapter_name": "Upon seeing a good or bad dream",
+    "category_name": "Morning & Evening"
+  },
+  {
+    "_id": 299,
+    "chapter_id": 33,
+    "language": "en",
+    "chapter_name": "Qunoot in the Witr prayer",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 300,
+    "chapter_id": 34,
+    "language": "en",
+    "chapter_name": "Immediately after salam of the Witr prayer",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 301,
+    "chapter_id": 35,
+    "language": "en",
+    "chapter_name": "For anxiety and sorrow",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 302,
+    "chapter_id": 36,
+    "language": "en",
+    "chapter_name": "For one in distress",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 303,
+    "chapter_id": 37,
+    "language": "en",
+    "chapter_name": "Upon encountering an enemy or those of authority",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 304,
+    "chapter_id": 38,
+    "language": "en",
+    "chapter_name": "Invocation against the oppression of rulers",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 305,
+    "chapter_id": 39,
+    "language": "en",
+    "chapter_name": "Against enemies",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 306,
+    "chapter_id": 40,
+    "language": "en",
+    "chapter_name": "When being afraid of a group of people",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 307,
+    "chapter_id": 41,
+    "language": "en",
+    "chapter_name": "For one afflicted with doubt in his faith",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 308,
+    "chapter_id": 42,
+    "language": "en",
+    "chapter_name": "Settling a debt",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 309,
+    "chapter_id": 43,
+    "language": "en",
+    "chapter_name": "For one afflicted by whisperings in prayer or recitation",
+    "category_name": "Prayer"
+  },
+  {
+    "_id": 310,
+    "chapter_id": 44,
+    "language": "en",
+    "chapter_name": "For one whos affairs have become difficult",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 311,
+    "chapter_id": 45,
+    "language": "en",
+    "chapter_name": "Upon committing a sin",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 312,
+    "chapter_id": 46,
+    "language": "en",
+    "chapter_name": "For expelling the devil and his whisperings",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 313,
+    "chapter_id": 47,
+    "language": "en",
+    "chapter_name": "When stricken with a mishap or overtaken by an affair",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 314,
+    "chapter_id": 48,
+    "language": "en",
+    "chapter_name": "Congratulation on the occasion of a birth",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 315,
+    "chapter_id": 49,
+    "language": "en",
+    "chapter_name": "Placing children under Allah's protection",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 316,
+    "chapter_id": 50,
+    "language": "en",
+    "chapter_name": "When visiting the sick",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 317,
+    "chapter_id": 51,
+    "language": "en",
+    "chapter_name": "Excellence of visiting the sick",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 318,
+    "chapter_id": 52,
+    "language": "en",
+    "chapter_name": "When the sick have renounced all hope of life",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 319,
+    "chapter_id": 53,
+    "language": "en",
+    "chapter_name": "Instruction for the one nearing death",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 320,
+    "chapter_id": 54,
+    "language": "en",
+    "chapter_name": "For one afflicted by a calamity",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 321,
+    "chapter_id": 55,
+    "language": "en",
+    "chapter_name": "When closing the eyes of the deceased",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 322,
+    "chapter_id": 56,
+    "language": "en",
+    "chapter_name": "For the deceased at the funeral prayer",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 323,
+    "chapter_id": 57,
+    "language": "en",
+    "chapter_name": "For the deceased is a child, during the funeral prayer",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 324,
+    "chapter_id": 58,
+    "language": "en",
+    "chapter_name": "Condolence",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 325,
+    "chapter_id": 59,
+    "language": "en",
+    "chapter_name": "Placing the deceased in the grave",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 326,
+    "chapter_id": 60,
+    "language": "en",
+    "chapter_name": "After burying the deceased",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 327,
+    "chapter_id": 61,
+    "language": "en",
+    "chapter_name": "Visiting the graves",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 328,
+    "chapter_id": 62,
+    "language": "en",
+    "chapter_name": "During a wind storm",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 329,
+    "chapter_id": 63,
+    "language": "en",
+    "chapter_name": "Upon hearing thunder",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 330,
+    "chapter_id": 64,
+    "language": "en",
+    "chapter_name": "For rain",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 331,
+    "chapter_id": 65,
+    "language": "en",
+    "chapter_name": "When it rains",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 332,
+    "chapter_id": 66,
+    "language": "en",
+    "chapter_name": "After rainfall",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 333,
+    "chapter_id": 67,
+    "language": "en",
+    "chapter_name": "Asking for clear skies",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 334,
+    "chapter_id": 68,
+    "language": "en",
+    "chapter_name": "Upon sighting the crescent moon",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 335,
+    "chapter_id": 69,
+    "language": "en",
+    "chapter_name": "Upon breaking fast",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 336,
+    "chapter_id": 70,
+    "language": "en",
+    "chapter_name": "Before eating",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 337,
+    "chapter_id": 71,
+    "language": "en",
+    "chapter_name": "Upon completing the meal",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 338,
+    "chapter_id": 72,
+    "language": "en",
+    "chapter_name": "Of the guest for the host",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 339,
+    "chapter_id": 73,
+    "language": "en",
+    "chapter_name": "To one offering a drink or to one who intended to do that",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 340,
+    "chapter_id": 74,
+    "language": "en",
+    "chapter_name": "When breaking fast in someone’s home",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 341,
+    "chapter_id": 75,
+    "language": "en",
+    "chapter_name": "By one fasting when presented with food and does not break his fast",
+    "category_name": "Food & Drink"
+  },
+  {
+    "_id": 342,
+    "chapter_id": 76,
+    "language": "en",
+    "chapter_name": "When insulted while fasting",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 343,
+    "chapter_id": 77,
+    "language": "en",
+    "chapter_name": "Upon seeing the early or premature fruit",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 344,
+    "chapter_id": 78,
+    "language": "en",
+    "chapter_name": "Upon sneezing",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 345,
+    "chapter_id": 79,
+    "language": "en",
+    "chapter_name": "When a misbeliever praise Allah after sneezing",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 346,
+    "chapter_id": 80,
+    "language": "en",
+    "chapter_name": "To the newlywed",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 347,
+    "chapter_id": 81,
+    "language": "en",
+    "chapter_name": "On the wedding night or when buying an animal",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 348,
+    "chapter_id": 82,
+    "language": "en",
+    "chapter_name": "Before sexual intercourse",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 349,
+    "chapter_id": 83,
+    "language": "en",
+    "chapter_name": "When angry",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 350,
+    "chapter_id": 84,
+    "language": "en",
+    "chapter_name": "Upon seeing someone in trial or tribulation",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 351,
+    "chapter_id": 85,
+    "language": "en",
+    "chapter_name": "At a sitting or gathering",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 352,
+    "chapter_id": 86,
+    "language": "en",
+    "chapter_name": "For the expiation of sins, said at the conclusion of a sitting or gathering",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 353,
+    "chapter_id": 87,
+    "language": "en",
+    "chapter_name": "Returning a supplication of forgiveness",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 354,
+    "chapter_id": 88,
+    "language": "en",
+    "chapter_name": "To one who does you a favour",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 355,
+    "chapter_id": 89,
+    "language": "en",
+    "chapter_name": "Protection from the Dajjal",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 356,
+    "chapter_id": 90,
+    "language": "en",
+    "chapter_name": "To one who pronounces his love for you, for Allah’s sake",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 357,
+    "chapter_id": 91,
+    "language": "en",
+    "chapter_name": "To one who has offered you some of his wealth",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 358,
+    "chapter_id": 92,
+    "language": "en",
+    "chapter_name": "To the debtor when his debt is settled",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 359,
+    "chapter_id": 93,
+    "language": "en",
+    "chapter_name": "For fear of shirk",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 360,
+    "chapter_id": 94,
+    "language": "en",
+    "chapter_name": "Returning a supplication after having bestowed a gift or charity upon someone",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 361,
+    "chapter_id": 95,
+    "language": "en",
+    "chapter_name": "Forbiddance of ascribing things to omens",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 362,
+    "chapter_id": 96,
+    "language": "en",
+    "chapter_name": "When mounting an animal or any means of transport",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 363,
+    "chapter_id": 97,
+    "language": "en",
+    "chapter_name": "For travel",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 364,
+    "chapter_id": 98,
+    "language": "en",
+    "chapter_name": "Upon entering a town or village",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 365,
+    "chapter_id": 99,
+    "language": "en",
+    "chapter_name": "When entering the market",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 366,
+    "chapter_id": 100,
+    "language": "en",
+    "chapter_name": "When the mounted animal (or mean of transport) stumbles",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 367,
+    "chapter_id": 101,
+    "language": "en",
+    "chapter_name": "Supplication of the traveller for the resident",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 368,
+    "chapter_id": 102,
+    "language": "en",
+    "chapter_name": "Supplication of the resident for the traveller",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 369,
+    "chapter_id": 103,
+    "language": "en",
+    "chapter_name": "Remembrance while ascending or descending",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 370,
+    "chapter_id": 104,
+    "language": "en",
+    "chapter_name": "Prayer of the traveller as dawn approaches",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 371,
+    "chapter_id": 105,
+    "language": "en",
+    "chapter_name": "Stopping or lodging somewhere",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 372,
+    "chapter_id": 106,
+    "language": "en",
+    "chapter_name": "While returning from travel",
+    "category_name": "Travel"
+  },
+  {
+    "_id": 373,
+    "chapter_id": 107,
+    "language": "en",
+    "chapter_name": "What to say upon receiving pleasing or displeasing news",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 374,
+    "chapter_id": 108,
+    "language": "en",
+    "chapter_name": "Excellence of sending prayers upon the Prophet saws",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 375,
+    "chapter_id": 109,
+    "language": "en",
+    "chapter_name": "Excellence of spreading the Islamic greeting",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 376,
+    "chapter_id": 110,
+    "language": "en",
+    "chapter_name": "Returning a greeting to a misbeliever",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 377,
+    "chapter_id": 111,
+    "language": "en",
+    "chapter_name": "Upon hearing a rooster crow or the braying of an ass",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 378,
+    "chapter_id": 112,
+    "language": "en",
+    "chapter_name": "Upon hearing the barking of dogs at night",
+    "category_name": "Nature"
+  },
+  {
+    "_id": 379,
+    "chapter_id": 113,
+    "language": "en",
+    "chapter_name": "For one you have insulted",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 380,
+    "chapter_id": 114,
+    "language": "en",
+    "chapter_name": "The etiquette of praising a fellow Muslim",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 381,
+    "chapter_id": 115,
+    "language": "en",
+    "chapter_name": "For the one that have been praised",
+    "category_name": "Good Etiquette"
+  },
+  {
+    "_id": 382,
+    "chapter_id": 116,
+    "language": "en",
+    "chapter_name": "The Talbiya for the one doing Haj or Umrah",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 383,
+    "chapter_id": 117,
+    "language": "en",
+    "chapter_name": "The Takbeer passing the black stone",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 384,
+    "chapter_id": 118,
+    "language": "en",
+    "chapter_name": "Between the Yemeni corner and the black stone",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 385,
+    "chapter_id": 119,
+    "language": "en",
+    "chapter_name": "When at Mount Safa and Mount Marwah",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 386,
+    "chapter_id": 120,
+    "language": "en",
+    "chapter_name": "The Day of 'Arafah",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 387,
+    "chapter_id": 121,
+    "language": "en",
+    "chapter_name": "Remembrance at Muzdalifa",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 388,
+    "chapter_id": 122,
+    "language": "en",
+    "chapter_name": "When throwing each pebble at the Jamarat",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 389,
+    "chapter_id": 123,
+    "language": "en",
+    "chapter_name": "At times of amazement and delight",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 390,
+    "chapter_id": 124,
+    "language": "en",
+    "chapter_name": "Upon receiving pleasant news",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 391,
+    "chapter_id": 125,
+    "language": "en",
+    "chapter_name": "When feeling some pain in the body",
+    "category_name": "Sickness & Death"
+  },
+  {
+    "_id": 392,
+    "chapter_id": 126,
+    "language": "en",
+    "chapter_name": "When in fear of afflicting something or someone with one’s eye",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 393,
+    "chapter_id": 127,
+    "language": "en",
+    "chapter_name": "When startled",
+    "category_name": "Joy & Distress"
+  },
+  {
+    "_id": 394,
+    "chapter_id": 128,
+    "language": "en",
+    "chapter_name": "When slaughtering or offering a sacrifice",
+    "category_name": "Hajj & Umrah"
+  },
+  {
+    "_id": 395,
+    "chapter_id": 129,
+    "language": "en",
+    "chapter_name": "To ward off the deception of the obstinate devils",
+    "category_name": "Home & Family"
+  },
+  {
+    "_id": 396,
+    "chapter_id": 130,
+    "language": "en",
+    "chapter_name": "Seeking forgiveness and repentance",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 397,
+    "chapter_id": 131,
+    "language": "en",
+    "chapter_name": "Excellence of remembrance and glorification of Allah",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 398,
+    "chapter_id": 132,
+    "language": "en",
+    "chapter_name": "How the Prophet made Tasbeeh",
+    "category_name": "Praising Allah"
+  },
+  {
+    "_id": 399,
+    "chapter_id": 133,
+    "language": "en",
+    "chapter_name": "General and beneficent rules",
+    "category_name": "Home & Family"
+  }
+]

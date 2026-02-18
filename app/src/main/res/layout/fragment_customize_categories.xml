@@ -5,7 +5,7 @@
     <data>
         <variable
             name="settings"
-            type="com.thesunnahrevival.sunnahassistant.data.model.AppSettings"
+            type="com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings"
             />
     </data>
 

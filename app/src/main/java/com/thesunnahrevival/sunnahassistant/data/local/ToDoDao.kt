@@ -8,9 +8,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
-import com.thesunnahrevival.sunnahassistant.data.model.ToDoDate
+import com.thesunnahrevival.sunnahassistant.data.model.dto.ToDoDate
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.PRAYER_TIMES_REMINDERS_ID
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
@@ -36,6 +36,7 @@ interface ToDoDao {
     @Query(
         "SELECT EXISTS (SELECT * FROM reminders_table WHERE (" +
                 "category != :excludeCategory " +
+                "AND isAutomaticToDo == 0 " +
                 "AND ((day == :day AND month == :month AND year == :year) OR " +
                 " (day == :day AND month == 12 AND year == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  ) OR " +
                 " (day == 0 AND repeatsFromDate <= :date AND (endsOnDate == '' OR endsOnDate >= :date) AND deletedDates NOT LIKE '%' || :date || '%'  ) OR " +
@@ -55,13 +56,16 @@ interface ToDoDao {
     fun getToDo(id: Int): LiveData<ToDo?>
 
     @Query("SELECT * FROM reminders_table WHERE id = :id")
-    fun getToDoById(id: Int): ToDo?
+    suspend fun getToDoById(id: Int): ToDo?
 
     @Query("SELECT * FROM reminders_table WHERE day == 1 AND month == 0 AND year == 1 AND (frequency == 3 OR frequency == 0)")
     fun getMalformedToDos(): Flow<List<ToDo>>
 
-    @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999")
+    @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999 AND isAutomaticToDo = 0")
     fun getTemplateToDoIds(): LiveData<List<Int>>
+
+    @Query("SELECT id FROM reminders_table WHERE id <= -1000 AND id >= -1999")
+    fun getTemplateToDoIdsFlow(): Flow<List<Int>>
 
     @Query(
         "SELECT * FROM reminders_table WHERE (" +
@@ -70,7 +74,7 @@ interface ToDoDao {
                 " (day == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
                 " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' )" +
                 ") " +
-                " AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
+                " AND isAutomaticToDo == 0 AND (category LIKE '%' || :category || '%') AND (completedDates NOT LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
     )
     fun getIncompleteToDosOnDay(
         numberOfTheWeekDay: String,
@@ -88,7 +92,7 @@ interface ToDoDao {
                 " (day == 0 AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' ) OR " +
                 " (customScheduleDays LIKE '%' || :numberOfTheWeekDay || '%' AND repeatsFromDate <= :localDate AND (endsOnDate == '' OR endsOnDate >= :localDate) AND deletedDates NOT LIKE '%' || :localDate || '%' )" +
                 ") " +
-                " AND (category LIKE '%' || :category || '%') " +
+                " AND isAutomaticToDo == 0 AND (category LIKE '%' || :category || '%') " +
                 " AND (completedDates LIKE '%' || :localDate || '%') ORDER BY timeInSeconds"
     )
     fun getCompleteToDosOnDay(
@@ -158,18 +162,24 @@ interface ToDoDao {
     @Query(
         "SELECT EXISTS " +
                 "(SELECT * FROM reminders_table WHERE category == :prayerCategory AND " +
-                "id LIKE '-' || :id || '%')"
+                "day = :day AND month = :month AND year = :year AND id <= :prayerTimesId )"
     )
-    fun therePrayerToDosOnDay(prayerCategory: String, id: String): Boolean
+    fun therePrayerToDosOnDay(
+        prayerCategory: String,
+        day: Int,
+        month: Int,
+        year: Int,
+        prayerTimesId: Int = PRAYER_TIMES_REMINDERS_ID
+    ): Boolean
 
     @Query("SELECT * FROM reminders_table WHERE (category ==:categoryName AND (day == :day AND month == :month AND year =:year)) ORDER BY timeInSeconds")
     fun getPrayerTimesValue(day: Int, month: Int, year: Int, categoryName: String): List<ToDo>
 
     @Query(
-        "SELECT day, month, year FROM reminders_table WHERE " +
+        "SELECT DISTINCT day, month, year FROM reminders_table WHERE " +
                 "((day >= :day AND month == :month AND year == :year) OR " +
                 "(day >= 1 AND month > :month AND year == :year) OR " +
-                "(day >= 1 AND month >= 1 AND year > :year)) " +
+                "(day >= 1 AND month >= 0 AND year > :year)) " +
                 "AND id <= $PRAYER_TIMES_REMINDERS_ID "
     )
     fun getUpcomingPrayerDates(day: Int, month: Int, year: Int): List<ToDoDate>
@@ -209,6 +219,12 @@ interface ToDoDao {
 
     @Query("UPDATE reminders_table SET category =:newCategory WHERE category == :deletedCategory")
     suspend fun updateCategory(deletedCategory: String, newCategory: String)
+
+    @Query("UPDATE reminders_table SET isEnabled = 0 WHERE id == :id")
+    suspend fun disableReminder(id: Int)
+
+    @Query("UPDATE reminders_table SET isEnabled = 0 WHERE isAutomaticToDo == 1")
+    suspend fun disableAllAutomaticToDos()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSettings(settings: AppSettings)

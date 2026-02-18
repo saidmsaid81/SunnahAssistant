@@ -1,137 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Sunnah Assistant</string>
-  <string name="next_string">Next:</string>
-  <string name="done_for_the_day">It\'s Empty Here</string>
-  <string name="switch_to_dark_mode">Switch To Dark Mode</string>
-  <string name="to_do_name_label">Name</string>
-  <string name="to_do_name_hint">Enter The Name of The To-Do</string>
-  <string name="edit_to_do">Manage To-Do</string>
-  <string name="add_to_do">Add To-Do</string>
-  <string name="to_do_category">Category</string>
-  <string name="frequency">Repeat</string>
-  <string name="pick_time">Pick Time</string>
-  <string name="change_time">Change Time</string>
-  <string name="save">Save</string>
-  <string name="successfully_updated">Successfully Updated</string>
-  <string name="no_changes">No Changes Made.</string>
-  <string name="name_cannot_be_empty">Name Cannot Be Empty</string>
-  <string name="select_days">Days</string>
-  <string name="select_atleast_one_day">Select at least One Day</string>
-  <string name="more_details">More Details</string>
-  <string name="enter_additional_details">Enter Additional Details</string>
-  <string name="settings">Settings</string>
-  <string name="hijri_date_settings">Hijri Date Settings</string>
-  <string name="prayer_time_settings">Prayer Time Settings</string>
-  <string name="enter_city_town_name">City/Town name + Country</string>
-  <string name="city_name_example">*Example:London, United Kingdom</string>
-  <string name="location_hint">Enter Location</string>
-  <string name="error_updating_location">Error updating Location. Please check your internet connection</string>
-  <string name="prayer_time_calculation_method">Calculation Method:</string>
-  <string name="asr_juristic_method">Asr Juristic Method:</string>
-  <string name="change_prayer_time_offset_by">%s Notification</string>
-  <string name="prayer_offset_minute">minute(s)</string>
-  <string name="value">Value</string>
-  <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
-  <string name="welcome">Welcome to Sunnah Assistant:</string>
-  <string name="tagline">Manage all your To-Dos and Tasks to help you become a Better and More Productive Muslim</string>
-  <string name="quick_setup">Get Started</string>
-  <string name="delete_to_do">To-Do Deleted</string>
-  <string name="undo_delete">Undo</string>
-  <string name="cannot_delete_prayer_time">Automatic Prayer alerts can only be deleted from Settings</string>
-  <string name="time_not_set">Time not Set</string>
-  <string name="general_settings">General Settings</string>
-  <string name="next_to_do_notification">Display The Next To-Do Notification</string>
-  <string name="next_reminder_disclaimer">Disabling this might lead to reminders not being triggered successfully</string>
-  <string name="about_app">About App</string>
-  <string name="version">Version: %s</string>
-  <string name="icon">app icon</string>
-  <string name="credits">Credits</string>
-  <string name="about">    Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/&gt;@saidmsaid81&lt;/a&gt;)
+    <string name="app_name">Sunnah Assistant</string>
+    <string name="next_string">Next:</string>
+    <string name="done_for_the_day">It\'s Empty Here</string>
+    <string name="switch_to_dark_mode">Switch To Dark Mode</string>
+    <string name="to_do_name_label">Name</string>
+    <string name="to_do_name_hint">Enter The Name of The To-Do</string>
+    <string name="edit_to_do">Manage To-Do</string>
+    <string name="add_to_do">Add To-Do</string>
+    <string name="to_do_category">Category</string>
+    <string name="frequency">Repeat</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="change_time">Change Time</string>
+    <string name="save">Save</string>
+    <string name="successfully_updated">Successfully Updated</string>
+    <string name="no_changes">No Changes Made.</string>
+    <string name="name_cannot_be_empty">Name Cannot Be Empty</string>
+    <string name="select_days">Days</string>
+    <string name="select_atleast_one_day">Select at least One Day</string>
+    <string name="more_details">More Details</string>
+    <string name="enter_additional_details">Enter Additional Details</string>
+    <string name="settings">Settings</string>
+    <string name="hijri_date_settings">Hijri Date Settings</string>
+    <string name="prayer_time_settings">Prayer Time Settings</string>
+    <string name="enter_city_town_name">City/Town name + Country</string>
+    <string name="city_name_example">*Example:London, United Kingdom</string>
+    <string name="location_hint">Enter Location</string>
+    <string name="error_updating_location">Error updating Location. Please check your internet connection</string>
+    <string name="prayer_time_calculation_method">Calculation Method:</string>
+    <string name="asr_juristic_method">Asr Juristic Method:</string>
+    <string name="change_prayer_time_offset_by">%s Notification</string>
+    <string name="prayer_offset_minute">minute(s)</string>
+    <string name="value">Value</string>
+    <string name="add_prayer_time">Activate automatic Salah(Prayer) time alerts</string>
+    <string name="welcome">Welcome to Sunnah Assistant:</string>
+    <string name="tagline">Manage all your To-Dos and Tasks to help you become a Better and More Productive Muslim</string>
+    <string name="quick_setup">Get Started</string>
+    <string name="delete_to_do">To-Do Deleted</string>
+    <string name="undo_delete">Undo</string>
+    <string name="cannot_delete_prayer_time">Automatic Prayer alerts can only be deleted from Settings</string>
+    <string name="time_not_set">Time not Set</string>
+    <string name="general_settings">General Settings</string>
+    <string name="next_to_do_notification">Display The Next To-Do Notification</string>
+    <string name="next_reminder_disclaimer">Disabling this might lead to reminders not being triggered successfully</string>
+    <string name="about_app">About App</string>
+    <string name="version">Version: %s</string>
+    <string name="icon">app icon</string>
+    <string name="credits">Credits</string>
+    <string name="about">    Developed By Said Muhammad (&lt;a href=https://twitter.com/saidmsaid81/&gt;@saidmsaid81&lt;/a&gt;)
   </string>
-  <string name="app_icon_credit">    App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/&gt;https://www.flaticon.com/authors/sbts2018&lt;/a&gt;&lt;br&gt;
-    Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/&gt;https://www.flaticon.com/authors/bzzrincantation&lt;/a&gt;&lt;br&gt;
-    Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/&gt;https://www.flaticon.com/authors/shmain&lt;/a&gt;&lt;br&gt;
-    Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;https://www.flaticon.com/authors/freepik&lt;/a&gt;
+    <string name="app_icon_credit">App logo: &lt;a href=https://www.flaticon.com/authors/sbts2018/&gt;sbts2018&lt;/a&gt;&lt;br&gt;Fasting icon: &lt;a href=https://www.flaticon.com/authors/bzzrincantation/&gt;bzzrincantation&lt;/a&gt;&lt;br&gt;Dua icon: &lt;a href=https://www.flaticon.com/authors/shmai/&gt;shmai&lt;/a&gt;&lt;br&gt;Other Icons: &lt;a href=https://www.flaticon.com/authors/freepik/&gt;Freepik&lt;/a&gt;</string>
+    <string name="content_credits">Quran Madani Pages: &lt;a href=https://github.com/quran/quran.com-images&gt;quran.com-images&lt;/a&gt;&lt;br&gt;Quran Translations: &lt;a href=https://quranenc.com&gt;Quranenc.com&lt;/a&gt;&lt;br&gt;Adhkaar (Hisnul Muslim): &lt;a href=https://github.com/my-prayers/muslim-data-android&gt;muslim-data-android&lt;/a&gt;</string>
+    <string name="icons">Icons</string>
+    <string name="content">Content</string>
+    <string name="we_are_social">Join Us on Social Media</string>
+    <string name="facebook_logo">Facebook logo</string>
+    <string name="no_email_app_installed">No Email App Installed</string>
+    <string name="contact_us">Contact Us via E-mail</string>
+    <string name="change_theme">Tap to Change Theme</string>
+    <string name="change_theme_description">Dark Theme or Light Theme</string>
+    <string name="add_new_to_do">Add To-Do</string>
+    <string name="add_new_to_do_description">Tap To add any To-Do</string>
+    <string name="edit_to_do_description">    Tap To edit To-Do
   </string>
-  <string name="we_are_social">Join Us on Social Media</string>
-  <string name="facebook_logo">Facebook logo</string>
-  <string name="no_email_app_installed">No Email App Installed</string>
-  <string name="contact_us">Contact Us via E-mail</string>
-  <string name="change_theme">Tap to Change Theme</string>
-  <string name="change_theme_description">Dark Theme or Light Theme</string>
-  <string name="add_new_to_do">Add To-Do</string>
-  <string name="add_new_to_do_description">Tap To add any To-Do</string>
-  <string name="edit_to_do_description">    Tap To edit To-Do
+    <string name="gestures_demo">    Swipe Gestures
   </string>
-  <string name="gestures_demo">    Swipe Gestures
-  </string>
-  <string name="gestures_description">    ⬅️ Swipe Left To Delete
+    <string name="gestures_description">    ⬅️ Swipe Left To Delete
     \n➡️ Swipe Right to Mark as Complete\n\n\n
   </string>
-  <string name="spinner_tutorial">To-Do\'s Switcher</string>
-  <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly to-dos</string>
-  <string name="support_developer">Support Developer</string>
-  <string name="more_apps">More Apps</string>
-  <string name="rate_this_app">Rate this App</string>
-  <string name="send_feedback">Send Feedback</string>
-  <string name="telegram_logo">Telegram Logo</string>
-  <string name="instagram_logo">Instagram Logo</string>
-  <string name="twitter_logo">Twitter Logo</string>
-  <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_to_do">Tap the + icon at the bottom corner to add a new to-do</string>
-  <string name="open_source_licenses">Open Source Licenses</string>
-  <string name="name_of_the_new_category">Name of the New Category</string>
-  <string name="cancel">Cancel</string>
-  <string name="display_all">All</string>
-  <string name="alternate_display_of_data">Switch to Condensed View</string>
-  <string name="default_display_of_data">Switch to Expanded View</string>
-  <string name="display_hijri_date_on_the_home_page">Display Hijri Date on the home page</string>
-  <string name="updating">Updating…</string>
-  <string name="unavailable_location">Couldn\'t find this location. Please enter another location</string>
-  <string name="location_cannot_be_empty">Location cannot be empty</string>
-  <string name="notification_settings">Notification Settings</string>
-  <string name="notification_tone">Notification Tone</string>
-  <string name="vibrate">Vibrate</string>
-  <string name="importance">Behavior</string>
-  <string name="next_to_do_sticky_notification">Next To-Do Sticky Notification</string>
-  <string name="layout_and_theme_settings">Layout and Theme Settings</string>
-  <string name="privacy_settings">Privacy Settings</string>
-  <string name="layout">Layout</string>
-  <string name="theme">Theme</string>
-  <string name="theme_in_android_10_follows_system_settings">Follows System</string>
-  <string name="delete_category">Delete Category?</string>
-  <string name="confirm_delete_category">%s Category Deleted</string>
-  <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
-  <string name="customize_categories">Customize Categories</string>
-  <string name="filter_displayed_to_dos">Filter Displayed To-Dos</string>
-  <string name="filter_displayed_todos_description">Such as display all categories or only one category</string>
-  <string name="add_sunnah_to_dos_alerts_such_as_fasting_on_mondays_and_thursdays">Tap to add Sunnah To-Dos alerts</string>
-  <string name="sunnah_to_do_alerts_description">*such as Fasting on Mondays and Thursdays</string>
-  <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
-  <string name="pick_date_and_time">Pick Date and Time</string>
-  <string name="please_pick_date_and_time">Please Pick Date and time</string>
-  <string name="higher_latitude_adjustment_method">Higher Latitude Adjustment Method</string>
-  <string name="add_widget">Add widget</string>
-  <string name="display_hijri_date">Display Hijri Date</string>
-  <string name="display_the_next_to_do">Display the Next To-Do</string>
-  <string name="enable_at_least_one_option">Enable at least one option</string>
-  <string name="setup_widget">Setup Widget</string>
-  <string name="today_s_to_dos">Today\'s To-Dos</string>
-  <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date used in this app is based on Umm al-Qura Calendar.\nIt should be noted that, Umm al-Qura calendar is a calculated calendar and may vary with your local moonsighting.\nTherefore, it is recommended to verify the dates here with your local moonsighting. \n\nTap to Read more on Umm al-Qura Calendar</string>
-  <string name="read_more">Read more</string>
-  <string name="read_more_on_dhuha_prayer">      Tap to read more on Duha Prayer, its time and  number of rakaahs
+    <string name="spinner_tutorial">To-Do\'s Switcher</string>
+    <string name="spinner_tutorial_description">Switch between today, tomorrow, weekly and monthly to-dos</string>
+    <string name="support_developer">Support Developer</string>
+    <string name="more_apps">More Apps</string>
+    <string name="rate_this_app">Rate this App</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="telegram_logo">Telegram Logo</string>
+    <string name="instagram_logo">Instagram Logo</string>
+    <string name="twitter_logo">Twitter Logo</string>
+    <string name="tap_the_icon_at_the_bottom_corner_to_add_a_new_to_do">Tap the + icon at the bottom corner to add a new to-do</string>
+    <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="name_of_the_new_category">Name of the New Category</string>
+    <string name="cancel">Cancel</string>
+    <string name="display_all">All</string>
+    <string name="alternate_display_of_data">Switch to Condensed View</string>
+    <string name="default_display_of_data">Switch to Expanded View</string>
+    <string name="display_hijri_date_on_the_home_page">Display Hijri Date on the home page</string>
+    <string name="updating">Updating…</string>
+    <string name="unavailable_location">Couldn\'t find this location. Please enter another location</string>
+    <string name="location_cannot_be_empty">Location cannot be empty</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="notification_tone">Notification Tone</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="importance">Behavior</string>
+    <string name="next_to_do_sticky_notification">Next To-Do Sticky Notification</string>
+    <string name="layout_and_theme_settings">Layout and Theme Settings</string>
+    <string name="privacy_settings">Privacy Settings</string>
+    <string name="layout">Layout</string>
+    <string name="theme">Theme</string>
+    <string name="theme_in_android_10_follows_system_settings">Follows System</string>
+    <string name="delete_category">Delete Category?</string>
+    <string name="confirm_delete_category">%s Category Deleted</string>
+    <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
+    <string name="customize_categories">Customize Categories</string>
+    <string name="filter_displayed_to_dos">Filter Displayed To-Dos</string>
+    <string name="filter_displayed_todos_description">Such as display all categories or only one category</string>
+    <string name="add_sunnah_to_dos_alerts_such_as_fasting_on_mondays_and_thursdays">Tap to add Sunnah To-Dos alerts</string>
+    <string name="sunnah_to_do_alerts_description">*such as Fasting on Mondays and Thursdays</string>
+    <string name="add_salah_prayer_time_alerts">Tap to add Salah (Prayer) time alerts</string>
+    <string name="pick_date_and_time">Pick Date and Time</string>
+    <string name="please_pick_date_and_time">Please Pick Date and time</string>
+    <string name="higher_latitude_adjustment_method">Higher Latitude Adjustment Method</string>
+    <string name="add_widget">Add widget</string>
+    <string name="display_hijri_date">Display Hijri Date</string>
+    <string name="display_the_next_to_do">Display the Next To-Do</string>
+    <string name="enable_at_least_one_option">Enable at least one option</string>
+    <string name="setup_widget">Setup Widget</string>
+    <string name="today_s_to_dos">Today\'s To-Dos</string>
+    <string name="hijri_date_is_based_on_umm_al_qura_calendar_read_more_on_umm_al_qura_calendar_here_http_www_ummulqura_org_sa_default_aspx">Hijri Date used in this app is based on Umm al-Qura Calendar.\nIt should be noted that, Umm al-Qura calendar is a calculated calendar and may vary with your local moonsighting.\nTherefore, it is recommended to verify the dates here with your local moonsighting. \n\nTap to Read more on Umm al-Qura Calendar</string>
+    <string name="read_more">Read more</string>
+    <string name="read_more_on_dhuha_prayer">      Tap here to read more on Duha Prayer, its time and  number of rakaahs
     </string>
-  <string name="read_more_on_tahajjud_prayer">Tap to read more on Tahajjud prayer, its time and number of rakaahs</string>
-  <string name="read_more_on_suratul_kahf">Tap to read more on the importance of reading Suratul Kahf every Friday</string>
-  <string name="read_more_on_fasting_mondays_and_thursdays">Tap to read more on the importance of fasting on Mondays and Thursday</string>
-  <string name="what_s_new">What\'s New</string>
-  <string name="create_new_categories">Create New Category</string>
-  <string name="important">Important</string>
-  <string name="important_changes">We updated our Privacy Policy to indicate that if you provide City/town for automatic prayer time alerts, the app sends that to our server which uses Geocoding Api by Google Maps to determine latitude and longitude of the city/town provided( used in calculating prayer times).
-\n\nOur server only logs your IP Address if you exceed our rate limits to prevent abuse. The code for our backend can be viewed on github at github.com/saidmsaid81/Sunnah-Assistant-Backend .\n\nBy continuing to use this app you agree to the New Privacy Policy. Tap the "Privacy Policy " button below to read it
+    <string name="read_more_on_tahajjud_prayer">Tap here to read more on Tahajjud prayer, its time and number of rakaahs</string>
+    <string name="read_more_on_suratul_kahf">Tap here to read more on the importance of reading Suratul Kahf every Friday</string>
+    <string name="read_more_on_fasting_mondays_and_thursdays">Tap here to read more on the importance of fasting on Mondays and Thursday</string>
+    <string name="what_s_new">What\'s New</string>
+    <string name="create_new_categories">Create New Category</string>
+    <string name="important">Important</string>
+    <string name="important_changes">This is the first update that introduces the new Resources tab.
+\n\n        ‣ You can now access Quran and Adhkaar from one place.
+\n        ‣ Added Quran reading with translations and helpful reading actions.
+\n        ‣ Added Adhkaar reading with bookmarking, sharing, and easier navigation.
+\n        ‣ Added a new bookmarks area and search to quickly find saved content.
+\n        ‣ Added guidance nudges to help you keep up with daily Sunnah habits.
   </string>
-  <string name="new_features">New Features</string>
-  <string name="new_features_details">        ‣ Major redesign of the app.\n
+    <string name="new_features">New Features</string>
+    <string name="new_features_details">        ‣ Major redesign of the app.\n
         ‣ Introduced a calendar section which supports Gregorian Calendar and Hijri Calendar (based on Ummul-Qura Calendar).\n
         ‣ Calendar section shows a blue dot if there is a to-do on that day.\n
         ‣ Date pickers now show both Gregorian dates and Hijri dates.\n
@@ -146,328 +149,486 @@
         ‣ Introduced a Share To-Do option when a notification is triggered.\n
         ‣ More soon In shaa Allah.
     </string>
-  <string name="updated">Updated</string>
-  <string name="updated_details">        ‣ Updated and optimized all widgets.\n
-        ‣ Updated the Prayer Time Settings section\n
-        ‣ Improved the more details section when adding a To-Do.\n
-        ‣ Improved "Filter To-Do by category" feature
+    <string name="updated">Updated</string>
+    <string name="updated_details">        ‣ Prayer Time Settings got a major upgrade for faster, cleaner setup.\n
+        ‣ Choose prayer-time mode per prayer and set precise custom times when needed.\n
+        ‣ Better activation flow now guides location setup before enabling automatic prayer alerts.
     </string>
-  <string name="fixes">Fixes</string>
-  <string name="fixes_details">        ‣ Fixed bugs related to notifications on some devices.\n
-    ‣ More exciting features coming soon in shaa Allah
+    <string name="fixes">Fixes</string>
+    <string name="fixes_details">        ‣ Improved app stability and overall performance.\n
+    ‣ Fixed reminder and notification issues for a smoother daily experience.
     </string>
-  <string name="add_or_delete_categories">Add or Delete Categories</string>
-  <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>
-  <string name="sticky_notification_description">Sticky Notification to display the next scheduled to-do</string>
-  <string name="dhuha_prayer">Praying Dhuha</string>
-  <string name="morning_adhkar">Morning Adhkar</string>
-  <string name="evening_adhkar">Evening Adhkar</string>
-  <string name="tahajjud">Tahajjud</string>
-  <string name="reading_the_quran">Reading the Quran</string>
-  <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
-  <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
-  <string name="demo_to_dos">Demo To-Do</string>
-  <string name="tomorrow_at">Tomorrow at&#160;</string>
-  <string name="today_at">Today at&#160;</string>
-  <string name="daily">Daily&#160;</string>
-  <string name="monthly_frequency_display">On %s every month</string>
-  <string name="one_time_frequency_display">On %s</string>
-  <string name="at_time_example_at_9_pm">%s&#160;</string>
-  <string name="expanded_view">Expanded View</string>
-  <string name="condesed_view">Condensed View</string>
-  <string name="on">On</string>
-  <string name="off">Off</string>
-  <string name="prayer">Prayer</string>
-  <string name="add_new_category">Add New Category</string>
-  <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s]]></string>
-  <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
-  <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
-  <string name="no_upcoming_to_do_today">No Upcoming To-Do Today</string>
-  <string name="tomorrow_at_notification">. Tomorrow at </string>
-  <string name="at"> at </string>
-  <string name="next_to_do_dhuhr_prayer_at_12_45">Next To-Do: %s %s %s</string>
-  <string name="prayer_times_notification_settings">Prayer Times Notification Settings</string>
-  <string name="dnd_minutes">%d minutes</string>
-  <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
-  <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time Reminder is triggered</string>
-  <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
-  <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
-  <string name="go_to_settings">Go to Settings</string>
-  <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
-  <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_to_dos_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when to-dos are scheduled</string>
-  <string name="update_downloaded">An update has just been downloaded.</string>
-  <string name="restart">RESTART</string>
-  <string name="error_adding_prayer_time">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
-  <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
-  <string name="translate">Translate</string>
-  <string name="translators">Translators</string>
-  <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313\n
+    <string name="add_or_delete_categories">Add or Delete Categories</string>
+    <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>
+    <string name="sticky_notification_description">Sticky Notification to display the next scheduled to-do</string>
+    <string name="dhuha_prayer">Praying Dhuha</string>
+    <string name="morning_adhkar">Morning Adhkar</string>
+    <string name="evening_adhkar">Evening Adhkar</string>
+    <string name="tahajjud">Tahajjud</string>
+    <string name="reading_the_quran">Reading the Quran</string>
+    <string name="reading_suratul_kahf">Reading Suratul Kahf</string>
+    <string name="fasting_on_monday_and_thursday">Fasting On Monday And Thursday</string>
+    <string name="demo_to_dos">Demo To-Do</string>
+    <string name="tomorrow_at">Tomorrow at&#160;</string>
+    <string name="today_at">Today at&#160;</string>
+    <string name="daily">Daily&#160;</string>
+    <string name="monthly_frequency_display">On %s every month</string>
+    <string name="one_time_frequency_display">On %s</string>
+    <string name="at_time_example_at_9_pm">%s&#160;</string>
+    <string name="expanded_view">Expanded View</string>
+    <string name="condesed_view">Condensed View</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="prayer">Prayer</string>
+    <string name="add_new_category">Add New Category</string>
+    <string name="hijri_date"><![CDATA[<b>Today\'s Date:</b> %s]]></string>
+    <string name="weekly_frequency_display_example_2_days_every_week">%d days Every Week</string>
+    <string name="tap_to_disable_sticky_notification">Tap to disable this Sticky Notification</string>
+    <string name="no_upcoming_to_do_today">No Upcoming To-Do Today</string>
+    <string name="tomorrow_at_notification">. Tomorrow at </string>
+    <string name="at"> at </string>
+    <string name="next_to_do_dhuhr_prayer_at_12_45">Next To-Do: %s %s %s</string>
+    <string name="prayer_times_notification_settings">Prayer Times Notification Settings</string>
+    <string name="dnd_minutes">%d minutes</string>
+    <string name="set_phone_to_do_not_disturb_mode_for">Set Phone to Do Not Disturb mode for</string>
+    <string name="use_this_option_to_set_phone_to_do_not_disturb_mode_silent_mode_after_a_prayer_time_reminder_is_triggered">Use this option to set phone to Do not Disturb Mode (Silent Mode) after a prayer time Reminder is triggered</string>
+    <string name="dnd_dialog_title">Allow Do Not Disturb Access from Settings</string>
+    <string name="dnd_message">Please Allow Do not Disturb Access by selecting Sunnah Assistant in the next screen and tapping allow.</string>
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="use_reliable_alarms_for_notifications">Use Reliable Alarms for Notifications</string>
+    <string name="enabling_reliable_alarms_will_add_a_clock_icon_on_the_status_bar_when_to_dos_are_scheduled">Enabling Reliable Alarms will add a clock icon on the status bar when to-dos are scheduled</string>
+    <string name="update_downloaded">An update has just been downloaded.</string>
+    <string name="restart">RESTART</string>
+    <string name="error_adding_prayer_time">Error. Cannot add Prayer times when automatic prayer times is enabled</string>
+    <string name="please_write_feedback_in_english">Please write your feedback below in English</string>
+    <string name="translate">Translate</string>
+    <string name="translators">Translators</string>
+    <string name="arabic_translation_by_malkalashter313">Arabic Translation by: MalkAlashter313 and Said (The Developer)\n
     Indonesian Translation by: Ilham Syahid S</string>
-  <string name="to_do">To-Do</string>
-  <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
-  <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
-  <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
-  <string name="read_privacy_policy">Privacy Policy</string>
-  <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
-  <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
-  <string name="share_app">Share App</string>
-  <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
-  <string name="unavialable">Default</string>
-  <string name="dismiss">Dismiss</string>
-  <string name="help_translate_app_button">Help Translate App</string>
-  <string name="light_theme">Light</string>
-  <string name="today_widget_label">Today To-Dos (Light, Dark, Transparent)</string>
-  <string name="prayer_times_widget_label">Prayer Times (Light, Dark, Transparent)</string>
-  <string name="hijri_date_widget_label">Hijri Date Widget</string>
-  <string name="to_dos">To-Dos</string>
-  <string name="developers_messages">Developer Messages</string>
-  <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
-  <string name="share_message">Share Page</string>
-  <string name="go_to_today">Go to Today</string>
-  <string name="sunday_abbreviated">S</string>
-  <string name="monday_abbreviated">M</string>
-  <string name="tuesday_abbreviated">T</string>
-  <string name="wednesday_abbreviated">W</string>
-  <string name="thursday_abbreviated">T</string>
-  <string name="friday_abbreviated">F</string>
-  <string name="saturday_abbreviated">S</string>
-  <string name="today">Today</string>
-  <string name="calendar">Calendar</string>
-  <string name="time_label">Time</string>
-  <string name="date">Date</string>
-  <string name="date_not_set">Date not Set</string>
-  <string name="scroll_to_previous_month">Scroll to previous month icon</string>
-  <string name="scroll_to_next_month_icon">Scroll to next month icon</string>
-  <string name="ok">OK</string>
-  <string name="pick_date">Pick Date</string>
-  <string name="gregorian_dates">Gregorian Dates</string>
-  <string name="mark_as_complete">Mark as Complete</string>
-  <string name="notify">Notify</string>
-  <string name="tap_to_change">(Tap to Change)</string>
-  <string name="repeat_cannot_be_changed">Repeat frequency for automatic prayer time cannot be changed</string>
-  <string name="category_cannot_be_changed">Category for automatic prayer time cannot be changed</string>
-  <string name="time_cannot_be_changed">Time for automatic prayer time cannot be changed</string>
-  <string name="minutes">minutes</string>
-  <string name="automatic_prayer_time_info">Changes made here only affect %s time for %s. Tap to Go to Settings to change for all days.</string>
-  <string name="delete">Delete</string>
-  <string name="delete_to_do_title">Delete To-Do</string>
-  <string name="delete_to_do_confirmation">Do you really want to delete this To-Do?</string>
-  <string name="yes">Yes</string>
-  <string name="no">No</string>
-  <string name="category_cannot_be_blank">Error! Category cannot be blank</string>
-  <string name="info">Info</string>
-  <string name="share_to_do">Save &amp; Share To-Do</string>
-  <string name="completed">Completed</string>
-  <string name="powered_by_sunnah_assistant">Powered by Sunnah Assistant App</string>
-  <string name="get_sunnah_assistant">Get Sunnah Assistant App at</string>
-  <string name="sent_from_sunnah_assistant_app">Sent from Sunnah Assistant App.</string>
-  <string name="reminder_on">Reminder: On</string>
-  <string name="reminder_off">Reminder: Off</string>
-  <string name="repeating_to_do">Repeating to-do</string>
-  <string name="fajr_prayer_settings">Fajr Prayer Settings</string>
-  <string name="enable_alerts">Enable Alerts</string>
-  <string name="dhuhr_prayer_settings">Dhuhr Prayer Settings</string>
-  <string name="asr_prayer_settings">Asr Prayer Settings</string>
-  <string name="maghrib_prayer_settings">Maghrib Prayer Settings</string>
-  <string name="isha_prayer_settings">Isha Prayer Settings</string>
-  <string name="custom_reminder_offset">Custom Offset</string>
-  <string name="minutes_label">Minutes</string>
-  <string name="hours">Hour(s)</string>
-  <string name="automatic_prayer_alerts_disabled">Automatic Prayer Alerts have been disabled</string>
-  <string name="something_wrong">Something went wrong. Please try again later</string>
-  <string name="tips">Tips</string>
-  <string name="to_do_templates">To-Do Templates (Random Order)</string>
-  <string name="setup">Setup</string>
-  <string name="suratul_mulk">Reading Suratul Mulk and Al-Sajdah</string>
-  <string name="reading">Reading</string>
-  <string name="sleeping">Sleeping Early</string>
-  <string name="exercising">Exercising</string>
-  <string name="pill">Pill Reminder</string>
-  <string name="drink_water">Drink Water</string>
-  <string name="prayer_time_alerts">Prayer Time Alerts</string>
-  <string name="backup_restore_data">Backup/ Restore Data (Experimental)</string>
-  <string name="backup_restore_data_menu">Backup/Restore Data <span>
+    <string name="to_do">To-Do</string>
+    <string name="server_error_occured">Sorry, the request failed due to a server error. The developer has been notified and will be fixed soon.</string>
+    <string name="share_anonymous_usage_data_string">Share anonymous usage data. \nThe data will help us make the app better</string>
+    <string name="by_continuing_to_use_this_app_you_agree_to_this_site_privacy_policy">By continuing to use this app, you agree to this app\'s privacy policy</string>
+    <string name="read_privacy_policy">Privacy Policy</string>
+    <string name="help_improve_app">Help us improve the app by sending feedback. It would take just a few minutes and will mean a lot to us. Thank you.</string>
+    <string name="help_us_grow">Loved the App? Help us reach more people by sharing the App with family and friends. Thank you.</string>
+    <string name="share_app">Share App</string>
+    <string name="help_translate_app">Help us reach more people by translating the app to %s. Thank you.</string>
+    <string name="unavialable">Default</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="help_translate_app_button">Help Translate App</string>
+    <string name="light_theme">Light</string>
+    <string name="today_widget_label">Today To-Dos (Light, Dark, Transparent)</string>
+    <string name="prayer_times_widget_label">Prayer Times (Light, Dark, Transparent)</string>
+    <string name="hijri_date_widget_label">Hijri Date Widget</string>
+    <string name="to_dos">To-Dos</string>
+    <string name="developers_messages">Developer Messages</string>
+    <string name="developer_messages_description">The developer may at some times send important messages regarding the app.</string>
+    <string name="share_message">Share Page</string>
+    <string name="go_to_today">Go to Today</string>
+    <string name="sunday_abbreviated">S</string>
+    <string name="monday_abbreviated">M</string>
+    <string name="tuesday_abbreviated">T</string>
+    <string name="wednesday_abbreviated">W</string>
+    <string name="thursday_abbreviated">T</string>
+    <string name="friday_abbreviated">F</string>
+    <string name="saturday_abbreviated">S</string>
+    <string name="today">Today</string>
+    <string name="calendar">Calendar</string>
+    <string name="time_label">Time</string>
+    <string name="date">Date</string>
+    <string name="date_not_set">Date not Set</string>
+    <string name="scroll_to_previous_month">Scroll to previous month icon</string>
+    <string name="scroll_to_next_month_icon">Scroll to next month icon</string>
+    <string name="ok">OK</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="gregorian_dates">Gregorian Dates</string>
+    <string name="mark_as_complete">Mark as Complete</string>
+    <string name="disable_this_nudge">Disable this suggestion</string>
+    <string name="disable_all_nudges">Disable all suggestions</string>
+    <string name="notify">Notify</string>
+    <string name="tap_to_change">(Tap to Change)</string>
+    <string name="repeat_cannot_be_changed">Repeat frequency for automatic prayer time cannot be changed</string>
+    <string name="category_cannot_be_changed">Category for automatic prayer time cannot be changed</string>
+    <string name="time_cannot_be_changed">Time for automatic prayer time cannot be changed</string>
+    <string name="minutes">minutes</string>
+    <string name="automatic_prayer_time_info">Changes made here only affect %s time for %s. Tap to Go to Settings to change for all days.</string>
+    <string name="delete">Delete</string>
+    <string name="delete_to_do_title">Delete To-Do</string>
+    <string name="delete_to_do_confirmation">Do you really want to delete this To-Do?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="category_cannot_be_blank">Error! Category cannot be blank</string>
+    <string name="info">Info</string>
+    <string name="share_to_do">Save &amp; Share To-Do</string>
+    <string name="completed">Completed</string>
+    <string name="reminder_on">Reminder: On</string>
+    <string name="reminder_off">Reminder: Off</string>
+    <string name="repeating_to_do">Repeating to-do</string>
+    <string name="fajr_prayer_settings">Fajr Prayer Settings</string>
+    <string name="enable_alerts">Enable Alerts</string>
+    <string name="dhuhr_prayer_settings">Dhuhr Prayer Settings</string>
+    <string name="asr_prayer_settings">Asr Prayer Settings</string>
+    <string name="maghrib_prayer_settings">Maghrib Prayer Settings</string>
+    <string name="isha_prayer_settings">Isha Prayer Settings</string>
+    <string name="custom_reminder_offset">Custom Offset</string>
+    <string name="minutes_label">Minutes</string>
+    <string name="hours">Hour(s)</string>
+    <string name="automatic_prayer_alerts_disabled">Automatic Prayer Alerts have been disabled</string>
+    <string name="something_wrong">Something went wrong. Please try again later</string>
+    <string name="tips">Tips</string>
+    <string name="to_do_templates">To-Do Templates (Random Order)</string>
+    <string name="setup">Setup</string>
+    <string name="reading_suratul_mulk">Reading Suratul Mulk and Al-Sajdah</string>
+    <string name="reading">Reading</string>
+    <string name="sleeping">Sleeping Early</string>
+    <string name="exercising">Exercising</string>
+    <string name="pill">Pill Reminder</string>
+    <string name="drink_water">Drink Water</string>
+    <string name="prayer_time_alerts">Prayer Time Alerts</string>
+    <string name="backup_restore_data">Backup/ Restore Data (Experimental)</string>
+    <string name="backup_restore_data_menu">Backup/Restore Data <span>
   <sup>
     <small>BETA</small>
   </sup>
 </span></string>
-  <string name="restoring_app_data_will_delete_all_existing_data_and_replace_it_with_restored_data">Restoring App Data will delete all existing data and replace it with restored data.</string>
-  <string name="backing_up_data_please_wait">Backing up Data. Please Wait…</string>
-  <string name="restoring_data_please_wait">Restoring Data. Please Wait…</string>
-  <string name="backup_successful">Backup Successful</string>
-  <string name="backup_failed">Error! Backup Failed. Please try again</string>
-  <string name="restore_failed">Error! Restore failed. Please try again</string>
-  <string name="restore_failed_invalid_file">Error! Restore failed.\nReason: Not a Sunnah Assistant Database File. Please try again.</string>
-  <string name="restore_successful">App Data was successfully restored</string>
-  <string name="restore_failed_incorrect_password">Error! Restore failed due to incorrect password</string>
-  <string name="restore_encrypted_data_label">Restore Encrypted Data</string>
-  <string name="enter_decryption_password">Enter Decryption Password</string>
-  <string name="restore_data_button">Restore Data</string>
-  <string name="password_cannot_be_blank">Password cannot be blank</string>
-  <string name="backup_data">Backup Data</string>
-  <string name="password_doesnt_match">Password doesn\'t match</string>
-  <string name="protect_backup_with_password">Protect backup with Password</string>
-  <string name="protect_with_password">Protect with Password</string>
-  <string name="confirm_password">Confirm Password</string>
-  <string name="important_if_you_forget_the_password_there_is_no_way_the_app_can_help_you_retrieve_it">Important: If you forget the password, there is no way the app can help you retrieve it</string>
-  <string name="resolve_malformed_to_dos">Resolve Malformed To-Dos</string>
-  <string name="fix">Fix</string>
-  <string name="delete_all">Delete All</string>
-  <string name="delete_all_malformed_todos">Delete all Malformed To-Dos</string>
-  <string name="confirm_deleting_malformed_to_dos">Do you really want to Delete ALL Malformed To-Dos</string>
-  <string name="operation_ongoing">Another Backup/Restore operation ongoing. Please wait…</string>
-  <string name="sunrise">Sunrise:</string>
-  <string name="no_notification">No Notification</string>
-  <string name="do_not_disturb_settings">Do not Disturb Settings</string>
-  <string name="include_hijri_date_in_calendar">Include Hijri Date in Calendar</string>
-  <string name="delete_only_this_date">Delete only this date (%s)</string>
-  <string name="delete_future_repetitions">Delete all future repetitions (after %s)</string>
-  <string name="delete_repetitive_to_do">Delete Repetitive To-Do</string>
-  <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
-  <string name="no_prayer_times_added">No prayer times added</string>
-  <string name="launching_share_menu_please_wait">Launching share menu please wait…</string>
-  <string name="notification_successfully_snoozed">Notification successfully snoozed</string>
-  <string name="snooze_for">Snooze for: </string>
-  <string name="snooze">Snooze</string>
-  <string name="share">Share</string>
-  <string name="reminder">Reminder</string>
-  <string name="too_many_requests">Too many requests. Please try again after %s. If you think this is a mistake please contact us at %s</string>
-  <string name="an_error_occurred">An error occurred. Please try again. If this persists please contact us at %s</string>
-  <string name="update_app">Please update app to the latest version</string>
-  <string name="location_updated_successfully">Location updated successfully</string>
-  <string name="fix_notifications">To-Do notifications are disabled. Enable notification permission in system settings to receive notifications</string>
-  <string name="don_t_show_this">Don\'t Show This</string>
-  <string name="fix_alarms_and_reminders">Sunnah Assistant is blocked from scheduling reminders by the system</string>
-  <string name="tap_to_fix_this">Tap to fix this</string>
-  <string name="refreshing_notifications">Refreshing notifications…</string>
-  <string-array name="categories">
-    <item>Uncategorized</item>
-    <item>Sunnah</item>
-    <item>Prayer</item>
-    <item>Other</item>
-  </string-array>
-  <string-array name="frequency">
-    <item>No Repeat</item>
-    <item>Daily</item>
-    <item>Weekly</item>
-    <item>Monthly</item>
-  </string-array>
-  <string-array name="calculation_methods">
-    <item>Muslim World League (default)</item>
-    <item>Egyptian General Authority of Survey.</item>
-    <item>University of Islamic Sciences, Karachi</item>
-    <item>Umm al-Qura University, Makkah </item>
-    <item>United Arab Emirates</item>
-    <item>Moonsighting Committee</item>
-    <item>Islamic Society of North America (ISNA)</item>
-    <item>Kuwait</item>
-    <item>Qatar</item>
-    <item>Singapore</item>
-  </string-array>
-  <string-array name="asr_juristic_method">
-    <item>Standard(Hanbali, Shafi, Maliki)</item>
-    <item>Hanafi</item>
-  </string-array>
-  <string-array name="settings_lists">
-    <item>Hijri Date Settings</item>
-    <item>Prayer Time Settings</item>
-    <item>Customize Reminder Categories</item>
-    <item>Notifications Settings</item>
-    <item>Layout and Theme Settings</item>
-    <item>Backup/ Restore Data (Experimental)</item>
-    <item>Privacy Settings</item>
-    <item>Contact Us</item>
-  </string-array>
-  <string-array name="backup_restore_options">
-    <item>Backup App Data to Internal Storage</item>
-    <item>Restore App Data</item>
-  </string-array>
-  <string-array name="layout_options">
-    <item>Expanded View</item>
-    <item>Condensed View</item>
-  </string-array>
-  <string-array name="theme_options">
-    <item>Light</item>
-    <item>Dark</item>
-  </string-array>
-  <string-array name="widget_theme_options">
-    <item>Light</item>
-    <item>Dark</item>
-    <item>Transparent</item>
-  </string-array>
-  <string-array name="vibration_options">
-    <item>On</item>
-    <item>Off</item>
-  </string-array>
-  <string-array name="priority_options">
-    <item>No Notification at all</item>
-    <item>No sound</item>
-    <item>Makes a sound (Recommended)</item>
-    <item>Makes a sound and heads-up notification</item>
-  </string-array>
-  <string-array name="latitude_options">
-    <item>Middle of the Night</item>
-    <item>One Seventh of the Night</item>
-    <item>Angle Based (Default)</item>
-  </string-array>
-  <string-array name="prayer_names">
-    <item>Fajr Prayer</item>
-    <item>Dhuhr Prayer</item>
-    <item>Asr Prayer</item>
-    <item>Maghrib Prayer</item>
-    <item>Isha Prayer</item>
-  </string-array>
-  <string-array name="do_not_disturb_minutes">
-    <item>0 Minutes</item>
-    <item>15 Minutes</item>
-    <item>30 Minutes</item>
-    <item>45 Minutes</item>
-    <item>60 Minutes</item>
-  </string-array>
-  <string-array name="mark_as_complete_options">
-    <item>No</item>
-    <item>Yes</item>
-  </string-array>
-  <string-array name="gregorian_month_names">
-    <item>January</item>
-    <item>February</item>
-    <item>March</item>
-    <item>April</item>
-    <item>May</item>
-    <item>June</item>
-    <item>July</item>
-    <item>August</item>
-    <item>September</item>
-    <item>October</item>
-    <item>November</item>
-    <item>December</item>
-  </string-array>
-  <string-array name="day_name_abbr">
-    <item>S</item>
-    <item>M</item>
-    <item>T</item>
-    <item>W</item>
-    <item>T</item>
-    <item>F</item>
-    <item>S</item>
-  </string-array>
-  <string-array name="notify_options">
-    <item>No Notification</item>
-    <item>On Time</item>
-    <item>5 Minutes Before</item>
-    <item>15 Minutes Before</item>
-    <item>30 Minutes Before</item>
-    <item>Custom</item>
-  </string-array>
-  <string-array name="snooze_options">
-    <item>5 Minutes</item>
-    <item>15 Minutes</item>
-    <item>30 Minutes</item>
-    <item>45 Minutes</item>
-    <item>1 Hour</item>
-  </string-array>
-  <string-array name="offset_options">
-    <item>Before</item>
-    <item>After</item>
-  </string-array>
+    <string name="restoring_app_data_will_delete_all_existing_data_and_replace_it_with_restored_data">Restoring App Data will delete all existing data and replace it with restored data.</string>
+    <string name="backing_up_data_please_wait">Backing up Data. Please Wait…</string>
+    <string name="restoring_data_please_wait">Restoring Data. Please Wait…</string>
+    <string name="backup_successful">Backup Successful</string>
+    <string name="backup_failed">Error! Backup Failed. Please try again</string>
+    <string name="restore_failed">Error! Restore failed. Please try again</string>
+    <string name="restore_failed_invalid_file">Error! Restore failed.\nReason: Not a Sunnah Assistant Database File. Please try again.</string>
+    <string name="restore_successful">App Data was successfully restored</string>
+    <string name="restore_failed_incorrect_password">Error! Restore failed due to incorrect password</string>
+    <string name="restore_encrypted_data_label">Restore Encrypted Data</string>
+    <string name="enter_decryption_password">Enter Decryption Password</string>
+    <string name="restore_data_button">Restore Data</string>
+    <string name="password_cannot_be_blank">Password cannot be blank</string>
+    <string name="backup_data">Backup Data</string>
+    <string name="password_doesnt_match">Password doesn\'t match</string>
+    <string name="protect_backup_with_password">Protect backup with Password</string>
+    <string name="protect_with_password">Protect with Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="important_if_you_forget_the_password_there_is_no_way_the_app_can_help_you_retrieve_it">Important: If you forget the password, there is no way the app can help you retrieve it</string>
+    <string name="resolve_malformed_to_dos">Resolve Malformed To-Dos</string>
+    <string name="fix">Fix</string>
+    <string name="delete_all">Delete All</string>
+    <string name="delete_all_malformed_todos">Delete all Malformed To-Dos</string>
+    <string name="confirm_deleting_malformed_to_dos">Do you really want to Delete ALL Malformed To-Dos</string>
+    <string name="operation_ongoing">Another Backup/Restore operation ongoing. Please wait…</string>
+    <string name="sunrise">Sunrise:</string>
+    <string name="no_notification">No Notification</string>
+    <string name="do_not_disturb_settings">Do not Disturb Settings</string>
+    <string name="include_hijri_date_in_calendar">Include Hijri Date in Calendar</string>
+    <string name="delete_only_this_date">Delete only this date (%s)</string>
+    <string name="delete_future_repetitions">Delete all future repetitions (after %s)</string>
+    <string name="delete_repetitive_to_do">Delete Repetitive To-Do</string>
+    <string name="share_anonymous_usage_data"><![CDATA[<b>Share anonymous usage data</b><br/><small>The data will help us make the app better</small><br />]]></string>
+    <string name="no_prayer_times_added">No prayer times added</string>
+    <string name="launching_share_menu_please_wait">Launching share menu please wait…</string>
+    <string name="notification_successfully_snoozed">Notification successfully snoozed</string>
+    <string name="snooze_for">Snooze for: </string>
+    <string name="snooze">Snooze</string>
+    <string name="share">Share</string>
+    <string name="nudges">Suggestions</string>
+    <string name="sunnah_nudges_channel_description">Sunnah suggestions</string>
+    <string name="suggested">Suggested</string>
+    <string name="reminder">Reminder</string>
+    <string name="too_many_requests">Too many requests. Please try again after %s. If you think this is a mistake please contact us at %s</string>
+    <string name="an_error_occurred">An error occurred. Please try again. If this persists please contact us at %s</string>
+    <string name="update_app">Please update app to the latest version</string>
+    <string name="location_updated_successfully">Location updated successfully</string>
+    <string name="fix_notifications">To-Do notifications are disabled. Enable notification permission in system settings to receive notifications</string>
+    <string name="don_t_show_this">Don\'t Show This</string>
+    <string name="fix_alarms_and_reminders">Sunnah Assistant is blocked from scheduling reminders by the system</string>
+    <string name="tap_to_fix_this">Tap to fix this</string>
+    <string name="enable_alarms_and_reminders_title">Enable Alarms and Reminders</string>
+    <string name="enable_alarms_and_reminders_message">To receive reminders at the correct time, please allow Sunnah Assistant to schedule alarms and reminders in the next screen.</string>
+    <string name="refreshing_notifications">Refreshing notifications…</string>
+    <string name="resources">Resources</string>
+    <string name="resources_menu_beta">Resources <span><sup><small>BETA</small></sup></span></string>
+    <string name="hadith">Hadith</string>
+    <string name="daily_hadith">Daily Hadith</string>
+    <string name="quran">Quran</string>
+    <string name="from_the_sunnah_revival_blog">From The Sunnah Revival Blog</string>
+    <string name="showing_cached_data_because_device_is_offline">Showing cached data because device is offline</string>
+    <string name="no_hadith_found">No Hadith Found</string>
+    <string name="try_again">Try again</string>
+    <string name="an_error_occurred_while_fetching_hadith">An error occurred while fetching hadith</string>
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="copy">Copy</string>
+    <string name="copy_label">Ayah</string>
+    <string name="copy_message">Copied to clipboard</string>
+    <string name="share_via">Share via</string>
+    <string name="select_translation">Tap here to Select Translation</string>
+    <string name="translation">Translation: %s</string>
+    <string name="translations_selected">%d translations selected</string>
+    <string name="ayah_number">Ayah %d</string>
+    <string name="dropdown_arrow">Dropdown Arrow</string>
+    <string name="surah_number">Surah Number %d</string>
+    <string name="translations">Translations</string>
+    <string name="bookmark_page">Bookmark page</string>
+    <string name="makki_verse_count">Makki - %s Verses</string>
+    <string name="madani_verse_count">Madani - %s Verses</string>
+    <string name="more">More</string>
+    <string name="tap_to_view_all_surahs">Tap to view all Surahs</string>
+    <string name="download_file_info_part1">For the best experience,</string>
+    <string name="download_file_info_part2">download</string>
+    <string name="download_file_info_part3">all Quran files now to enable smoother and offline reading.</string>
+    <string name="download_file_info_part4">Or continue</string>
+    <string name="download_file_info_part5">without downloading</string>
+    <string name="download_file_warning_message">Please note: Using mobile data may incur additional charges.</string>
+    <string name="select_files_to_download">Select Files to Download</string>
+    <string name="_604_quran_pages">604 Quran Pages</string>
+    <string name="translations_optional">Translations (Optional)</string>
+    <string name="download">Download</string>
+    <string name="continue_label">Continue</string>
+    <string name="don_t_show_this_again">Don\'t show this again</string>
+    <string name="background">Background</string>
+    <string name="downloading_quran_files_please_wait">Downloading Quran files. Please wait…</string>
+    <string name="downloaded">Downloaded: %1$s/%2$s %3$s</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="calculating">Calculating…</string>
+    <string name="extracting">Extracting…</string>
+    <string name="file_downloads_notification_channel">File Downloads</string>
+    <string name="used_in_showing_download_progress_when_downloading_files_in_sunnah_assistant">Used in showing download progress when downloading files in Sunnah Assistant</string>
+    <string name="tap_to_read_quran">Tap to read Quran</string>
+    <string name="downloading_failed">Downloading Quran files failed</string>
+    <string name="notifications_for_download_completion_and_errors">Notifications for download completion and errors</string>
+    <string name="page_loading_timeout_message">Page taking longer to load? Download all Quran pages for faster access and offline reading.</string>
+    <string name="preparing_quran_data_please_wait">Preparing Quran data for first-time setup. Please wait.</string>
+    <string name="download_all_pages">Download All Pages</string>
+    <string name="retry">Retry</string>
+    <string name="network_error">An error occurred. Please ensure you have a stable internet connection</string>
+    <string name="maintenance_notifications_channel_title">Maintenance Notifications</string>
+    <string name="maintenance_notifications_channel_description">Notifications used by the app to ensure reliable delivery of scheduled reminders</string>
+    <string name="downloading_translation_please_wait">Downloading %s translation… Please wait.</string>
+    <string name="checking_translation_updates">Checking translation updates…</string>
+    <string name="updating_translations">Updating translations…</string>
+    <string name="scroll_for_more_translations">Scroll to view more translations</string>
+    <string name="update_installed_translations">Update installed translations</string>
+    <string name="update_translation">Update translation</string>
+    <string name="translations_updates_available">%d translation updates available</string>
+    <string name="translations_up_to_date">Translations are up to date</string>
+    <string name="last_read">Last Read</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="ayahs">Ayahs</string>
+    <string name="pages">Pages</string>
+    <string name="no_bookmarked_ayahs">No bookmarked ayahs</string>
+    <string name="no_bookmarked_pages">No bookmarked pages</string>
+    <string name="page_number">Page %1$d</string>
+    <string name="quran_page">Quran Page</string>
+    <string name="pin_surah">Pin Surah</string>
+    <string name="unpin_surah">Unpin Surah</string>
+    <string name="pinned_surahs_limit_reached">Maximum 5 Surahs can be pinned. Please unpin a Surah first.</string>
+    <string name="adhkaar">Adhkaar</string>
+    <string name="tap_to_view_all_adhkaar_chapters">Tap to view all adhkaars</string>
+    <string name="reference">Reference</string>
+    <string name="page">" Page %1$d"</string>
+    <string name="no_bookmarked_adhkaar">No bookmarked Adhkaar</string>
+    <string name="adhkaar_chapter_number">Chapter %1$d</string>
+    <string name="you_can_only_pin_up_to_5_chapters">You can only pin up to 5 chapters</string>
+    <string name="font_settings">Font Settings</string>
+    <string name="arabic_text_font_size">Arabic Text Font Size</string>
+    <string name="translation_text_font_size">Translation Text Font Size</string>
+    <string name="footnote_text_font_size">Footnote Text Font Size</string>
+    <string name="preview">Preview</string>
+    <string name="font_settings_subtitle">Customize text sizes in Quran/Adhkaar translations for a better reading experience</string>
+    <string name="reset_to_defaults">Reset to Defaults</string>
+    <string name="share_all">Share All</string>
+    <string name="large">Large</string>
+    <string name="small">Small</string>
+    <string name="training_tap_to_read_quran">Tap a Surah to Read Quran</string>
+    <string name="training_double_tap_to_pin_surah">Double Tap to pin a Surah</string>
+    <string name="training_tap_to_read_adhkaar">Tap a Chapter to Read Adhkaar</string>
+    <string name="training_double_tap_to_pin_adhkaar">Double Tap to pin a Chapter</string>
+    <string name="donate">Donate</string>
+    <string name="donation_disclosure_title">Third-party donation</string>
+    <string name="donation_disclosure_message">You are leaving Sunnah Assistant and opening a charity website. Donations are processed by the external organization on their website, not by this app.</string>
+    <string name="donation_disclosure_continue">Continue</string>
+    <string name="search">Search</string>
+    <string name="search_chapter_or_category">Search by chapter or category</string>
+    <string name="search_surah">Search surah</string>
+    <string name="search_bookmarks">Search bookmarks</string>
+    <string name="search_adhkaar_bookmarks">Search adhkaar bookmarks</string>
+    <string name="read_quran">Read Quran</string>
+    <string name="read_adhkaar">Read Adhkaar</string>
+    <string name="tap_the_page_to_enter_leave_full_screen_mode">Tap the page to enter/leave full screen mode</string>
+    <string name="hold_long_tap_ayah_to_view_its_translation">Hold (Long Tap) ayah to view its translation</string>
+    <string name="got_it">Got it</string>
+    <string name="swipe_to_navigate_between_adhkaar_chapters">Swipe to navigate between Adhkaar Chapters</string>
+    <string name="suggested_actions">Suggested Actions</string>
+    <string name="weekly_friday_reminder">Weekly Friday Reminder</string>
+    <string name="suratul_mulk_daily_reminder">Suratul Mulk Daily Reminder</string>
+    <string name="suratul_sajdah_daily_reminder">Suratul Sajdah Daily Reminder</string>
+    <string name="evening_adhkaar_daily_reminder">Evening Adhkaar Daily Reminder</string>
+    <string name="morning_adhkaar_daily_reminder">Morning Adhkaar Daily Reminder</string>
+    <string name="set_reminder_for_every_friday">Set reminder for every Friday</string>
+    <string name="set_daily_reminder">Set Daily Reminder</string>
+    <string name="set_reminder">Set Reminder</string>
+    <string name="remind_others">Remind Others</string>
+    <string name="remind_others_to_read_suratul_kahf">Remind others to read Suratul Kahf</string>
+    <string name="remind_others_to_read_morning_adhkaar">Remind others to read Morning Adhkaar</string>
+    <string name="remind_others_to_read_evening_adhkaar">Remind others to read Evening Adhkaar</string>
+    <string name="remind_others_to_read_suratul_mulk">Remind others to read Suratul Mulk and Al-Sajdah</string>
+    <string name="set_weekly_reminder">Set Weekly Reminder</string>
+    <string name="suratul_kahf_reminder_message">I am reminding you to read Surah Al Kahf its the Sunnah of our beloved Prophet Muhammad ﷺ.\n\nIt was narrated from Abu Sa\'eed al-Khduri that the Prophet (peace and blessings of Allaah be upon him) said:\n\n"Whoever reads Soorat al-Kahf on Friday, he will be illuminated with light between the two Fridays."\n\nNarrated by al-Haakim; classed as saheeh by al-Albaani in Saheeh al-Targheeb, 836</string>
+    <string name="suratul_mulk_and_sajdah_reminder_message">I am reminding you to read Surah Al Mulk and Al Sajdah its the Sunnah of our beloved Prophet Muhammad (peace and blessings of Allaah be upon him).\n\nIt was narrated that \'Abd-Allaah ibn Mas\'ood said:\n\nWhoever reads Tabaarak allaahi bi yadihi\'l-mulk [i.e., Soorat al-Mulk] every night, Allaah will protect him from the torment of the grave. At the time of the Messenger of Allaah (peace and blessings of Allaah be upon him) we used to call it al-maani\'ah (that which protects). In the Book of Allaah it is a soorah which, whoever recites it every night has done very well.\n\nNarrated by al-Nasaa\'i, 6/179\n\nIt was narrated from Jaabir, that the Prophet (peace and blessings of Allaah be upon him) never used to sleep until he had recited Alif-laam-meem tanzeel [al-Sajdah] and Tabaarak alladhi bi yadihi\'l-mulk [al-Mulk].\n\nNarrated by al-Tirmidhi, 2892; Ahmad, 14249. Al-Albaani said in Saheeh al-Tirmidhi (3/6) that this hadeeth is saheeh.</string>
+    <string name="morning_evening_adhkaar_reminder_message">I am reminding you to recite the morning and evening adhkaar, it is the Sunnah of our beloved Prophet Muhammad ﷺ.\n\nAllah says in Surah Qaf (50:39):\n\nفَٱصْبِرْ عَلَىٰ مَا يَقُولُونَ وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ ٱلشَّمْسِ وَقَبْلَ ٱلْغُرُوبِ\n\n"So be patient, [O Muḥammad], over what they say and exalt [Allāh] with praise of your Lord before the rising of the sun and before its setting."\n\nAnd in Surah Al-Ahzab (33:41):\n\nيَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ ٱذْكُرُوا۟ ٱللَّهَ ذِكْرًۭا كَثِيرًۭا\n\n"O you who have believed, remember Allāh with much remembrance"</string>
+    <string name="app_promotional_message">📱 Sent from Sunnah Assistant App:\n\nSunnah Assistant helps you manage your to-dos, receive prayer time alerts, and set Sunnah reminders.\n\nDownload here: %s</string>
+    <string name="reminder_to_read_suratul_kahf_title">Reminder to Read Suratul Kahf</string>
+    <string name="sunnah_assistant_promo">I invite you to download Sunnah Assistant Android App. The app enables you: \n\n- To manage to-dos\n- An option to receive Salah (prayer) time alerts. \n- An option to add Sunnah reminders such as Reminders to fast on Mondays and Thursdays and reading Suratul Kahf on Friday\n- Many more other features \n\nDownload here for free:- %1$s</string>
+    <string name="read_suratul_sajdah">Read Suratul Sajdah</string>
+    <string name="read_suratul_mulk">Read Suratul Mulk</string>
+    <string name="recommended_every_night">Recommended every night</string>
+    <string name="read_more_on_suratul_mulk">Tap here to read more on the importance of reading Suratul Mulk and Al Sajdah every night</string>
+    <string name="prayer_time_mode">Time Mode</string>
+    <string name="custom_time">Custom Time</string>
+    <string name="prayer_time_changes_disclaimer">Changes here will apply to upcoming (future) prayer times only, not past ones.</string>
+    <string name="nudge_enable_prayer_alerts">Tap here to enable prayer time alerts</string>
+    <string name="nudge_add_template_todo">Tap here to add "%1$s" to your to-do list</string>
+    <string name="tap_here_to_read_more_on_morning_adhkaar">Tap here to read more on the importance of reading Morning Adhkaar</string>
+    <string name="tap_here_to_read_more_on_evening_adhkaar">Tap here to read more on the importance of reading Evening Adhkaar</string>
+    <string name="tap_here_to_read_more_on_quran">Tap here to read more on the importance of reading Quran</string>
+    <string-array name="categories">
+        <item>Uncategorized</item>
+        <item>Sunnah</item>
+<!--        fragile-->
+        <item>Prayer</item>
+<!--        fragile-->
+        <item>Other</item>
+    </string-array>
+    <string-array name="frequency">
+        <item>No Repeat</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+    <string-array name="calculation_methods">
+        <item>Muslim World League (default)</item>
+        <item>Egyptian General Authority of Survey.</item>
+        <item>University of Islamic Sciences, Karachi</item>
+        <item>Umm al-Qura University, Makkah </item>
+        <item>United Arab Emirates</item>
+        <item>Moonsighting Committee</item>
+        <item>Islamic Society of North America (ISNA)</item>
+        <item>Kuwait</item>
+        <item>Qatar</item>
+        <item>Singapore</item>
+    </string-array>
+    <string-array name="asr_juristic_method">
+        <item>Standard(Hanbali, Shafi, Maliki)</item>
+        <item>Hanafi</item>
+    </string-array>
+    <string-array name="settings_lists">
+        <item>Hijri Date Settings</item>
+        <item>Prayer Time Settings</item>
+        <item>Customize Reminder Categories</item>
+        <item>Notifications Settings</item>
+        <item>Layout and Theme Settings</item>
+        <item>Font Settings</item>
+        <item>Backup/ Restore Data (Experimental)</item>
+        <item>Privacy Settings</item>
+        <item>Contact Us</item>
+    </string-array>
+    <string-array name="backup_restore_options">
+        <item>Backup App Data to Internal Storage</item>
+        <item>Restore App Data</item>
+    </string-array>
+    <string-array name="layout_options">
+        <item>Expanded View</item>
+        <item>Condensed View</item>
+    </string-array>
+    <string-array name="theme_options">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="widget_theme_options">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Transparent</item>
+    </string-array>
+    <string-array name="vibration_options">
+        <item>On</item>
+        <item>Off</item>
+    </string-array>
+    <string-array name="priority_options">
+        <item>No Notification at all</item>
+        <item>No sound</item>
+        <item>Makes a sound (Recommended)</item>
+        <item>Makes a sound and heads-up notification</item>
+    </string-array>
+    <string-array name="latitude_options">
+        <item>Middle of the Night</item>
+        <item>One Seventh of the Night</item>
+        <item>Angle Based (Default)</item>
+    </string-array>
+    <string-array name="prayer_names">
+        <item>Fajr Prayer</item>
+        <item>Dhuhr Prayer</item>
+        <item>Asr Prayer</item>
+        <item>Maghrib Prayer</item>
+        <item>Isha Prayer</item>
+    </string-array>
+    <string-array name="do_not_disturb_minutes">
+        <item>0 Minutes</item>
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>45 Minutes</item>
+        <item>60 Minutes</item>
+    </string-array>
+    <string-array name="mark_as_complete_options">
+        <item>No</item>
+        <item>Yes</item>
+    </string-array>
+    <string-array name="gregorian_month_names">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+    <string-array name="day_name_abbr">
+        <item>S</item>
+        <item>M</item>
+        <item>T</item>
+        <item>W</item>
+        <item>T</item>
+        <item>F</item>
+        <item>S</item>
+    </string-array>
+    <string-array name="notify_options">
+        <item>No Notification</item>
+        <item>On Time</item>
+        <item>5 Minutes Before</item>
+        <item>15 Minutes Before</item>
+        <item>30 Minutes Before</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="snooze_options">
+        <item>5 Minutes</item>
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>45 Minutes</item>
+        <item>1 Hour</item>
+    </string-array>
+    <string-array name="offset_options">
+        <item>Before</item>
+        <item>After</item>
+    </string-array>
+    <string-array name="prayer_time_mode_options">
+        <item>Automatic</item>
+        <item>Custom</item>
+    </string-array>
 </resources>

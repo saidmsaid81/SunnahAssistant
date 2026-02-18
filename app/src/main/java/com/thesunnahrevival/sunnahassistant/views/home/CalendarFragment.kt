@@ -34,16 +34,17 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val selectedToDoDate = mViewModel.selectedToDoDate
+        super.onViewCreated(view, savedInstanceState)
+        val selectedToDoDate = mainActivityViewModel.selectedToDoDate
         mBinding.calendarView.setupWithListeners(
             listeners = this,
             startMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
             endMonth = YearMonth.of(selectedToDoDate.year, selectedToDoDate.monthValue),
-            showHijriDate = mViewModel.settingsValue?.includeHijriDateInCalendar ?: true
+            showHijriDate = mainActivityViewModel.settingsValue?.includeHijriDateInCalendar ?: true
         )
         mBinding.calendarView.scrollToSpecificDate(selectedToDoDate)
 
-        mViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
+        mainActivityViewModel.triggerCalendarUpdate.observe(viewLifecycleOwner) {
             mBinding.calendarView.notifyCalendarChanged()
         }
     }
@@ -54,7 +55,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
             val calendar = Calendar.getInstance(Locale.US)
             calendar.set(day.date.year, day.date.month.ordinal, day.day)
 
-            val thereToDosOnDay = mViewModel.thereToDosOnDay(
+            val thereToDosOnDay = mainActivityViewModel.thereToDosOnDay(
                 calendar.get(Calendar.DAY_OF_WEEK).toString(),
                 day.day,
                 day.date.month.ordinal,
@@ -71,7 +72,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
     }
 
     override fun onDateSelected(day: CalendarDay) {
-        mViewModel.setToDoParameters(date = day.date.toEpochDay() * 86400000)
+        mainActivityViewModel.setToDoParameters(date = day.date.toEpochDay() * 86400000)
 
         val gregorianCalendar = GregorianCalendar(
             day.date.year,
@@ -82,7 +83,7 @@ class CalendarFragment : TodayFragment(), CalendarView.Listeners {
         mBinding.selectedDate.visibility = VISIBLE
         mBinding.selectedDate.text = generateDateText(
             gregorianCalendar,
-            mViewModel.settingsValue?.isDisplayHijriDate ?: true
+            mainActivityViewModel.settingsValue?.isDisplayHijriDate ?: true
         )
     }
 }

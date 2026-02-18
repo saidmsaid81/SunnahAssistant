@@ -14,23 +14,45 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.Madhab
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.dto.PrayerTimeCalculator
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentPrayerTimeSettingsBinding
+import com.thesunnahrevival.sunnahassistant.utilities.FASTING_MONDAYS_THURSDAYS_ID
+import com.thesunnahrevival.sunnahassistant.utilities.PRAYING_DHUHA_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_EVENING_ADHKAAR_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_MORNING_ADHKAAR_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_QURAN_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_KAHF_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_SURATUL_MULK_ID
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
+import com.thesunnahrevival.sunnahassistant.utilities.extractNumber
+import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.dialogs.ConfirmationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterLocationDialogFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterOffsetFragment.Companion.CURRENT_VALUE
-import java.lang.Integer.parseInt
+import com.thesunnahrevival.sunnahassistant.views.dialogs.TimePickerFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.Date
+import java.util.TreeSet
 
 open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListener,
-    EnterOffsetFragment.EnterOffsetFragmentListener {
+    EnterOffsetFragment.EnterOffsetFragmentListener,
+    EnterLocationDialogFragment.EnterLocationDialogListener,
+    TimePickerFragment.OnTimeSetListener {
 
     private val yesNoOptions = arrayOf("", "")
+    private var pendingPrayerAlertsActivation = false
+    private var pendingCustomTimePrayerIndex = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,16 +64,17 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
             inflater, R.layout.fragment_prayer_time_settings, container, false
         )
 
-        mViewModel.isPrayerSettingsUpdated = false
+        mainActivityViewModel.isPrayerSettingsUpdated = false
         binding.prayers = resources.getStringArray(R.array.prayer_names)
         binding.offsetOptions = resources.getStringArray(R.array.offset_options)
         binding.hoursLabel = getString(R.string.hours)
         binding.minutesLabel = getString(R.string.minutes)
         binding.onTimeLabel = resources.getStringArray(R.array.notify_options)[1]
+        binding.timeModeOptions = resources.getStringArray(R.array.prayer_time_mode_options)
 
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
             if (it != null) {
-                mViewModel.settingsValue = it
+                mainActivityViewModel.settingsValue = it
                 binding.settings = it
                 binding.setCalculationMethod(resources.getStringArray(R.array.calculation_methods)[it.calculationMethod.ordinal])
                 binding.setAsrCalculationMethod(
@@ -64,26 +87,19 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
         binding.activatePrayerTimeAlerts.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
-                val settingsValue = mViewModel.settingsValue ?: return@setOnCheckedChangeListener
-                binding.activatePrayerTimeAlerts.isChecked =
-                    settingsValue.isAutomaticPrayerAlertsEnabled
-                settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
-                if (isChecked) {
-                    settingsValue.generatePrayerToDosAfter =
-                        Date(System.currentTimeMillis() - 86400000)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            android.Manifest.permission.POST_NOTIFICATIONS
-                        ) == PackageManager.PERMISSION_DENIED
-                    ) {
-                        mViewModel.incrementNotificationPermissionRequestsCount()
-                        requireActivity().requestPermissions(
-                            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                            REQUEST_NOTIFICATION_PERMISSION_CODE
-                        )
-                    }
+                val settingsValue = mainActivityViewModel.settingsValue ?: return@setOnCheckedChangeListener
+
+                if (isChecked && settingsValue.formattedAddress.isNullOrBlank()) {
+                    // Location not set - show dialog first
+                    pendingPrayerAlertsActivation = true
+                    binding.activatePrayerTimeAlerts.isChecked = false
+                    val dialogFragment = EnterLocationDialogFragment()
+                    dialogFragment.setListener(this)
+                    dialogFragment.show(requireActivity().supportFragmentManager, "location_dialog")
+                    return@setOnCheckedChangeListener
                 }
-                updateSettings()
+
+                activatePrayerTimeAlerts(settingsValue, isChecked)
             }
         }
 
@@ -130,15 +146,105 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         binding.asrNotificationSettings.setOnClickListener(this)
         binding.maghribNotificationSettings.setOnClickListener(this)
         binding.ishaNotificationSettings.setOnClickListener(this)
+
+        binding.fajrTimeModeSettings.setOnClickListener(this)
+        binding.dhuhrTimeModeSettings.setOnClickListener(this)
+        binding.asrTimeModeSettings.setOnClickListener(this)
+        binding.maghribTimeModeSettings.setOnClickListener(this)
+        binding.ishaTimeModeSettings.setOnClickListener(this)
+
+        binding.fajrCustomTimeSettings.setOnClickListener(this)
+        binding.dhuhrCustomTimeSettings.setOnClickListener(this)
+        binding.asrCustomTimeSettings.setOnClickListener(this)
+        binding.maghribCustomTimeSettings.setOnClickListener(this)
+        binding.ishaCustomTimeSettings.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
-        if (view != null) {
-            val notifyOptions = resources.getStringArray(R.array.notify_options)
-            showPopup(
-                notifyOptions,
-                view.id, view.id
-            )
+        if (view == null) {
+            return
+        }
+        when (view.id) {
+            R.id.fajr_time_mode_settings -> showTimeModePopup(0, view.id)
+            R.id.dhuhr_time_mode_settings -> showTimeModePopup(1, view.id)
+            R.id.asr_time_mode_settings -> showTimeModePopup(2, view.id)
+            R.id.maghrib_time_mode_settings -> showTimeModePopup(3, view.id)
+            R.id.isha_time_mode_settings -> showTimeModePopup(4, view.id)
+            R.id.fajr_custom_time_settings -> showCustomTimePicker(0)
+            R.id.dhuhr_custom_time_settings -> showCustomTimePicker(1)
+            R.id.asr_custom_time_settings -> showCustomTimePicker(2)
+            R.id.maghrib_custom_time_settings -> showCustomTimePicker(3)
+            R.id.isha_custom_time_settings -> showCustomTimePicker(4)
+            else -> {
+                val notifyOptions = resources.getStringArray(R.array.notify_options)
+                showPopup(notifyOptions, view.id, view.id)
+            }
+        }
+    }
+
+    private fun showTimeModePopup(prayerIndex: Int, viewId: Int) {
+        pendingCustomTimePrayerIndex = prayerIndex
+        val timeModeOptions = resources.getStringArray(R.array.prayer_time_mode_options)
+        showPopup(timeModeOptions, viewId, viewId)
+    }
+
+    private fun showCustomTimePicker(prayerIndex: Int) {
+        pendingCustomTimePrayerIndex = prayerIndex
+        val currentTime = getCustomTimeForPrayer(prayerIndex)
+        val timePickerFragment = TimePickerFragment()
+        timePickerFragment.arguments = Bundle().apply {
+            putString(TimePickerFragment.TIMESET, currentTime)
+        }
+        timePickerFragment.setListener(this)
+        timePickerFragment.show(requireActivity().supportFragmentManager, "customTimePicker")
+    }
+
+    private fun getCustomTimeForPrayer(prayerIndex: Int): String? {
+        return when (prayerIndex) {
+            0 -> mainActivityViewModel.settingsValue?.fajrCustomTime
+            1 -> mainActivityViewModel.settingsValue?.dhuhrCustomTime
+            2 -> mainActivityViewModel.settingsValue?.asrCustomTime
+            3 -> mainActivityViewModel.settingsValue?.maghribCustomTime
+            4 -> mainActivityViewModel.settingsValue?.ishaCustomTime
+            else -> null
+        }
+    }
+
+    override fun onTimeSet(timeString: String) {
+        if (pendingCustomTimePrayerIndex >= 0) {
+            val timeIn24Hour = convertTo24HourFormat(timeString)
+            setCustomTimeForPrayer(pendingCustomTimePrayerIndex, timeIn24Hour)
+            pendingCustomTimePrayerIndex = -1
+            updateSettings()
+        }
+    }
+
+    private fun convertTo24HourFormat(timeString: String): String {
+        return try {
+            if (timeString.contains("am", ignoreCase = true) || timeString.contains("pm", ignoreCase = true)) {
+                val inputFormat = java.text.SimpleDateFormat("hh:mm a", java.util.Locale.ENGLISH)
+                val outputFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.ENGLISH)
+                val date = inputFormat.parse(timeString)
+                if (date != null) {
+                    outputFormat.format(date)
+                } else {
+                    timeString
+                }
+            } else {
+                timeString
+            }
+        } catch (_: Exception) {
+            timeString.replace(" am", "").replace(" pm", "").replace(" AM", "").replace(" PM", "")
+        }
+    }
+
+    private fun setCustomTimeForPrayer(prayerIndex: Int, time: String?) {
+        when (prayerIndex) {
+            0 -> mainActivityViewModel.settingsValue?.fajrCustomTime = time
+            1 -> mainActivityViewModel.settingsValue?.dhuhrCustomTime = time
+            2 -> mainActivityViewModel.settingsValue?.asrCustomTime = time
+            3 -> mainActivityViewModel.settingsValue?.maghribCustomTime = time
+            4 -> mainActivityViewModel.settingsValue?.ishaCustomTime = time
         }
     }
 
@@ -148,7 +254,7 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
         enterOffsetFragment.arguments = Bundle().apply {
             putInt(
                 CURRENT_VALUE,
-                mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
+                mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.getOrNull(
                     prayerOffsetIndex
                 ) ?: 0
             )
@@ -166,49 +272,210 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
         when (item?.groupId) {
             R.id.calculation_details -> {
-                mViewModel.settingsValue?.calculationMethod =
+                mainActivityViewModel.settingsValue?.calculationMethod =
                     CalculationMethod.values()[calculationMethodsStrings.indexOf(item.title.toString())]
             }
             R.id.asr_calculation_details -> {
-                mViewModel.settingsValue?.asrCalculationMethod =
+                mainActivityViewModel.settingsValue?.asrCalculationMethod =
                     Madhab.values()[asrMethods.indexOf(item.title.toString())]
             }
             R.id.higher_latitude_details -> {
-                mViewModel.settingsValue?.latitudeAdjustmentMethod =
+                mainActivityViewModel.settingsValue?.latitudeAdjustmentMethod =
                     latitudeMethods.indexOf(item.title.toString())
             }
             R.id.do_not_disturb -> {
-                mViewModel.settingsValue?.doNotDisturbMinutes = parseInt(item.title.toString())
+                mainActivityViewModel.settingsValue?.doNotDisturbMinutes = item.title?.extractNumber() ?: 0
             }
             R.id.fajr_notification_settings -> setPrayerOffset(0, item)
             R.id.dhuhr_notification_settings -> setPrayerOffset(1, item)
             R.id.asr_notification_settings -> setPrayerOffset(2, item)
             R.id.maghrib_notification_settings -> setPrayerOffset(3, item)
             R.id.isha_notification_settings -> setPrayerOffset(4, item)
+            R.id.fajr_time_mode_settings,
+            R.id.dhuhr_time_mode_settings,
+            R.id.asr_time_mode_settings,
+            R.id.maghrib_time_mode_settings,
+            R.id.isha_time_mode_settings -> {
+                handleTimeModeSelection(item)
+            }
         }
         updateSettings()
         return true
     }
 
+    private fun handleTimeModeSelection(item: MenuItem) {
+        val timeModeOptions = resources.getStringArray(R.array.prayer_time_mode_options)
+        val selectedIndex = timeModeOptions.indexOf(item.title.toString())
+        if (selectedIndex == 0) {
+            setCustomTimeForPrayer(pendingCustomTimePrayerIndex, null)
+        } else if (selectedIndex == 1) {
+            showCustomTimePicker(pendingCustomTimePrayerIndex)
+        }
+    }
+
     private fun setPrayerOffset(prayerTimeIndex: Int, item: MenuItem) {
         val notifyOptions = resources.getStringArray(R.array.notify_options)
-        mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, true)
+        mainActivityViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, true)
 
         when (notifyOptions.indexOf(item.title)) {
-            0 -> mViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, false)
-            1 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, 0)
-            2 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -5)
-            3 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -15)
-            4 -> mViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -30)
+            0 -> mainActivityViewModel.settingsValue?.enablePrayerTimeAlertsFor?.set(prayerTimeIndex, false)
+            1 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, 0)
+            2 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -5)
+            3 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -15)
+            4 -> mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes?.set(prayerTimeIndex, -30)
             else -> showEnterOffsetFragment(prayerTimeIndex)
         }
     }
 
     private fun updateSettings() {
-        mViewModel.settingsValue?.let {
-            mViewModel.updateSettings(it)
-            mViewModel.isPrayerSettingsUpdated = true
+        mainActivityViewModel.settingsValue?.let {
+            mainActivityViewModel.updateSettings(it)
+            mainActivityViewModel.isPrayerSettingsUpdated = true
         }
+    }
+
+    private fun activatePrayerTimeAlerts(settingsValue: AppSettings, isChecked: Boolean) {
+        settingsValue.isAutomaticPrayerAlertsEnabled = isChecked
+        if (isChecked) {
+            settingsValue.generatePrayerToDosAfter =
+                Date(System.currentTimeMillis() - 86400000)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                mainActivityViewModel.incrementNotificationPermissionRequestsCount()
+                requireActivity().requestPermissions(
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_NOTIFICATION_PERMISSION_CODE
+                )
+            }
+            createAutomaticSunnahToDos(settingsValue)
+        }
+        updateSettings()
+    }
+
+    private fun createAutomaticSunnahToDos(settingsValue: AppSettings) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val prayerTimes = getPrayerTimesForToday(settingsValue) ?: return@launch
+            val today = LocalDate.now()
+            val templateToDos = TemplateToDos().getTemplateToDos(requireContext())
+
+            val fajrTime = prayerTimes[0]
+            val dhuhrTime = prayerTimes[1]
+            val asrTime = prayerTimes[2]
+            val maghribTime = prayerTimes[3]
+            val ishaTime = prayerTimes[4]
+
+            val dhuhaTime = getDhuhaTime(fajrTime, dhuhrTime)
+
+            val timeByTemplateId = mutableMapOf(
+                READING_QURAN_ID to addMinutes(fajrTime, 30),
+                FASTING_MONDAYS_THURSDAYS_ID to addMinutes(maghribTime, 30),
+                READING_MORNING_ADHKAAR_ID to addMinutes(fajrTime, 25),
+                READING_EVENING_ADHKAAR_ID to addMinutes(asrTime, 25),
+                READING_SURATUL_KAHF_ID to addMinutes(fajrTime, 45),
+                READING_SURATUL_MULK_ID to addMinutes(ishaTime, 30)
+            )
+
+            if (dhuhaTime != null) {
+                timeByTemplateId[PRAYING_DHUHA_ID] = dhuhaTime
+            }
+
+            for ((templateId, timeInSeconds) in timeByTemplateId) {
+                val existingToDo = mainActivityViewModel.getToDoById(templateId)
+                if (existingToDo != null) {
+                    continue
+                }
+
+                val template = templateToDos[templateId]?.second ?: continue
+                val endsOnDate =
+                    calculateEndsOnDate(today, template.frequency, template.customScheduleDays)
+
+                val automaticToDo = template.copy(
+                    timeInSeconds = timeInSeconds,
+                    isReminderEnabled = true,
+                    offsetInMinutes = 0,
+                    repeatsFromDate = today.toString(),
+                    endsOnDate = endsOnDate,
+                    completedDates = TreeSet(),
+                    deletedDates = TreeSet(),
+                    isAutomaticToDo = true
+                )
+                mainActivityViewModel.insertToDo(automaticToDo)
+            }
+        }
+    }
+
+    private fun getPrayerTimesForToday(settingsValue: AppSettings): List<Long>? {
+        val prayerNames = resources.getStringArray(R.array.prayer_names)
+        val categoryName = resources.getStringArray(R.array.categories).getOrNull(2) ?: return null
+        val calculator = PrayerTimeCalculator(settingsValue, prayerNames, categoryName)
+        val today = LocalDate.now()
+        val prayerToDos = calculator.getPrayerTimeToDos(
+            today.dayOfMonth,
+            today.month.ordinal,
+            today.year,
+            BooleanArray(5) { true },
+            IntArray(5)
+        )
+        if (prayerToDos.size < 5) {
+            return null
+        }
+        return prayerToDos.map { it.timeInSeconds }
+    }
+
+    private fun addMinutes(timeInSeconds: Long, minutes: Int): Long {
+        return timeInSeconds + (minutes * 60L)
+    }
+
+    private fun getDhuhaTime(fajrTime: Long, dhuhrTime: Long): Long? {
+        val eightAmTime = getTimestampInSeconds("08:00")
+        return if (eightAmTime in fajrTime..dhuhrTime) {
+            eightAmTime
+        } else {
+            null
+        }
+    }
+
+    private fun calculateEndsOnDate(
+        startDate: LocalDate,
+        frequency: Frequency?,
+        customScheduleDays: TreeSet<Int>?
+    ): String {
+        if (frequency == Frequency.Daily) {
+            return startDate.plusDays(2).toString()
+        }
+
+        if (frequency == Frequency.Weekly && !customScheduleDays.isNullOrEmpty()) {
+            var currentDate = startDate
+            var occurrences = 0
+            while (occurrences < 3) {
+                val dayOfWeek = ((currentDate.dayOfWeek.value % 7) + 1)
+                if (customScheduleDays.contains(dayOfWeek)) {
+                    occurrences += 1
+                    if (occurrences == 3) {
+                        return currentDate.toString()
+                    }
+                }
+                currentDate = currentDate.plusDays(1)
+            }
+        }
+
+        return startDate.plusDays(2).toString()
+    }
+
+    override fun onLocationSaved() {
+        if (pendingPrayerAlertsActivation) {
+            pendingPrayerAlertsActivation = false
+            mainActivityViewModel.settingsValue?.let { settingsValue ->
+                activatePrayerTimeAlerts(settingsValue, true)
+            }
+        }
+    }
+
+    override fun onLocationDialogCancelled() {
+        pendingPrayerAlertsActivation = false
     }
 
 
@@ -248,18 +515,18 @@ open class PrayerTimeSettingsFragment : FragmentWithPopups(), View.OnClickListen
 
     override fun onPause() {
         super.onPause()
-        if (mViewModel.isPrayerSettingsUpdated)
-            mViewModel.updatePrayerTimesData()
+        if (mainActivityViewModel.isPrayerSettingsUpdated)
+            mainActivityViewModel.updatePrayerTimesData()
     }
 
     override fun onOffsetSave(offsetInMinutes: Int, index: Int) {
         val prayerTimeOffsetsInMinutes =
-            mViewModel.settingsValue?.prayerTimeOffsetsInMinutes ?: return
+            mainActivityViewModel.settingsValue?.prayerTimeOffsetsInMinutes ?: return
         if (index in prayerTimeOffsetsInMinutes.indices) {
-            mViewModel.settingsValue?.let {
+            mainActivityViewModel.settingsValue?.let {
                 prayerTimeOffsetsInMinutes[index] = offsetInMinutes
-                mViewModel.updateSettings(it)
-                mViewModel.isPrayerSettingsUpdated = true
+                mainActivityViewModel.updateSettings(it)
+                mainActivityViewModel.isPrayerSettingsUpdated = true
             }
         }
     }

@@ -6,10 +6,14 @@ import android.content.Context
 import android.content.res.Configuration
 import android.media.RingtoneManager
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,12 +26,19 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository
-import com.thesunnahrevival.sunnahassistant.data.SunnahAssistantRepository.Companion.getInstance
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.GeocodingData
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.dto.GeocodingData
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Ayah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Surah
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.repositories.FlagRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.QuranTranslationRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository.Companion.getInstance
+import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.TRACK_READ_SURAH_PREFIX
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME
 import com.thesunnahrevival.sunnahassistant.utilities.DB_NAME_TEMP
 import com.thesunnahrevival.sunnahassistant.utilities.Encryption
@@ -56,6 +67,14 @@ import kotlin.math.roundToLong
 
 class SunnahAssistantViewModel(application: Application) : AndroidViewModel(application) {
     private val mRepository: SunnahAssistantRepository = getInstance(application)
+    private val flagRepository: FlagRepository = FlagRepository.getInstance(application)
+
+    private val resourcesRepository: ResourcesRepository = ResourcesRepository.getInstance(application)
+
+    private val quranTranslationRepository = QuranTranslationRepository.getInstance(getApplication())
+
+    private val surahRepository: SurahRepository = SurahRepository.getInstance(application)
+
     private val mutex = Mutex()
 
     var selectedToDo =
@@ -88,6 +107,26 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         }
 
     val triggerCalendarUpdate = MutableLiveData<Boolean>()
+    val statusBarHeight = MutableLiveData(0)
+    val navBarHeight = MutableLiveData(0)
+
+    private val _selectedAyahId: MutableLiveData<Int?> = MutableLiveData()
+    val selectedAyahId: LiveData<Int?> = _selectedAyahId
+
+    private var _currentQuranPage: Int? = null
+    val selectedSurah: MutableLiveData<Surah> = MutableLiveData()
+
+    var quranBookmarksSelectedTabIndex by mutableIntStateOf(0)
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            resourcesRepository.prepopulateResourcesData()
+            val todayDate = LocalDate.now().toString()
+            flagRepository.clearFlagsMatching(
+                Regex("$TRACK_READ_SURAH_PREFIX-(?!$todayDate).*")
+            )
+        }
+    }
 
     fun setToDoParameters(date: Long? = null, category: String? = null) {
         val currentDateParameter =
@@ -172,11 +211,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         val settings = settingsValue
         if (settings != null) {
             return mRepository.getSunriseTime(
-                settings.latitude.toDouble(),
-                settings.longitude.toDouble(),
-                settings.calculationMethod,
-                settings.asrCalculationMethod,
-                settings.latitudeAdjustmentMethod,
+                settings = settings,
                 selectedToDoDate.dayOfMonth,
                 selectedToDoDate.month.ordinal,
                 selectedToDoDate.year
@@ -247,12 +282,13 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
         viewModelScope.launch(Dispatchers.IO) {
             val message: String
-            val clientRetryFromTimeMilliseconds = mRepository.getLongFlag(RETRY_AFTER_KEY) ?: 0
+            val clientRetryFromTimeMilliseconds = flagRepository.getLongFlag(RETRY_AFTER_KEY) ?: 0
 
             if (System.currentTimeMillis() < clientRetryFromTimeMilliseconds) {
                 message = String.format(
                     tooManyRequestString,
-                    formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds)
+                    formatTimeInMilliseconds(getContext(), clientRetryFromTimeMilliseconds),
+                    SUPPORT_EMAIL
                 )
             } else {
                 val response =
@@ -274,7 +310,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                             clientRetryFromTimeMilliseconds =
                                 System.currentTimeMillis() + retryAfterMilliSecondsHeader
 
-                            mRepository.setFlag(RETRY_AFTER_KEY, clientRetryFromTimeMilliseconds)
+                            flagRepository.setFlag(RETRY_AFTER_KEY, clientRetryFromTimeMilliseconds)
                         }
                         message = String.format(
                             tooManyRequestString,
@@ -309,15 +345,15 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
     }
 
     suspend fun getNotificationPermissionRequestsCount(): Long {
-        return mRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0;
+        return flagRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0;
     }
 
     fun incrementNotificationPermissionRequestsCount() {
         viewModelScope.launch(Dispatchers.IO) {
             var notificationPermissionRequestCount =
-                mRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
+                flagRepository.getLongFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY) ?: 0
             if (notificationPermissionRequestCount != -1L) {
-                mRepository.setFlag(
+                flagRepository.setFlag(
                     NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY,
                     ++notificationPermissionRequestCount
                 )
@@ -327,7 +363,7 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
 
     fun hideFixNotificationsBanner() {
         viewModelScope.launch(Dispatchers.IO) {
-            mRepository.setFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY, -1)
+            flagRepository.setFlag(NOTIFICATION_PERMISSION_REQUESTS_COUNT_KEY, -1)
         }
     }
 
@@ -351,9 +387,15 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
             }
 
+            val notificationTitle = if (toDo.isAutomaticToDo) {
+                getContext().getString(R.string.suggested)
+            } else {
+                getContext().getString(R.string.reminder)
+            }
+
             ReminderManager.getInstance().scheduleReminder(
                 getContext(),
-                getContext().getString(R.string.reminder),
+                notificationTitle,
                 mapOf(Pair(id, "${getContext().getString(R.string.snooze)}: ${toDo.name}")),
                 mapOf(Pair(id, toDo.category ?: "Uncategorized")),
                 System.currentTimeMillis() + (timeInMinutes * 60 * 1000),
@@ -403,9 +445,17 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         get() {
             val connectivityManager = getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return connectivityManager.activeNetworkInfo == null ||
-                    !connectivityManager.activeNetworkInfo!!.isConnected
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val activeNetwork = connectivityManager.activeNetwork
+                val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+                activeNetwork == null || networkCapabilities == null ||
+                        !networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            } else {
+                connectivityManager.activeNetworkInfo == null ||
+                        !connectivityManager.activeNetworkInfo!!.isConnected
+            }
         }
+
 
 
     fun localeUpdate() {
@@ -607,5 +657,58 @@ class SunnahAssistantViewModel(application: Application) : AndroidViewModel(appl
         mRepository.closeDB()
         databaseFile.writeBytes(existingDataFile.readBytes())
         existingDataFile.delete()
+    }
+
+    fun setSelectedAyahId(ayahId: Int?) {
+        _selectedAyahId.value = ayahId
+    }
+
+    fun refreshSelectedAyahId() {
+        _selectedAyahId.value = _selectedAyahId.value
+    }
+
+    fun nextAyah() {
+        val nextAyahId = selectedAyahId.value?.plus(1)
+
+        nextAyahId?.let {
+            _selectedAyahId.value = it
+        }
+    }
+
+    fun previousAyah() {
+        val previousAyahId = selectedAyahId.value?.minus(1)
+        previousAyahId?.let {
+            _selectedAyahId.value = it
+        }
+    }
+
+    suspend fun toggleAyahBookmark(ayah: Ayah, updateSelectedAyahId: Boolean = false) {
+        quranTranslationRepository.toggleAyahBookmarkStatus(ayah.id)
+        if (updateSelectedAyahId) {
+            withContext(Dispatchers.Main) {
+                _selectedAyahId.value = ayah.id
+            }
+        }
+    }
+
+    fun getCurrentQuranPage() = _currentQuranPage ?: 1
+
+    fun updateCurrentPage(page: Int, updateLastReadPage: Boolean = true) {
+        _currentQuranPage = page
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val surah = surahRepository.getSurahByPage(page)
+            if (updateLastReadPage) {
+                settingsValue?.let {
+                    it.lastReadPage = page
+                    mRepository.updateAppSettings(it)
+                }
+            }
+            surah?.let {
+                withContext(Dispatchers.Main) {
+                    selectedSurah.value = it
+                }
+            }
+        }
     }
 }

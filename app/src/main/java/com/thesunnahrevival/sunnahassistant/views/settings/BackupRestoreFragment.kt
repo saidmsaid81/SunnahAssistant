@@ -14,12 +14,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentBackupRestoreBinding
-import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
+import com.thesunnahrevival.sunnahassistant.views.SunnahAssistantFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EncryptBackupFragment
 import com.thesunnahrevival.sunnahassistant.views.dialogs.EnterDecryptionPasswordFragment
 import kotlinx.coroutines.Dispatchers
@@ -32,11 +30,10 @@ import java.util.Locale
 private const val WRITE_FILE = 0
 private const val READ_FILE = 1
 
-class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
+class BackupRestoreFragment : SunnahAssistantFragment(), AdapterView.OnItemClickListener,
     EnterDecryptionPasswordFragment.EnterDecryptionPasswordFragmentListener,
     EncryptBackupFragment.EncryptBackupFragmentListener {
 
-    private lateinit var mViewModel: SunnahAssistantViewModel
     private var password: String? = null
     private var _backupRestoreFragmentBinding: FragmentBackupRestoreBinding? = null
 
@@ -48,9 +45,9 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
                 updateStatusMessage(getString(R.string.backing_up_data_please_wait), null)
                 val password = this.password
                 val backupMessage = if (password != null)
-                    mViewModel.backupEncryptedData(it.data?.data, password)
+                    mainActivityViewModel.backupEncryptedData(it.data?.data, password)
                 else
-                    mViewModel.backupPlainData(it.data?.data)
+                    mainActivityViewModel.backupPlainData(it.data?.data)
                 updateStatusMessage(backupMessage.second, backupMessage.first)
                 this.password = null
                 backupRestoreFragmentBinding.optionsList.onItemClickListener = this
@@ -60,9 +57,9 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     private val readFileActivityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                mViewModel.viewModelScope.launch(Dispatchers.Main) {
+                mainActivityViewModel.viewModelScope.launch(Dispatchers.Main) {
                     updateStatusMessage(getString(R.string.restoring_data_please_wait), null)
-                    val restoreMessage = mViewModel.restorePlainData(it.data?.data)
+                    val restoreMessage = mainActivityViewModel.restorePlainData(it.data?.data)
                     if (restoreMessage.first == null) {
                         val enterDecryptionPasswordFragment =
                             EnterDecryptionPasswordFragment().apply {
@@ -86,6 +83,7 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
         _backupRestoreFragmentBinding =
             FragmentBackupRestoreBinding.inflate(inflater, container, false)
         val view = backupRestoreFragmentBinding.root
@@ -99,7 +97,6 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
             )
         listView.onItemClickListener = this
 
-        mViewModel = ViewModelProvider(requireActivity())[SunnahAssistantViewModel::class.java]
         return view
     }
 
@@ -151,8 +148,8 @@ class BackupRestoreFragment : Fragment(), AdapterView.OnItemClickListener,
     override fun onRestoreEncryptedDataClick(uri: Uri?, password: String) {
         if (password.isBlank())
             updateStatusMessage("", null)
-        mViewModel.viewModelScope.launch(Dispatchers.Main) {
-            val encryptedRestoreMessage = mViewModel.restoreEncryptedData(uri, password)
+        mainActivityViewModel.viewModelScope.launch(Dispatchers.Main) {
+            val encryptedRestoreMessage = mainActivityViewModel.restoreEncryptedData(uri, password)
             updateStatusMessage(
                 encryptedRestoreMessage.second,
                 encryptedRestoreMessage.first ?: false

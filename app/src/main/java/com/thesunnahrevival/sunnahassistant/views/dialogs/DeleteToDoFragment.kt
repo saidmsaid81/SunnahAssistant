@@ -9,8 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.formatDate
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener

@@ -2,7 +2,6 @@ package com.thesunnahrevival.sunnahassistant.views.settings
 
 import android.app.Activity
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
@@ -15,12 +14,11 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.NotificationSettings
+import com.thesunnahrevival.sunnahassistant.data.model.dto.NotificationSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentNotificationSettingsBinding
-import com.thesunnahrevival.sunnahassistant.services.NextToDoService
-import com.thesunnahrevival.sunnahassistant.utilities.STICKY_NOTIFICATION_ID
-import com.thesunnahrevival.sunnahassistant.utilities.createToDoNotificationChannel
-import com.thesunnahrevival.sunnahassistant.utilities.deleteToDoNotificationChannel
+import com.thesunnahrevival.sunnahassistant.utilities.updateNudgeNotificationChannel
+import com.thesunnahrevival.sunnahassistant.utilities.updateToDoNotificationChannel
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 
 class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
@@ -39,9 +37,9 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         )
 
         val options = resources.getStringArray(R.array.priority_options)
-        mViewModel.getSettings().observe(viewLifecycleOwner) {
+        mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
             if (it != null) {
-                mViewModel.settingsValue = it
+                mainActivityViewModel.settingsValue = it
                 binding.settings = it
                 val toneName =
                     if (it.notificationToneUri.toString().isNotBlank())
@@ -66,7 +64,6 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         binding.notificationToneSettings.setOnClickListener(this)
         binding.notificationPrioritySettings.setOnClickListener(this)
         binding.notificationVibrationSettings.setOnClickListener(this)
-        binding.nextToDoStickySettings.setOnCheckedChangeListener(this)
         binding.useReliableAlarms.setOnCheckedChangeListener(this)
 
         return binding.root
@@ -85,7 +82,7 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
                     R.id.importance, R.id.notification_priority_settings
                 )
             R.id.notification_tone_settings -> {
-                val currentRingtone: Uri? = mViewModel.settingsValue?.notificationToneUri
+                val currentRingtone: Uri? = mainActivityViewModel.settingsValue?.notificationToneUri
                 val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
                 intent.putExtra(
                     RingtoneManager.EXTRA_RINGTONE_TYPE,
@@ -102,13 +99,13 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         isSettingsUpdated = true
         return when (item?.groupId) {
             R.id.notification_vibration_settings -> {
-                mViewModel.settingsValue?.isVibrate = item.title.toString().matches("On".toRegex())
-                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                mainActivityViewModel.settingsValue?.isVibrate = item.title.toString().matches("On".toRegex())
+                mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
                 true
             }
             R.id.notification_priority_settings -> {
-                mViewModel.settingsValue?.priority = item.order + 1
-                mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                mainActivityViewModel.settingsValue?.priority = item.order + 1
+                mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
                 true
             }
             else -> false
@@ -118,9 +115,9 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            mViewModel.settingsValue?.notificationToneUri =
+            mainActivityViewModel.settingsValue?.notificationToneUri =
                 data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+            mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
             isSettingsUpdated = true
         }
     }
@@ -129,13 +126,13 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         super.onPause()
         if (isSettingsUpdated) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context?.let { deleteToDoNotificationChannel(it) }
-                mViewModel.settingsValue?.let {
-                    context?.let { it1 ->
-                        createToDoNotificationChannel(
-                            it1, it.notificationToneUri, it.isVibrate, it.priority
-                        )
-                    }
+                mainActivityViewModel.settingsValue?.let { settings: AppSettings ->
+                    updateToDoNotificationChannel(
+                        requireContext(), settings.notificationToneUri, settings.isVibrate, settings.priority
+                    )
+                    updateNudgeNotificationChannel(
+                        requireContext(), settings.notificationToneUri, settings.isVibrate, settings.priority
+                    )
                 }
             }
         }
@@ -143,26 +140,10 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (buttonView?.isPressed == true) {
-            if (buttonView.id == R.id.next_to_do_sticky_settings) {
-                mViewModel.settingsValue?.showNextToDoNotification = isChecked
-
-                if (!isChecked) {
-                    //Stop the service and clear the sticky notification
-                    requireContext().stopService(
-                        Intent(
-                            requireContext(),
-                            NextToDoService::class.java
-                        )
-                    )
-                    val notificationManager =
-                        requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.cancel(STICKY_NOTIFICATION_ID)
-                }
-
-            } else if (buttonView.id == R.id.use_reliable_alarms) {
-                mViewModel.settingsValue?.useReliableAlarms = isChecked
+            if (buttonView.id == R.id.use_reliable_alarms) {
+                mainActivityViewModel.settingsValue?.useReliableAlarms = isChecked
             }
-            mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+            mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
         }
     }
 }

@@ -3,24 +3,32 @@
 package com.thesunnahrevival.sunnahassistant.utilities
 
 import android.appwidget.AppWidgetManager
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.AppSettings
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.dto.FullAyahDetails
+import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Translation
+import com.thesunnahrevival.sunnahassistant.data.remote.UserAgentInterceptor
+import com.thesunnahrevival.sunnahassistant.data.repositories.SunnahAssistantRepository
 import com.thesunnahrevival.sunnahassistant.widgets.HijriDateWidget
 import com.thesunnahrevival.sunnahassistant.widgets.PrayerTimesWidget
 import com.thesunnahrevival.sunnahassistant.widgets.TodayToDosWidget
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URL
 import java.time.LocalDate
-import java.util.Locale
-import java.util.TreeSet
+import java.util.*
+import kotlin.math.pow
+import kotlin.math.round
 
 
 fun generateEmailIntent(): Intent {
@@ -165,4 +173,108 @@ fun isValidUrl(link: String): Boolean {
     } catch (exception: Exception) {
         false
     }
+}
+
+fun Int.toArabicNumbers(): String {
+    val arabicChars = charArrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+    return this.toString().map { char ->
+        if (char.isDigit()) arabicChars[char.digitToInt()] else char
+    }.joinToString("")
+}
+
+fun Float.roundTo(decimals: Int): Float {
+    val multiplier = 10.0.pow(decimals).toFloat()
+    return round(this * multiplier) / multiplier
+}
+
+fun CharSequence.extractNumber(): Int? {
+    val numberString = this.takeWhile { it.isDigit() } // "15"
+    return numberString.toString().toIntOrNull()
+}
+
+fun String.toAnnotatedString(): AnnotatedString {
+    return buildAnnotatedString {
+        append(this@toAnnotatedString)
+    }
+}
+
+fun Context.getLocale(): Locale {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        this.resources.configuration.locales[0]
+    } else {
+        this.resources.configuration.locale
+    }
+}
+
+private fun getAyahText(
+    ayah: FullAyahDetails,
+    selectedTranslations: List<Translation>,
+    surahNumber: String
+): String {
+    val selectedTranslationIds = selectedTranslations.map { it.id }.toSet()
+
+    val translations = ayah.ayahTranslations
+        .filter { it.translation.id in selectedTranslationIds }
+        .joinToString(separator = "") {
+            "${it.translation.name} \n" +
+                    "${it.ayahTranslation.text} \n\n"
+        }
+
+    return "${ayah.surah.transliteratedName} ($surahNumber)\n\n" +
+            "Ayah ${ayah.ayah.number}\n" +
+            "${ayah.ayah.arabicText}\n\n" +
+            translations
+}
+
+fun copyToClipboard(
+    context: Context,
+    textToCopy: String,
+    label: String,
+    message: String
+) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    val clip = ClipData.newPlainText(
+        label,
+        textToCopy
+    )
+    clipboard.setPrimaryClip(clip)
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun shareText(
+    context: Context,
+    textToShare: String,
+    title: String
+) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(
+            Intent.EXTRA_TEXT,
+            textToShare
+        )
+    }
+    context.startActivity(Intent.createChooser(shareIntent, title))
+}
+
+private val okHttpClient = OkHttpClient.Builder()
+    .addInterceptor(UserAgentInterceptor(BuildConfig.VERSION_CODE.toString()))
+    .build()
+
+val retrofit: Retrofit = Retrofit.Builder()
+    .baseUrl("https://api.thesunnahrevival.com/")
+    .addConverterFactory(GsonConverterFactory.create())
+    .client(okHttpClient)
+    .build()
+
+fun getPrayerTimes(context: Context, toDoRepository: SunnahAssistantRepository): List<ToDo> {
+    val now = LocalDate.now()
+    val categories = context.resources.getStringArray(R.array.categories)
+    val prayerTimes = toDoRepository.getPrayerTimesValue(
+        day = now.dayOfMonth,
+        month = now.month.ordinal, // Repo expects 0-indexed months
+        year = now.year,
+        categoryName = categories.getOrNull(2).orEmpty()
+    )
+    return prayerTimes
 }

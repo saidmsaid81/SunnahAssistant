@@ -36,7 +36,18 @@ class SettingsListFragment : SunnahAssistantFragment(), AdapterView.OnItemClickL
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://www.thesunnahrevival.com")
+                    Uri.parse("https://www.thesunnahrevival.com?" +
+                            "utm_source=${getString(R.string.app_name)}-Android-App" +
+                            "&utm_medium=social_icon" +
+                            "&utm_campaign=settings_list")
+                )
+            )
+        }
+        view.findViewById<ImageView>(R.id.whatsapp).setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://whatsapp.com/channel/0029Va5ijm7DOQIV2hEgwu39")
                 )
             )
         }
@@ -82,9 +93,10 @@ class SettingsListFragment : SunnahAssistantFragment(), AdapterView.OnItemClickL
             2 -> findNavController().navigate(R.id.customizeCategoriesFragment)
             3 -> findNavController().navigate(R.id.notificationSettingsFragment)
             4 -> findNavController().navigate(R.id.layoutSettingsFragment)
-            5 -> findNavController().navigate(R.id.backupRestoreFragment)
-            6 -> findNavController().navigate(R.id.privacySettingsFragment)
-            7 -> {
+            5 -> findNavController().navigate(R.id.fontSettingsFragment)
+            6 -> findNavController().navigate(R.id.backupRestoreFragment)
+            7 -> findNavController().navigate(R.id.privacySettingsFragment)
+            8 -> {
                 val intent = generateEmailIntent()
                 if (intent.resolveActivity(requireActivity().packageManager) != null)
                     startActivity(intent)

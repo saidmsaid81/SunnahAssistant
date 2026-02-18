@@ -26,14 +26,16 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
 import com.google.android.material.snackbar.Snackbar
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
 import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getFormattedOffset
 import com.thesunnahrevival.sunnahassistant.utilities.getLocale
+import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.utilities.getTimestampInSeconds
 import com.thesunnahrevival.sunnahassistant.views.FragmentWithPopups
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -78,7 +80,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             inflater, R.layout.fragment_to_do_details, container, false
         )
 
-        mToDo = mViewModel.selectedToDo
+        mToDo = mainActivityViewModel.selectedToDo
         (requireActivity() as MainActivity).supportActionBar?.setTitle(
             if (mToDo.id == 0)
                 R.string.add_new_to_do
@@ -112,8 +114,13 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
 
         if (mToDo.isAutomaticPrayerTime()) {
             automaticPrayerTimeView()
-        } else
+        } else {
             mBinding.isAutomaticPrayerTime = false
+        }
+
+        if (savedInstanceState == null && mainActivityViewModel.isToDoTemplate) {
+            showTimePicker()
+        }
     }
 
     private fun automaticPrayerTimeView() {
@@ -134,7 +141,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         mBinding.tip.setOnClickListener {
             findNavController().navigate(R.id.prayerTimeSettingsFragment)
         }
-        mViewModel.getToDoLiveData(mViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
+        mainActivityViewModel.getToDoLiveData(mainActivityViewModel.selectedToDo.id).observe(viewLifecycleOwner) {
             if (it != null) {
                 val timeString = formatTimeInMilliseconds(requireContext(), it.timeInMilliseconds)
                 updateToDoTimeView(timeString)
@@ -160,7 +167,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
         updateToDoCategoryView(mToDo.category)
         updateToDoTimeView(formatTimeInMilliseconds(context, mToDo.timeInMilliseconds))
         updateNotifyView()
-        updateMarkAsCompleteView(if (mToDo.isComplete(mViewModel.selectedToDoDate)) 1 else 0)
+        updateMarkAsCompleteView(if (mToDo.isComplete(mainActivityViewModel.selectedToDoDate)) 1 else 0)
         updateTipView()
     }
 
@@ -368,7 +375,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             }
             R.id.to_do_category -> {
                 if (!isAutomaticPrayerTime(R.string.category_cannot_be_changed))
-                    mViewModel.settingsValue?.categories?.let {
+                    mainActivityViewModel.settingsValue?.categories?.let {
                         mToDoCategories.clear()
                         mToDoCategories.addAll(it)
                         val createNewCategory = getString(R.string.create_new_categories)
@@ -393,7 +400,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     )
                     putBoolean(
                         DatePickerFragment.SHOWHIJRIDATE,
-                        mViewModel.settingsValue?.includeHijriDateInCalendar ?: true
+                        mainActivityViewModel.settingsValue?.includeHijriDateInCalendar ?: true
                     )
                 }
                 datePickerFragment.arguments = bundle
@@ -412,13 +419,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             }
             R.id.to_do_time -> {
                 if (!isAutomaticPrayerTime(R.string.time_cannot_be_changed)) {
-                    val timePickerFragment = TimePickerFragment()
-                    timePickerFragment.arguments =
-                        Bundle().apply { putString(TimePickerFragment.TIMESET, mTimeString) }
-
-                    timePickerFragment.setListener(this)
-                    val fragmentManager = requireActivity().supportFragmentManager
-                    timePickerFragment.show(fragmentManager, "timePicker")
+                    showTimePicker()
                 }
             }
             R.id.mark_as_complete -> {
@@ -431,7 +432,8 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 try {
                     inAppBrowser?.launchInAppBrowser(
                         mToDo.predefinedToDoLink,
-                        findNavController()
+                        findNavController(),
+                        predefinedToDoId = mToDo.id
                     )
                 } catch (exception: MalformedURLException) {
                     Log.e("MalformedURLException", exception.message.toString())
@@ -568,9 +570,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 "${getString(R.string.date)}: $date\n" +
                 "${getString(R.string.time_label)}: $time\n" +
                 "${getString(R.string.completed)}: $completed\n\n" +
-                "${getString(R.string.powered_by_sunnah_assistant)}\n" +
-                "Get Sunnah Assistant App at\n" +
-                "https://play.google.com/store/apps/details?id=com.thesunnahrevival.sunnahassistant "
+                getString(R.string.app_promotional_message, getSunnahAssistantAppLink(utmCampaign = "Share-To-Do"))
 
     }
 
@@ -580,7 +580,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 .setTitle(R.string.delete_to_do_title)
                 .setMessage(R.string.delete_to_do_confirmation)
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    mViewModel.deleteToDo(mToDo)
+                    mainActivityViewModel.deleteToDo(mToDo)
                     Toast.makeText(requireContext(), R.string.delete_to_do, Toast.LENGTH_LONG)
                         .show()
                     findNavController().navigateUp()
@@ -610,16 +610,16 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mToDo.offsetInMinutes != newToDo.offsetInMinutes ||
                 mToDo.completedDates != newToDo.completedDates
             ) {
-                mViewModel.updatePrayerTimeDetails(mToDo, newToDo)
+                mainActivityViewModel.updatePrayerTimeDetails(mToDo, newToDo)
                 Toast.makeText(
                     requireContext(), R.string.successfully_updated, Toast.LENGTH_LONG
                 )
                     .show()
             }
-        } else if (mToDo != newToDo || mViewModel.isToDoTemplate) {
-            mViewModel.insertToDo(newToDo)
-            if (newToDo.id == 0 || mViewModel.isToDoTemplate) {
-                mViewModel.isToDoTemplate = false
+        } else if (mToDo != newToDo || mainActivityViewModel.isToDoTemplate) {
+            mainActivityViewModel.insertToDo(newToDo)
+            if (newToDo.id == 0 || mainActivityViewModel.isToDoTemplate) {
+                mainActivityViewModel.isToDoTemplate = false
                 Toast.makeText(
                     requireContext(), R.string.successfuly_added_sunnah_to_dos, Toast.LENGTH_LONG
                 ).show()
@@ -634,7 +634,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                     android.Manifest.permission.POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_DENIED
             ) {
-                mViewModel.incrementNotificationPermissionRequestsCount()
+                mainActivityViewModel.incrementNotificationPermissionRequestsCount()
                 requireActivity().requestPermissions(
                     arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
                     REQUEST_NOTIFICATION_PERMISSION_CODE
@@ -664,9 +664,9 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 .indexOf(mBinding.markAsCompleteValue.text) == 1
         ) {
             //Marked as Yes
-            completedDates.add(mViewModel.selectedToDoDate.toString())
+            completedDates.add(mainActivityViewModel.selectedToDoDate.toString())
         } else
-            completedDates.remove(mViewModel.selectedToDoDate.toString())
+            completedDates.remove(mainActivityViewModel.selectedToDoDate.toString())
 
         try {
             return ToDo(
@@ -691,7 +691,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             Log.e("Exception", exception.toString())
             Toast.makeText(
                 requireContext(),
-                "An error occurred. Please try again.",
+                getString(R.string.an_error_occurred, SUPPORT_EMAIL),
                 Toast.LENGTH_LONG
             )
                 .show()
@@ -810,5 +810,15 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             getString(R.string.minutes),
             resources.getStringArray(R.array.notify_options)[1]
         )
+    }
+
+    private fun showTimePicker() {
+        val timePickerFragment = TimePickerFragment()
+        timePickerFragment.arguments =
+            Bundle().apply { putString(TimePickerFragment.TIMESET, mTimeString) }
+
+        timePickerFragment.setListener(this)
+        val fragmentManager = activity?.supportFragmentManager ?: return
+        timePickerFragment.show(fragmentManager, "timePicker")
     }
 }

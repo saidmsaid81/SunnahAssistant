@@ -10,8 +10,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thesunnahrevival.sunnahassistant.R
-import com.thesunnahrevival.sunnahassistant.data.model.Frequency
-import com.thesunnahrevival.sunnahassistant.data.model.ToDo
+import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.databinding.ToDoCardViewBinding
 import com.thesunnahrevival.sunnahassistant.views.listeners.ToDoItemInteractionListener
 

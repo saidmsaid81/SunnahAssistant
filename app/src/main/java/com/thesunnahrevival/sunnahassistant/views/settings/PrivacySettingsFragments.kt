@@ -31,8 +31,8 @@ class PrivacySettingsFragment : SunnahAssistantFragment() {
         val myActivity = activity
         if (myActivity != null) {
 
-            mViewModel.getSettings().observe(viewLifecycleOwner) {
-                mViewModel.settingsValue = it
+            mainActivityViewModel.getSettings().observe(viewLifecycleOwner) {
+                mainActivityViewModel.settingsValue = it
                 binding.settings = it
             }
 
@@ -41,8 +41,8 @@ class PrivacySettingsFragment : SunnahAssistantFragment() {
                     (myActivity as MainActivity).firebaseAnalytics.setAnalyticsCollectionEnabled(
                         isChecked
                     )
-                    mViewModel.settingsValue?.shareAnonymousUsageData = isChecked
-                    mViewModel.settingsValue?.let { mViewModel.updateSettings(it) }
+                    mainActivityViewModel.settingsValue?.shareAnonymousUsageData = isChecked
+                    mainActivityViewModel.settingsValue?.let { mainActivityViewModel.updateSettings(it) }
                 }
             }
 

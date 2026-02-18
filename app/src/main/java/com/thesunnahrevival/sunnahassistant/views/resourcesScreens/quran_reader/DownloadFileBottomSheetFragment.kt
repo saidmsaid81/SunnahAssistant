@@ -1,0 +1,602 @@
+package com.thesunnahrevival.sunnahassistant.views.resourcesScreens.quran_reader
+
+import android.Manifest
+import android.app.Dialog
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.net.NetworkCapabilities
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager
+import com.thesunnahrevival.sunnahassistant.utilities.DownloadManager.*
+import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
+import com.thesunnahrevival.sunnahassistant.viewmodels.DownloadFileViewModel
+import com.thesunnahrevival.sunnahassistant.viewmodels.state.*
+import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
+import com.thesunnahrevival.sunnahassistant.views.utilities.SunnahAssistantCheckbox
+
+class DownloadFileBottomSheetFragment : BottomSheetDialogFragment() {
+
+    private val viewModel: DownloadFileViewModel by viewModels()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+        
+        // Check if auto-start download is requested
+        val autoStartDownload = arguments?.getBoolean("auto_start_download", false) ?: false
+
+        if (autoStartDownload) {
+            requestNotificationPermission()
+            viewModel.downloadQuranFiles()
+        }
+
+        return ComposeView(requireContext()).apply {
+            setContent {
+                SunnahAssistantTheme {
+                    val downloadUIState by viewModel.downloadUIState.collectAsState()
+                    val networkCapabilities by viewModel.networkCapabilities.collectAsState()
+
+                    when (downloadUIState) {
+                        DownloadPromptState -> PromptScreen(
+                            networkCapabilities = networkCapabilities,
+                            disableDownloadFilesPrompt = { viewModel.disableDownloadFilesPrompt() },
+                            enableDownloadFilesPrompt = { viewModel.enableDownloadFilesPrompt() },
+                            downloadQuranFiles = { viewModel.downloadQuranFiles() }
+                        )
+                        is DownloadInProgressState -> {
+                            if ((downloadUIState as DownloadInProgressState).downloadProgress == DownloadManager.NotInitiated) {
+                                PromptScreen(
+                                    networkCapabilities = networkCapabilities,
+                                    disableDownloadFilesPrompt = { viewModel.disableDownloadFilesPrompt() },
+                                    enableDownloadFilesPrompt = { viewModel.enableDownloadFilesPrompt() },
+                                    downloadQuranFiles = { viewModel.downloadQuranFiles() }
+                                )
+                            } else {
+                                val hasNotificationPermission =
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        ContextCompat.checkSelfPermission(
+                                            this@DownloadFileBottomSheetFragment.requireContext(),
+                                            Manifest.permission.POST_NOTIFICATIONS
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    } else {
+                                        true
+                                    }
+                                DownloadScreen(
+                                    downloadProgress = (downloadUIState as DownloadInProgressState).downloadProgress,
+                                    cancelDownload = { viewModel.cancelDownload() },
+                                    hasNotificationPermission = hasNotificationPermission
+                                )
+                            }
+                        }
+                        DownloadCompleteState -> CompletionScreen()
+                        DownloadCancelledState -> {
+                            LaunchedEffect(Unit) {
+                                dismiss()
+                            }
+                        }
+                        DownloadErrorState, DownloadNetworkErrorState ->
+                            ErrorScreen(
+                                if (downloadUIState is DownloadErrorState)
+                                    stringResource(R.string.an_error_occurred, SUPPORT_EMAIL)
+                                else
+                                    stringResource(R.string.network_error)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.behavior.isDraggable = false
+
+        return dialog
+    }
+
+    @Composable
+    private fun PromptScreen(
+        networkCapabilities: NetworkCapabilities? = null,
+        disableDownloadFilesPrompt: () -> Unit = {},
+        enableDownloadFilesPrompt: () -> Unit = {},
+        downloadQuranFiles: () -> Unit = {}
+    ) {
+        var hideDownloadFilesPrompt by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Text(
+                    text = buildAnnotatedString {
+                        append(stringResource(R.string.download_file_info_part1))
+                        append(" ")
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(stringResource(R.string.download_file_info_part2))
+                        }
+                        append(" ")
+                        append(stringResource(R.string.download_file_info_part3))
+                        append(" ")
+
+                        if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true) {
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(stringResource(R.string.download_file_info_part4))
+                            }
+                            append(" ")
+                            append(stringResource(R.string.download_file_info_part5))
+                        }
+                    },
+                    style = MaterialTheme.typography.subtitle1
+                )
+
+                if (networkCapabilities == null || !networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)) {
+                    // Mobile data usage note
+                    Text(
+                        text = stringResource(R.string.download_file_warning_message),
+                        style = MaterialTheme.typography.caption,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.error,
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                }
+
+                // Don's show this again checkbox
+                SunnahAssistantCheckbox(
+                    text = stringResource(R.string.don_t_show_this_again),
+                    modifier = Modifier.padding(top = 16.dp),
+                    checked = hideDownloadFilesPrompt
+                ) {
+                    if (!hideDownloadFilesPrompt) {
+                        disableDownloadFilesPrompt()
+                        hideDownloadFilesPrompt = true
+                    } else {
+                        enableDownloadFilesPrompt()
+                        hideDownloadFilesPrompt = false
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    ActionButtons(
+                        modifier = Modifier.padding(top = 16.dp),
+                        secondaryButtonText = stringResource(R.string.dismiss),
+                        onSecondaryClick = {
+                            if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true) {
+                                dismiss()
+                            } else {
+                                findNavController().navigate(R.id.resourcesFragment)
+                                dismiss()
+                            }
+                        },
+                        primaryButtonText = stringResource(R.string.download),
+                        onPrimaryClick = {
+                            requestNotificationPermission()
+                            downloadQuranFiles()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun DownloadScreen(
+        downloadProgress: DownloadProgress,
+        cancelDownload: () -> Unit = {},
+        hasNotificationPermission: Boolean = true
+    ) {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.downloading_quran_files_please_wait),
+                    style = MaterialTheme.typography.subtitle2,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                val progress = when (downloadProgress) {
+                    is Downloading -> {
+                        (downloadProgress.totalDownloadedSize / downloadProgress.fileSize)
+                    }
+
+                    is Extracting -> {
+                        100f
+                    }
+
+                    else -> {
+                        0f
+                    }
+                }
+
+                LinearProgressIndicator(
+                    progress = progress, strokeCap = StrokeCap.Round, modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp)
+                )
+
+                when (downloadProgress) {
+                    is Preparing -> {
+                        //Calculating file size
+                        Text(
+                            text = stringResource(R.string.calculating),
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+
+                    is Downloading -> {
+                        // Download progress
+                        Text(
+                            text = stringResource(
+                                R.string.downloaded,
+                                downloadProgress.totalDownloadedSize,
+                                downloadProgress.fileSize,
+                                downloadProgress.unit
+                            ),
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+
+                    else -> {
+                        // Extracting
+                        Text(
+                            text = stringResource(R.string.extracting),
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+
+                    // Action Buttons
+
+                    ActionButtons(
+                        modifier = Modifier.padding(top = 16.dp),
+                        showSpacer = false,
+                        secondaryButtonText = stringResource(R.string.cancel),
+                        onSecondaryClick = { cancelDownload() },
+                        primaryButtonText = if (hasNotificationPermission) stringResource(R.string.background) else null,
+                        onPrimaryClick = if (hasNotificationPermission) ({ dismiss() }) else null
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CompletionScreen() {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = stringResource(R.string.download_complete),
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.download_complete),
+                    style = MaterialTheme.typography.h6,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+
+                Button(
+                    onClick = { dismiss() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun ErrorScreen(message: String) {
+        Surface {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                GrayLine(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp, top = 16.dp)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = stringResource(R.string.an_error_occurred),
+                        modifier = Modifier.size(80.dp),
+                        tint = MaterialTheme.colors.error
+                    )
+                }
+
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+
+                ActionButtons(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    secondaryButtonText = stringResource(R.string.cancel),
+                    onSecondaryClick = { dismiss() },
+                    primaryButtonText = stringResource(R.string.retry),
+                    onPrimaryClick = { viewModel.downloadQuranFiles() }
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun ActionButtons(
+        modifier: Modifier = Modifier,
+        primaryButtonText: String? = null,
+        onPrimaryClick: (() -> Unit)? = null,
+        secondaryButtonText: String? = null,
+        onSecondaryClick: (() -> Unit)? = null,
+        showSpacer: Boolean = false
+    ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+        ) {
+            if (showSpacer) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            if (secondaryButtonText != null && onSecondaryClick != null) {
+                OutlinedButton(
+                    onClick = onSecondaryClick,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = if (primaryButtonText != null && onPrimaryClick != null) 16.dp else 0.dp)
+                ) {
+                    Text(text = secondaryButtonText, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
+            if (primaryButtonText != null && onPrimaryClick != null) {
+                Button(
+                    onClick = onPrimaryClick,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = primaryButtonText, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_DENIED
+            ) {
+                viewModel.incrementNotificationRequestCount()
+                requestPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            }
+        }
+    }
+
+    @Preview(
+        name = "Prompt Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun PromptScreenPreviewDark() {
+        PromptScreenPreview()
+    }
+
+    @Preview(name = "Prompt Screen - Light Mode")
+    @Composable
+    private fun PromptScreenPreview() {
+        SunnahAssistantTheme {
+            PromptScreen()
+        }
+    }
+
+    @Preview(
+        name = "Prompt Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun PromptScreenPreviewArabic() {
+        PromptScreenPreview()
+    }
+
+    @Preview(
+        name = "Download Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun DownloadScreenPreviewDark() {
+        DownloadScreenPreview()
+    }
+
+    @Preview(name = "Download Screen - Light Mode")
+    @Composable
+    private fun DownloadScreenPreview() {
+        SunnahAssistantTheme {
+            DownloadScreen(
+                Downloading(50f, 100f, "MB")
+            )
+        }
+    }
+
+    @Preview(
+        name = "Download Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun DownloadScreenPreviewArabic() {
+        DownloadScreenPreview()
+    }
+
+    @Preview(
+        name = "Completion Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun CompletionScreenPreviewDark() {
+        CompletionScreenPreview()
+    }
+
+    @Preview(name = "Completion Screen - Light Mode")
+    @Composable
+    private fun CompletionScreenPreview() {
+        SunnahAssistantTheme {
+            CompletionScreen()
+        }
+    }
+
+    @Preview(
+        name = "Completion Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun CompletionScreenPreviewArabic() {
+        CompletionScreenPreview()
+    }
+
+    @Preview(
+        name = "Error Screen - Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "en"
+    )
+    @Composable
+    private fun ErrorScreenPreviewDark() {
+        ErrorScreenPreview()
+    }
+
+    @Preview(name = "Error Screen - Light Mode")
+    @Composable
+    private fun ErrorScreenPreview() {
+        SunnahAssistantTheme {
+            ErrorScreen(stringResource(R.string.an_error_occurred, SUPPORT_EMAIL))
+        }
+    }
+
+    @Preview(
+        name = "Error Screen - Arabic Dark Mode",
+        uiMode = Configuration.UI_MODE_NIGHT_YES,
+        locale = "ar"
+    )
+    @Composable
+    private fun ErrorScreenPreviewArabic() {
+        ErrorScreenPreview()
+    }
+}

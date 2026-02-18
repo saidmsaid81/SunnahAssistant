@@ -21,3 +21,7 @@
 /foss/production/release/output-metadata.json
 /foss/.gitignore
 /foss/google-services.json
+CLAUDE.md
+AGENTS.md
+.aiassistant/rules/sa.md
+sync-to-worktrees.sh

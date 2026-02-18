@@ -8,7 +8,7 @@
 
     <import type="android.view.View" />
 
-    <import type="com.thesunnahrevival.sunnahassistant.data.model.ToDo" />
+    <import type="com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo" />
 
     <variable
         name="toDoInteractionListener"
@@ -76,7 +76,6 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/default_dimen"
             android:paddingEnd="@dimen/default_dimen"
-            android:paddingTop="@dimen/default_dimen"
             android:visibility="gone"
             tools:visibility="visible"
             tools:text="Today's Date: Monday 12 September 2022/ 16 Safar, 1444"
@@ -115,6 +114,49 @@
 
           </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/nudge_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/default_dimen"
+            android:layout_marginEnd="@dimen/default_dimen"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@drawable/nudge_border"
+            >
+
+
+          <TextView
+              android:id="@+id/nudge_text"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_marginStart="8dp"
+              android:layout_marginEnd="8dp"
+              android:textSize="13sp"
+              android:textColor="@color/fabColor"
+              android:maxLines="2"
+              android:textAlignment="center"
+              tools:text="Tap here to enable prayer time alerts"
+              />
+
+          <ImageView
+              android:id="@+id/nudge_dismiss"
+              android:layout_width="20dp"
+              android:layout_height="20dp"
+              android:src="@drawable/ic_close"
+              android:contentDescription="@string/dismiss"
+              android:background="?attr/selectableItemBackgroundBorderless"
+              app:tint="@color/fabColor"
+              />
+
+        </LinearLayout>
       </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
