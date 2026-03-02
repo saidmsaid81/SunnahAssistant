@@ -75,7 +75,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         if (currentTime !in asrTime..ishaTime) return
 
-        val eveningAdhkaarReminder = toDoRepository.getToDoById(READING_EVENING_ADHKAAR_ID)
+        val readingEveningAdhkaarId = READING_EVENING_ADHKAAR_ID
+        val eveningAdhkaarReminder = toDoRepository.getToDoById(readingEveningAdhkaarId)
 
         if (eveningAdhkaarReminder == null || eveningAdhkaarReminder.isAutomaticToDo) {
             add(
@@ -90,6 +91,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         add(
             NextAction(
+                toDoId =  readingEveningAdhkaarId,
                 titleResId = R.string.remind_others,
                 subtitleResId = R.string.remind_others_to_read_evening_adhkaar,
                 actionResId = R.string.remind_others,
@@ -121,7 +123,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         if (currentTime !in fajrTime..sunrise) return
 
-        val isMorningAdhkaar = toDoRepository.getToDoById(READING_MORNING_ADHKAAR_ID)
+        val readingMorningAdhkaarId = READING_MORNING_ADHKAAR_ID
+        val isMorningAdhkaar = toDoRepository.getToDoById(readingMorningAdhkaarId)
 
         if (isMorningAdhkaar == null || isMorningAdhkaar.isAutomaticToDo) {
             add(
@@ -130,7 +133,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
                     subtitleResId = R.string.set_daily_reminder,
                     actionResId = R.string.set_daily_reminder,
                     actionType = ActionType.NavigateToTodo,
-                    toDoId = READING_MORNING_ADHKAAR_ID
+                    toDoId = readingMorningAdhkaarId
                 )
             )
         }
@@ -141,7 +144,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 subtitleResId = R.string.remind_others_to_read_morning_adhkaar,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
-                toDoId = READING_MORNING_ADHKAAR_ID,
+                toDoId = readingMorningAdhkaarId,
                 shareTextResId = R.string.morning_evening_adhkaar_reminder_message
             )
         )
