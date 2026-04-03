@@ -486,6 +486,8 @@
     <string name="read_suratul_sajdah">Read Suratul Sajdah</string>
     <string name="read_suratul_mulk">Read Suratul Mulk</string>
     <string name="recommended_every_night">Recommended every night</string>
+    <string name="read_adhkaar_before_sleeping">Read Adhkaar Before Sleeping</string>
+    <string name="sleeping_adhkaar_daily_reminder">Before Sleeping Adhkaar Daily Reminder</string>
     <string name="read_more_on_suratul_mulk">Tap here to read more on the importance of reading Suratul Mulk and Al Sajdah every night</string>
     <string name="prayer_time_mode">Time Mode</string>
     <string name="custom_time">Custom Time</string>

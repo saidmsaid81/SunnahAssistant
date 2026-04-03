@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -156,6 +157,15 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                     mainActivityViewModel.updateCurrentPage(it)
                     requireActivity().findNavController(R.id.myNavHostFragment)
                         .navigate(R.id.quranReaderFragment)
+                }
+                dismiss()
+            }
+
+            ResourcesNextActionRepository.ActionType.NavigateToAdhkaar -> {
+                nextAction.adhkaarChapterNumber?.let { chapterNumber ->
+                    val args = bundleOf("chapterId" to chapterNumber)
+                    requireActivity().findNavController(R.id.myNavHostFragment)
+                        .navigate(R.id.adhkaarReaderFragment, args)
                 }
                 dismiss()
             }
