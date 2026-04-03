@@ -22,7 +22,8 @@ data class AppSettings(
     var prayerTimeOffsetsInMinutes: IntArray = IntArray(5) { 0 },
     var month: Int = 12,
     var hijriOffSet: Int = 0,
-    var isLightMode: Boolean = true,
+    @ColumnInfo(defaultValue = "2")
+    var themeMode: Int = THEME_MODE_FOLLOW_SYSTEM,
     var isFirstLaunch: Boolean = true,
     @ColumnInfo(name = "showNextReminderNotification") var showNextToDoNotification: Boolean = true,
     var showOnBoardingTutorial: Boolean = true,
@@ -84,7 +85,7 @@ data class AppSettings(
         if (!prayerTimeOffsetsInMinutes.contentEquals(other.prayerTimeOffsetsInMinutes)) return false
         if (month != other.month) return false
         if (hijriOffSet != other.hijriOffSet) return false
-        if (isLightMode != other.isLightMode) return false
+        if (themeMode != other.themeMode) return false
         if (isFirstLaunch != other.isFirstLaunch) return false
         if (showNextToDoNotification != other.showNextToDoNotification) return false
         if (showOnBoardingTutorial != other.showOnBoardingTutorial) return false
@@ -134,7 +135,7 @@ data class AppSettings(
         result = 31 * result + prayerTimeOffsetsInMinutes.contentHashCode()
         result = 31 * result + month
         result = 31 * result + hijriOffSet
-        result = 31 * result + isLightMode.hashCode()
+        result = 31 * result + themeMode
         result = 31 * result + isFirstLaunch.hashCode()
         result = 31 * result + showNextToDoNotification.hashCode()
         result = 31 * result + showOnBoardingTutorial.hashCode()
@@ -169,5 +170,11 @@ data class AppSettings(
         result = 31 * result + (maghribCustomTime?.hashCode() ?: 0)
         result = 31 * result + (ishaCustomTime?.hashCode() ?: 0)
         return result
+    }
+
+    companion object {
+        const val THEME_MODE_LIGHT = 0
+        const val THEME_MODE_DARK = 1
+        const val THEME_MODE_FOLLOW_SYSTEM = 2
     }
 }

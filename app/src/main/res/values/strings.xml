@@ -98,6 +98,7 @@
     <string name="layout">Layout</string>
     <string name="theme">Theme</string>
     <string name="theme_in_android_10_follows_system_settings">Follows System</string>
+    <string name="dark_theme">Dark</string>
     <string name="delete_category">Delete Category?</string>
     <string name="confirm_delete_category">%s Category Deleted</string>
     <string name="category_cannot_be_deleted">%s Category cannot be deleted</string>
@@ -546,6 +547,11 @@
     <string-array name="theme_options">
         <item>Light</item>
         <item>Dark</item>
+    </string-array>
+    <string-array name="theme_options_android_10_plus">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Follows System</item>
     </string-array>
     <string-array name="widget_theme_options">
         <item>Light</item>

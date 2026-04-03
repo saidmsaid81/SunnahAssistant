@@ -44,7 +44,7 @@ import java.util.TreeSet
         Footnote::class, Language::class, Line::class, Translation::class, AdhkaarChapter::class, AdhkaarItem::class,
         PageBookmark::class, AyahBookmark::class, AdhkaarItemBookmark::class, PinnedSurah::class, PinnedAdhkaarChapter::class
    ],
-    version = 10,
+    version = 12,
     autoMigrations = [AutoMigration(from = 7, to = 8), AutoMigration(from = 8, to = 9)],
     exportSchema = true
     )
@@ -508,6 +508,108 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_10_11: Migration = object : Migration(10, 11) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                if (!hasColumn(database, "app_settings", "themeMode")) {
+                    database.execSQL("ALTER TABLE app_settings ADD COLUMN `themeMode` INTEGER NOT NULL DEFAULT 2")
+                }
+            }
+        }
+
+        private val MIGRATION_11_12: Migration = object : Migration(11, 12) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `app_settings_new` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `formattedAddress` TEXT,
+                        `latitude` REAL NOT NULL,
+                        `longitude` REAL NOT NULL,
+                        `method` INTEGER NOT NULL,
+                        `asrCalculationMethod` INTEGER NOT NULL,
+                        `isAutomatic` INTEGER NOT NULL,
+                        `enablePrayerTimeAlertsFor` TEXT NOT NULL,
+                        `prayerTimeOffsetsInMinutes` TEXT NOT NULL,
+                        `month` INTEGER NOT NULL,
+                        `hijriOffSet` INTEGER NOT NULL,
+                        `themeMode` INTEGER NOT NULL DEFAULT 2,
+                        `isFirstLaunch` INTEGER NOT NULL,
+                        `showNextReminderNotification` INTEGER NOT NULL,
+                        `showOnBoardingTutorial` INTEGER NOT NULL,
+                        `isDisplayHijriDate` INTEGER NOT NULL,
+                        `savedSpinnerPosition` INTEGER NOT NULL,
+                        `isExpandedLayout` INTEGER NOT NULL,
+                        `notificationToneUri` TEXT,
+                        `isVibrate` INTEGER NOT NULL,
+                        `priority` INTEGER NOT NULL,
+                        `latitudeAdjustmentMethod` INTEGER NOT NULL,
+                        `isShowHijriDateWidget` INTEGER NOT NULL,
+                        `isShowNextReminderWidget` INTEGER NOT NULL,
+                        `isAfterUpdate` INTEGER NOT NULL,
+                        `appVersionCode` INTEGER NOT NULL,
+                        `appVersion` TEXT NOT NULL,
+                        `categories` TEXT,
+                        `language` TEXT NOT NULL,
+                        `doNotDisturbMinutes` INTEGER NOT NULL,
+                        `useReliableAlarms` INTEGER NOT NULL,
+                        `numberOfLaunches` INTEGER NOT NULL,
+                        `shareAnonymousUsageData` INTEGER NOT NULL,
+                        `generatePrayerRemindersAfter` INTEGER NOT NULL,
+                        `includeHijriDateInCalendar` INTEGER NOT NULL,
+                        `hideDownloadFilePrompt` INTEGER NOT NULL DEFAULT 0,
+                        `lastReadPage` INTEGER DEFAULT null,
+                        `arabicTextFontSize` INTEGER NOT NULL DEFAULT 18,
+                        `translationTextFontSize` INTEGER NOT NULL DEFAULT 16,
+                        `footnoteTextFontSize` INTEGER NOT NULL DEFAULT 12,
+                        `fajrCustomTime` TEXT DEFAULT null,
+                        `dhuhrCustomTime` TEXT DEFAULT null,
+                        `asrCustomTime` TEXT DEFAULT null,
+                        `maghribCustomTime` TEXT DEFAULT null,
+                        `ishaCustomTime` TEXT DEFAULT null
+                    )
+                    """.trimIndent()
+                )
+                database.execSQL(
+                    """
+                    INSERT INTO `app_settings_new` (
+                        `id`, `formattedAddress`, `latitude`, `longitude`, `method`, `asrCalculationMethod`, `isAutomatic`,
+                        `enablePrayerTimeAlertsFor`, `prayerTimeOffsetsInMinutes`, `month`, `hijriOffSet`, `themeMode`,
+                        `isFirstLaunch`, `showNextReminderNotification`, `showOnBoardingTutorial`, `isDisplayHijriDate`,
+                        `savedSpinnerPosition`, `isExpandedLayout`, `notificationToneUri`, `isVibrate`, `priority`,
+                        `latitudeAdjustmentMethod`, `isShowHijriDateWidget`, `isShowNextReminderWidget`, `isAfterUpdate`,
+                        `appVersionCode`, `appVersion`, `categories`, `language`, `doNotDisturbMinutes`, `useReliableAlarms`,
+                        `numberOfLaunches`, `shareAnonymousUsageData`, `generatePrayerRemindersAfter`,
+                        `includeHijriDateInCalendar`, `hideDownloadFilePrompt`, `lastReadPage`, `arabicTextFontSize`,
+                        `translationTextFontSize`, `footnoteTextFontSize`, `fajrCustomTime`, `dhuhrCustomTime`,
+                        `asrCustomTime`, `maghribCustomTime`, `ishaCustomTime`
+                    )
+                    SELECT
+                        `id`, `formattedAddress`, `latitude`, `longitude`, `method`, `asrCalculationMethod`, `isAutomatic`,
+                        `enablePrayerTimeAlertsFor`, `prayerTimeOffsetsInMinutes`, `month`, `hijriOffSet`,
+                        CASE
+                            WHEN `themeMode` = 0 THEN 0
+                            WHEN `themeMode` = 1 THEN 1
+                            WHEN `themeMode` = 2 THEN 2
+                            WHEN `themeMode` = -1 THEN CASE WHEN `isLightMode` = 1 THEN 0 ELSE 1 END
+                            ELSE CASE WHEN `isLightMode` = 1 THEN 0 ELSE 1 END
+                        END,
+                        `isFirstLaunch`, `showNextReminderNotification`, `showOnBoardingTutorial`, `isDisplayHijriDate`,
+                        `savedSpinnerPosition`, `isExpandedLayout`, `notificationToneUri`, `isVibrate`, `priority`,
+                        `latitudeAdjustmentMethod`, `isShowHijriDateWidget`, `isShowNextReminderWidget`, `isAfterUpdate`,
+                        `appVersionCode`, `appVersion`, `categories`, `language`, `doNotDisturbMinutes`, `useReliableAlarms`,
+                        `numberOfLaunches`, `shareAnonymousUsageData`, `generatePrayerRemindersAfter`,
+                        `includeHijriDateInCalendar`, COALESCE(`hideDownloadFilePrompt`, 0), `lastReadPage`,
+                        COALESCE(`arabicTextFontSize`, 18), COALESCE(`translationTextFontSize`, 16),
+                        COALESCE(`footnoteTextFontSize`, 12), `fajrCustomTime`, `dhuhrCustomTime`, `asrCustomTime`,
+                        `maghribCustomTime`, `ishaCustomTime`
+                    FROM `app_settings`
+                    """.trimIndent()
+                )
+                database.execSQL("DROP TABLE `app_settings`")
+                database.execSQL("ALTER TABLE `app_settings_new` RENAME TO `app_settings`")
+            }
+        }
+
 
         fun getInstance(context: Context): SunnahAssistantDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -548,7 +650,9 @@ abstract class SunnahAssistantDatabase : RoomDatabase() {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
-                MIGRATION_9_10
+                MIGRATION_9_10,
+                MIGRATION_10_11,
+                MIGRATION_11_12
             )
             .build()
     }

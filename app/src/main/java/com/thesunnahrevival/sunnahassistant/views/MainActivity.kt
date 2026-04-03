@@ -308,12 +308,27 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun applySettings(settings: AppSettings) {
-        //Set theme
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) //Android 9 and below
-            if (settings.isLightMode)
+        when (settings.themeMode) {
+            AppSettings.THEME_MODE_LIGHT -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
+            }
+
+            AppSettings.THEME_MODE_DARK -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+
+            AppSettings.THEME_MODE_FOLLOW_SYSTEM -> {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+
+            else -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0) {
             val appUpdateManager = AppUpdateManagerFactory.create(this)

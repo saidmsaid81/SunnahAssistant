@@ -99,6 +99,7 @@
     <string name="layout">الواجهة</string>
     <string name="theme">السِمة</string>
     <string name="theme_in_android_10_follows_system_settings">اتبع النظام</string>
+    <string name="dark_theme">داكن</string>
     <string name="delete_category">حذف الفئة؟</string>
     <string name="confirm_delete_category">تم حذف الفئة %s</string>
     <string name="category_cannot_be_deleted">لا يمكن حذف الفئة %s</string>
@@ -471,6 +472,11 @@
     <string-array name="theme_options">
         <item>فاتح (ابيض)</item>
         <item>داكن</item>
+    </string-array>
+    <string-array name="theme_options_android_10_plus">
+        <item>فاتح (ابيض)</item>
+        <item>داكن</item>
+        <item>اتبع النظام</item>
     </string-array>
     <string-array name="widget_theme_options">
         <item>فاتح (ابيض)</item>
