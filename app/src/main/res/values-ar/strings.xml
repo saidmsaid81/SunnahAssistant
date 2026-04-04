@@ -280,6 +280,8 @@
     <string name="pick_date">إختار تاريخ</string>
     <string name="gregorian_dates">التقويم الميلادي</string>
     <string name="mark_as_complete">وضع علامة كمكتمل</string>
+    <string name="mark_as_complete_subtitle">ضع علامة على هذا كمنجز اليوم</string>
+    <string name="marked_as_complete">تم وضع علامة كمكتمل</string>
     <string name="disable_this_nudge">تعطيل هذا الاقتراح</string>
     <string name="disable_all_nudges">تعطيل جميع الاقتراحات</string>
     <string name="notify">تنبيه</string>

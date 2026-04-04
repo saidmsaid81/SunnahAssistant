@@ -2,6 +2,7 @@ package com.thesunnahrevival.sunnahassistant.data.repositories
 
 import android.content.Context
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.ActionType
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import com.thesunnahrevival.sunnahassistant.utilities.BEFORE_SLEEPING_ADHKAAR_CHAPTER_ID
@@ -61,6 +62,20 @@ internal fun getSuratulSajdahNavigateAction(): NextAction = NextAction(
     actionType = ActionType.NavigateToSurah,
     surahPageNumber = SURATUL_SAJDAH_FIRST_PAGE
 )
+
+internal fun MutableList<NextAction>.addMarkAsCompleteIfEligible(toDo: ToDo?) {
+    if (toDo != null && !toDo.isAutomaticToDo && !toDo.isComplete(LocalDate.now())) {
+        add(
+            NextAction(
+                titleResId = R.string.mark_as_complete,
+                subtitleResId = R.string.mark_as_complete_subtitle,
+                actionResId = R.string.mark_as_complete,
+                actionType = ActionType.MarkAsComplete,
+                toDoId = toDo.id
+            )
+        )
+    }
+}
 
 internal fun getSleepingAdhkaarNavigateAction(): NextAction = NextAction(
     titleResId = R.string.read_adhkaar_before_sleeping,

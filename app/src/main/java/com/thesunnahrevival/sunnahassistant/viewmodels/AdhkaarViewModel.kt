@@ -13,9 +13,11 @@ import com.thesunnahrevival.sunnahassistant.utilities.getLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,6 +29,7 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
     private val isLoading: MutableSharedFlow<Boolean> = MutableSharedFlow()
     private val flagRepository = FlagRepository.getInstance(getApplication())
     private val adhkaarResourcesNextActionRepository = AdhkaarResourcesNextActionRepository.getInstance(application)
+    private val _nextActionRefreshTrigger = MutableStateFlow(0)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,11 +39,17 @@ class AdhkaarViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun refreshNextActions() {
+        _nextActionRefreshTrigger.value++
+    }
+
     fun getAdhkaarItemsByChapterId(chapterId: Int): StateFlow<AdhkaarUiState> {
         return combine(
             adhkaarItemRepository.getAdhkaarItemsByChapterId(chapterId).onStart { emit(listOf()) },
-            adhkaarResourcesNextActionRepository.getAdhkaarNextActions(chapterId).onStart { emit(NextActionsData()) }
-        ){ adhkaarItems, nextActions ->
+            _nextActionRefreshTrigger.flatMapLatest {
+                adhkaarResourcesNextActionRepository.getAdhkaarNextActions(chapterId).onStart { emit(NextActionsData()) }
+            }
+        ) { adhkaarItems, nextActions ->
             val processedAdhkaarItems = processAdhkaarItems(items = adhkaarItems)
             AdhkaarUiState(
                 adhkaarItems = processedAdhkaarItems,

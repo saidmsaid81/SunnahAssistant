@@ -104,6 +104,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 shareTextResId = R.string.morning_evening_adhkaar_reminder_message
             )
         )
+
+        addMarkAsCompleteIfEligible(eveningAdhkaarReminder)
     }
 
     private suspend fun MutableList<NextAction>.populateMorningAdhkaarActions() {
@@ -152,6 +154,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 shareTextResId = R.string.morning_evening_adhkaar_reminder_message
             )
         )
+
+        addMarkAsCompleteIfEligible(isMorningAdhkaar)
     }
 
     private suspend fun trackReadAdhkaar(chapterId: Int) {
@@ -185,6 +189,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 )
             )
         }
+
+        addMarkAsCompleteIfEligible(sleepingAdhkaarReminder)
     }
 
     private suspend fun getPrayerTimesCalculator(): PrayerTimeCalculator? {

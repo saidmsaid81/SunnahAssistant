@@ -43,6 +43,7 @@ import com.thesunnahrevival.sunnahassistant.views.adapters.QuranPageAdapter
 import com.thesunnahrevival.sunnahassistant.views.customviews.HighlightOverlayView
 import com.thesunnahrevival.sunnahassistant.views.listeners.QuranPageInteractionListener
 import com.thesunnahrevival.sunnahassistant.views.reduceDragSensitivity
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.MARK_AS_COMPLETE_RESULT_KEY
 import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.ResourcesNextActionFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -105,9 +106,18 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
 
 
         showTutorial()
+
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            MARK_AS_COMPLETE_RESULT_KEY,
+            viewLifecycleOwner
+        ) { _, _ ->
+            val currentPage = mainActivityViewModel.getCurrentQuranPage()
+            val pageView = quranReaderBinding?.viewPager?.findViewWithTag<View>(currentPage) ?: return@setFragmentResultListener
+            showNextActionIfAvailable(pageView, currentPage)
+        }
+
         return quranReaderBinding?.root
     }
-
 
     override fun onResume() {
         super.onResume()

@@ -245,6 +245,8 @@
     <string name="pick_date">Pick Date</string>
     <string name="gregorian_dates">Gregorian Dates</string>
     <string name="mark_as_complete">Mark as Complete</string>
+    <string name="mark_as_complete_subtitle">Mark this as done for today</string>
+    <string name="marked_as_complete">Marked as complete</string>
     <string name="disable_this_nudge">Disable this suggestion</string>
     <string name="disable_all_nudges">Disable all suggestions</string>
     <string name="notify">Notify</string>

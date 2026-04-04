@@ -59,6 +59,7 @@ import com.thesunnahrevival.sunnahassistant.viewmodels.AdhkaarViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
 import com.thesunnahrevival.sunnahassistant.views.home.MenuBarFragment
 import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.ADHKAAR_CHAPTER_ID
+import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.MARK_AS_COMPLETE_RESULT_KEY
 import com.thesunnahrevival.sunnahassistant.views.resourcesScreens.ResourcesNextActionFragment
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslation
 import com.thesunnahrevival.sunnahassistant.views.utilities.ArabicTextWithTranslationShimmer
@@ -95,6 +96,13 @@ class AdhkaarReaderFragment : MenuBarFragment() {
         val initialChapterId = args.chapterId
         val scrollToItemId = args.scrollToItemId
         currentChapterId = initialChapterId
+
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            MARK_AS_COMPLETE_RESULT_KEY,
+            viewLifecycleOwner
+        ) { _, _ ->
+            viewModel.refreshNextActions()
+        }
 
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

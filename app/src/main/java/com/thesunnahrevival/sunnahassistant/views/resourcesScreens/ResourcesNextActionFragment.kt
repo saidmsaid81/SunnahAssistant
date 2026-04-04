@@ -23,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -59,6 +62,7 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 import java.net.MalformedURLException
 
 const val ADHKAAR_CHAPTER_ID = "adhkaarChapterId"
+const val MARK_AS_COMPLETE_RESULT_KEY = "markAsCompletePerformed"
 
 class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
@@ -83,12 +87,18 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val nextActionsData by viewmodel.nextActionsData.collectAsState()
+                var hasAutoActioned by remember { mutableStateOf(false) }
 
                 LaunchedEffect(nextActionsData) {
-                    nextActionsData?.let {
-                        if (it.nextActions.size == 1) {
-                            onNextActionClick(it.nextActions.first())
-                            dismiss()
+                    if (!hasAutoActioned) {
+                        nextActionsData?.let {
+                            val singleAction = it.nextActions.singleOrNull()
+                            if (singleAction?.actionType == ResourcesNextActionRepository.ActionType.ShareText ||
+                                singleAction?.actionType == ResourcesNextActionRepository.ActionType.MarkAsComplete) {
+                                hasAutoActioned = true
+                                onNextActionClick(singleAction)
+                                dismiss()
+                            }
                         }
                     }
                 }
@@ -99,6 +109,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                         onInfoClick(link, toDoId)
                     }
                 ) { nextAction ->
+                    hasAutoActioned = true
                     onNextActionClick(nextAction)
                 }
             }
@@ -174,6 +185,13 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                         .navigate(R.id.adhkaarReaderFragment, args)
                 }
                 dismiss()
+            }
+
+            ResourcesNextActionRepository.ActionType.MarkAsComplete -> {
+                nextAction.toDoId?.let { toDoId ->
+                    viewmodel.markToDoAsComplete(toDoId)
+                    parentFragmentManager.setFragmentResult(MARK_AS_COMPLETE_RESULT_KEY, bundleOf())
+                }
             }
         }
     }

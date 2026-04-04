@@ -113,6 +113,8 @@ class ResourcesNextActionRepository private constructor(
                 shareTextResId = R.string.suratul_kahf_reminder_message
             )
         )
+
+        addMarkAsCompleteIfEligible(readingSuratulKahfReminder)
     }
 
     private suspend fun MutableList<NextAction>.populateSuratulMulkActions() {
@@ -155,6 +157,8 @@ class ResourcesNextActionRepository private constructor(
                 shareTextResId = R.string.suratul_mulk_and_sajdah_reminder_message
             )
         )
+
+        addMarkAsCompleteIfEligible(readingSuratulMulkReminder)
     }
 
     private fun getDailySuraReadingAction(titleResId: Int): NextAction = NextAction(
@@ -188,5 +192,10 @@ class ResourcesNextActionRepository private constructor(
         data object ShareText : ActionType()
         data object NavigateToSurah : ActionType()
         data object NavigateToAdhkaar : ActionType()
+        data object MarkAsComplete : ActionType()
+    }
+
+    suspend fun markToDoAsComplete(toDoId: Int) {
+        toDoRepository.markAsComplete(toDoId)
     }
 }
