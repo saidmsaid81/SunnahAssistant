@@ -132,7 +132,9 @@ class ResourcesNextActionRepository private constructor(
         firstAction: () -> NextAction,
         secondAction: () -> NextAction
     ) {
-        if (flagRepository.getIntFlag(flagKey) == null) {
+        val companionSurahRead = flagRepository.getIntFlag(flagKey) != null
+
+        if (!companionSurahRead) {
             add(firstAction())
         }
 
@@ -158,7 +160,9 @@ class ResourcesNextActionRepository private constructor(
             )
         )
 
-        addMarkAsCompleteIfEligible(readingSuratulMulkReminder)
+        if (companionSurahRead) {
+            addMarkAsCompleteIfEligible(readingSuratulMulkReminder)
+        }
     }
 
     private fun getDailySuraReadingAction(titleResId: Int): NextAction = NextAction(
