@@ -37,6 +37,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.core.os.bundleOf
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -47,6 +48,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.QURAN_PAGE_FROM_NOTIFICATION
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesNextActionViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -153,10 +155,14 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
             }
 
             ResourcesNextActionRepository.ActionType.NavigateToSurah -> {
-                nextAction.surahPageNumber?.let {
-                    mainActivityViewModel.updateCurrentPage(it)
+                nextAction.surahPageNumber?.let { page ->
+                    mainActivityViewModel.updateCurrentPage(page)
+                    val args = bundleOf(QURAN_PAGE_FROM_NOTIFICATION to page)
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.quranReaderFragment, inclusive = true)
+                        .build()
                     requireActivity().findNavController(R.id.myNavHostFragment)
-                        .navigate(R.id.quranReaderFragment)
+                        .navigate(R.id.quranReaderFragment, args, navOptions)
                 }
                 dismiss()
             }
