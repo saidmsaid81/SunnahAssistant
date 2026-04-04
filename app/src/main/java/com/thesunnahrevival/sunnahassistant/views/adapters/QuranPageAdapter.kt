@@ -28,7 +28,17 @@ class QuranPageAdapter(
     RecyclerView.Adapter<QuranPageAdapter.ViewHolder>() {
 
     companion object {
-        private const val TIMEOUT_DELAY_MS = 5000L // 5 seconds
+        private const val TIMEOUT_DELAY_MS = 5000L
+
+        private val JUZ_START_PAGES = intArrayOf(
+            1, 22, 42, 62, 82, 102, 122, 142, 162, 182,
+            202, 222, 242, 262, 282, 302, 322, 342, 362, 382,
+            402, 422, 442, 462, 482, 502, 522, 542, 562, 582
+        )
+
+        fun getJuzForPage(page: Int): Int {
+            return JUZ_START_PAGES.indexOfLast { it <= page } + 1
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -73,6 +83,13 @@ class QuranPageAdapter(
             view.tag = pageNumber
 
             listener.showNextActionIfAvailable(view, pageNumber)
+
+            val juzLabel = view.findViewById<TextView>(R.id.juz_label)
+            val surahNameLabel = view.findViewById<TextView>(R.id.surah_name_label)
+            juzLabel.text = "${view.context.getString(R.string.juz)} ${getJuzForPage(pageNumber)}"
+            surahNameLabel.text = null
+
+            listener.updatePageHeader(view, pageNumber)
 
             val progressBar = view.findViewById<ProgressBar>(R.id.progress_bar)
             progressBar.visibility = View.GONE

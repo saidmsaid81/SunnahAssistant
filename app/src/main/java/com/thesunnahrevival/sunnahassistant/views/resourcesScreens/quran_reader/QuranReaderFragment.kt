@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -275,6 +276,27 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
         }
     }
 
+    override fun updatePageHeader(view: View, pageNumber: Int) {
+        val surahNameLabel = view.findViewById<TextView>(R.id.surah_name_label)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val surah = withContext(Dispatchers.IO) {
+                viewmodel.getSurahByPage(pageNumber)
+            }
+
+            if (!isAdded || view.tag != pageNumber) {
+                return@launch
+            }
+
+            val locale = context?.getLocale() ?: return@launch
+            surahNameLabel.text = if (locale.language.equals("ar", ignoreCase = true)) {
+                surah?.arabicName
+            } else {
+                surah?.transliteratedName
+            }
+        }
+    }
+
     override fun showNextActionIfAvailable(view: View, pageNumber: Int) {
         val nextActionView = view.findViewById<MaterialButton>(R.id.next_action)
 
@@ -365,6 +387,7 @@ class QuranReaderFragment : SunnahAssistantFragment(), QuranPageInteractionListe
                     topMargin = statusBarHeight
                 }
             }
+
         }
 
         mainActivityViewModel.navBarHeight.observe(viewLifecycleOwner) { navBarHeight ->
