@@ -36,10 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.core.os.bundleOf
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -93,8 +93,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                     if (!hasAutoActioned) {
                         nextActionsData?.let {
                             val singleAction = it.nextActions.singleOrNull()
-                            if (singleAction?.actionType == ResourcesNextActionRepository.ActionType.ShareText ||
-                                singleAction?.actionType == ResourcesNextActionRepository.ActionType.MarkAsComplete) {
+                            if (singleAction != null) {
                                 hasAutoActioned = true
                                 onNextActionClick(singleAction)
                                 dismiss()
