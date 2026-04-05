@@ -643,4 +643,5 @@
     <string name="update_translation">تحديث الترجمة</string>
     <string name="translations_updates_available">تتوفر %d تحديثات للترجمة</string>
     <string name="translations_up_to_date">الترجمات محدثة</string>
+    <string name="juz">الجزء</string>
 </resources>

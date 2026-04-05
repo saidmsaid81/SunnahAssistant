@@ -10,6 +10,7 @@ import com.thesunnahrevival.sunnahassistant.data.repositories.QuranPageRepositor
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesRepository
+import com.thesunnahrevival.sunnahassistant.data.repositories.SurahRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,6 +25,7 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
     private val flagRepository = FlagRepository.getInstance(getApplication())
     private val resourcesRepository = ResourcesRepository.getInstance(getApplication())
     private val resourcesNextActionRepository = ResourcesNextActionRepository.getInstance(getApplication())
+    private val surahRepository = SurahRepository.getInstance(getApplication())
 
     private var _lines = listOf<Line>()
     val lines: List<Line>
@@ -104,4 +106,6 @@ class QuranReaderViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun isQuranDataPrepopulatedFlow() = resourcesRepository.isQuranDataPrepopulatedFlow()
+
+    suspend fun getSurahByPage(pageNumber: Int) = surahRepository.getSurahByPage(pageNumber)
 }
