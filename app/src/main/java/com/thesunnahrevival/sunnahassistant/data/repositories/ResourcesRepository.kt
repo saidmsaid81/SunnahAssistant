@@ -84,19 +84,15 @@ class ResourcesRepository private constructor(
         updateQuranDataPrepopulatedFlag()
 
         val surahJob = launch {
-            if (surahDao.countSurah() == 0) {
-                prepopulateSurahData()
-                prepopulateAyahData()
-                prepopulateLineData()
-                prepopulateLanguageData()
-                prepopulateTranslationData()
-            }
+            prepopulateFromAssets<Surah>("Surahs.json", { surahDao.countSurah() }) { surahDao.insert(it) }
+            prepopulateFromAssets<Ayah>("Ayahs.json", { ayahDao.countAyahs() }) { ayahDao.insert(it) }
+            prepopulateFromAssets<Line>("Lines.json", { lineDao.countLines() }) { lineDao.insert(it) }
+            prepopulateFromAssets<Language>("Languages.json", { languageDao.countLanguages() }) { languageDao.insert(it) }
+            prepopulateFromAssets<Translation>("Translations.json", { translationDao.countTranslations() }) { translationDao.insert(it) }
         }
 
         val adhkaarJob = launch {
-            if (adhkaarChapterDao.countAdhkaarChapters() == 0) {
-                prepopulateAdhkaarData()
-            }
+            prepopulateFromAssets<AdhkaarChapter>("adhkaar_chapters.json", { adhkaarChapterDao.countAdhkaarChapters() }) { adhkaarChapterDao.insert(it) }
         }
 
         surahJob.join()
@@ -105,127 +101,36 @@ class ResourcesRepository private constructor(
     }
 
     private suspend fun updateQuranDataPrepopulatedFlag() {
-        val isQuranDataReady = surahDao.countSurah() > 0 &&
-                ayahDao.countAyahs() > 0 &&
-                lineDao.countLines() > 0 &&
-                languageDao.countLanguages() > 0 &&
-                translationDao.countTranslations() > 0
+        val daosCounts = listOf(
+            surahDao.countSurah(),
+            ayahDao.countAyahs(),
+            lineDao.countLines(),
+            languageDao.countLanguages(),
+            translationDao.countTranslations()
+        )
+        val isQuranDataReady = daosCounts.all { it > 0 }
 
         flagRepository.setFlag(
             QURAN_DATA_PREPOPULATED_FLAG,
-            if (isQuranDataReady) {
-                1
-            } else {
-                0
-            }
+            if (isQuranDataReady) 1 else 0
         )
     }
 
-
-    private suspend fun prepopulateSurahData() {
+    private suspend inline fun <reified T> prepopulateFromAssets(
+        fileName: String,
+        crossinline countAction: suspend () -> Int,
+        crossinline insertAction: suspend (T) -> Unit
+    ) {
+        if (countAction() > 0) return
         try {
-            val jsonString = applicationContext.assets.open("Surahs.json")
+            val jsonString = applicationContext.assets.open(fileName)
                 .bufferedReader()
                 .use { it.readText() }
 
-            val listSurahType = object : TypeToken<List<Surah>>() {}.type
+            val listType = TypeToken.getParameterized(List::class.java, T::class.java).type
             val gson = getGson()
-            val surahs: List<Surah> = gson.fromJson(jsonString, listSurahType)
-            surahs.forEach {
-                surahDao.insert(it)
-            }
-
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
-    private suspend fun prepopulateAyahData() {
-        try {
-            val jsonString = applicationContext.assets.open("Ayahs.json")
-                .bufferedReader()
-                .use { it.readText() }
-
-            val listAyahType = object : TypeToken<List<Ayah>>() {}.type
-            val gson = getGson()
-            val ayahs: List<Ayah> = gson.fromJson(jsonString, listAyahType)
-            ayahs.forEach {
-                ayahDao.insert(it)
-            }
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
-    private suspend fun prepopulateLineData() {
-        try {
-            val jsonString = applicationContext.assets.open("Lines.json")
-                .bufferedReader()
-                .use { it.readText() }
-
-            val listType = object : TypeToken<List<Line>>() {}.type
-            val gson = getGson()
-            val lines: List<Line> = gson.fromJson(jsonString, listType)
-            lines.forEach {
-                lineDao.insert(it)
-            }
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
-    private suspend fun prepopulateLanguageData() {
-        try {
-            val jsonString = applicationContext.assets.open("Languages.json")
-                .bufferedReader()
-                .use { it.readText() }
-
-            val listType = object : TypeToken<List<Language>>() {}.type
-            val gson = getGson()
-            val languages: List<Language> = gson.fromJson(jsonString, listType)
-            languages.forEach {
-                languageDao.insert(it)
-            }
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
-    private suspend fun prepopulateTranslationData() {
-        try {
-            val jsonString = applicationContext.assets.open("Translations.json")
-                .bufferedReader()
-                .use { it.readText() }
-
-            val listType = object : TypeToken<List<Translation>>() {}.type
-            val gson = getGson()
-            val translations: List<Translation> = gson.fromJson(jsonString, listType)
-            translations.forEach {
-                translationDao.insert(it)
-            }
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
-    private suspend fun prepopulateAdhkaarData() {
-        try {
-            val jsonString = applicationContext.assets.open("adhkaar_chapters.json")
-                .bufferedReader()
-                .use { it.readText() }
-
-            val listType = object : TypeToken<List<AdhkaarChapter>>() {}.type
-            val gson = getGson()
-            val adhkaarChapters: List<AdhkaarChapter> = gson.fromJson(jsonString, listType)
-            adhkaarChapters.forEach {
-                adhkaarChapterDao.insert(it)
-            }
-
+            val items: List<T> = gson.fromJson(jsonString, listType)
+            items.forEach { insertAction(it) }
         } catch (exception: Exception) {
             exception.printStackTrace()
         }
