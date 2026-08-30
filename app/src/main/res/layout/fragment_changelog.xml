@@ -30,9 +30,11 @@
             android:textSize="13sp" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/important_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:visibility="gone"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp">
 
@@ -92,7 +94,7 @@
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <TextView
+                    <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -100,7 +102,7 @@
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="17sp"
                     android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -110,7 +112,7 @@
                     android:text="@string/new_features_details"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="match_parent"

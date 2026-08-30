@@ -127,37 +127,28 @@
     <string name="what_s_new">What\'s New</string>
     <string name="create_new_categories">Create New Category</string>
     <string name="important">Important</string>
-    <string name="important_changes">This is the first update that introduces the new Resources tab.
-\n\n        ‣ You can now access Quran and Adhkaar from one place.
-\n        ‣ Added Quran reading with translations and helpful reading actions.
-\n        ‣ Added Adhkaar reading with bookmarking, sharing, and easier navigation.
-\n        ‣ Added a new bookmarks area and search to quickly find saved content.
-\n        ‣ Added guidance nudges to help you keep up with daily Sunnah habits.
+    <string name="important_changes">This update builds on the new Resources tab.
+\n\n        ‣ Access Quran and Adhkaar from one place.
+        ‣ Quran reading with translations and helpful reading actions.
+        ‣ Adhkaar reading with bookmarking, sharing, and easier navigation.
+        ‣ A bookmarks area and search to quickly find saved content.
+        ‣ Guidance nudges to help you keep up with daily Sunnah habits.
   </string>
     <string name="new_features">New Features</string>
-    <string name="new_features_details">        ‣ Major redesign of the app.\n
-        ‣ Introduced a calendar section which supports Gregorian Calendar and Hijri Calendar (based on Ummul-Qura Calendar).\n
-        ‣ Calendar section shows a blue dot if there is a to-do on that day.\n
-        ‣ Date pickers now show both Gregorian dates and Hijri dates.\n
-        ‣ Introduced an option to mark a To-Do as complete or incomplete.\n
-        ‣ Introduced an option to be notified of a To-Do ahead or after the set time.\n
-        ‣ Option to share To-Do via your app of choice.\n
-        ‣ Introduced a Tips Section containing recommended To-Dos.\n
-        ‣ Introduced new options when deleting a To-Do such as only this date or only future occurrences.\n
-        ‣ Introduced a Local Backup and Restore option (Experimental).\n
-        ‣ Introduced a Snooze option when a notification is triggered.\n
-        ‣ Introduced a Mark as Complete option when a notification is triggered.\n
-        ‣ Introduced a Share To-Do option when a notification is triggered.\n
-        ‣ More soon In shaa Allah.
+    <string name="new_features_details">        ‣ Quran pages now show the Surah and Juz you are reading in the page footer.\n
+        ‣ You can now mark Quran and Adhkaar readings as complete directly from the next action prompt.\n
+        ‣ Before-sleeping Adhkaar are now linked with Suratul Mulk and Suratul As-Sajdah as nighttime next actions.\n
     </string>
     <string name="updated">Updated</string>
-    <string name="updated_details">        ‣ Prayer Time Settings got a major upgrade for faster, cleaner setup.\n
-        ‣ Choose prayer-time mode per prayer and set precise custom times when needed.\n
-        ‣ Better activation flow now guides location setup before enabling automatic prayer alerts.
+    <string name="updated_details">        ‣ You can now change the app theme on Android 10 and above.\n
+        ‣ Added a Help Translate button so you can help bring the app to more languages.
     </string>
     <string name="fixes">Fixes</string>
-    <string name="fixes_details">        ‣ Improved app stability and overall performance.\n
-    ‣ Fixed reminder and notification issues for a smoother daily experience.
+    <string name="fixes_details">        ‣ Fixed Quran opening at the wrong page while images were still downloading on-demand.\n
+        ‣ Fixed the next action prompt so it appears correctly when there is only one suggested action.\n
+        ‣ Mark as Complete now appears only after both Suratul Mulk and Suratul As-Sajdah have been read.\n
+        ‣ Fixed sharing a To-Do from a reminder notification.\n
+        ‣ Improved app stability and overall performance.
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
     <string name="successfuly_added_sunnah_to_dos">Successfully Added</string>
