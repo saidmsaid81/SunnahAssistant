@@ -138,8 +138,8 @@ class NotificationSettingsFragment : FragmentWithPopups(), View.OnClickListener,
         }
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        if (buttonView?.isPressed == true) {
+    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+        if (buttonView.isPressed) {
             if (buttonView.id == R.id.use_reliable_alarms) {
                 mainActivityViewModel.settingsValue?.useReliableAlarms = isChecked
             }
