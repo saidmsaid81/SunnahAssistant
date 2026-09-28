@@ -47,6 +47,7 @@ class ReminderManager private constructor() {
         )
 
         val nextScheduledToDos = arrayListOf<ToDo>()
+        var isNextToDoTomorrow = false
 
         when {
             //Check to see if tomorrows reminders trigger time is offset to earlier than today reminders
@@ -54,6 +55,7 @@ class ReminderManager private constructor() {
                     nextTimeForToDoTomorrow < 0 &&
                     ((24 * 60 * 60) + nextTimeForToDoTomorrow) < (nextTimeForToDoToday
                 ?: (24 * 60 * 60)) -> {
+                isNextToDoTomorrow = true
                 nextScheduledToDos.addAll(
                     getTomorrowsReminders(repository, nextTimeForToDoTomorrow, timeInMilliseconds)
                 )
@@ -86,6 +88,7 @@ class ReminderManager private constructor() {
             }
 
             nextTimeForToDoTomorrow != null -> {
+                isNextToDoTomorrow = true
                 nextScheduledToDos.addAll(
                     getTomorrowsReminders(repository, nextTimeForToDoTomorrow, timeInMilliseconds)
                 )
@@ -102,7 +105,8 @@ class ReminderManager private constructor() {
                 nextScheduledToDos,
                 applicationContext,
                 isForegroundEnabled,
-                dayString
+                dayString,
+                isNextToDoTomorrow
             )
             updateWidgets(applicationContext)
         }
@@ -122,7 +126,8 @@ class ReminderManager private constructor() {
 
     private fun scheduleTheNextReminder(
         settings: AppSettings, nextScheduledToDos: List<ToDo>,
-        context: Context, isForegroundEnabled: Boolean, dayString: String
+        context: Context, isForegroundEnabled: Boolean, dayString: String,
+        isNextToDoTomorrow: Boolean
     ) {
         val title: String
         val text = context.getString(R.string.tap_to_disable_sticky_notification)
@@ -149,16 +154,26 @@ class ReminderManager private constructor() {
                 formatTimeInMilliseconds(context, nextScheduledReminder.timeInMilliseconds)
             )
 
+            val timeFromMidnight =
+                nextScheduledReminder.timeInMilliseconds + (nextScheduledReminder.offsetInMinutes * 60 * 1000)
+
             notificationToneUri?.let {
                 scheduleReminder(
                     context = context,
                     title = context.getString(R.string.reminder),
                     texts = names,
                     categories = categories,
-                    timeInMilliseconds = nextScheduledReminder.timeInMilliseconds + (nextScheduledReminder.offsetInMinutes * 60 * 1000),
+                    // Tomorrow's to-dos must be anchored to tomorrow's midnight. Letting
+                    // calculateDelayFromMidnight guess the day would fire them today if
+                    // their time of day hasn't passed yet.
+                    timeInMilliseconds = if (isNextToDoTomorrow)
+                        getMidnightInMilliseconds() + 86400000 + timeFromMidnight
+                    else
+                        timeFromMidnight,
                     notificationUri = it,
                     isVibrate = isVibrate,
                     doNotDisturbMinutes = settings.doNotDisturbMinutes,
+                    calculateDelayFromMidnight = !isNextToDoTomorrow,
                     useReliableAlarms = settings.useReliableAlarms
                 )
 
@@ -297,7 +312,7 @@ class ReminderManager private constructor() {
         }
     }
 
-    private fun calculateDelayFromMidnight(timeInMilliseconds: Long): Long {
+    private fun getMidnightInMilliseconds(): Long {
         // today
         val midnight: Calendar = GregorianCalendar()
         // reset hour, minutes, seconds and millis to midnight of that day
@@ -306,7 +321,11 @@ class ReminderManager private constructor() {
         midnight[Calendar.SECOND] = 0
         midnight[Calendar.MILLISECOND] = 0
         midnight.timeZone = TimeZone.getTimeZone("UTC")
-        val delay = midnight.timeInMillis + timeInMilliseconds
+        return midnight.timeInMillis
+    }
+
+    private fun calculateDelayFromMidnight(timeInMilliseconds: Long): Long {
+        val delay = getMidnightInMilliseconds() + timeInMilliseconds
         return if (delay <= System.currentTimeMillis()) //Time Has Passed
             delay + 86400000 //Schedule it the next day
         else delay
