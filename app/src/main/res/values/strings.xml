@@ -141,13 +141,17 @@
     </string>
     <string name="updated">Updated</string>
     <string name="updated_details">        ‣ You can now change the app theme on Android 10 and above.\n
-        ‣ Added a Help Translate button so you can help bring the app to more languages.
+        ‣ Added a Help Translate button so you can help bring the app to more languages.\n
+        ‣ Marking a To-Do as complete in the app now clears its reminder notification.\n
+        ‣ Improved compatibility with newer Android devices.
     </string>
     <string name="fixes">Fixes</string>
     <string name="fixes_details">        ‣ Fixed Quran opening at the wrong page while images were still downloading on-demand.\n
         ‣ Fixed the next action prompt so it appears correctly when there is only one suggested action.\n
         ‣ Mark as Complete now appears only after both Suratul Mulk and Suratul As-Sajdah have been read.\n
         ‣ Fixed sharing a To-Do from a reminder notification.\n
+        ‣ Fixed weekly reminders such as Reading Suratul Kahf sometimes notifying on the wrong day.\n
+        ‣ Fixed some reminders for the next day notifying a day early.\n
         ‣ Improved app stability and overall performance.
     </string>
     <string name="add_or_delete_categories">Add or Delete Categories</string>
