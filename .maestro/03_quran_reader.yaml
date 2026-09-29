@@ -1,0 +1,35 @@
+# Surah list (Gson assets), page download, translations + footnotes (Gson TypeToken).
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke, network]
+---
+- launchApp
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/resources"
+- tapOn: "Suratul Fatiha"
+- waitForAnimationToEnd:
+    timeout: 15000
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn: "Dismiss"
+- runFlow:
+    when:
+      visible: "GOT IT"
+    commands:
+      - tapOn: "GOT IT"
+- assertVisible: "Juz 1"
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/translations"
+- runFlow:
+    when:
+      visible: "Tap here to Select Translation"
+    commands:
+      - tapOn: "Tap here to Select Translation"
+      - tapOn: "English: Hilali & Muhsin Khan"
+      - extendedWaitUntil:
+          visible: "In the Name of Allâh.*"
+          timeout: 30000
+- assertVisible: "In the Name of Allâh.*"
+- back
+- back

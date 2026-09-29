@@ -1,0 +1,16 @@
+# RSS feed + ViewPager2 drag sensitivity (reflection on private fields).
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke, network]
+---
+- launchApp
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/resources"
+- tapOn: "Daily Hadith"
+- extendedWaitUntil:
+    visible: ".* AH"          # every post shows its Gregorian / Hijri date
+    timeout: 20000
+- swipe:
+    direction: LEFT
+- waitForAnimationToEnd
+- assertVisible: "Daily Hadith"
+- back

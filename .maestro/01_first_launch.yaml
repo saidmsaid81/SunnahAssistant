@@ -1,0 +1,26 @@
+# Fresh install: onboarding, tutorial, Hijri date on the Today screen.
+# Runs first because it clears app data.
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke]
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/checkbox"          # opt out of analytics for test runs
+- tapOn: "Get Started"
+- waitForAnimationToEnd
+# Tutorial: FAB -> to-do item -> swipe gestures -> theme menu
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/fab"
+- waitForAnimationToEnd
+- tapOn: "Demo To-Do"
+- waitForAnimationToEnd
+- tapOn: "Demo To-Do"
+- waitForAnimationToEnd
+- tapOn:
+    point: "95%,7%"
+- waitForAnimationToEnd
+# ummalqura-calendar ResourceBundle lookup (crashed under R8 without keep rule)
+- assertVisible: "Today's Date:.*"
+- assertVisible: ".* AH"
+- assertVisible: "It's Empty Here"

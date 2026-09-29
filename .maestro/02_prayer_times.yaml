@@ -1,0 +1,20 @@
+# Geocoding API (Retrofit + Gson) and prayer to-do generation.
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke, network]
+---
+- launchApp
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/today"
+- tapOn: "Tap here to enable prayer time alerts"
+- tapOn: "Activate automatic Salah\\(Prayer\\) time alerts"
+- tapOn: "\\*Example:London, United Kingdom"
+- inputText: "Nairobi, Kenya"
+- hideKeyboard
+- tapOn: "SAVE"
+- extendedWaitUntil:
+    visible: "Location updated successfully"
+    timeout: 20000
+- back
+- assertVisible: "Fajr Prayer"
+- assertVisible: "Maghrib Prayer"
+- assertVisible: "Isha Prayer"

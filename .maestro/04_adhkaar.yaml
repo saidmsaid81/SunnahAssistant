@@ -1,0 +1,20 @@
+# Adhkaar chapters/items (Gson assets), chapter swipe, bookmarks.
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke]
+---
+- launchApp
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/resources"
+- scrollUntilVisible:
+    element: "When waking up"
+- tapOn: "When waking up"
+- runFlow:
+    when:
+      visible: "Got it"
+    commands:
+      - tapOn: "Got it"
+- assertVisible: "Praise is to Allah Who gives us life.*"
+- swipe:
+    direction: LEFT
+- waitForAnimationToEnd
+- back

@@ -1,0 +1,12 @@
+flows:
+  - "*.yaml"
+executionOrder:
+  continueOnFailure: false
+  flowsOrder:
+    - 01_first_launch
+    - 02_prayer_times
+    - 03_quran_reader
+    - 04_adhkaar
+    - 05_daily_hadith
+    - 06_calendar
+    - 07_todo_mark_complete

@@ -1,0 +1,22 @@
+# Add a to-do, mark it complete from the list, then delete it.
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke]
+---
+- launchApp
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/today"
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/fab"
+- tapOn: "Enter The Name of The To-Do"
+- inputText: "Maestro To-Do"
+- hideKeyboard
+- tapOn: "SAVE"
+- assertVisible: "Maestro To-Do"
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/mark_as_complete"
+    leftOf: "Maestro To-Do"
+- waitForAnimationToEnd
+- swipe:
+    from: "Maestro To-Do"
+    direction: LEFT
+- waitForAnimationToEnd

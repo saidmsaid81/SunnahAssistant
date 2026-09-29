@@ -1,0 +1,10 @@
+# Calendar with Gregorian + Hijri dates.
+appId: com.thesunnahrevival.sunnahassistant.debug
+tags: [smoke]
+---
+- launchApp
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/calendar"
+- assertVisible: ".* AH"
+- tapOn:
+    id: "com.thesunnahrevival.sunnahassistant.debug:id/today"
