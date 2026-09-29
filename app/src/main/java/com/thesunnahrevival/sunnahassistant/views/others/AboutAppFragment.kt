@@ -30,6 +30,7 @@ import com.thesunnahrevival.sunnahassistant.BuildConfig
 import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.generateEmailIntent
+import com.thesunnahrevival.sunnahassistant.views.translateLink
 
 class AboutAppFragment : Fragment() {
     
@@ -43,7 +44,8 @@ class AboutAppFragment : Fragment() {
                 SunnahAssistantTheme {
                     AboutAppScreen(
                         onUrlClick = { url -> openUrl(url) },
-                        onContactClick = { openContactEmail() }
+                        onContactClick = { openContactEmail() },
+                        onHelpTranslateClick = { translateLink(this@AboutAppFragment) }
                     )
                 }
             }
@@ -64,7 +66,8 @@ class AboutAppFragment : Fragment() {
 @Composable
 fun AboutAppScreen(
     onUrlClick: (String) -> Unit,
-    onContactClick: () -> Unit
+    onContactClick: () -> Unit,
+    onHelpTranslateClick: () -> Unit
 ) {
     val context = LocalContext.current
     
@@ -192,6 +195,25 @@ fun AboutAppScreen(
                 }
             }
             
+            item {
+                OutlinedButton(
+                    onClick = onHelpTranslateClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colors.primary
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.help_translate_app_button),
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+            }
+
             item {
                 Button(
                     onClick = onContactClick,

@@ -6,17 +6,19 @@ import com.thesunnahrevival.sunnahassistant.data.model.dto.PrayerTimeCalculator
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.ActionType
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextAction
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository.NextActionsData
+import com.thesunnahrevival.sunnahassistant.utilities.BEFORE_SLEEPING_ADHKAAR_CHAPTER_ID
+import com.thesunnahrevival.sunnahassistant.utilities.EVENING_ADHKAAR_CHAPTER_ID
+import com.thesunnahrevival.sunnahassistant.utilities.MORNING_ADHKAAR_CHAPTER_ID
 import com.thesunnahrevival.sunnahassistant.utilities.READING_EVENING_ADHKAAR_ID
 import com.thesunnahrevival.sunnahassistant.utilities.READING_MORNING_ADHKAAR_ID
+import com.thesunnahrevival.sunnahassistant.utilities.READING_SLEEPING_ADHKAAR_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TemplateToDos
 import com.thesunnahrevival.sunnahassistant.utilities.getPrayerTimes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.time.Instant
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 class AdhkaarResourcesNextActionRepository private constructor(
     private val applicationContext: Context
@@ -36,14 +38,17 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
     private val toDoRepository = SunnahAssistantRepository.getInstance(applicationContext)
 
+    private val flagRepository = FlagRepository.getInstance(applicationContext)
 
     private val templateToDos = TemplateToDos().getTemplateToDos(applicationContext)
 
     fun getAdhkaarNextActions(chapterId: Int): Flow<NextActionsData> = flow {
+        trackReadAdhkaar(chapterId)
         val nextActions = buildList {
             when (chapterId) {
-                27 -> populateMorningAdhkaarActions()
-                28 -> populateEveningAdhkaarActions()
+                MORNING_ADHKAAR_CHAPTER_ID -> populateMorningAdhkaarActions()
+                EVENING_ADHKAAR_CHAPTER_ID -> populateEveningAdhkaarActions()
+                BEFORE_SLEEPING_ADHKAAR_CHAPTER_ID -> populateBeforeSleepingAdhkaarActions()
             }
         }
 
@@ -75,7 +80,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         if (currentTime !in asrTime..ishaTime) return
 
-        val eveningAdhkaarReminder = toDoRepository.getToDoById(READING_EVENING_ADHKAAR_ID)
+        val readingEveningAdhkaarId = READING_EVENING_ADHKAAR_ID
+        val eveningAdhkaarReminder = toDoRepository.getToDoById(readingEveningAdhkaarId)
 
         if (eveningAdhkaarReminder == null || eveningAdhkaarReminder.isAutomaticToDo) {
             add(
@@ -90,6 +96,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         add(
             NextAction(
+                toDoId = readingEveningAdhkaarId,
                 titleResId = R.string.remind_others,
                 subtitleResId = R.string.remind_others_to_read_evening_adhkaar,
                 actionResId = R.string.remind_others,
@@ -97,10 +104,11 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 shareTextResId = R.string.morning_evening_adhkaar_reminder_message
             )
         )
+
+        addMarkAsCompleteIfEligible(eveningAdhkaarReminder)
     }
 
     private suspend fun MutableList<NextAction>.populateMorningAdhkaarActions() {
-
         val prayerTimeCalculator = getPrayerTimesCalculator() ?: return
 
         val now = LocalDate.now()
@@ -121,7 +129,8 @@ class AdhkaarResourcesNextActionRepository private constructor(
 
         if (currentTime !in fajrTime..sunrise) return
 
-        val isMorningAdhkaar = toDoRepository.getToDoById(READING_MORNING_ADHKAAR_ID)
+        val readingMorningAdhkaarId = READING_MORNING_ADHKAAR_ID
+        val isMorningAdhkaar = toDoRepository.getToDoById(readingMorningAdhkaarId)
 
         if (isMorningAdhkaar == null || isMorningAdhkaar.isAutomaticToDo) {
             add(
@@ -130,7 +139,7 @@ class AdhkaarResourcesNextActionRepository private constructor(
                     subtitleResId = R.string.set_daily_reminder,
                     actionResId = R.string.set_daily_reminder,
                     actionType = ActionType.NavigateToTodo,
-                    toDoId = READING_MORNING_ADHKAAR_ID
+                    toDoId = readingMorningAdhkaarId
                 )
             )
         }
@@ -141,10 +150,47 @@ class AdhkaarResourcesNextActionRepository private constructor(
                 subtitleResId = R.string.remind_others_to_read_morning_adhkaar,
                 actionResId = R.string.remind_others,
                 actionType = ActionType.ShareText,
-                toDoId = READING_MORNING_ADHKAAR_ID,
+                toDoId = readingMorningAdhkaarId,
                 shareTextResId = R.string.morning_evening_adhkaar_reminder_message
             )
         )
+
+        addMarkAsCompleteIfEligible(isMorningAdhkaar)
+    }
+
+    private suspend fun trackReadAdhkaar(chapterId: Int) {
+        if (chapterId == BEFORE_SLEEPING_ADHKAAR_CHAPTER_ID) {
+            flagRepository.setFlag(TRACK_READ_SLEEPING_ADHKAAR_KEY, 1)
+        }
+    }
+
+    private suspend fun MutableList<NextAction>.populateBeforeSleepingAdhkaarActions() {
+        if (!isNightTime(applicationContext, toDoRepository)) return
+
+        if (flagRepository.getIntFlag(TRACK_READ_SURAH_MULK_KEY) == null) {
+            add(getSuratulMulkNavigateAction())
+        }
+
+        if (flagRepository.getIntFlag(TRACK_READ_SURAH_SAJDAH_KEY) == null) {
+            add(getSuratulSajdahNavigateAction())
+        }
+
+        val sleepingAdhkaarToDoId = READING_SLEEPING_ADHKAAR_ID
+        val sleepingAdhkaarReminder = toDoRepository.getToDoById(sleepingAdhkaarToDoId)
+
+        if (sleepingAdhkaarReminder == null || sleepingAdhkaarReminder.isAutomaticToDo) {
+            add(
+                NextAction(
+                    titleResId = R.string.sleeping_adhkaar_daily_reminder,
+                    subtitleResId = R.string.set_daily_reminder,
+                    actionResId = R.string.set_daily_reminder,
+                    actionType = ActionType.NavigateToTodo,
+                    toDoId = sleepingAdhkaarToDoId
+                )
+            )
+        }
+
+        addMarkAsCompleteIfEligible(sleepingAdhkaarReminder)
     }
 
     private suspend fun getPrayerTimesCalculator(): PrayerTimeCalculator? {
@@ -155,9 +201,4 @@ class AdhkaarResourcesNextActionRepository private constructor(
             categoryName = applicationContext.resources.getStringArray(R.array.categories)[2]
         )
     }
-
-    private fun getMidnightTime(): Long =
-        Instant.now()
-            .truncatedTo(ChronoUnit.DAYS)
-            .toEpochMilli()
 }

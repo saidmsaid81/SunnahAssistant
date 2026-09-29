@@ -11,4 +11,5 @@ interface QuranPageInteractionListener {
     fun onDownloadAllPagesRequested()
     fun onPageLoaded(pageNumber: Int)
     fun showNextActionIfAvailable(view: View, pageNumber: Int)
+    fun updatePageHeader(view: View, pageNumber: Int)
 }

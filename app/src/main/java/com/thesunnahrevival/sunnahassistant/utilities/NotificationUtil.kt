@@ -12,7 +12,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.thesunnahrevival.sunnahassistant.R
+import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
+import java.time.LocalDate
 
 fun createNotification(
     context: Context,
@@ -49,6 +51,14 @@ fun createNotification(
     }
 
     return builder.build()
+}
+
+fun cancelNotificationIfCompletedToday(context: Context, toDo: ToDo) {
+    if (toDo.isComplete(LocalDate.now())) {
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(toDo.id)
+    }
 }
 
 fun getMainActivityPendingIntent(context: Context): PendingIntent? {

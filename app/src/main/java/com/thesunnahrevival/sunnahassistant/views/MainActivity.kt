@@ -1,7 +1,6 @@
 package com.thesunnahrevival.sunnahassistant.views
 
 import android.app.AlarmManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -42,11 +41,11 @@ import com.thesunnahrevival.sunnahassistant.R
 import com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings
 import com.thesunnahrevival.sunnahassistant.databinding.ActivityMainBinding
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.PREDEFINED_TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.REQUESTCODEFORUPDATE
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.SHARE
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORTED_LOCALES
-import com.thesunnahrevival.sunnahassistant.utilities.PREDEFINED_TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.TO_DO_ID
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
@@ -264,13 +263,26 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun openTemplateToDo(toDoId: Int) {
-        val templateToDos = mViewModel.getTemplateToDos()
-        val template = templateToDos[toDoId] ?: return
-        mViewModel.selectedToDo = template.second
-        mViewModel.isToDoTemplate = true
-        if (navController.currentDestination?.id != R.id.toDoDetailsFragment) {
-            navController.navigate(R.id.toDoDetailsFragment)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val templateToDos = mViewModel.getTemplateToDos()
+            val template = templateToDos[toDoId] ?: return@launch
+
+            val toDo = mViewModel.getToDoById(template.second.id)
+
+            val selected = toDo?.takeUnless { it.isAutomaticToDo } ?: template.second
+            val isTemplate = (selected === template.second)
+
+            withContext(Dispatchers.Main) {
+                mViewModel.isToDoTemplate = isTemplate
+                mViewModel.selectedToDo = selected
+
+                if (navController.currentDestination?.id != R.id.toDoDetailsFragment) {
+                    navController.navigate(R.id.toDoDetailsFragment)
+                }
+            }
         }
+
     }
 
     private fun getSettings() {
@@ -296,12 +308,27 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun applySettings(settings: AppSettings) {
-        //Set theme
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) //Android 9 and below
-            if (settings.isLightMode)
+        when (settings.themeMode) {
+            AppSettings.THEME_MODE_LIGHT -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            else
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) //Dark Mode
+            }
+
+            AppSettings.THEME_MODE_DARK -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+
+            AppSettings.THEME_MODE_FOLLOW_SYSTEM -> {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+
+            else -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         if (settings.numberOfLaunches > 0 && settings.numberOfLaunches % 3 == 0) {
             val appUpdateManager = AppUpdateManagerFactory.create(this)

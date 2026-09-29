@@ -34,6 +34,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.Frequency
 import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.ToDoNudgeRepository
 import com.thesunnahrevival.sunnahassistant.databinding.FragmentTodayBinding
+import com.thesunnahrevival.sunnahassistant.utilities.cancelNotificationIfCompletedToday
 import com.thesunnahrevival.sunnahassistant.utilities.generateDateText
 import com.thesunnahrevival.sunnahassistant.viewmodels.TodayViewModel
 import com.thesunnahrevival.sunnahassistant.views.MainActivity
@@ -382,6 +383,7 @@ open class TodayFragment : MenuBarFragment(), ToDoItemInteractionListener {
 
             val toDoCopy = toDo.copy(completedDates = completedDates)
             mainActivityViewModel.updateToDo(toDoCopy)
+            cancelNotificationIfCompletedToday(requireContext(), toDoCopy)
         }
     }
 

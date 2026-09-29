@@ -53,11 +53,11 @@ abstract class MenuBarFragment : SunnahAssistantFragment(), MenuProvider {
             R.id.dark_mode_switch -> {
                 if (AppCompatDelegate.getDefaultNightMode() == MODE_NIGHT_NO) {
                     AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+                    mAppSettings?.themeMode = AppSettings.THEME_MODE_DARK
                 } else {
                     AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+                    mAppSettings?.themeMode = AppSettings.THEME_MODE_LIGHT
                 }
-                val status = mAppSettings?.isLightMode ?: true
-                mAppSettings?.isLightMode = !status
                 mAppSettings?.let { mainActivityViewModel.updateSettings(it) }
                 return true
             }

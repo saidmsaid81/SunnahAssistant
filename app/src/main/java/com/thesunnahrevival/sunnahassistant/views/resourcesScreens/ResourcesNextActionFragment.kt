@@ -23,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -33,9 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -46,6 +51,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.data.repositories.ResourcesNextActionRepository
 import com.thesunnahrevival.sunnahassistant.theme.SunnahAssistantTheme
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
+import com.thesunnahrevival.sunnahassistant.utilities.QURAN_PAGE_FROM_NOTIFICATION
 import com.thesunnahrevival.sunnahassistant.utilities.getSunnahAssistantAppLink
 import com.thesunnahrevival.sunnahassistant.viewmodels.ResourcesNextActionViewModel
 import com.thesunnahrevival.sunnahassistant.viewmodels.SunnahAssistantViewModel
@@ -56,6 +62,7 @@ import com.thesunnahrevival.sunnahassistant.views.utilities.GrayLine
 import java.net.MalformedURLException
 
 const val ADHKAAR_CHAPTER_ID = "adhkaarChapterId"
+const val MARK_AS_COMPLETE_RESULT_KEY = "markAsCompletePerformed"
 
 class ResourcesNextActionFragment : BottomSheetDialogFragment() {
 
@@ -80,12 +87,17 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val nextActionsData by viewmodel.nextActionsData.collectAsState()
+                var hasAutoActioned by remember { mutableStateOf(false) }
 
                 LaunchedEffect(nextActionsData) {
-                    nextActionsData?.let {
-                        if (it.nextActions.size == 1) {
-                            onNextActionClick(it.nextActions.first())
-                            dismiss()
+                    if (!hasAutoActioned) {
+                        nextActionsData?.let {
+                            val singleAction = it.nextActions.singleOrNull()
+                            if (singleAction != null) {
+                                hasAutoActioned = true
+                                onNextActionClick(singleAction)
+                                dismiss()
+                            }
                         }
                     }
                 }
@@ -96,6 +108,7 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
                         onInfoClick(link, toDoId)
                     }
                 ) { nextAction ->
+                    hasAutoActioned = true
                     onNextActionClick(nextAction)
                 }
             }
@@ -152,12 +165,32 @@ class ResourcesNextActionFragment : BottomSheetDialogFragment() {
             }
 
             ResourcesNextActionRepository.ActionType.NavigateToSurah -> {
-                nextAction.surahPageNumber?.let {
-                    mainActivityViewModel.updateCurrentPage(it)
+                nextAction.surahPageNumber?.let { page ->
+                    mainActivityViewModel.updateCurrentPage(page)
+                    val args = bundleOf(QURAN_PAGE_FROM_NOTIFICATION to page)
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.quranReaderFragment, inclusive = true)
+                        .build()
                     requireActivity().findNavController(R.id.myNavHostFragment)
-                        .navigate(R.id.quranReaderFragment)
+                        .navigate(R.id.quranReaderFragment, args, navOptions)
                 }
                 dismiss()
+            }
+
+            ResourcesNextActionRepository.ActionType.NavigateToAdhkaar -> {
+                nextAction.adhkaarChapterNumber?.let { chapterNumber ->
+                    val args = bundleOf("chapterId" to chapterNumber)
+                    requireActivity().findNavController(R.id.myNavHostFragment)
+                        .navigate(R.id.adhkaarReaderFragment, args)
+                }
+                dismiss()
+            }
+
+            ResourcesNextActionRepository.ActionType.MarkAsComplete -> {
+                nextAction.toDoId?.let { toDoId ->
+                    viewmodel.markToDoAsComplete(toDoId)
+                    parentFragmentManager.setFragmentResult(MARK_AS_COMPLETE_RESULT_KEY, bundleOf())
+                }
             }
         }
     }

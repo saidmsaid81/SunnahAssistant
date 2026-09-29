@@ -4,10 +4,6 @@
     >
 
   <data>
-    <import type="android.view.View" />
-    <import type="android.os.Build" />
-    <import type="android.os.Build.VERSION" />
-    <import type="android.os.Build.VERSION_CODES" />
     <variable
         name="settings"
         type="com.thesunnahrevival.sunnahassistant.data.model.entity.AppSettings"
@@ -55,16 +51,7 @@
             android:id="@+id/theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="@{Build.VERSION.SDK_INT > Build.VERSION_CODES.P ? View.GONE : View.VISIBLE  }"
-            tools:visibility="gone"
-            android:text="@{settings.lightMode ? &quot;Light&quot; : &quot;Dark&quot;}"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:visibility="@{Build.VERSION.SDK_INT > Build.VERSION_CODES.P ? View.VISIBLE : View.GONE  }"
-            android:text="@string/theme_in_android_10_follows_system_settings"
+            tools:text="Follow system"
             />
 
       </LinearLayout>

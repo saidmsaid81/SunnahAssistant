@@ -31,6 +31,7 @@ import com.thesunnahrevival.sunnahassistant.data.model.entity.ToDo
 import com.thesunnahrevival.sunnahassistant.utilities.InAppBrowser
 import com.thesunnahrevival.sunnahassistant.utilities.REQUEST_NOTIFICATION_PERMISSION_CODE
 import com.thesunnahrevival.sunnahassistant.utilities.SUPPORT_EMAIL
+import com.thesunnahrevival.sunnahassistant.utilities.cancelNotificationIfCompletedToday
 import com.thesunnahrevival.sunnahassistant.utilities.daySuffixes
 import com.thesunnahrevival.sunnahassistant.utilities.formatTimeInMilliseconds
 import com.thesunnahrevival.sunnahassistant.utilities.getFormattedOffset
@@ -611,6 +612,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
                 mToDo.completedDates != newToDo.completedDates
             ) {
                 mainActivityViewModel.updatePrayerTimeDetails(mToDo, newToDo)
+                cancelNotificationIfCompletedToday(requireContext(), newToDo)
                 Toast.makeText(
                     requireContext(), R.string.successfully_updated, Toast.LENGTH_LONG
                 )
@@ -618,6 +620,7 @@ open class ToDoDetailsFragment : FragmentWithPopups(), View.OnClickListener,
             }
         } else if (mToDo != newToDo || mainActivityViewModel.isToDoTemplate) {
             mainActivityViewModel.insertToDo(newToDo)
+            cancelNotificationIfCompletedToday(requireContext(), newToDo)
             if (newToDo.id == 0 || mainActivityViewModel.isToDoTemplate) {
                 mainActivityViewModel.isToDoTemplate = false
                 Toast.makeText(

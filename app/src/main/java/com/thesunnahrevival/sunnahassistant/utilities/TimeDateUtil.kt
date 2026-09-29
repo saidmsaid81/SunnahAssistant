@@ -13,7 +13,8 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-val dayOfTheWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+val dayOfTheWeek: Int
+    get() = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
 
 val daySuffixes = arrayOf(
     "0th", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th",
@@ -22,11 +23,8 @@ val daySuffixes = arrayOf(
     "30th", "31st"
 )
 
-val tomorrowDayOfTheWeek =
-    if (dayOfTheWeek == 7)
-        1
-    else
-        Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 1
+val tomorrowDayOfTheWeek: Int
+    get() = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.get(Calendar.DAY_OF_WEEK)
 
 fun getDayDate(timeInMilliseconds: Long): Int {
     return SimpleDateFormat("dd", Locale.ENGLISH).format(timeInMilliseconds).toInt()
